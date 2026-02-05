@@ -6,6 +6,8 @@ import { AiAssistant } from "@/components/AiAssistant";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Target, TrendingUp, Zap, MessageSquare, ArrowRight, Check, Sparkles, Code, Binary, UtensilsCrossed, Compass, Landmark } from "lucide-react";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 export default function SolucionesWebPage() {
     const plans = [
@@ -38,38 +40,85 @@ export default function SolucionesWebPage() {
         },
         {
             name: "App Móvil SME",
-            subtitle: "Ecosistemas Móviles a Medida",
+            subtitle: "Dúo Web + App Nativa",
             price: 250000,
             features: [
-                "Publicación en App Store & Play Store",
-                "Notificaciones Push inteligentes",
+                "App para Android e iOS",
+                "Panel Web de Control Incluido",
+                "Notificaciones Push directas",
                 "Base de Datos Robusta y Segura",
-                "Integración de APIS de IA (Gemini)",
-                "Aprendizaje Específico por Nicho",
-                "Esquema No-Coding: 70% más veloz"
+                "Inteligencia Artificial por Nicho",
+                "70% más veloz (No-Coding)"
             ],
             color: "gold"
         }
     ];
 
     return (
-        <div className="min-h-screen flex flex-col pt-32 pb-24">
+        <div className="min-h-screen flex flex-col pt-32 bg-tech-950 bg-grain">
             <Navbar />
 
             <main className="flex-grow">
                 {/* Hero Section */}
-                <section className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 mb-32">
-                    <div className="max-w-3xl">
-                        <div className="flex items-center gap-3 mb-6">
-                            <span className="h-[1px] w-12 bg-tech-500"></span>
-                            <span className="text-tech-500 text-xs font-bold tracking-[0.3em] uppercase">Impulso Emprendedor</span>
-                        </div>
-                        <h1 className="text-5xl md:text-7xl font-serif text-white mb-8 leading-tight italic">
-                            Acelera tu <br /> <span className="text-curiol-gradient">Presencia Digital.</span>
-                        </h1>
-                        <p className="text-tech-400 text-lg md:text-xl font-light leading-relaxed">
-                            No necesitas infraestructuras lentas. Creamos soluciones móviles y web ágiles, impulsadas por IA y bases de datos robustas para que el comercio local de Guanacaste lidere su industria.
+                <section className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 mb-24 text-center">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.8 }}
+                    >
+                        <span className="text-curiol-500 text-xs font-bold tracking-[0.4em] uppercase mb-4 block">Soluciones que Resuelven</span>
+                        <h1 className="text-5xl md:text-7xl font-serif text-white italic mb-8">Tecnología con <span className="text-curiol-gradient">Propósito Real.</span></h1>
+                        <p className="text-tech-400 text-lg font-light max-w-2xl mx-auto leading-relaxed">
+                            No solo construimos código; resolvemos los problemas que frenan el crecimiento de tu negocio local con herramientas modernas y fáciles de usar.
                         </p>
+                    </motion.div>
+                </section>
+
+                {/* SME Pain vs Gain Section */}
+                <section className="py-24 bg-tech-900/10 border-y border-white/5 mb-32">
+                    <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16">
+                        <div className="text-center mb-20">
+                            <h2 className="text-3xl md:text-4xl font-serif text-white italic mb-4">¿Sientes que tu negocio <span className="text-curiol-500">está estancado?</span></h2>
+                            <p className="text-tech-500 font-light">Identificamos tus "dolores" y los transformamos en ventajas competitivas.</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                            {[
+                                {
+                                    pain: "Invisibilidad Digital",
+                                    situation: "Tus clientes te buscan en Google y no apareces, o tu link de redes sociales no funciona bien.",
+                                    solution: "Página Web (Landing Page)",
+                                    gain: "Profesionalismo inmediato. Un solo lugar para que te encuentren, vean tus servicios y te escriban por WhatsApp con un click.",
+                                    type: "Presencia Express"
+                                },
+                                {
+                                    pain: "Caos en Gestión",
+                                    situation: "Pasas todo el día respondiendo lo mismo por chat y agendando citas en papel que se pierden.",
+                                    solution: "Sitio Web Multi-Seccion",
+                                    gain: "Orden y tiempo libre. Tu web responde las dudas, muestra tu catálogo y recibe cotizaciones automáticamente 24/7.",
+                                    type: "Negocios Pro"
+                                },
+                                {
+                                    pain: "Dependencia de Terceros",
+                                    situation: "Las comisiones de apps externas devoran tu ganancia o dependes de que Instagram te muestre para vender.",
+                                    solution: "App Móvil + Panel Web (Dúo)",
+                                    gain: "Libertad total. Estás en el celular de tu cliente con notificaciones directas, sin comisiones y con IA que conoce a tu público.",
+                                    type: "App Móvil SME"
+                                }
+                            ].map((item, i) => (
+                                <div key={i} className="flex flex-col h-full p-10 rounded-[2rem] bg-tech-900/30 border border-white/5 hover:border-curiol-500/20 transition-all group">
+                                    <div className="mb-8">
+                                        <span className="text-[10px] font-bold text-red-400/80 uppercase tracking-widest mb-2 block">El Problema: {item.pain}</span>
+                                        <p className="text-tech-400 text-sm font-light italic leading-relaxed">"{item.situation}"</p>
+                                    </div>
+                                    <div className="mt-auto pt-8 border-t border-white/5">
+                                        <span className="text-[10px] font-bold text-curiol-500 uppercase tracking-widest mb-2 block">Solución Curiol: {item.solution}</span>
+                                        <h4 className="text-lg text-white font-serif italic mb-4 group-hover:text-gold-500 transition-colors">Qué ganas:</h4>
+                                        <p className="text-tech-500 text-sm font-light leading-relaxed">{item.gain}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </section>
 
@@ -304,8 +353,4 @@ export default function SolucionesWebPage() {
             <AiAssistant />
         </div>
     );
-}
-
-function cn(...inputs: any[]) {
-    return inputs.filter(Boolean).join(" ");
 }
