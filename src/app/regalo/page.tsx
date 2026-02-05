@@ -417,7 +417,7 @@ export default function GiftCardPage() {
                         </div>
                     )}
 
-                    <div className="perspective-1200 w-full max-w-[380px] h-[600px] relative group select-none">
+                    <div className="perspective-1200 w-full max-w-[350px] md:max-w-[380px] h-[500px] md:h-[600px] relative group select-none">
                         <motion.div
                             animate={{ rotateY: isOpen ? 180 : 0 }}
                             transition={{ type: "spring", stiffness: 60, damping: 20 }}
@@ -426,16 +426,16 @@ export default function GiftCardPage() {
                         >
                             {/* FRONT SIDE (Tapa) */}
                             <div className={cn(
-                                "absolute inset-0 backface-hidden rounded-3xl p-8 flex flex-col items-center justify-center text-center shadow-3xl overflow-hidden border-t border-white/20 transition-all duration-700",
+                                "absolute inset-0 backface-hidden rounded-3xl p-6 md:p-8 flex flex-col items-center justify-center text-center shadow-3xl overflow-hidden border-t border-white/20 transition-all duration-700",
                                 selectedTheme.id
                             )} style={{ background: `var(--card-gradient, ${selectedTheme.color})` }}>
                                 {/* Border deco */}
                                 <div className="absolute inset-4 border border-white/20 rounded-2xl pointer-events-none" />
 
-                                <div className="space-y-8 relative z-10 scale-90 md:scale-100">
-                                    <span className="text-[10px] text-white/40 tracking-[0.4em] font-bold uppercase block">Curiol Studio</span>
-                                    <h3 className="text-white font-cursive text-6xl leading-none drop-shadow-2xl">¡Tienes un<br />Regalo!</h3>
-                                    <p className="text-white/80 text-sm font-lato leading-relaxed max-w-[240px] mx-auto">Alguien especial ha pensado en ti para capturar un momento inolvidable.</p>
+                                <div className="space-y-6 md:space-y-8 relative z-10 scale-90 md:scale-100">
+                                    <span className="text-[9px] md:text-[10px] text-white/40 tracking-[0.3em] md:tracking-[0.4em] font-bold uppercase block">Curiol Studio</span>
+                                    <h3 className="text-white font-cursive text-4xl md:text-6xl leading-none drop-shadow-2xl">¡Tienes un<br />Regalo!</h3>
+                                    <p className="text-white/80 text-xs md:text-sm font-lato leading-relaxed max-w-[200px] md:max-w-[240px] mx-auto">Alguien especial ha pensado en ti para capturar un momento inolvidable.</p>
 
                                     <motion.button
                                         whileHover={{ scale: 1.05 }}
@@ -458,19 +458,19 @@ export default function GiftCardPage() {
                                 <div className="absolute inset-4 border border-white/20 rounded-2xl pointer-events-none" />
 
                                 <div className="relative z-10 h-full flex flex-col text-center">
-                                    <span className="text-[9px] text-[#bf8b26] tracking-[0.4em] font-bold uppercase block mb-12 font-cinzel">Alberto Bustos Fotografía</span>
+                                    <span className="text-[8px] md:text-[9px] text-[#bf8b26] tracking-[0.3em] md:tracking-[0.4em] font-bold uppercase block mb-8 md:mb-12 font-cinzel">Alberto Bustos Fotografía</span>
 
-                                    <div className="space-y-8 mb-12">
-                                        <h4 className="text-[#bf8b26] font-cinzel text-2xl tracking-[0.1em] font-bold italic">Sesión Fotográfica</h4>
-                                        <div className="inline-block bg-black/30 px-5 py-2 rounded-full border border-white/5">
-                                            <span className="text-white text-[9px] font-bold uppercase tracking-widest font-lato">
+                                    <div className="space-y-4 md:space-y-8 mb-8 md:mb-12">
+                                        <h4 className="text-[#bf8b26] font-cinzel text-xl md:text-2xl tracking-[0.1em] font-bold italic">Sesión Fotográfica</h4>
+                                        <div className="inline-block bg-black/30 px-4 md:px-5 py-2 rounded-full border border-white/5">
+                                            <span className="text-white text-[8px] md:text-[9px] font-bold uppercase tracking-widest font-lato">
                                                 {selectedPackage.name} | 10 FOTOS
                                             </span>
                                         </div>
                                     </div>
 
                                     <div className="flex-grow flex items-center justify-center">
-                                        <p className="text-white font-cursive text-3xl leading-snug px-4">
+                                        <p className="text-white font-cursive text-2xl md:text-3xl leading-snug px-4">
                                             "{message || "Los mejores momentos merecen ser eternos."}"
                                         </p>
                                     </div>

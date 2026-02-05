@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { ShieldCheck, Menu, X, Gift } from "lucide-react";
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
     { href: "/", label: "Inicio" },
@@ -83,26 +84,66 @@ export function Navbar() {
             </div>
 
             {/* Mobile Menu Overlay */}
-            <div
-                className={cn(
-                    "fixed inset-0 top-20 bg-tech-950 z-40 lg:hidden flex flex-col items-center justify-center space-y-8 transition-all duration-500",
-                    isOpen ? "opacity-100 visible translate-y-0" : "opacity-0 invisible -translate-y-10"
-                )}
-            >
-                {navLinks.map((link) => (
-                    <Link
-                        key={link.href}
-                        href={link.href}
-                        onClick={() => setIsOpen(false)}
-                        className={cn(
-                            "text-xl font-serif tracking-[0.2em] uppercase transition-all hover:text-curiol-500",
-                            pathname === link.href ? "text-curiol-500" : "text-white"
-                        )}
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, x: "100%" }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: "100%" }}
+                        transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                        className="fixed inset-0 bg-tech-950 z-[100] lg:hidden flex flex-col p-8"
                     >
-                        {link.label}
-                    </Link>
-                ))}
-            </div>
+                        {/* Mobile Header in Overlay */}
+                        <div className="flex justify-between items-center mb-20">
+                            <div className="group flex flex-col items-center">
+                                <span className="font-serif text-xl tracking-[0.2em] text-white leading-none">
+                                    CURIOL<span className="text-curiol-500 font-light ml-2">STUDIO</span>
+                                </span>
+                            </div>
+                            <button
+                                onClick={() => setIsOpen(false)}
+                                className="text-curiol-500 p-2"
+                            >
+                                <X className="w-8 h-8" />
+                            </button>
+                        </div>
+
+                        <div className="flex flex-col items-start space-y-6">
+                            {navLinks.map((link, i) => (
+                                <motion.div
+                                    key={link.href}
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: i * 0.1 }}
+                                >
+                                    <Link
+                                        href={link.href}
+                                        onClick={() => setIsOpen(false)}
+                                        className={cn(
+                                            "text-3xl font-cinzel tracking-widest uppercase transition-all",
+                                            pathname === link.href ? "text-curiol- gradient" : "text-white/60"
+                                        )}
+                                    >
+                                        {link.label}
+                                    </Link>
+                                </motion.div>
+                            ))}
+                        </div>
+
+                        <div className="mt-auto pt-10 border-t border-white/5 space-y-4">
+                            <p className="text-tech-600 text-[8px] uppercase tracking-[0.4em] font-bold">Arquitectura de Memorias</p>
+                            <div className="flex gap-4">
+                                <Link href="/admin" onClick={() => setIsOpen(false)} className="text-tech-500">
+                                    <ShieldCheck className="w-5 h-5" />
+                                </Link>
+                                <Link href="/regalo" onClick={() => setIsOpen(false)} className="text-curiol-500">
+                                    <Gift className="w-5 h-5" />
+                                </Link>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </nav>
     );
 }

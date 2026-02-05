@@ -44,16 +44,16 @@ export default function ServiciosPage() {
             <Navbar />
 
             <main className="flex-grow">
-                <header className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 mb-24">
+                <header className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 mb-16 md:mb-24 mt-10 md:mt-20">
                     <div className="max-w-3xl">
                         <div className="flex items-center gap-3 mb-6">
                             <span className="h-[1px] w-12 bg-curiol-500"></span>
-                            <span className="text-curiol-500 text-xs font-bold tracking-[0.3em] uppercase">Ecosistema B2B</span>
+                            <span className="text-curiol-500 text-[10px] font-bold tracking-[0.3em] uppercase">Ecosistema B2B</span>
                         </div>
-                        <h1 className="text-5xl md:text-7xl font-serif text-white mb-8 leading-tight italic">
+                        <h1 className="text-4xl md:text-7xl font-cinzel text-white mb-8 leading-tight">
                             Servicios de <br /> <span className="text-curiol-gradient">Impacto Visual.</span>
                         </h1>
-                        <p className="text-tech-400 text-lg md:text-xl font-light leading-relaxed">
+                        <p className="text-tech-400 text-base md:text-xl font-light leading-relaxed font-lato">
                             Diseñamos soluciones fotográficas y tecnológicas de alta gama para marcas que buscan trascender. Desde la imagen corporativa hasta la realidad aumentada.
                         </p>
                     </div>
@@ -62,7 +62,7 @@ export default function ServiciosPage() {
                 <section className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 mb-40">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {modalities.map((item) => (
-                            <GlassCard key={item.id} className={cn("flex flex-col items-center text-center p-10", item.highlight && "border-curiol-500/30")}>
+                            <GlassCard key={item.id} className={cn("flex flex-col items-center text-center p-6 md:p-10", item.highlight && "border-curiol-500/30")}>
                                 <div className="text-curiol-500 mb-8 p-4 bg-curiol-500/5 rounded-full ring-1 ring-curiol-500/20">
                                     <item.icon className="w-8 h-8" />
                                 </div>
@@ -78,7 +78,7 @@ export default function ServiciosPage() {
 
                 {/* WhatsApp Share Section */}
                 <section className="max-w-4xl mx-auto px-4 md:px-8 lg:px-16 mb-40">
-                    <GlassCard className="p-12 text-center border-curiol-500/20">
+                    <GlassCard className="p-8 md:p-12 text-center border-curiol-500/20">
                         <MessageCircle className="w-10 h-10 text-green-500 mx-auto mb-6" />
                         <h2 className="text-3xl font-serif text-white italic mb-4">Comparte nuestra propuesta.</h2>
                         <p className="text-tech-400 font-light mb-10 max-w-lg mx-auto leading-relaxed">
