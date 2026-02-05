@@ -2,10 +2,16 @@
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+const API_KEY = process.env.GEMINI_API_KEY || "";
+const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 export async function generateB2BCopy(businessInfo: string) {
+    if (!API_KEY) {
+        console.error("GEMINI_API_KEY is not defined in environment variables");
+        return "Error: La configuración de IA no está completa.";
+    }
+
     const prompt = `
     Actúa como un Copywriter experto en marketing digital para Curiol Studio. 
     Un cliente desea crear su sitio web. Información del negocio: "${businessInfo}".
@@ -26,6 +32,11 @@ export async function generateB2BCopy(businessInfo: string) {
 }
 
 export async function getAiAssistantResponse(message: string, context: any) {
+    if (!API_KEY) {
+        console.error("GEMINI_API_KEY is not defined in environment variables");
+        return "Lo siento, la IA no está configurada en el servidor. Por favor revisa las variables de entorno en Vercel.";
+    }
+
     const prompt = `
     Eres el asistente virtual de Curiol Studio.
     Contexto actual del cliente: ${JSON.stringify(context)}.
@@ -41,6 +52,6 @@ export async function getAiAssistantResponse(message: string, context: any) {
         return result.response.text();
     } catch (error) {
         console.error("Gemini API Error:", error);
-        return "Lo siento, tuve un problema técnico. ¿En qué más puedo ayudarte?";
+        return "Lo siento, tuve un problema técnico con la conexión a la IA. ¿En qué más puedo ayudarte?";
     }
 }
