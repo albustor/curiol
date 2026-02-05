@@ -1,5 +1,5 @@
-"use client";
 
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AiAssistant } from "@/components/AiAssistant";
@@ -7,8 +7,25 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import { GiftCard } from "@/components/GiftCard";
 import { Camera, Binary, ArrowRight, Sparkles, Code, Users } from "lucide-react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+
+const BACKGROUND_IMAGES = [
+  "https://images.unsplash.com/photo-1472393365320-dc77242e672c?q=80&w=2070", // Naturaleza / Legado
+  "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=2070", // Familia / Emoción
+  "https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=2070", // Negocios / Estrategia
+  "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=2070"  // Cámara / Fine Art
+];
 
 export default function Home() {
+  const [currentImage, setCurrentImage] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % BACKGROUND_IMAGES.length);
+    }, 10000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
@@ -17,24 +34,33 @@ export default function Home() {
         {/* Hero Section */}
         <section className="relative h-screen flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0 bg-tech-950">
-            {/* Background Image Placeholder / Video */}
-            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1472393365320-dc77242e672c?q=80&w=2070')] bg-cover bg-center opacity-30 mix-blend-luminosity" />
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentImage}
+                initial={{ opacity: 0, scale: 1.1 }}
+                animate={{ opacity: 0.3, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 2, ease: "easeInOut" }}
+                style={{ backgroundImage: `url(${BACKGROUND_IMAGES[currentImage]})` }}
+                className="absolute inset-0 bg-cover bg-center mix-blend-luminosity"
+              />
+            </AnimatePresence>
             <div className="absolute inset-0 bg-gradient-to-t from-tech-900 via-transparent to-tech-950" />
           </div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 lg:px-16 text-center">
             <div className="flex justify-center items-center gap-3 mb-8 animate-fade-in">
               <span className="h-[1px] w-12 bg-curiol-500"></span>
-              <span className="text-curiol-500 text-xs font-bold tracking-[0.4em] uppercase">Donde el Legado se encuentra con el Futuro</span>
+              <span className="text-curiol-500 text-xs font-bold tracking-[0.4em] uppercase">La Evolución del Legado Visual</span>
               <span className="h-[1px] w-12 bg-curiol-500"></span>
             </div>
 
-            <h1 className="text-6xl md:text-8xl lg:text-9xl font-serif text-white mb-8 leading-tight italic">
-              Memorias que <br /> <span className="text-curiol-gradient">Cobran Vida.</span>
+            <h1 className="text-5xl md:text-8xl lg:text-9xl font-serif text-white mb-8 leading-tight italic">
+              Imágenes que <br /> <span className="text-curiol-gradient">Trascienden el Tiempo.</span>
             </h1>
 
-            <p className="text-tech-400 text-lg md:text-xl font-light max-w-2xl mx-auto mb-12 leading-relaxed">
-              Fotografía Fine Art + Tecnología de Realidad Aumentada e IA. Documentamos tu historia y aceleramos tu presencia digital en Guanacaste.
+            <p className="text-tech-400 text-lg md:text-xl font-light max-w-3xl mx-auto mb-12 leading-relaxed">
+              Fusionamos la maestría del Fine Art con Realidad Aumentada e Inteligencia Artificial para preservar tu historia familiar y potenciar tu marca en la era digital.
             </p>
 
             <div className="flex flex-wrap justify-center gap-6">
