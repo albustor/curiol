@@ -93,7 +93,7 @@ export default function Home() {
               </Link>
             </div>
 
-            <p className="text-curiol-500/80 text-sm italic font-light leading-relaxed max-w-2xl mx-auto animate-fade-in delay-500">
+            <p className="text-white text-sm italic font-light leading-relaxed max-w-2xl mx-auto animate-fade-in delay-500">
               Emanado del corazón de Guaitil, el curiol es el alma mineral que ha dado color a nuestra historia Chorotega. Hoy, esa esencia trasciende fronteras, transformando la tierra en arte eterno con visión global.
             </p>
           </div>
