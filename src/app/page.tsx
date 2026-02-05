@@ -126,10 +126,10 @@ export default function Home() {
                   <Users className="w-12 h-12" />
                 </div>
                 <span className="text-curiol-500 text-[10px] font-bold tracking-widest uppercase mb-4 block">B2C • Familias & Eventos</span>
-                <h3 className="text-3xl font-serif text-white mb-6 italic">Legado Ancestral e Interactivo</h3>
+                <h3 className="text-3xl font-serif text-white mb-6 italic">Legado e Interacción</h3>
                 <p className="text-tech-400 font-light mb-8 leading-relaxed">Creamos álbumes físicos que cobran vida con Realidad Aumentada. Sesiones Fine Art para familias que desean que sus recuerdos nunca desaparezcan.</p>
                 <div className="space-y-4 mb-8">
-                  {['Aventura Mágica (Fantasía IA)', 'Esencia Familiar (Cuadro Vivo AR)', 'Membresía Legado Anual'].map(item => (
+                  {['Aventura Mágica (Fantasía IA para niños y niñas)', 'Esencia Familiar o Individual (Cuadro Vivo Realidad Aumentada)', 'Membresía Legado Anual'].map(item => (
                     <div key={item} className="flex items-center gap-3 text-sm text-tech-300">
                       <Sparkles className="w-3 h-3 text-curiol-500" />
                       {item}
