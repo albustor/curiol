@@ -81,7 +81,7 @@ export default function Home() {
             </h1>
 
             <p className="text-tech-400 text-lg md:text-xl font-light max-w-2xl mx-auto mb-12 leading-relaxed">
-              Fotografía Fine Art + Tecnología de Realidad Aumentada e IA. Documentamos tu historia y aceleramos tu presencia digital en Guanacaste.
+              Fotografía Fine Art + Tecnología de Realidad Aumentada e IA. Documentamos tu historia desde Guanacaste con proyección hacia Costa Rica y el mundo.
             </p>
 
             <div className="flex flex-wrap justify-center gap-6 mb-12">
@@ -94,7 +94,7 @@ export default function Home() {
             </div>
 
             <p className="text-curiol-500/80 text-sm italic font-light leading-relaxed max-w-2xl mx-auto animate-fade-in delay-500">
-              Emanado del corazón de Guaitil de Santa Cruz, Guanacaste, el curiol no es solo un pigmento para dar color a la cerámica; es el alma mineral que ha dado color a nuestra historia Chorotega, transformando la tierra en arte eterno.
+              Emanado del corazón de Guaitil, el curiol es el alma mineral que ha dado color a nuestra historia Chorotega. Hoy, esa esencia trasciende fronteras, transformando la tierra en arte eterno con visión global.
             </p>
           </div>
 
@@ -148,7 +148,7 @@ export default function Home() {
                 </div>
                 <span className="text-tech-500 text-[10px] font-bold tracking-widest uppercase mb-4 block">B2B • Negocios & Marca</span>
                 <h3 className="text-3xl font-serif text-white mb-6 italic">Infraestructura Digital Ágil</h3>
-                <p className="text-tech-400 font-light mb-8 leading-relaxed">No solo fotos, sino el sistema para venderlas. Landing pages de alta conversión y marca personal inteligente para el comercio local de Guanacaste.</p>
+                <p className="text-tech-400 font-light mb-8 leading-relaxed">No solo fotos, sino el sistema para venderlas. Landing pages de alta conversión y marca personal inteligente con escalabilidad para todo el país y el extranjero.</p>
                 <div className="space-y-4 mb-8">
                   {['Marca Personal Inteligente (NFC)', 'Impulso Emprendedor (Web Pro)', 'Aceleradora Digital Local'].map(item => (
                     <div key={item} className="flex items-center gap-3 text-sm text-tech-300">

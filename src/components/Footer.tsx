@@ -33,7 +33,7 @@ export function Footer() {
                         <h4 className="text-white text-[10px] font-bold uppercase tracking-widest mb-6 border-b border-tech-800 pb-2">
                             Contacto
                         </h4>
-                        <p className="text-tech-400 text-sm mb-4">Guanacaste, Costa Rica</p>
+                        <p className="text-tech-400 text-sm mb-4">Guanacaste, Costa Rica • Alcance Nacional e Internacional</p>
                         <a href="mailto:contacto@curiol.studio" className="text-curiol-500 text-xs font-bold hover:underline">
                             contacto@curiol.studio
                         </a>

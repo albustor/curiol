@@ -69,7 +69,7 @@ export default function SolucionesWebPage() {
                         <span className="text-curiol-500 text-xs font-bold tracking-[0.4em] uppercase mb-4 block">Soluciones que Resuelven</span>
                         <h1 className="text-5xl md:text-7xl font-serif text-white italic mb-8">Tecnología con <span className="text-curiol-gradient">Propósito Real.</span></h1>
                         <p className="text-tech-400 text-lg font-light max-w-2xl mx-auto leading-relaxed">
-                            No solo construimos código; resolvemos los problemas que frenan el crecimiento de tu negocio local con herramientas modernas y fáciles de usar.
+                            No solo construimos código; desde nuestras raíces en Guanacaste proyectamos soluciones que resuelven problemas reales a nivel nacional e internacional.
                         </p>
                     </motion.div>
                 </section>
