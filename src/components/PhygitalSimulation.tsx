@@ -14,11 +14,11 @@ export function PhygitalSimulation() {
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center relative z-10">
                         {/* Left Content */}
-                        <div className="space-y-8 md:space-y-12">
+                        <div className="space-y-12">
                             <div>
-                                <span className="text-curiol-500 text-[10px] font-bold tracking-[0.4em] uppercase block mb-4">Tecnología Curiol</span>
+                                <span className="text-curiol-500 text-[10px] font-bold tracking-[0.4em] uppercase block mb-4">La Magia del Detalle</span>
                                 <h2 className="text-3xl md:text-6xl font-cinzel text-white leading-tight">
-                                    Experiencia <span className="text-curiol-gradient">Phygital.</span>
+                                    El Arte de lo <span className="text-curiol-gradient">Interactivo.</span>
                                 </h2>
                             </div>
 
@@ -26,12 +26,12 @@ export function PhygitalSimulation() {
                                 <div className="flex gap-5 md:gap-6 items-start group">
                                     <div className="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-tech-800 border border-white/10 flex items-center justify-center text-curiol-500 group-hover:border-curiol-500/50 transition-colors shadow-xl relative">
                                         <Radio className="w-5 h-5 md:w-6 md:h-6" />
-                                        <span className="absolute -top-2 -right-2 text-[7px] md:text-[8px] font-bold bg-curiol-700 px-2 py-1 rounded text-white shadow-lg">NFC</span>
+                                        <span className="absolute -top-2 -right-2 text-[7px] md:text-[8px] font-bold bg-curiol-700 px-2 py-1 rounded text-white shadow-lg">Toque</span>
                                     </div>
                                     <div className="space-y-2">
-                                        <h3 className="text-white font-serif text-lg md:text-xl italic">Tarjetas Inteligentes</h3>
+                                        <h3 className="text-white font-serif text-lg md:text-xl italic">Contacto Mágico</h3>
                                         <p className="text-tech-400 text-xs md:text-sm font-light leading-relaxed">
-                                            Tu marca o portafolio personal en un solo toque. Rapidez y exclusividad para el networking moderno.
+                                            Tu portafolio fotográfico compartido con solo acercar tu tarjeta al celular. Sin buscar, sin escribir; pura conexión artística instantánea.
                                         </p>
                                     </div>
                                 </div>
@@ -39,12 +39,12 @@ export function PhygitalSimulation() {
                                 <div className="flex gap-5 md:gap-6 items-start group">
                                     <div className="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-tech-800 border border-white/10 flex items-center justify-center text-curiol-500 group-hover:border-curiol-500/50 transition-colors shadow-xl relative">
                                         <Sparkles className="w-5 h-5 md:w-6 md:h-6" />
-                                        <span className="absolute -top-2 -right-2 text-[7px] md:text-[8px] font-bold bg-curiol-700 px-2 py-1 rounded text-white shadow-lg">AR</span>
+                                        <span className="absolute -top-2 -right-2 text-[7px] md:text-[8px] font-bold bg-curiol-700 px-2 py-1 rounded text-white shadow-lg">Vida</span>
                                     </div>
                                     <div className="space-y-2">
-                                        <h3 className="text-white font-serif text-lg md:text-xl italic">WebAR Experience</h3>
+                                        <h3 className="text-white font-serif text-lg md:text-xl italic">Arte que Cobra Vida</h3>
                                         <p className="text-tech-400 text-xs md:text-sm font-light leading-relaxed">
-                                            Tus cuadros y álbumes impresos cobran vida al enfocarlos con tu celular. Sin apps, pura magia digital integrada al papel.
+                                            Tus fotografías impresas esconden una historia. Al verlas a través de tu celular, la imagen se mueve y te cuenta su música. Magia pura en tus manos.
                                         </p>
                                     </div>
                                 </div>

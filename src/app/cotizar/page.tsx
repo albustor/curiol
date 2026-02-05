@@ -18,16 +18,16 @@ const SECTIONS = [
 
 const PACKAGES: Record<string, Array<{ id: string; name: string; price: number; desc: string; isMonthly?: boolean; currency?: string }>> = {
     family: [
-        { id: "mini", name: "Minisesiones", price: 30000, desc: "40 min, 10 fotos digitales. 1 vez al mes." },
-        { id: "aventura", name: "Aventura Mágica", price: 60000, desc: "Fantasía IA + Photobook + Memoria Viva (Música Integrada). 1h 30min." },
-        { id: "esencia", name: "Esencia Familiar", price: 80000, desc: "25 Fotos + Cuadro Vivo AR + Memoria Viva. 1h 30min." },
-        { id: "legado", name: "Membresía Legado Anual", price: 25000, desc: "Tu biógrafo familiar. 3 sesiones/año + Anuario + Memoria Viva Premium. (Precio mensual)", isMonthly: true }
+        { id: "mini", name: "Minisesiones", price: 30000, desc: "40 min, 10 fotos digitales del momento." },
+        { id: "aventura", name: "Aventura Mágica", price: 60000, desc: "Arte fantástico para niños + Photobook + Música especial. 1h 30min." },
+        { id: "esencia", name: "Esencia Familiar", price: 80000, desc: "25 Fotos + Cuadro que cobra vida (AR) + Música. 1h 30min." },
+        { id: "legado", name: "Membresía Legado", price: 25000, desc: "Tu biógrafo familiar anual. Sesiones programadas y anuario físico. (Precio mensual)", isMonthly: true }
     ],
     business: [
-        { id: "marca", name: "Marca Personal Inteligente", price: 65000, desc: "15 Fotos Branding + Asesoría + Tarjeta NFC. 1h 30min." },
-        { id: "landing", name: "Impulso Emp: Landing Page", price: 85000, desc: "Presencia Express. Landing de alto impacto + Memoria Viva de Marca." },
-        { id: "pro", name: "Impulso Emp: Negocio Pro", price: 145000, desc: "Web Corporativa Completa (4 secciones + Formulario)." },
-        { id: "evento", name: "Gran Evento", price: 720000, desc: "Bodas/15 Años. Cobertura + Memoria Viva + Álbum Híbrido NFC. (Desde $1,200)", currency: "CRC" }
+        { id: "marca", name: "Marca Personal", price: 65000, desc: "15 Fotos de impacto + Asesoría de imagen + Contacto digital rápido. 1h 30min." },
+        { id: "landing", name: "Web: Vitrina Express", price: 120000, desc: "Tu espacio profesional en la web. Elegante, rápido y listo para captar clientes." },
+        { id: "pro", name: "Web: Negocio Pro", price: 250000, desc: "Plataforma completa de negocios. Diseño estratégico y herramientas para crecer." },
+        { id: "evento", name: "Grandes Historias", price: 720000, desc: "Bodas y eventos especiales. Cobertura artística completa + Álbum con tecnología. (Base)", currency: "CRC" }
     ]
 };
 
@@ -87,16 +87,16 @@ export default function CotizadorPage() {
                                     onClick={() => { setCategory('family'); handleNext(); }}
                                 >
                                     <Camera className="w-12 h-12 text-curiol-500 mb-6" />
-                                    <h3 className="text-2xl font-serif text-white mb-2 italic">Familias & Legado</h3>
-                                    <p className="text-tech-400 text-sm font-light">Fotografía Fine Art, AR y memorias interactivas.</p>
+                                    <h3 className="text-2xl font-serif text-white mb-2 italic">Familias & Historias</h3>
+                                    <p className="text-tech-400 text-sm font-light">Fotografía artística y recuerdos que cobran vida.</p>
                                 </GlassCard>
                                 <GlassCard
                                     className={cn("cursor-pointer border-2 transition-all", category === 'business' ? "border-tech-500" : "border-transparent")}
                                     onClick={() => { setCategory('business'); handleNext(); }}
                                 >
                                     <Code className="w-12 h-12 text-tech-500 mb-6" />
-                                    <h3 className="text-2xl font-serif text-white mb-2 italic">Negocios & Marca</h3>
-                                    <p className="text-tech-400 text-sm font-light">Estrategia visual y soluciones web para PyMES.</p>
+                                    <h3 className="text-2xl font-serif text-white mb-2 italic">Negocios & Profesionales</h3>
+                                    <p className="text-tech-400 text-sm font-light">Estrategia visual y presencia web de alto impacto.</p>
                                 </GlassCard>
                             </motion.div>
                         )}

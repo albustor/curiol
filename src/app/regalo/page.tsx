@@ -138,10 +138,10 @@ export default function GiftCardPage() {
         const url = getLink();
         const waText = `¡Hola ${to}! 👋\n\n` +
             `¡Tienes un Regalo de parte de ${from}! 🎁✨\n\n` +
-            `${from} ha pensado en ti para capturar un momento inolvidable${includeSong ? " y te envía esta tarjeta con una canción especial" : ""}.\n` +
-            `Te esperamos en nuestra sesión. 📸\n\n` +
-            `👉 *ABRIR TU TARJETA:* ${url}\n\n` +
-            `⚠️ *Nota:* Revisa los pasos previos aquí: https://alberto-bustos.com/landingpage/`;
+            `${from} te envía esta tarjeta especial para capturar un momento inolvidable juntos${includeSong ? " y una canción dedicada para ti" : ""}.\n` +
+            `¡Nos vemos pronto para crear magia! 📸\n\n` +
+            `👉 *ABRIR TU REGALO:* ${url}\n\n` +
+            `Recuerda que puedes ver cómo prepararte aquí: https://alberto-bustos.com/landingpage/`;
 
         if (type === 'copy') {
             navigator.clipboard.writeText(waText);

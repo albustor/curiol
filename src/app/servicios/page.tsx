@@ -12,14 +12,13 @@ import {
 import Link from "next/link";
 
 const modalities = [
-    { id: "legado", title: "Arquitectura de Memorias", icon: Camera, desc: "B2C: Guardianes del legado familiar interactivo con Memoria Viva (Música + Foto) y realidad aumentada." },
-    { id: "mini", title: "Minisesiones", icon: Sparkles, desc: "B2C: Sesiones rápidas de 40 minutos y 10 fotografías digitales. 1 vez al mes (₡30.000)." },
-    { id: "aventura", title: "Aventura Mágica", icon: Sparkles, desc: "B2C: Fantasía IA + Photobook + Memoria Viva. Edición cinematográfica (₡60.000)." },
-    { id: "esencia", title: "Esencia Familiar", icon: Camera, desc: "B2C: 25 Fotos + Cuadro Vivo AR + Memoria Viva. Documentación artística (₡80.000)." },
-    { id: "marca", title: "Marca Personal Inteligente", icon: UserCheck, desc: "B2B: Tu imagen es tu herramienta de negocios. Retratos pro + Tarjeta NFC." },
-    { id: "pymes", title: "Aceleradora Digital Local", icon: Code, desc: "B2B: Infraestructura digital escalable con integración de bases de datos robustas e IA de vanguardia para automatizar la gestión y análisis de información.", highlight: true },
-    { id: "phygital", title: "Ecosistemas Móviles", icon: Smartphone, desc: "Apps híbridas personalizadas a tu nicho que conectan lo físico con soluciones digitales inteligentes, notificaciones push y aprendizaje automático.", highlight: true },
-    { id: "eventos", title: "Cobertura de Legado", icon: Briefcase, desc: "Documentación artística de hitos corporativos y vitales con enfoque en trascendencia." }
+    { id: "mini", title: "Minisesiones", icon: Sparkles, desc: "Fotografía profesional en sesiones rápidas de 40 minutos. Ideal para capturar la alegría del momento. (₡30.000)." },
+    { id: "aventura", title: "Aventura Mágica", icon: Sparkles, desc: "Creamos mundos de fantasía para niños usando arte digital y música que envuelve sus historias. (₡60.000)." },
+    { id: "esencia", title: "Esencia Familiar", icon: Camera, desc: "Imágenes artísticas que cobran vida. Incluye cuadros con realidad aumentada para ver tus recuerdos en movimiento. (₡80.000)." },
+    { id: "marca", title: "Marca Personal", icon: UserCheck, desc: "Tu imagen es tu carta de presentación. Retratos de alto impacto con tecnología de contacto rápido para tus clientes." },
+    { id: "pymes", title: "Vitrina Digital (Web)", icon: Code, desc: "Diseñamos tu espacio en la web. Páginas elegantes y funcionales que cuentan la historia de tu negocio y atraen clientes.", highlight: true },
+    { id: "phygital", title: "El Arte de lo Interactivo", icon: Smartphone, desc: "Conectamos tus productos físicos con experiencias digitales mágicas, desde catálogos vivos hasta notificaciones inteligentes.", highlight: true },
+    { id: "eventos", title: "Historias que Perduran", icon: Briefcase, desc: "Documentamos tus eventos más importantes con un enfoque artístico y eterno, capturando cada detalle con alma." }
 ];
 
 
@@ -27,14 +26,14 @@ const generateServicesSummary = () => {
     const summary = `*Curiol Studio 2026 - Portafolio de Experiencias*\n\n` +
         `*B2C: Legado Familiar*\n` +
         `• *Minisesiones*: ₡30,000 (10 fotos, 1 vez al mes)\n` +
-        `• *Aventura Mágica*: ₡60,000 (Fantasía IA + Photobook + Música)\n` +
-        `• *Esencia Familiar*: ₡80,000 (25 Fotos + Cuadro AR + Memoria Viva)\n` +
-        `• *Membresía Legado*: ₡25,000/mes (Biógrafo familiar anual)\n\n` +
+        `• *Aventura Mágica*: ₡60,000 (Arte Niños + Música Especial)\n` +
+        `• *Esencia Familiar*: ₡80,000 (25 Fotos + Cuadros que cobran vida)\n` +
+        `• *Membresía Legado*: ₡25,000/mes (Tu biógrafo familiar)\n\n` +
         `*B2B: Estrategia Digital*\n` +
-        `• *Marca Personal*: ₡65,000 (NFC + Branding)\n` +
-        `• *Web Landing*: ₡85,000 (Presencia Express)\n` +
-        `• *Web Pro*: ₡145,000 (Plataforma Completa)\n\n` +
-        `_Tecnología NFC y AR integrada en cada experiencia phygital._`;
+        `• *Marca Personal*: ₡65,000 (Retratos + Contacto Digital)\n` +
+        `• *Web Landing*: ₡120,000 (Tu Vitrina Express)\n` +
+        `• *Web Pro*: ₡250,000 (Plataforma de Negocios Completa)\n\n` +
+        `_Fotografía artística potenciada con tecnología de vanguardia._`;
     return `https://wa.me/50660602617?text=${encodeURIComponent(summary)}`;
 };
 
@@ -48,7 +47,7 @@ export default function ServiciosPage() {
                     <div className="max-w-3xl">
                         <div className="flex items-center gap-3 mb-6">
                             <span className="h-[1px] w-12 bg-curiol-500"></span>
-                            <span className="text-curiol-500 text-[10px] font-bold tracking-[0.3em] uppercase">Ecosistema B2B</span>
+                            <span className="text-curiol-500 text-[10px] font-bold tracking-[0.3em] uppercase">Impacto y Trascendencia</span>
                         </div>
                         <h1 className="text-4xl md:text-7xl font-cinzel text-white mb-8 leading-tight">
                             Servicios de <br /> <span className="text-curiol-gradient">Impacto Visual.</span>
