@@ -182,7 +182,7 @@ export default function Home() {
                 </div>
                 <h2 className="text-5xl md:text-7xl font-serif text-white mb-8 italic">Legado <br /> <span className="text-curiol-gradient">Zona Azul.</span></h2>
                 <p className="text-tech-400 text-lg font-light leading-relaxed mb-10">
-                  Homenaje a los "personajes azules" de Nicoya —una de las zonas más longevas del mundo— y a la niñez potencial que hereda su huella. Una conexión entre experiencia y futuro en 3 actos fotográficos y un Podcast de Vida.
+                  Homenaje gratuito a los "personajes azules" de Nicoya —una de las zonas más longevas del mundo— y a la niñez potencial que hereda su huella. Una conexión entre experiencia y futuro entregada como tributo a la comunidad.
                 </p>
                 <Link href="/comunidad#legado-azul" className="inline-flex items-center gap-4 px-10 py-5 border border-curiol-500/30 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-curiol-500 transition-all rounded-full group">
                   Descubrir el Proyecto <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

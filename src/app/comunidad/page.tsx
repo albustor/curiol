@@ -162,8 +162,11 @@ export default function ComunidadPage() {
                                 "Honramos a los personajes azules que han dejado huella en nuestras comunidades, conectando su experiencia con la niñez potencial que hoy empieza a caminar."
                             </p>
 
-                            <div className="p-8 rounded-3xl bg-tech-900/50 border border-curiol-500/20 mb-12">
-                                <h4 className="text-curiol-500 text-xs font-bold uppercase tracking-widest mb-4">Experiencia Legado Zona Azul</h4>
+                            <div className="p-8 rounded-3xl bg-tech-900/50 border border-curiol-500/20 mb-8">
+                                <div className="flex justify-between items-start mb-4">
+                                    <h4 className="text-curiol-500 text-xs font-bold uppercase tracking-widest">Experiencia Legado Zona Azul</h4>
+                                    <span className="text-gold-500 text-[10px] font-bold uppercase tracking-widest px-3 py-1 bg-gold-500/10 rounded-full border border-gold-500/20">Sin Costo Beneficiario</span>
+                                </div>
                                 <ul className="space-y-4 text-tech-300 text-sm font-light">
                                     <li className="flex gap-3">
                                         <Sparkles className="w-4 h-4 text-curiol-500 shrink-0" />
@@ -178,15 +181,25 @@ export default function ComunidadPage() {
                                         <span>Entregable digital con realidad aumentada integrada.</span>
                                     </li>
                                 </ul>
+                                <p className="mt-6 text-[10px] text-tech-500 italic font-light leading-relaxed border-t border-white/5 pt-4">
+                                    * Este proyecto es una iniciativa de Curiol Studio para honrar el patrimonio vivo de nuestras comunidades. Entregado sin cargo a las familias.
+                                </p>
+                            </div>
+
+                            <div className="mb-12 text-center lg:text-left">
+                                <p className="text-tech-600 text-[9px] uppercase tracking-[0.3em] font-bold mb-2">In Memoriam</p>
+                                <p className="text-curiol-500/60 font-serif italic text-sm">
+                                    Dedicado con amor a <br className="md:hidden" /> Salvador Ortega Angulo y Aura Alvarez Deliyore (q.p.d.)
+                                </p>
                             </div>
 
                             <div className="grid grid-cols-2 gap-10">
                                 <div>
                                     <p className="text-3xl font-serif text-white italic">+150</p>
-                                    <p className="text-tech-500 text-[10px] uppercase tracking-widest mt-2 font-bold">Documentaciones Financiadas</p>
+                                    <p className="text-tech-500 text-[10px] uppercase tracking-widest mt-2 font-bold">Documentaciones Gratuitas</p>
                                 </div>
                                 <Link href="/cotizar" className="flex items-center gap-2 text-curiol-500 text-xs font-bold uppercase tracking-widest hover:underline self-end pb-1">
-                                    Inmortalizar Historia <ArrowRight className="w-4 h-4" />
+                                    Postular una Historia <ArrowRight className="w-4 h-4" />
                                 </Link>
                             </div>
                         </div>
