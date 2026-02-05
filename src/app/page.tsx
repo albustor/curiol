@@ -52,18 +52,18 @@ export default function Home() {
         {/* Hero Section */}
         <section className="relative h-screen flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0 bg-tech-950 bg-grain">
-            <AnimatePresence mode="wait">
+            <AnimatePresence>
               <motion.div
                 key={currentImage}
                 initial={{ opacity: 0, scale: 1.1 }}
-                animate={{ opacity: 0.4, scale: 1 }}
+                animate={{ opacity: 0.6, scale: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 2, ease: "easeInOut" }}
+                transition={{ duration: 2.5, ease: "easeInOut" }}
                 style={{
                   backgroundImage: `url(${heroImages[currentImage]})`,
-                  backgroundPosition: "center 15%"
+                  backgroundPosition: "center center"
                 }}
-                className="absolute inset-0 bg-cover mix-blend-overlay img-premium image-overlay"
+                className="absolute inset-0 bg-cover img-premium image-overlay"
               />
             </AnimatePresence>
             <div className="absolute inset-0 bg-gradient-to-t from-tech-900 via-transparent to-tech-950" />
