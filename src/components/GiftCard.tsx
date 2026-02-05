@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Gift, Camera, Sparkles } from "lucide-react";
 import { GlassCard } from "./ui/GlassCard";
+import Link from "next/link";
 
 export function GiftCard() {
     return (
@@ -35,12 +36,12 @@ export function GiftCard() {
                         </p>
 
                         <div className="flex flex-wrap gap-4">
-                            <button className="px-8 py-4 bg-curiol-700 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-curiol-500 transition-all transform hover:-translate-y-1 shadow-xl">
+                            <Link href="/regalo" className="px-8 py-4 bg-curiol-700 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-curiol-500 transition-all transform hover:-translate-y-1 shadow-xl">
                                 Comprar Ahora
-                            </button>
-                            <button className="px-8 py-4 border border-tech-700 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-tech-800 transition-all">
+                            </Link>
+                            <Link href="/regalo" className="px-8 py-4 border border-tech-700 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-tech-800 transition-all text-center">
                                 Ver Detalles
-                            </button>
+                            </Link>
                         </div>
                     </div>
 

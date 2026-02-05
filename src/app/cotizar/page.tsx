@@ -16,22 +16,28 @@ const SECTIONS = [
     { id: "summary", label: "Resumen" }
 ];
 
-const PACKAGES = {
+const PACKAGES: Record<string, Array<{ id: string; name: string; price: number; desc: string; isMonthly?: boolean; currency?: string }>> = {
     family: [
-        { id: "mini", name: "Mini Sesión", price: 25000, desc: "40 min, 5 fotos digitales." },
-        { id: "aventura", name: "Aventura Mágica", price: 95000, desc: "Fantasía IA + Photobook." },
-        { id: "esencia", name: "Esencia Familiar", price: 110000, desc: "25 Fotos + Cuadro AR." }
+        { id: "mini", name: "Mini Sesión", price: 25000, desc: "40 min, 5 fotos digitales. Ideal para momentos rápidos." },
+        { id: "aventura", name: "Aventura Mágica", price: 95000, desc: "Fantasía IA + Photobook + Memoria Viva (Música Integrada). 1h 30min." },
+        { id: "esencia", name: "Esencia Familiar", price: 110000, desc: "25 Fotos + Cuadro Vivo AR + Memoria Viva. 1h 30min." },
+        { id: "legado", name: "Membresía Legado Anual", price: 25000, desc: "Tu biógrafo familiar. 3 sesiones/año + Anuario + Memoria Viva Premium. (Precio mensual)", isMonthly: true }
     ],
     business: [
-        { id: "marca", name: "Marca Personal", price: 65000, desc: "Asesoría + Tarjeta NFC." },
-        { id: "landing", name: "Landing Express", price: 85000, desc: "Presencia Web Ágil." },
-        { id: "pro", name: "Negocio Pro", price: 145000, desc: "Web Corporativa Completa." }
+        { id: "marca", name: "Marca Personal Inteligente", price: 65000, desc: "15 Fotos Branding + Asesoría + Tarjeta NFC. 1h 30min." },
+        { id: "landing", name: "Impulso Emp: Landing Page", price: 85000, desc: "Presencia Express. Landing de alto impacto + Memoria Viva de Marca." },
+        { id: "pro", name: "Impulso Emp: Negocio Pro", price: 145000, desc: "Web Corporativa Completa (4 secciones + Formulario)." },
+        { id: "evento", name: "Gran Evento", price: 720000, desc: "Bodas/15 Años. Cobertura + Memoria Viva + Álbum Híbrido NFC. (Desde $1,200)", currency: "CRC" }
     ]
 };
 
 const UPSELLS = {
-    mini: { id: "retablo", name: "Retablo Físico", price: 15000, desc: "Convierte tus fotos digitales en una pieza de arte." },
-    marca: { id: "landing_up", name: "Landing 'Link-in-bio'", price: 45000, desc: "El complemento perfecto para tu marca personal." }
+    abuelos: { id: "abuelos", name: "Photobook para Abuelos", price: 47500, desc: "Copia extra del photobook con -20% de descuento." },
+    canvas: { id: "canvas", name: "Pack 5 Mini-impresiones", price: 15000, desc: "Recuerdos físicos para tu escritorio o regalo." },
+    memoria_viva: { id: "memoria_viva", name: "Memoria Viva Individual", price: 35000, desc: "Añade música integrada y narrativa digital a tu sesión standard." },
+    landing_up: { id: "landing_up", name: "Landing 'Link-in-bio'", price: 45000, desc: "El complemento perfecto para tu marca personal." },
+    mantenimiento: { id: "mantenimiento", name: "Mantenimiento 'Tranquilidad'", price: 15000, desc: "Hosting, seguridad y actualizaciones mensuales.", isMonthly: true },
+    sesion_web: { id: "sesion_web", name: "Sesión Producto/Branding", price: 55250, desc: "-15% de descuento al contratar tu web." }
 };
 
 export default function CotizadorPage() {
@@ -112,7 +118,11 @@ export default function CotizadorPage() {
                                             <p className="text-tech-400 text-xs font-light mb-6">{pkg.desc}</p>
                                         </div>
                                         <div className="pt-6 border-t border-tech-800">
-                                            <span className="text-curiol-500 font-bold">₡{pkg.price.toLocaleString()}</span>
+                                            <span className="text-curiol-500 font-bold">
+                                                {pkg.currency === "USD" ? "$" : "₡"}
+                                                {pkg.price.toLocaleString()}
+                                                {pkg.isMonthly && " / mes"}
+                                            </span>
                                         </div>
                                     </GlassCard>
                                 ))}
@@ -131,17 +141,35 @@ export default function CotizadorPage() {
 
                                 <div className="max-w-2xl mx-auto space-y-6">
                                     {/* Smart Upsell Logic */}
-                                    {selectedPackage?.id === 'mini' && (
+                                    {selectedPackage?.id === 'aventura' && (
                                         <div className="p-6 bg-curiol-700/10 border border-curiol-700/30 rounded-xl flex items-center justify-between gap-6">
                                             <div className="flex items-center gap-4">
                                                 <Sparkles className="w-8 h-8 text-curiol-500" />
                                                 <div>
-                                                    <p className="text-white font-serif text-lg italic">{UPSELLS.mini.name}</p>
-                                                    <p className="text-tech-500 text-xs">{UPSELLS.mini.desc}</p>
+                                                    <p className="text-white font-serif text-lg italic">{UPSELLS.abuelos.name}</p>
+                                                    <p className="text-tech-500 text-xs">{UPSELLS.abuelos.desc}</p>
                                                 </div>
                                             </div>
                                             <button
-                                                onClick={() => setExtras(e => [...e, UPSELLS.mini])}
+                                                onClick={() => setExtras(e => [...e, UPSELLS.abuelos])}
+                                                className="px-6 py-2 bg-curiol-700 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-curiol-500 transition-all"
+                                            >
+                                                Añadir + ₡47.5k
+                                            </button>
+                                        </div>
+                                    )}
+
+                                    {selectedPackage?.id === 'esencia' && (
+                                        <div className="p-6 bg-curiol-700/10 border border-curiol-700/30 rounded-xl flex items-center justify-between gap-6">
+                                            <div className="flex items-center gap-4">
+                                                <Sparkles className="w-8 h-8 text-curiol-500" />
+                                                <div>
+                                                    <p className="text-white font-serif text-lg italic">{UPSELLS.canvas.name}</p>
+                                                    <p className="text-tech-500 text-xs">{UPSELLS.canvas.desc}</p>
+                                                </div>
+                                            </div>
+                                            <button
+                                                onClick={() => setExtras(e => [...e, UPSELLS.canvas])}
                                                 className="px-6 py-2 bg-curiol-700 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-curiol-500 transition-all"
                                             >
                                                 Añadir + ₡15k
@@ -154,17 +182,52 @@ export default function CotizadorPage() {
                                             <div className="flex items-center gap-4">
                                                 <Code className="w-8 h-8 text-tech-500" />
                                                 <div>
-                                                    <p className="text-white font-serif text-lg italic">{UPSELLS.marca.name}</p>
-                                                    <p className="text-tech-500 text-xs">{UPSELLS.marca.desc}</p>
+                                                    <p className="text-white font-serif text-lg italic">{UPSELLS.landing_up.name}</p>
+                                                    <p className="text-tech-500 text-xs">{UPSELLS.landing_up.desc}</p>
                                                 </div>
                                             </div>
                                             <button
-                                                onClick={() => setExtras(e => [...e, UPSELLS.marca])}
+                                                onClick={() => setExtras(e => [...e, UPSELLS.landing_up])}
                                                 className="px-6 py-2 bg-tech-800 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-tech-700 transition-all"
                                             >
                                                 Añadir + ₡45k
                                             </button>
                                         </div>
+                                    )}
+
+                                    {(selectedPackage?.id === 'landing' || selectedPackage?.id === 'pro') && (
+                                        <>
+                                            <div className="p-6 bg-tech-800/20 border border-tech-700 rounded-xl flex items-center justify-between gap-6">
+                                                <div className="flex items-center gap-4">
+                                                    <Camera className="w-8 h-8 text-tech-500" />
+                                                    <div>
+                                                        <p className="text-white font-serif text-lg italic">{UPSELLS.sesion_web.name}</p>
+                                                        <p className="text-tech-500 text-xs">{UPSELLS.sesion_web.desc}</p>
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    onClick={() => setExtras(e => [...e, UPSELLS.sesion_web])}
+                                                    className="px-6 py-2 bg-tech-800 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-tech-700 transition-all"
+                                                >
+                                                    Añadir + ₡55k
+                                                </button>
+                                            </div>
+                                            <div className="p-6 bg-tech-800/20 border border-tech-700 rounded-xl flex items-center justify-between gap-6">
+                                                <div className="flex items-center gap-4">
+                                                    <Code className="w-8 h-8 text-tech-500" />
+                                                    <div>
+                                                        <p className="text-white font-serif text-lg italic">{UPSELLS.mantenimiento.name}</p>
+                                                        <p className="text-tech-500 text-xs">{UPSELLS.mantenimiento.desc}</p>
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    onClick={() => setExtras(e => [...e, UPSELLS.mantenimiento])}
+                                                    className="px-6 py-2 bg-tech-800 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-tech-700 transition-all"
+                                                >
+                                                    Añadir ₡15k/mes
+                                                </button>
+                                            </div>
+                                        </>
                                     )}
 
                                     <div className="pt-10 flex justify-center">
@@ -192,12 +255,16 @@ export default function CotizadorPage() {
                                     <div className="space-y-4 mb-8">
                                         <div className="flex justify-between text-tech-300">
                                             <span>Paquete: {selectedPackage?.name}</span>
-                                            <span>₡{selectedPackage?.price.toLocaleString()}</span>
+                                            <span>
+                                                {selectedPackage?.currency === "USD" ? "$" : "₡"}
+                                                {selectedPackage?.price.toLocaleString()}
+                                                {selectedPackage?.isMonthly && " / mes"}
+                                            </span>
                                         </div>
                                         {extras.map((ex, idx) => (
                                             <div key={idx} className="flex justify-between text-curiol-500 text-sm italic">
                                                 <span>+ {ex.name}</span>
-                                                <span>₡{ex.price.toLocaleString()}</span>
+                                                <span>₡{ex.price.toLocaleString()}{ex.isMonthly && " / mes"}</span>
                                             </div>
                                         ))}
                                     </div>

@@ -25,9 +25,13 @@ export default function Home() {
 
   useEffect(() => {
     async function loadHeroImages() {
-      const images = await getHeroImages();
-      if (images.length > 0) {
-        setHeroImages(images);
+      try {
+        const images = await getHeroImages();
+        if (images && images.length > 0) {
+          setHeroImages(images);
+        }
+      } catch (error) {
+        console.error("Carousel load error:", error);
       }
     }
     loadHeroImages();
@@ -52,14 +56,14 @@ export default function Home() {
               <motion.div
                 key={currentImage}
                 initial={{ opacity: 0, scale: 1.1 }}
-                animate={{ opacity: 0.3, scale: 1 }}
+                animate={{ opacity: 0.4, scale: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 2, ease: "easeInOut" }}
                 style={{
                   backgroundImage: `url(${heroImages[currentImage]})`,
                   backgroundPosition: "center 15%"
                 }}
-                className="absolute inset-0 bg-cover mix-blend-luminosity img-premium"
+                className="absolute inset-0 bg-cover mix-blend-overlay img-premium image-overlay"
               />
             </AnimatePresence>
             <div className="absolute inset-0 bg-gradient-to-t from-tech-900 via-transparent to-tech-950" />
@@ -101,7 +105,10 @@ export default function Home() {
             <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
               <div className="max-w-xl">
                 <h2 className="text-4xl md:text-5xl font-serif text-white mb-6 italic">Arquitectura de <span className="text-curiol-500">Presencia.</span></h2>
-                <p className="text-tech-400 font-light leading-relaxed">Fusionamos la calidez del legado familiar con la precisión de la infraestructura digital moderna. Dos mundos, un mismo propósito: trascender.</p>
+                <p className="text-tech-400 font-light leading-relaxed mb-4">Fusionamos la calidez del legado familiar con la precisión de la infraestructura digital moderna. Dos mundos, un mismo propósito: trascender.</p>
+                <p className="text-curiol-500/80 text-sm italic font-light leading-relaxed border-l border-curiol-500/30 pl-4">
+                  Emanado del corazón de Guaitil, el curiol no es solo pigmento; es el alma mineral que ha dado color a nuestra historia Chorotega, transformando la tierra en arte eterno.
+                </p>
               </div>
               <div className="hidden md:block">
                 <div className="flex items-center gap-4 text-curiol-500 text-[10px] uppercase font-bold tracking-widest">
@@ -121,14 +128,14 @@ export default function Home() {
                 <h3 className="text-3xl font-serif text-white mb-6 italic">Legado Ancestral e Interactivo</h3>
                 <p className="text-tech-400 font-light mb-8 leading-relaxed">Creamos álbumes físicos que cobran vida con Realidad Aumentada. Sesiones Fine Art para familias que desean que sus recuerdos nunca desaparezcan.</p>
                 <div className="space-y-4 mb-8">
-                  {['Aventura Mágica (Fantasía)', 'Esencia Familiar (AR)', 'Eventos de Gala (Bodas)'].map(item => (
+                  {['Aventura Mágica (Fantasía IA)', 'Esencia Familiar (Cuadro Vivo AR)', 'Membresía Legado Anual'].map(item => (
                     <div key={item} className="flex items-center gap-3 text-sm text-tech-300">
                       <Sparkles className="w-3 h-3 text-curiol-500" />
                       {item}
                     </div>
                   ))}
                 </div>
-                <Link href="/servicios#familia" className="inline-flex items-center gap-2 text-curiol-500 text-xs font-bold uppercase tracking-widest hover:underline">
+                <Link href="/cotizar" className="inline-flex items-center gap-2 text-curiol-500 text-xs font-bold uppercase tracking-widest hover:underline">
                   Ver Experiencias <ArrowRight className="w-4 h-4" />
                 </Link>
               </GlassCard>
@@ -142,7 +149,7 @@ export default function Home() {
                 <h3 className="text-3xl font-serif text-white mb-6 italic">Infraestructura Digital Ágil</h3>
                 <p className="text-tech-400 font-light mb-8 leading-relaxed">No solo fotos, sino el sistema para venderlas. Landing pages de alta conversión y marca personal inteligente para el comercio local de Guanacaste.</p>
                 <div className="space-y-4 mb-8">
-                  {['Marca Personal Inteligente', 'Impulso Emprendedor (Web)', 'Contenido Vertical Automático'].map(item => (
+                  {['Marca Personal Inteligente (NFC)', 'Impulso Emprendedor (Web Pro)', 'Aceleradora Digital Local'].map(item => (
                     <div key={item} className="flex items-center gap-3 text-sm text-tech-300">
                       <Binary className="w-3 h-3 text-tech-500" />
                       {item}

@@ -6,20 +6,19 @@ import { AiAssistant } from "@/components/AiAssistant";
 import { GlassCard } from "@/components/ui/GlassCard";
 import {
     UserCheck, ShoppingBag, UtensilsCrossed, Home,
-    Briefcase, Camera, Smartphone, Binary, ArrowRight
+    Briefcase, Camera, Smartphone, Binary, ArrowRight, Sparkles, Code
 } from "lucide-react";
 import Link from "next/link";
 
 const modalities = [
-    { id: "personal", title: "Marca Personal", icon: UserCheck, desc: "Retratos de autor que proyectan autoridad y coherencia líder." },
-    { id: "ecommerce", title: "E-commerce", icon: ShoppingBag, desc: "Fotografía de catálogo diseñada para optimizar la conversión digital." },
-    { id: "gastronomia", title: "Gastronomía", icon: UtensilsCrossed, desc: "Capturamos texturas y sabores con stylist culinario de alta gama." },
-    { id: "arquitectura", title: "Arquitectura", icon: Home, desc: "Documentación de espacios y real estate con precisión técnica." },
-    { id: "corporativo", title: "Corporativo", icon: Briefcase, desc: "Cobertura estratégica de hitos empresariales y lanzamientos." },
-    { id: "headshots", title: "Headshots Pro", icon: Camera, desc: "Sesiones dinámicas para equipos y perfiles impecables en LinkedIn." },
-    { id: "social", title: "Social Hub", icon: Smartphone, desc: "Creación de contenido vertical optimizado (Reels/TikTok) de alto impacto." },
-    { id: "phygital", title: "Estrategia Phygital", icon: Binary, desc: "Integramos Realidad Aumentada a tu material impreso legado.", highlight: true }
+    { id: "legado", title: "Arquitectura de Memorias", icon: Camera, desc: "B2C: Guardianes del legado familiar interactivo con Memoria Viva (Música + Foto) y realidad aumentada." },
+    { id: "aventura", title: "Aventura Mágica", icon: Sparkles, desc: "B2C: Transformamos la imaginación infantil en realidad con edición cinematográfica e IA." },
+    { id: "marca", title: "Marca Personal Inteligente", icon: UserCheck, desc: "B2B: Tu imagen es tu herramienta de negocios. Retratos pro + Tarjeta NFC." },
+    { id: "pymes", title: "Aceleradora Digital Local", icon: Code, desc: "B2B: Infraestructura digital escalable con integración de bases de datos e IA para automatizar la gestión y análisis de información.", highlight: true },
+    { id: "phygital", title: "Experiencia Phygital", icon: Binary, desc: "Ecosistemas híbridos que conectan lo físico con soluciones digitales inteligentes.", highlight: true },
+    { id: "eventos", title: "Cobertura de Legado", icon: Briefcase, desc: "Documentación artística de hitos corporativos y vitales con enfoque en trascendencia." }
 ];
+
 
 export default function ServiciosPage() {
     return (

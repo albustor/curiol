@@ -116,7 +116,7 @@ export default function PortfolioPage() {
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.9 }}
                                     transition={{ duration: 0.4, delay: idx * 0.05 }}
-                                    className="group relative aspect-square rounded-2xl overflow-hidden bg-tech-900 border border-tech-800 bg-grain"
+                                    className="group relative aspect-square rounded-2xl overflow-hidden bg-tech-900 border border-tech-800 bg-grain image-overlay"
                                 >
                                     <img
                                         src={item.url}

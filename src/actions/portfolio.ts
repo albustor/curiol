@@ -59,9 +59,17 @@ export async function getHeroImages(): Promise<string[]> {
         const csvText = await response.text();
         const lines = csvText.split(/\r?\n/).filter(line => line.trim() !== "");
 
-        // El CSV tiene una cabecera "URL" en la primera línea.
-        const [_header, ...urls] = lines;
-        return urls.map(u => u.trim()).filter(u => u.startsWith("http"));
+        const [_header, ...rows] = lines;
+
+        return rows.map(row => {
+            // Manejar comas dentro de comillas
+            const matches = row.match(/(".*?"|[^",\s][^",]*|(?<=,)(?=,)|(?<=^)(?=,))/g);
+            if (!matches) return null;
+
+            // La URL suele ser la primera o única columna en esta hoja
+            const url = matches[0].replace(/^"|"$/g, "").trim();
+            return url.startsWith("http") ? url : null;
+        }).filter(u => u !== null) as string[];
     } catch (error) {
         console.error("Hero Images Fetch Error:", error);
         return [];
