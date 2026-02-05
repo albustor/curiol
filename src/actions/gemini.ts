@@ -2,14 +2,19 @@
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// Inicializamos el objeto fuera pero verificamos la llave dentro para mayor robustez en Vercel
+// Inicialización robusta para Vercel
 function getModel() {
     const API_KEY = process.env.GEMINI_API_KEY || "";
     if (!API_KEY) {
         throw new Error("GEMINI_API_KEY_MISSING");
     }
+
+    // Usamos el SDK con la versión estable v1 y el modelo flash-latest
     const genAI = new GoogleGenerativeAI(API_KEY);
-    return genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    return genAI.getGenerativeModel(
+        { model: "gemini-1.5-flash-latest" },
+        { apiVersion: "v1" }
+    );
 }
 
 export async function generateB2BCopy(businessInfo: string) {
@@ -60,8 +65,8 @@ export async function getAiAssistantResponse(message: string, context: any) {
             userMessage = "La IA no está configurada. Falta la GEMINI_API_KEY en Vercel.";
         } else if (error.message?.includes("fetch")) {
             userMessage = "Error de conexión con los servidores de Google.";
-        } else if (error.message?.includes("API key not valid")) {
-            userMessage = "La llave de API configurada no es válida.";
+        } else if (error.message?.includes("not found")) {
+            userMessage = "El modelo de IA solicitado no se encuentra o no es compatible.";
         }
 
         return `${userMessage} (Detalle técnico: ${error.message})`;
