@@ -94,7 +94,7 @@ export default function Home() {
             </div>
 
             <p className="text-white text-sm italic font-light leading-relaxed max-w-2xl mx-auto animate-fade-in delay-500">
-              Emanado del corazón de Guaitil, el curiol es el alma mineral que ha dado color a nuestra historia Chorotega. Hoy, esa esencia trasciende fronteras, transformando la tierra en arte eterno con visión global.
+              Emanado del corazón de Guaitil, el curiol es el alma mineral que ha dado color a nuestra historia Chorotega, es la materia prima (pigmentos) con que pintan las vasijas de barro (herencia de la cultura Chorotega). Hoy, esa esencia trasciende fronteras, transformando la tierra en arte eterno con visión global.
             </p>
           </div>
 
