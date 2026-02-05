@@ -9,10 +9,10 @@ function getModel() {
         throw new Error("GEMINI_API_KEY_MISSING");
     }
 
-    // Usamos el SDK con la versión estable v1 y el modelo flash-latest
+    // Usamos el SDK con la versión estable v1 y el modelo gemini-2.5-flash (Estándar en 2026)
     const genAI = new GoogleGenerativeAI(API_KEY);
     return genAI.getGenerativeModel(
-        { model: "gemini-1.5-flash-latest" },
+        { model: "gemini-2.5-flash" },
         { apiVersion: "v1" }
     );
 }
