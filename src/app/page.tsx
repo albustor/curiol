@@ -52,16 +52,16 @@ export default function Home() {
           <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 lg:px-16 text-center">
             <div className="flex justify-center items-center gap-3 mb-8 animate-fade-in">
               <span className="h-[1px] w-12 bg-curiol-500"></span>
-              <span className="text-curiol-500 text-xs font-bold tracking-[0.4em] uppercase">La Evolución del Legado Visual</span>
+              <span className="text-curiol-500 text-xs font-bold tracking-[0.4em] uppercase">Donde el Legado se encuentra con el Futuro</span>
               <span className="h-[1px] w-12 bg-curiol-500"></span>
             </div>
 
-            <h1 className="text-5xl md:text-8xl lg:text-9xl font-serif text-white mb-8 leading-tight italic">
-              Imágenes que <br /> <span className="text-curiol-gradient">Trascienden el Tiempo.</span>
+            <h1 className="text-6xl md:text-8xl lg:text-9xl font-serif text-white mb-8 leading-tight italic">
+              Memorias que <br /> <span className="text-curiol-gradient">Cobran Vida.</span>
             </h1>
 
-            <p className="text-tech-400 text-lg md:text-xl font-light max-w-3xl mx-auto mb-12 leading-relaxed">
-              Fusionamos la maestría del Fine Art con Realidad Aumentada e Inteligencia Artificial para preservar tu historia familiar y potenciar tu marca en la era digital.
+            <p className="text-tech-400 text-lg md:text-xl font-light max-w-2xl mx-auto mb-12 leading-relaxed">
+              Fotografía Fine Art + Tecnología de Realidad Aumentada e IA. Documentamos tu historia y aceleramos tu presencia digital en Guanacaste.
             </p>
 
             <div className="flex flex-wrap justify-center gap-6">
