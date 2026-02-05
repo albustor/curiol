@@ -129,7 +129,12 @@ export default function Home() {
                 <h3 className="text-3xl font-serif text-white mb-6 italic">Legado e Interacción</h3>
                 <p className="text-tech-400 font-light mb-8 leading-relaxed">Creamos álbumes físicos que cobran vida con Realidad Aumentada. Sesiones Fine Art para familias que desean que sus recuerdos nunca desaparezcan.</p>
                 <div className="space-y-4 mb-8">
-                  {['Aventura Mágica (Fantasía IA para niños y niñas)', 'Esencia Familiar o Individual (Cuadro Vivo Realidad Aumentada)', 'Minisesiones (10 fotos)', 'Membresía Legado Anual'].map(item => (
+                  {[
+                    "Aventura Mágica (Fantasía IA + Photobook + Música)",
+                    "Esencia Familiar (25 Fotos + Cuadro AR + Memoria Viva)",
+                    "Minisesiones (10 Fotos • 1 vez al mes)",
+                    "Membresía Legado Anual (Biógrafo Familiar)"
+                  ].map(item => (
                     <div key={item} className="flex items-center gap-3 text-sm text-tech-300">
                       <Sparkles className="w-3 h-3 text-curiol-500" />
                       {item}

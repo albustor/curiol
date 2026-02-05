@@ -17,9 +17,9 @@ const GIFT_COLORS = [
 ];
 
 const GIFT_PACKAGES = [
-    { id: "mini", name: "Minisesiones", price: 30000, desc: "10 Fotos Digitales" },
-    { id: "aventura", name: "Aventura Mágica", price: 95000, desc: "Fantasía IA + Photobook" },
-    { id: "esencia", name: "Esencia Familiar", price: 110000, desc: "25 Fotos + Cuadro AR" },
+    { id: "mini", name: "Minisesiones", price: 30000, desc: "10 Fotos Digitales (1 vez al mes)" },
+    { id: "aventura", name: "Aventura Mágica", price: 60000, desc: "Fantasía IA + Photobook" },
+    { id: "esencia", name: "Esencia Familiar", price: 80000, desc: "25 Fotos + Cuadro AR" },
     { id: "legado", name: "Membresía Legado", price: 25000, desc: "Membresía (Pago Mensual)" },
 ];
 
