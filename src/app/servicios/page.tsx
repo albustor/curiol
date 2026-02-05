@@ -12,6 +12,7 @@ import Link from "next/link";
 
 const modalities = [
     { id: "legado", title: "Arquitectura de Memorias", icon: Camera, desc: "B2C: Guardianes del legado familiar interactivo con Memoria Viva (Música + Foto) y realidad aumentada." },
+    { id: "mini", title: "Minisesiones", icon: Sparkles, desc: "B2C: Sesiones rápidas de 40 minutos y 10 fotografías digitales. La esencia en un instante (₡30.000)." },
     { id: "aventura", title: "Aventura Mágica", icon: Sparkles, desc: "B2C: Transformamos la imaginación infantil en realidad con edición cinematográfica e IA." },
     { id: "marca", title: "Marca Personal Inteligente", icon: UserCheck, desc: "B2B: Tu imagen es tu herramienta de negocios. Retratos pro + Tarjeta NFC." },
     { id: "pymes", title: "Aceleradora Digital Local", icon: Code, desc: "B2B: Infraestructura digital escalable con integración de bases de datos robustas e IA de vanguardia para automatizar la gestión y análisis de información.", highlight: true },

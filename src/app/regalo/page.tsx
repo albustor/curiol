@@ -16,21 +16,29 @@ const GIFT_COLORS = [
     { name: "Rosa Legado", class: "bg-[#c07759]", border: "border-[#c07759]", text: "text-[#f5e9e3]", glow: "shadow-[#c07759]/20" },
 ];
 
+const GIFT_PACKAGES = [
+    { id: "mini", name: "Minisesiones", price: 30000, desc: "10 Fotos Digitales" },
+    { id: "aventura", name: "Aventura Mágica", price: 95000, desc: "Fantasía IA + Photobook" },
+    { id: "esencia", name: "Esencia Familiar", price: 110000, desc: "25 Fotos + Cuadro AR" },
+    { id: "legado", name: "Membresía Legado", price: 25000, desc: "Membresía (Pago Mensual)" },
+];
+
 export default function GiftCardPage() {
     const [isRevealed, setIsRevealed] = useState(false);
     const [to, setTo] = useState("");
     const [from, setFrom] = useState("");
     const [message, setMessage] = useState("");
     const [selectedColor, setSelectedColor] = useState(GIFT_COLORS[0]);
+    const [selectedPackage, setSelectedPackage] = useState(GIFT_PACKAGES[2]); // Default to Esencia
 
     const steps = [
-        { icon: User, title: "1. Personaliza", desc: "Escribe los nombres, el mensaje y elige el color de tu tarjeta." },
+        { icon: User, title: "1. Personaliza", desc: "Escribe los nombres, mensaje y elige el paquete y color." },
         { icon: Smartphone, title: "2. Paga vía SINPE", desc: "Realiza el pago al 6060-2617 (Alberto Bustos)." },
         { icon: Send, title: "3. Recibe y Envía", desc: "Te enviaremos el link por WhatsApp para que lo compartas." }
     ];
 
     const generateWhatsAppLink = () => {
-        const text = `¡Hola! Me gustaría solicitar la Tarjeta de Regalo Virtual.\n\nDetalles:\nPara: ${to || "N/A"}\nDe: ${from || "N/A"}\nMensaje: ${message || "N/A"}\nColor: ${selectedColor.name}\n\nYa realicé el SINPE por el valor de la sesión.`;
+        const text = `¡Hola! Me gustaría solicitar la Tarjeta de Regalo Virtual.\n\nDetalles:\nPaquete: ${selectedPackage.name} (₡${selectedPackage.price.toLocaleString()})\nPara: ${to || "N/A"}\nDe: ${from || "N/A"}\nMensaje: ${message || "N/A"}\nColor: ${selectedColor.name}\n\nYa realicé el SINPE por el valor de la sesión.`;
         return `https://wa.me/50660602617?text=${encodeURIComponent(text)}`;
     };
 
@@ -123,18 +131,18 @@ export default function GiftCardPage() {
                                                             <p className="text-white text-base font-serif italic leading-tight">{to || "Escribe el nombre..."}</p>
                                                         </div>
                                                         <div>
-                                                            <p className="text-tech-600 text-[8px] uppercase tracking-widest mb-1 font-bold">De:</p>
-                                                            <p className="text-white text-sm font-bold uppercase tracking-wider">{from || "Tu nombre..."}</p>
+                                                            <p className="text-tech-600 text-[8px] uppercase tracking-widest mb-1 font-bold">Obsequio:</p>
+                                                            <p className="text-white text-sm font-bold uppercase tracking-wider">{selectedPackage.name}</p>
                                                         </div>
                                                     </div>
                                                     <div className="space-y-4">
                                                         <div>
                                                             <p className="text-tech-600 text-[8px] uppercase tracking-widest mb-1 font-bold">Valor:</p>
-                                                            <p className={cn("text-xl font-serif italic", selectedColor.text)}>₡110.000</p>
+                                                            <p className={cn("text-xl font-serif italic", selectedColor.text)}>₡{selectedPackage.price.toLocaleString()}</p>
                                                         </div>
                                                         <div>
-                                                            <p className="text-tech-600 text-[8px] uppercase tracking-widest mb-1 font-bold">Vence en:</p>
-                                                            <p className="text-white text-xs font-bold uppercase tracking-wider">6 Meses</p>
+                                                            <p className="text-tech-600 text-[8px] uppercase tracking-widest mb-1 font-bold">De:</p>
+                                                            <p className="text-white text-[10px] font-bold uppercase tracking-wider">{from || "Tu nombre..."}</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -201,6 +209,29 @@ export default function GiftCardPage() {
 
                                 <div className="space-y-4">
                                     <label className="text-tech-500 text-[10px] uppercase font-bold tracking-widest ml-1 flex items-center gap-2">
+                                        <Camera className="w-3 h-3" /> Selección de Experiencia
+                                    </label>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        {GIFT_PACKAGES.map((pkg) => (
+                                            <button
+                                                key={pkg.id}
+                                                onClick={() => setSelectedPackage(pkg)}
+                                                className={cn(
+                                                    "p-4 rounded-xl border transition-all text-left group",
+                                                    selectedPackage.id === pkg.id
+                                                        ? "border-curiol-500 bg-curiol-500/10 shadow-lg"
+                                                        : "border-white/10 bg-tech-950 hover:border-white/20"
+                                                )}
+                                            >
+                                                <p className={cn("text-[10px] uppercase font-bold tracking-widest mb-1 transition-colors", selectedPackage.id === pkg.id ? "text-curiol-500" : "text-tech-600")}>{pkg.name}</p>
+                                                <p className="text-white text-xs font-serif italic">₡{pkg.price.toLocaleString()}</p>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <label className="text-tech-500 text-[10px] uppercase font-bold tracking-widest ml-1 flex items-center gap-2">
                                         <Palette className="w-3 h-3" /> Selector de Estilo
                                     </label>
                                     <div className="flex gap-4">
@@ -223,7 +254,7 @@ export default function GiftCardPage() {
                             <div className="pt-6 border-t border-white/5">
                                 <p className="text-tech-500 text-[10px] uppercase font-bold tracking-[0.2em] mb-4 text-center">Inversión y Pago</p>
                                 <div className="bg-tech-950 p-6 rounded-2xl border border-curiol-500/10 mb-6 text-center">
-                                    <p className="text-curiol-500 text-3xl font-serif italic mb-1">₡110.000</p>
+                                    <p className="text-curiol-500 text-3xl font-serif italic mb-1">₡{selectedPackage.price.toLocaleString()}</p>
                                     <p className="text-tech-600 text-[8px] uppercase font-bold tracking-widest">Pago vía SINPE al 6060-2617</p>
                                 </div>
                                 <a

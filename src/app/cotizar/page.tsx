@@ -18,7 +18,7 @@ const SECTIONS = [
 
 const PACKAGES: Record<string, Array<{ id: string; name: string; price: number; desc: string; isMonthly?: boolean; currency?: string }>> = {
     family: [
-        { id: "mini", name: "Mini Sesión", price: 25000, desc: "40 min, 5 fotos digitales. Ideal para momentos rápidos." },
+        { id: "mini", name: "Minisesiones", price: 30000, desc: "40 min, 10 fotos digitales. Ideal para momentos rápidos." },
         { id: "aventura", name: "Aventura Mágica", price: 95000, desc: "Fantasía IA + Photobook + Memoria Viva (Música Integrada). 1h 30min." },
         { id: "esencia", name: "Esencia Familiar", price: 110000, desc: "25 Fotos + Cuadro Vivo AR + Memoria Viva. 1h 30min." },
         { id: "legado", name: "Membresía Legado Anual", price: 25000, desc: "Tu biógrafo familiar. 3 sesiones/año + Anuario + Memoria Viva Premium. (Precio mensual)", isMonthly: true }
