@@ -2,6 +2,7 @@
 
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
+import { FloatingGiftCard } from "@/components/FloatingGiftCard";
 
 const cormorant = Cormorant_Garamond({
     variable: "--font-cormorant",
@@ -21,6 +22,7 @@ export function RootClientLayout({ children }: { children: React.ReactNode }) {
             className={`${cormorant.variable} ${inter.variable} antialiased selection:bg-curiol-500 selection:text-white`}
         >
             {children}
+            <FloatingGiftCard />
         </body>
     );
 }

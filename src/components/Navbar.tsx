@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { ShieldCheck, Menu, X } from "lucide-react";
+import { ShieldCheck, Menu, X, Gift } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const navLinks = [
     { href: "/", label: "Inicio" },
     { href: "/portafolio", label: "Portafolio" },
     { href: "/servicios", label: "Servicios" },
+    { href: "/regalo", label: "Tarjeta Regalo", mobileOnly: true },
     { href: "/cotizar", label: "Cotizar" },
     { href: "/soluciones-web", label: "Soluciones Web" },
     { href: "/comunidad", label: "Comunidad" },
@@ -50,7 +51,7 @@ export function Navbar() {
 
                 {/* Desktop Menu */}
                 <div className="hidden lg:flex lg:space-x-8 items-center">
-                    {navLinks.map((link) => (
+                    {navLinks.filter(l => !(l as any).mobileOnly).map((link) => (
                         <Link
                             key={link.href}
                             href={link.href}
