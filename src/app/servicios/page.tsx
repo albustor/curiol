@@ -1,5 +1,8 @@
+"use client";
+
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { AiAssistant } from "@/components/AiAssistant";
 import { GlassCard } from "@/components/ui/GlassCard";
 import {
     UserCheck, ShoppingBag, UtensilsCrossed, Home,
@@ -74,6 +77,7 @@ export default function ServiciosPage() {
             </main>
 
             <Footer />
+            <AiAssistant />
         </div>
     );
 }

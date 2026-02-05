@@ -6,15 +6,9 @@ export default function Loading() {
                     CURIOL<span className="text-curiol-500 font-light ml-2">STUDIO</span>
                 </span>
                 <div className="mt-8 w-48 h-[1px] bg-tech-800 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-curiol-500 animate-[loading_1.5s_infinite]" />
+                    <div className="absolute inset-0 bg-curiol-500 animate-loading" />
                 </div>
             </div>
-            <style jsx>{`
-        @keyframes loading {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
-        }
-      `}</style>
         </div>
     );
 }

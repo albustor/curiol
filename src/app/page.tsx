@@ -1,5 +1,8 @@
+"use client";
+
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { AiAssistant } from "@/components/AiAssistant";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { GiftCard } from "@/components/GiftCard";
 import { Camera, Binary, ArrowRight, Sparkles, Code, Users } from "lucide-react";
@@ -136,6 +139,7 @@ export default function Home() {
       </main>
 
       <Footer />
+      <AiAssistant />
     </div>
   );
 }

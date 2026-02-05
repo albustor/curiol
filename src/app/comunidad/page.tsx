@@ -1,5 +1,8 @@
+"use client";
+
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { AiAssistant } from "@/components/AiAssistant";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { BookOpen, Users, Heart, ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -75,6 +78,7 @@ export default function ComunidadPage() {
             </main>
 
             <Footer />
+            <AiAssistant />
         </div>
     );
 }

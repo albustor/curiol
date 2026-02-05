@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { AiAssistant } from "@/components/AiAssistant";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Camera, Code, ArrowRight, CheckCircle2, AlertCircle, ShoppingCart, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -234,6 +235,7 @@ export default function CotizadorPage() {
             </main>
 
             <Footer />
+            <AiAssistant />
         </div>
     );
 }
