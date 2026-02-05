@@ -84,7 +84,7 @@ export default function Home() {
               Fotografía Fine Art + Tecnología de Realidad Aumentada e IA. Documentamos tu historia y aceleramos tu presencia digital en Guanacaste.
             </p>
 
-            <div className="flex flex-wrap justify-center gap-6">
+            <div className="flex flex-wrap justify-center gap-6 mb-12">
               <Link href="/cotizar" className="px-10 py-5 bg-curiol-700 text-white text-xs font-bold uppercase tracking-widest hover:bg-curiol-500 transition-all transform hover:-translate-y-1 shadow-2xl">
                 Personalizar mi Propuesta
               </Link>
@@ -92,6 +92,10 @@ export default function Home() {
                 Explorar Ecosistema
               </Link>
             </div>
+
+            <p className="text-curiol-500/80 text-sm italic font-light leading-relaxed max-w-2xl mx-auto animate-fade-in delay-500">
+              Emanado del corazón de Guaitil de Santa Cruz, Guanacaste, el curiol no es solo un pigmento para dar color a la cerámica; es el alma mineral que ha dado color a nuestra historia Chorotega, transformando la tierra en arte eterno.
+            </p>
           </div>
 
           <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
@@ -106,9 +110,6 @@ export default function Home() {
               <div className="max-w-xl">
                 <h2 className="text-4xl md:text-5xl font-serif text-white mb-6 italic">Arquitectura de <span className="text-curiol-500">Presencia.</span></h2>
                 <p className="text-tech-400 font-light leading-relaxed mb-4">Fusionamos la calidez del legado familiar con la precisión de la infraestructura digital moderna. Dos mundos, un mismo propósito: trascender.</p>
-                <p className="text-curiol-500/80 text-sm italic font-light leading-relaxed border-l border-curiol-500/30 pl-4">
-                  Emanado del corazón de Guaitil, el curiol no es solo pigmento; es el alma mineral que ha dado color a nuestra historia Chorotega, transformando la tierra en arte eterno.
-                </p>
               </div>
               <div className="hidden md:block">
                 <div className="flex items-center gap-4 text-curiol-500 text-[10px] uppercase font-bold tracking-widest">
