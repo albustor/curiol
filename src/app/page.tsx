@@ -10,22 +10,35 @@ import { Camera, Binary, ArrowRight, Sparkles, Code, Users } from "lucide-react"
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
-const BACKGROUND_IMAGES = [
-  "https://images.unsplash.com/photo-1472393365320-dc77242e672c?q=80&w=2070", // Naturaleza / Legado
-  "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=2070", // Familia / Emoción
-  "https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=2070", // Negocios / Estrategia
-  "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=2070"  // Cámara / Fine Art
+import { getHeroImages } from "@/actions/portfolio";
+
+const DEFAULT_BACKGROUNDS = [
+  "https://images.unsplash.com/photo-1472393365320-dc77242e672c?q=80&w=2070",
+  "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=2070",
+  "https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=2070",
+  "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=2070"
 ];
 
 export default function Home() {
   const [currentImage, setCurrentImage] = useState(0);
+  const [heroImages, setHeroImages] = useState<string[]>(DEFAULT_BACKGROUNDS);
+
+  useEffect(() => {
+    async function loadHeroImages() {
+      const images = await getHeroImages();
+      if (images.length > 0) {
+        setHeroImages(images);
+      }
+    }
+    loadHeroImages();
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentImage((prev) => (prev + 1) % BACKGROUND_IMAGES.length);
+      setCurrentImage((prev) => (prev + 1) % heroImages.length);
     }, 10000);
     return () => clearInterval(timer);
-  }, []);
+  }, [heroImages.length]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -42,7 +55,7 @@ export default function Home() {
                 animate={{ opacity: 0.3, scale: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 2, ease: "easeInOut" }}
-                style={{ backgroundImage: `url(${BACKGROUND_IMAGES[currentImage]})` }}
+                style={{ backgroundImage: `url(${heroImages[currentImage]})` }}
                 className="absolute inset-0 bg-cover bg-center mix-blend-luminosity"
               />
             </AnimatePresence>

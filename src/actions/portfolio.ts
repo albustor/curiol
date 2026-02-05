@@ -43,3 +43,27 @@ export async function getPortfolioData(): Promise<PortfolioItem[]> {
         return [];
     }
 }
+
+export async function getHeroImages(): Promise<string[]> {
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR4OuEDRXmfwRB51PGyTyz2D9cxb5IwXnvDrSiHtzh37iGZY1to7EB0O1rPyKcVVcSHqeHFb1I4glNZ/pub?gid=1480486138&output=csv";
+
+    try {
+        const response = await fetch(CSV_URL, {
+            next: { revalidate: 3600 }
+        });
+
+        if (!response.ok) {
+            throw new Error("Error fetching hero images");
+        }
+
+        const csvText = await response.text();
+        const lines = csvText.split(/\r?\n/).filter(line => line.trim() !== "");
+
+        // El CSV tiene una cabecera "URL" en la primera línea.
+        const [_header, ...urls] = lines;
+        return urls.map(u => u.trim()).filter(u => u.startsWith("http"));
+    } catch (error) {
+        console.error("Hero Images Fetch Error:", error);
+        return [];
+    }
+}
