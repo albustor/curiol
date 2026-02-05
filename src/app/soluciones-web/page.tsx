@@ -4,7 +4,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AiAssistant } from "@/components/AiAssistant";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { Target, TrendingUp, Zap, MessageSquare, ArrowRight, Check, Sparkles, Code, Binary } from "lucide-react";
+import { Target, TrendingUp, Zap, MessageSquare, ArrowRight, Check, Sparkles, Code, Binary, UtensilsCrossed, Compass, Landmark } from "lucide-react";
 import Link from "next/link";
 
 export default function SolucionesWebPage() {
@@ -158,6 +158,74 @@ export default function SolucionesWebPage() {
                                 </p>
                             </div>
                         </div>
+                    </div>
+                </section>
+
+                {/* Curiol Lab: Futuro del Comercio Local */}
+                <section className="py-24 max-w-7xl mx-auto px-4 md:px-8 lg:px-16">
+                    <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+                        <div className="max-w-xl">
+                            <div className="flex items-center gap-3 mb-4">
+                                <span className="text-gold-500 font-bold text-[10px] uppercase tracking-[0.3em]">Curiol Lab</span>
+                                <div className="h-[1px] w-8 bg-gold-500/30" />
+                            </div>
+                            <h2 className="text-4xl md:text-5xl font-serif text-white mb-6 italic">Conceptos de <span className="text-gold-500">Próxima Generación.</span></h2>
+                            <p className="text-tech-400 font-light">Explora las posibilidades ilimitadas de lo que podemos construir juntos. No es solo software, es la proyección de tu visión.</p>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {[
+                            {
+                                title: "Gastro-Evolución",
+                                category: "Restauración & Hospitalidad",
+                                desc: "Apps con perfiles de sabor por IA que sugieren platos basados en preferencias biométricas y pedidos sin contacto físico.",
+                                icon: UtensilsCrossed,
+                                accent: "curiol"
+                            },
+                            {
+                                title: "Bio-Logística Inteligente",
+                                category: "Productores & Comercio",
+                                desc: "Dashboards que conectan el inventario físico con sensores en tiempo real, prediciendo demanda y automatizando la cadena de suministro.",
+                                icon: TrendingUp,
+                                accent: "tech"
+                            },
+                            {
+                                title: "Concierge Aumentado",
+                                category: "Turismo Local",
+                                desc: "Guías de realidad aumentada (AR) que conectan al turista con la artesanía de Guaitil, narrando historias mientras compran.",
+                                icon: Compass,
+                                accent: "gold"
+                            },
+                            {
+                                title: "Patrimonio Digital",
+                                category: "Cultura & Museografía",
+                                desc: "Ecosistemas que preservan legados históricos mediante el aprendizaje automático, creando archivos interactivos de acceso global.",
+                                icon: Landmark,
+                                accent: "curiol"
+                            }
+                        ].map((concept, i) => (
+                            <div key={i} className="group relative overflow-hidden rounded-[2.5rem] bg-tech-900/40 border border-white/5 p-12 transition-all hover:bg-tech-900/60">
+                                <div className="absolute top-0 right-0 p-12 text-white/5 group-hover:text-gold-500/10 transition-colors">
+                                    <concept.icon size={120} />
+                                </div>
+                                <div className="relative z-10">
+                                    <span className={cn(
+                                        "text-[10px] font-bold uppercase tracking-widest mb-4 block",
+                                        concept.accent === "gold" ? "text-gold-500" : concept.accent === "curiol" ? "text-curiol-500" : "text-tech-500"
+                                    )}>
+                                        {concept.category}
+                                    </span>
+                                    <h4 className="text-2xl md:text-3xl font-serif text-white italic mb-6 group-hover:text-gold-500 transition-colors">
+                                        {concept.title}
+                                    </h4>
+                                    <p className="text-tech-500 text-sm font-light leading-relaxed max-w-sm mb-8">
+                                        {concept.desc}
+                                    </p>
+                                    <div className="h-1 w-0 group-hover:w-20 bg-gold-500 transition-all duration-500" />
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </section>
 
