@@ -4,9 +4,10 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AiAssistant } from "@/components/AiAssistant";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { PhygitalSimulation } from "@/components/PhygitalSimulation";
 import {
     UserCheck, ShoppingBag, UtensilsCrossed, Home,
-    Briefcase, Camera, Smartphone, Binary, ArrowRight, Sparkles, Code
+    Briefcase, Camera, Smartphone, Binary, ArrowRight, Sparkles, Code, MessageCircle
 } from "lucide-react";
 import Link from "next/link";
 
@@ -21,6 +22,21 @@ const modalities = [
     { id: "eventos", title: "Cobertura de Legado", icon: Briefcase, desc: "Documentación artística de hitos corporativos y vitales con enfoque en trascendencia." }
 ];
 
+
+const generateServicesSummary = () => {
+    const summary = `*Curiol Studio 2026 - Portafolio de Experiencias*\n\n` +
+        `*B2C: Legado Familiar*\n` +
+        `• *Minisesiones*: ₡30,000 (10 fotos, 1 vez al mes)\n` +
+        `• *Aventura Mágica*: ₡60,000 (Fantasía IA + Photobook + Música)\n` +
+        `• *Esencia Familiar*: ₡80,000 (25 Fotos + Cuadro AR + Memoria Viva)\n` +
+        `• *Membresía Legado*: ₡25,000/mes (Biógrafo familiar anual)\n\n` +
+        `*B2B: Estrategia Digital*\n` +
+        `• *Marca Personal*: ₡65,000 (NFC + Branding)\n` +
+        `• *Web Landing*: ₡85,000 (Presencia Express)\n` +
+        `• *Web Pro*: ₡145,000 (Plataforma Completa)\n\n` +
+        `_Tecnología NFC y AR integrada en cada experiencia phygital._`;
+    return `https://wa.me/50660602617?text=${encodeURIComponent(summary)}`;
+};
 
 export default function ServiciosPage() {
     return (
@@ -55,6 +71,28 @@ export default function ServiciosPage() {
                             </GlassCard>
                         ))}
                     </div>
+                </section>
+
+                {/* Phygital Simulation */}
+                <PhygitalSimulation />
+
+                {/* WhatsApp Share Section */}
+                <section className="max-w-4xl mx-auto px-4 md:px-8 lg:px-16 mb-40">
+                    <GlassCard className="p-12 text-center border-curiol-500/20">
+                        <MessageCircle className="w-10 h-10 text-green-500 mx-auto mb-6" />
+                        <h2 className="text-3xl font-serif text-white italic mb-4">Comparte nuestra propuesta.</h2>
+                        <p className="text-tech-400 font-light mb-10 max-w-lg mx-auto leading-relaxed">
+                            ¿Deseas compartir nuestro catálogo de servicios y productos con alguien más? Genera un resumen listo para enviar por WhatsApp.
+                        </p>
+                        <a
+                            href={generateServicesSummary()}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-4 px-10 py-5 bg-green-600/10 border border-green-500/30 text-green-500 text-[10px] font-bold uppercase tracking-widest hover:bg-green-600 hover:text-white transition-all rounded-full group"
+                        >
+                            Enviar Propuesta por WhatsApp <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </a>
+                    </GlassCard>
                 </section>
 
                 {/* CTA Hero */}

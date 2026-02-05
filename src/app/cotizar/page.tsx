@@ -105,17 +105,17 @@ export default function CotizadorPage() {
                             <motion.div
                                 key="step1"
                                 initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
-                                className="grid grid-cols-1 md:grid-cols-3 gap-6"
+                                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
                             >
                                 {PACKAGES[category].map((pkg) => (
                                     <GlassCard
                                         key={pkg.id}
-                                        className={cn("cursor-pointer border-2 h-full flex flex-col justify-between", selectedPackage?.id === pkg.id ? "border-curiol-500" : "border-transparent")}
+                                        className={cn("cursor-pointer border-2 h-full flex flex-col justify-between transition-all hover:border-curiol-500/50", selectedPackage?.id === pkg.id ? "border-curiol-500 scale-[1.02] shadow-2xl shadow-curiol-500/10" : "border-transparent")}
                                         onClick={() => { setSelectedPackage(pkg); handleNext(); }}
                                     >
                                         <div>
                                             <h4 className="text-xl font-serif text-white mb-4 italic">{pkg.name}</h4>
-                                            <p className="text-tech-400 text-xs font-light mb-6">{pkg.desc}</p>
+                                            <p className="text-tech-400 text-xs font-light mb-6 leading-relaxed">{pkg.desc}</p>
                                         </div>
                                         <div className="pt-6 border-t border-tech-800">
                                             <span className="text-curiol-500 font-bold">
@@ -270,7 +270,9 @@ export default function CotizadorPage() {
                                     </div>
 
                                     <div className="pt-6 border-t border-tech-800 flex justify-between items-end mb-10">
-                                        <span className="text-tech-500 uppercase tracking-widest text-[10px] font-bold">Total Estimado</span>
+                                        <span className="text-tech-500 uppercase tracking-widest text-[10px] font-bold">
+                                            Total {selectedPackage?.isMonthly ? "Mensual" : "Estimado"}
+                                        </span>
                                         <span className="text-4xl font-serif text-white italic">₡{total.toLocaleString()}</span>
                                     </div>
 
