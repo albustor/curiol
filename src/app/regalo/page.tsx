@@ -1,312 +1,556 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { Gift, Sparkles, Camera, Calendar, Check, Send, Palette, User, MessageCircle, Smartphone } from "lucide-react";
-import { useState } from "react";
+import {
+    Gift, Sparkles, Camera, Send, Palette, User,
+    MessageCircle, Smartphone, Music, Lock, Check,
+    ChevronRight, Volume2, VolumeX, Eye, Copy, RefreshCw
+} from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
-const GIFT_COLORS = [
-    { name: "Terracota", class: "bg-curiol-700", border: "border-curiol-500", text: "text-curiol-500", glow: "shadow-curiol-500/20" },
-    { name: "Ocre Oro", class: "bg-gold-500", border: "border-gold-500", text: "text-gold-500", glow: "shadow-gold-500/20" },
-    { name: "Pizarra Tech", class: "bg-tech-800", border: "border-tech-500", text: "text-tech-500", glow: "shadow-tech-500/20" },
-    { name: "Gris Profundo", class: "bg-tech-950", border: "border-white/20", text: "text-white", glow: "shadow-white/10" },
-    { name: "Rosa Legado", class: "bg-[#c07759]", border: "border-[#c07759]", text: "text-[#f5e9e3]", glow: "shadow-[#c07759]/20" },
+const MI_WHATSAPP = "50660602617";
+
+const THEMES = [
+    { id: "theme-red", name: "Rojo Clásico", color: "#a4161a" },
+    { id: "theme-green", name: "Verde Bosque", color: "#2d6a4f" },
+    { id: "theme-blue", name: "Azul Real", color: "#1b263b" },
+    { id: "theme-gold", name: "Oro Tierra", color: "#b08968" },
+    { id: "theme-purple", name: "Púrpura", color: "#7b1fa2" },
+    { id: "theme-black", name: "Negro", color: "#111111" },
+    { id: "theme-pink", name: "Rosa Romántico", color: "#d81b60" },
+    { id: "theme-teal", name: "Turquesa", color: "#00897b" },
 ];
 
-const GIFT_PACKAGES = [
-    { id: "mini", name: "Minisesiones", price: 30000, desc: "10 Fotos Digitales (1 vez al mes)" },
+const PACKAGES = [
+    { id: "mini", name: "Minisesiones", price: 30000, desc: "10 Fotos (1 vez al mes)" },
     { id: "aventura", name: "Aventura Mágica", price: 60000, desc: "Fantasía IA + Photobook" },
     { id: "esencia", name: "Esencia Familiar", price: 80000, desc: "25 Fotos + Cuadro AR" },
-    { id: "legado", name: "Membresía Legado", price: 25000, desc: "Membresía (Pago Mensual)" },
+    { id: "legado", name: "Membresía Legado", price: 25000, desc: "Membresía (Mensual)" },
 ];
 
 export default function GiftCardPage() {
-    const [isRevealed, setIsRevealed] = useState(false);
+    // Mode Logic
+    const [viewMode, setViewMode] = useState(false);
+
+    // UI State
+    const [isOpen, setIsOpen] = useState(false);
+    const [isMuted, setIsMuted] = useState(false);
+
+    // Form State
     const [to, setTo] = useState("");
     const [from, setFrom] = useState("");
     const [message, setMessage] = useState("");
-    const [selectedColor, setSelectedColor] = useState(GIFT_COLORS[0]);
-    const [selectedPackage, setSelectedPackage] = useState(GIFT_PACKAGES[2]); // Default to Esencia
+    const [selectedTheme, setSelectedTheme] = useState(THEMES[0]);
+    const [selectedPackage, setSelectedPackage] = useState(PACKAGES[2]);
+    const [includeSong, setIncludeSong] = useState(true);
+    const [songIdeas, setSongIdeas] = useState("");
+    const [aiSong, setAiSong] = useState(false);
+    const [senderPhone, setSenderPhone] = useState("");
 
-    const steps = [
-        { icon: User, title: "1. Personaliza", desc: "Escribe los nombres, mensaje y elige el paquete y color." },
-        { icon: Smartphone, title: "2. Paga vía SINPE", desc: "Realiza el pago al 6060-2617 (Alberto Bustos)." },
-        { icon: Send, title: "3. Recibe y Envía", desc: "Te enviaremos el link por WhatsApp para que lo compartas." }
-    ];
+    // Admin State
+    const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
+    const [adminPin, setAdminPin] = useState("");
+    const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
+    const [finalAudioUrl, setFinalAudioUrl] = useState("");
+    const [adminCode, setAdminCode] = useState("");
 
-    const generateWhatsAppLink = () => {
-        const text = `¡Hola! Me gustaría solicitar la Tarjeta de Regalo Virtual.\n\nDetalles:\nPaquete: ${selectedPackage.name} (₡${selectedPackage.price.toLocaleString()})\nPara: ${to || "N/A"}\nDe: ${from || "N/A"}\nMensaje: ${message || "N/A"}\nColor: ${selectedColor.name}\n\nYa realicé el SINPE por el valor de la sesión.`;
-        return `https://wa.me/50660602617?text=${encodeURIComponent(text)}`;
+    const audioRef = useRef<HTMLAudioElement>(null);
+
+    // Initialization & Hash Parsing
+    useEffect(() => {
+        const hash = window.location.hash.substring(1);
+        if (hash) {
+            const params = new URLSearchParams(hash);
+            if (params.has('t')) setTo(params.get('t') || "");
+            if (params.has('f')) setFrom(params.get('f') || "");
+            if (params.has('m')) setMessage(params.get('m') || "");
+            if (params.has('c')) {
+                const foundTheme = THEMES.find(t => t.id === params.get('c'));
+                if (foundTheme) setSelectedTheme(foundTheme);
+            }
+            if (params.has('p')) {
+                const foundPkg = PACKAGES.find(p => p.id === params.get('p'));
+                if (foundPkg) setSelectedPackage(foundPkg);
+            }
+            if (params.has('s')) {
+                setAdminCode(params.get('s') || "");
+                setViewMode(true);
+            }
+            if (params.has('a')) setFinalAudioUrl(params.get('a') || "");
+            if (params.has('song')) setIncludeSong(params.get('song') === '1');
+            if (params.has('ai')) setAiSong(params.get('ai') === '1');
+            if (params.has('ph')) setSenderPhone(params.get('ph') || "");
+        }
+    }, []);
+
+    // Helper functions
+    const generateCode = () => {
+        const code = `NAV-2026-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+        setAdminCode(code);
+    };
+
+    const getLink = () => {
+        const params = new URLSearchParams();
+        params.set('t', to);
+        params.set('f', from);
+        params.set('m', message);
+        params.set('c', selectedTheme.id);
+        params.set('p', selectedPackage.id);
+        if (adminCode) params.set('s', adminCode);
+        if (finalAudioUrl) params.set('a', finalAudioUrl);
+        params.set('song', includeSong ? '1' : '0');
+        if (aiSong) params.set('ai', '1');
+        if (senderPhone) params.set('ph', senderPhone);
+
+        const baseUrl = window.location.origin + window.location.pathname;
+        return `${baseUrl}#${params.toString()}`;
+    };
+
+    const handleSendToAlberto = () => {
+        if (!senderPhone) return alert("Por favor ingresa tu WhatsApp.");
+
+        let songText = includeSong
+            ? `🎵 *IDEAS CANCIÓN:*%0A${songIdeas}${aiSong ? "%0A⚠️ CON IA (+₡5.000)" : ""}%0A%0A`
+            : `🚫 *SIN CANCIÓN*%0A%0A`;
+
+        const text = `Hola Alberto! Quiero regalar una tarjeta:%0A%0A` +
+            `De: ${from}%0A` +
+            `Para: ${to}%0A` +
+            `Mi Teléfono: ${senderPhone}%0A` +
+            `Paquete: ${selectedPackage.name}%0A` +
+            songText +
+            `🔗 *ENLACE BORRADOR:*%0A${getLink()}%0A%0A` +
+            `Adjunto comprobante SINPE por ₡${(selectedPackage.price + (aiSong ? 5000 : 0)).toLocaleString()}.`;
+
+        window.open(`https://wa.me/${MI_WHATSAPP}?text=${text}`, '_blank');
+    };
+
+    const handleShareWithClient = (type: 'whatsapp' | 'copy') => {
+        if (includeSong && !finalAudioUrl) {
+            return alert("⚠️ Falta el link de la canción (MP3).");
+        }
+        if (!adminCode) return alert("⚠️ Genera un código de seguridad primero.");
+
+        const url = getLink();
+        const waText = `¡Hola ${to}! 👋\n\n` +
+            `¡Tienes un Regalo de parte de ${from}! 🎁✨\n\n` +
+            `${from} ha pensado en ti para capturar un momento inolvidable${includeSong ? " y te envía esta tarjeta con una canción especial" : ""}.\n` +
+            `Te esperamos en nuestra sesión. 📸\n\n` +
+            `👉 *ABRIR TU TARJETA:* ${url}\n\n` +
+            `⚠️ *Nota:* Revisa los pasos previos aquí: https://alberto-bustos.com/landingpage/`;
+
+        if (type === 'copy') {
+            navigator.clipboard.writeText(waText);
+            alert("Enlace copiado al portapapeles");
+        } else {
+            if (!senderPhone) return alert("Ingresa el teléfono del Comprador.");
+            window.open(`https://wa.me/${senderPhone}?text=${encodeURIComponent(waText)}`, '_blank');
+        }
+    };
+
+    const checkAdmin = () => {
+        if (btoa(adminPin) === "MjYxNzI5MTg=") {
+            setIsAdminAuthenticated(true);
+            if (!adminCode) generateCode();
+        } else {
+            alert("PIN Incorrecto");
+        }
+    };
+
+    const toggleMusic = () => {
+        if (!audioRef.current) return;
+        if (isMuted) {
+            audioRef.current.play();
+            setIsMuted(false);
+        } else {
+            audioRef.current.pause();
+            setIsMuted(true);
+        }
     };
 
     return (
-        <div className="min-h-screen flex flex-col pt-32 pb-24 bg-tech-950 bg-grain">
+        <div className={cn("min-h-screen flex flex-col pt-32 pb-24 transition-colors duration-700", viewMode ? "bg-black" : "bg-tech-950")}>
             <Navbar />
 
-            <main className="flex-grow max-w-6xl mx-auto px-4 w-full">
-                <header className="mb-16 text-center animate-fade-in text-balance">
-                    <div className="flex justify-center items-center gap-3 mb-6">
-                        <span className="h-[1px] w-12 bg-curiol-500"></span>
-                        <span className="text-curiol-500 text-xs font-bold tracking-[0.4em] uppercase">Experiencia Phygital</span>
-                        <span className="h-[1px] w-12 bg-curiol-500"></span>
-                    </div>
-                    <h1 className="text-5xl md:text-7xl font-serif text-white italic mb-6">Personaliza tu <span className="text-curiol-gradient">Legado.</span></h1>
-                    <p className="text-tech-400 text-lg font-light max-w-2xl mx-auto">
-                        Crea una sorpresa inolvidable. Elige los detalles y nosotros nos encargamos de que la entrega sea mágica.
-                    </p>
-                </header>
+            <main className="flex-grow max-w-7xl mx-auto px-4 w-full h-full flex flex-col lg:flex-row gap-12 items-center lg:items-start">
 
-                {/* Steps Section */}
-                <section className="mb-24 grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {steps.map((step, i) => (
-                        <div key={i} className="flex flex-col items-center text-center p-8 rounded-3xl bg-tech-900/20 border border-white/5">
-                            <div className="w-12 h-12 rounded-full bg-tech-800 flex items-center justify-center mb-6 text-curiol-500 ring-1 ring-curiol-500/30">
-                                <step.icon className="w-6 h-6" />
-                            </div>
-                            <h4 className="text-white font-serif text-xl mb-3 italic">{step.title}</h4>
-                            <p className="text-tech-500 text-sm font-light leading-relaxed">{step.desc}</p>
+                {/* 1. EDITOR PANEL */}
+                {!viewMode && (
+                    <div className="w-full lg:w-[450px] shrink-0 space-y-8 animate-fade-in">
+                        <div>
+                            <h2 className="text-3xl font-cinzel text-white leading-tight">Diseñador de <span className="text-curiol-gradient">Regalos.</span></h2>
+                            <p className="text-tech-500 text-xs font-lato mt-2">Personaliza una experiencia de legado única.</p>
                         </div>
-                    ))}
-                </section>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-                    {/* Preview Section */}
-                    <div className="lg:sticky lg:top-40 flex flex-col items-center">
-                        <p className="text-tech-500 text-[10px] uppercase font-bold tracking-[0.3em] mb-8">Vista Previa en Tiempo Real</p>
-                        <div className="relative perspective-1000 w-full max-w-2xl aspect-[1.58/1]">
-                            <motion.div
-                                animate={{ rotateY: isRevealed ? 180 : 0 }}
-                                transition={{ duration: 0.8 }}
-                                className="relative w-full h-full preserve-3d cursor-pointer shadow-3xl"
-                                onClick={() => setIsRevealed(!isRevealed)}
+                        {/* Theme Selector */}
+                        <div className="space-y-4">
+                            <label className="text-tech-500 text-[10px] uppercase font-bold tracking-widest flex items-center gap-2">
+                                <Palette className="w-3 h-3" /> Estilo & Color
+                            </label>
+                            <div className="flex flex-wrap gap-3">
+                                {THEMES.map((theme) => (
+                                    <button
+                                        key={theme.id}
+                                        onClick={() => setSelectedTheme(theme)}
+                                        className={cn(
+                                            "w-10 h-10 rounded-full border-2 transition-all transform hover:scale-110 shadow-lg",
+                                            selectedTheme.id === theme.id ? "border-white scale-110" : "border-transparent opacity-60"
+                                        )}
+                                        style={{ backgroundColor: theme.color }}
+                                        title={theme.name}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Fields */}
+                        <div className="space-y-4">
+                            <label className="text-tech-500 text-[10px] uppercase font-bold tracking-widest flex items-center gap-2">
+                                <User className="w-3 h-3" /> Mensaje
+                            </label>
+                            <input
+                                value={to} onChange={(e) => setTo(e.target.value)}
+                                placeholder="Para (Ej: Mi Esposa...)"
+                                className="w-full bg-tech-900/50 border border-white/5 rounded-xl px-5 py-4 text-white text-sm focus:border-curiol-500 transition-all outline-none"
+                            />
+                            <input
+                                value={from} onChange={(e) => setFrom(e.target.value)}
+                                placeholder="De (Ej: Alberto...)"
+                                className="w-full bg-tech-900/50 border border-white/5 rounded-xl px-5 py-4 text-white text-sm focus:border-curiol-500 transition-all outline-none"
+                            />
+                            <textarea
+                                value={message} onChange={(e) => setMessage(e.target.value)}
+                                placeholder="Un mensaje especial..."
+                                rows={3}
+                                className="w-full bg-tech-900/50 border border-white/5 rounded-xl px-5 py-4 text-white text-sm focus:border-curiol-500 transition-all outline-none resize-none"
+                            />
+                        </div>
+
+                        {/* Packages */}
+                        <div className="space-y-4">
+                            <label className="text-tech-500 text-[10px] uppercase font-bold tracking-widest flex items-center gap-2">
+                                <Gift className="w-3 h-3" /> Experiencia
+                            </label>
+                            <div className="space-y-3">
+                                {PACKAGES.map((pkg) => (
+                                    <button
+                                        key={pkg.id}
+                                        onClick={() => setSelectedPackage(pkg)}
+                                        className={cn(
+                                            "w-full flex justify-between items-center p-4 rounded-xl border transition-all",
+                                            selectedPackage.id === pkg.id
+                                                ? "border-curiol-500 bg-curiol-500/5"
+                                                : "border-white/5 bg-tech-900/20 hover:border-white/20"
+                                        )}
+                                    >
+                                        <div className="text-left">
+                                            <p className="text-white text-sm font-cinzel">{pkg.name}</p>
+                                            <p className="text-tech-600 text-[10px]">{pkg.desc}</p>
+                                        </div>
+                                        <div className="bg-tech-950 px-3 py-1 rounded-md text-curiol-500 text-xs font-bold">
+                                            ₡{pkg.price.toLocaleString()}
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Song Section */}
+                        <div className="space-y-4">
+                            <label className="flex items-center gap-3 p-4 bg-tech-900/20 border border-white/5 rounded-xl cursor-pointer">
+                                <input
+                                    type="checkbox" checked={includeSong}
+                                    onChange={(e) => setIncludeSong(e.target.checked)}
+                                    className="w-5 h-5 accent-curiol-500"
+                                />
+                                <span className="text-white text-sm font-bold flex items-center gap-2"><Music className="w-4 h-4" /> Incluir Canción</span>
+                            </label>
+
+                            <AnimatePresence>
+                                {includeSong && (
+                                    <motion.div
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: "auto" }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                        className="space-y-4 overflow-hidden"
+                                    >
+                                        <div className="p-4 bg-curiol-900/20 border border-curiol-500/20 rounded-xl space-y-3">
+                                            <label className="flex items-start gap-3 cursor-pointer">
+                                                <input
+                                                    type="checkbox" checked={aiSong}
+                                                    onChange={(e) => setAiSong(e.target.checked)}
+                                                    className="mt-1 w-4 h-4 accent-curiol-500"
+                                                />
+                                                <div className="flex-grow">
+                                                    <p className="text-white text-xs font-bold">Personalización con IA (+₡5,000)</p>
+                                                    <p className="text-tech-600 text-[10px]">Cuéntanos ideas o sentimientos para la letra.</p>
+                                                </div>
+                                            </label>
+                                            <textarea
+                                                value={songIdeas} onChange={(e) => setSongIdeas(e.target.value)}
+                                                placeholder="Ej: Nuestra amistad empezó en el colegio..."
+                                                className="w-full bg-tech-950 border border-white/5 rounded-lg p-3 text-white text-xs focus:border-curiol-500 outline-none"
+                                            />
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+
+                        {/* Delivery */}
+                        <div className="space-y-4">
+                            <label className="text-tech-500 text-[10px] uppercase font-bold tracking-widest">Tu contacto</label>
+                            <input
+                                value={senderPhone} onChange={(e) => setSenderPhone(e.target.value)}
+                                placeholder="Tu WhatsApp (Ej: 60602617)"
+                                className="w-full bg-tech-900/50 border border-white/5 rounded-xl px-5 py-4 text-white text-sm focus:border-curiol-500 outline-none"
+                            />
+                        </div>
+
+                        {/* CTA */}
+                        <div className="pt-6 border-t border-white/5 space-y-4 text-center">
+                            <p className="text-[10px] text-tech-500 uppercase tracking-widest">Total: ₡{(selectedPackage.price + (aiSong ? 5000 : 0)).toLocaleString()}</p>
+                            <button
+                                onClick={handleSendToAlberto}
+                                className="w-full bg-curiol-gradient py-5 rounded-2xl text-white font-bold uppercase tracking-[0.2em] text-[11px] shadow-2xl hover:scale-[1.02] transition-all flex items-center justify-center gap-3"
                             >
-                                {/* Front */}
-                                <div className="absolute inset-0 backface-hidden">
-                                    <GlassCard className={cn("w-full h-full border-2 p-1 overflow-hidden relative", selectedColor.border, selectedColor.glow)}>
-                                        <div className="absolute inset-0 bg-gradient-to-br from-tech-950/90 to-tech-900/90" />
-                                        <div className="relative h-full flex flex-col justify-between p-10 border border-white/5 rounded-[inherit]">
-                                            <div className="flex justify-between items-start">
-                                                <div className="flex flex-col">
-                                                    <span className={cn("font-serif italic text-3xl mb-1", selectedColor.text)}>Curiol Studio</span>
-                                                    <span className="text-[7px] text-tech-500 uppercase tracking-[0.3em] font-bold">Arquitectura de Memorias</span>
-                                                </div>
-                                                <Gift className={cn("w-8 h-8", selectedColor.text)} />
-                                            </div>
-                                            <div>
-                                                <p className="text-white text-2xl font-serif italic mb-6">
-                                                    {message || "Capturando lo que el tiempo no puede borrar."}
-                                                </p>
-                                                <div className="flex justify-between items-end border-t border-white/5 pt-6">
-                                                    <div>
-                                                        <p className="text-tech-600 text-[8px] uppercase tracking-widest mb-1 font-bold">Identidad Visual por</p>
-                                                        <p className="text-white/60 font-bold tracking-[0.2em] text-[10px] uppercase">Curiol Studio 2026</p>
-                                                    </div>
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="text-tech-600 text-[8px] uppercase font-bold">Abrir</span>
-                                                        <div className={cn("w-8 h-[1px]", selectedColor.class)} />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </GlassCard>
-                                </div>
+                                <MessageCircle className="w-4 h-4" /> Solicitar Tarjeta
+                            </button>
 
-                                {/* Back */}
-                                <div className="absolute inset-0 backface-hidden [transform:rotateY(180deg)]">
-                                    <GlassCard className={cn("w-full h-full bg-tech-950 border-2 overflow-hidden relative", selectedColor.border, selectedColor.glow)}>
-                                        <div className="absolute inset-0 bg-grain opacity-20" />
-                                        <div className="relative h-full flex flex-col p-10 justify-between">
-                                            <div className="space-y-6">
-                                                <div className="flex justify-between items-center pb-4 border-b border-white/5">
-                                                    <h3 className={cn("text-xl font-serif italic", selectedColor.text)}>Detalles del Obsequio</h3>
-                                                    <Sparkles className="text-gold-500 w-5 h-5" />
+                            <div className="flex justify-center pt-4">
+                                <button
+                                    onClick={() => setIsAdminPanelOpen(!isAdminPanelOpen)}
+                                    className="text-[9px] text-tech-700 uppercase tracking-widest hover:text-curiol-500 transition-colors flex items-center gap-1"
+                                >
+                                    <Lock className="w-2.5 h-2.5" /> Soy Alberto Bustos
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Admin Tools */}
+                        <AnimatePresence>
+                            {isAdminPanelOpen && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
+                                    className="p-8 bg-white rounded-3xl space-y-6 shadow-2xl"
+                                >
+                                    {!isAdminAuthenticated ? (
+                                        <div className="space-y-4">
+                                            <h4 className="text-tech-900 font-cinzel font-bold">Acceso de Seguridad</h4>
+                                            <input
+                                                type="password" value={adminPin} onChange={(e) => setAdminPin(e.target.value)}
+                                                placeholder="PIN"
+                                                className="w-full bg-tech-50 border border-tech-100 px-4 py-3 rounded-xl text-tech-900 outline-none"
+                                            />
+                                            <button
+                                                onClick={checkAdmin}
+                                                className="w-full bg-tech-900 text-white py-3 rounded-xl font-bold text-xs uppercase"
+                                            >
+                                                Ingresar
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-6">
+                                            <div className="flex justify-between items-center pb-2 border-b border-tech-100">
+                                                <h4 className="text-tech-900 font-cinzel font-bold text-sm">Área del Fotógrafo</h4>
+                                                <Check className="w-4 h-4 text-green-600" />
+                                            </div>
+
+                                            {includeSong && (
+                                                <div className="space-y-2">
+                                                    <label className="text-[9px] text-tech-500 font-bold uppercase tracking-widest">1. Link Canción Final (MP3)</label>
+                                                    <input
+                                                        value={finalAudioUrl} onChange={(e) => setFinalAudioUrl(e.target.value)}
+                                                        placeholder="https://.../audio.mp3"
+                                                        className="w-full bg-tech-50 border border-tech-100 px-4 py-3 rounded-xl text-tech-900 text-xs outline-none"
+                                                    />
                                                 </div>
-                                                <div className="grid grid-cols-2 gap-8 text-left">
-                                                    <div className="space-y-4">
-                                                        <div>
-                                                            <p className="text-tech-600 text-[8px] uppercase tracking-widest mb-1 font-bold">Para:</p>
-                                                            <p className="text-white text-base font-serif italic leading-tight">{to || "Escribe el nombre..."}</p>
-                                                        </div>
-                                                        <div>
-                                                            <p className="text-tech-600 text-[8px] uppercase tracking-widest mb-1 font-bold">Obsequio:</p>
-                                                            <p className="text-white text-sm font-bold uppercase tracking-wider">{selectedPackage.name}</p>
-                                                        </div>
-                                                    </div>
-                                                    <div className="space-y-4">
-                                                        <div>
-                                                            <p className="text-tech-600 text-[8px] uppercase tracking-widest mb-1 font-bold">Valor:</p>
-                                                            <p className={cn("text-xl font-serif italic", selectedColor.text)}>₡{selectedPackage.price.toLocaleString()}</p>
-                                                        </div>
-                                                        <div>
-                                                            <p className="text-tech-600 text-[8px] uppercase tracking-widest mb-1 font-bold">De:</p>
-                                                            <p className="text-white text-[10px] font-bold uppercase tracking-wider">{from || "Tu nombre..."}</p>
-                                                        </div>
-                                                    </div>
+                                            )}
+
+                                            <div className="space-y-2">
+                                                <label className="text-[9px] text-tech-500 font-bold uppercase tracking-widest">2. Código de Seguridad</label>
+                                                <div className="flex gap-2">
+                                                    <input
+                                                        value={adminCode} readOnly
+                                                        className="flex-grow bg-tech-50 border border-tech-100 px-4 py-3 rounded-xl text-tech-900 text-xs font-mono"
+                                                    />
+                                                    <button onClick={generateCode} className="p-3 bg-tech-100 rounded-xl hover:bg-tech-200 transition-colors">
+                                                        <RefreshCw className="w-4 h-4 text-tech-600" />
+                                                    </button>
                                                 </div>
                                             </div>
-                                            <div className="flex justify-between items-center text-[7px] uppercase tracking-[0.2em] font-bold text-tech-700">
-                                                <span>Legado Digital Garantizado</span>
-                                                <span>Guanacaste, CR</span>
+
+                                            <div className="space-y-3 pt-2">
+                                                <button
+                                                    onClick={() => handleShareWithClient('whatsapp')}
+                                                    className="w-full bg-[#25D366] text-white py-4 rounded-2xl font-bold text-[10px] uppercase tracking-widest shadow-lg flex items-center justify-center gap-2"
+                                                >
+                                                    <MessageCircle className="w-4 h-4" /> Enviar al Comprador
+                                                </button>
+                                                <button
+                                                    onClick={() => handleShareWithClient('copy')}
+                                                    className="w-full bg-tech-900 text-white py-4 rounded-2xl font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2"
+                                                >
+                                                    <Copy className="w-4 h-4" /> Copiar Enlace Final
+                                                </button>
                                             </div>
                                         </div>
-                                    </GlassCard>
-                                </div>
+                                    )}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+                )}
+
+                {/* 2. PREVIEW SECTION */}
+                <div className={cn("flex-grow flex flex-col items-center justify-center relative", viewMode ? "w-full" : "")}>
+                    {viewMode && (
+                        <div className="absolute top-10 left-1/2 -translate-x-1/2 text-center pointer-events-none">
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>
+                                <span className="text-tech-500 text-[10px] font-bold uppercase tracking-[0.5em] block mb-2">Regalo Verificado</span>
+                                <h1 className="text-white font-cinzel text-xl tracking-[0.2em]">{adminCode}</h1>
                             </motion.div>
                         </div>
-                        <p className="mt-8 text-tech-600 text-xs font-light italic">Haz click en la tarjeta para ver el reverso.</p>
-                    </div>
+                    )}
 
-                    {/* Customization Form */}
-                    <div className="space-y-10 order-first lg:order-last">
-                        <GlassCard className="p-10 border-white/5 space-y-8">
-                            <h3 className="text-2xl font-serif text-white italic mb-2">Formulario de <span className="text-curiol-gradient">Diseño.</span></h3>
+                    <div className="perspective-1200 w-full max-w-[380px] h-[600px] relative group select-none">
+                        <motion.div
+                            animate={{ rotateY: isOpen ? 180 : 0 }}
+                            transition={{ type: "spring", stiffness: 60, damping: 20 }}
+                            className="preserve-3d w-full h-full relative cursor-pointer"
+                            onClick={() => setIsOpen(!isOpen)}
+                        >
+                            {/* FRONT SIDE (Tapa) */}
+                            <div className={cn(
+                                "absolute inset-0 backface-hidden rounded-3xl p-8 flex flex-col items-center justify-center text-center shadow-3xl overflow-hidden border-t border-white/20 transition-all duration-700",
+                                selectedTheme.id
+                            )} style={{ background: `var(--card-gradient, ${selectedTheme.color})` }}>
+                                {/* Border deco */}
+                                <div className="absolute inset-4 border border-white/20 rounded-2xl pointer-events-none" />
 
-                            <div className="space-y-6">
-                                <div className="space-y-2">
-                                    <label className="text-tech-500 text-[10px] uppercase font-bold tracking-widest ml-1">¿Para quién es el regalo?</label>
-                                    <div className="relative group">
-                                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-tech-700 group-focus-within:text-curiol-500 transition-colors" />
-                                        <input
-                                            type="text"
-                                            value={to}
-                                            onChange={(e) => setTo(e.target.value)}
-                                            placeholder="Nombre completo"
-                                            className="w-full bg-tech-900/50 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-white font-light focus:outline-none focus:border-curiol-500/50 transition-all"
-                                        />
-                                    </div>
+                                <div className="space-y-8 relative z-10 scale-90 md:scale-100">
+                                    <span className="text-[10px] text-white/40 tracking-[0.4em] font-bold uppercase block">Curiol Studio</span>
+                                    <h3 className="text-white font-cursive text-6xl leading-none drop-shadow-2xl">¡Tienes un<br />Regalo!</h3>
+                                    <p className="text-white/80 text-sm font-lato leading-relaxed max-w-[240px] mx-auto">Alguien especial ha pensado en ti para capturar un momento inolvidable.</p>
+
+                                    <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        className="mt-8 bg-white text-black px-8 py-4 rounded-full font-cinzel text-xs font-bold tracking-widest shadow-2xl flex items-center gap-3 mx-auto"
+                                    >
+                                        <Gift className="w-4 h-4" /> ABRIR REGALO
+                                    </motion.button>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-tech-500 text-[10px] uppercase font-bold tracking-widest ml-1">¿De parte de quién?</label>
-                                    <div className="relative group">
-                                        <Send className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-tech-700 group-focus-within:text-curiol-500 transition-colors" />
-                                        <input
-                                            type="text"
-                                            value={from}
-                                            onChange={(e) => setFrom(e.target.value)}
-                                            placeholder="Tu nombre o familia"
-                                            className="w-full bg-tech-900/50 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-white font-light focus:outline-none focus:border-curiol-500/50 transition-all"
-                                        />
-                                    </div>
-                                </div>
+                                {/* Shine effect */}
+                                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent pointer-events-none" />
+                            </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-tech-500 text-[10px] uppercase font-bold tracking-widest ml-1">Mensaje de Inspiración</label>
-                                    <div className="relative group">
-                                        <MessageCircle className="absolute left-4 top-5 w-4 h-4 text-tech-700 group-focus-within:text-curiol-500 transition-colors" />
-                                        <textarea
-                                            value={message}
-                                            onChange={(e) => setMessage(e.target.value)}
-                                            placeholder="Ej: Para que siempre recuerden lo felices que son juntos..."
-                                            rows={2}
-                                            className="w-full bg-tech-900/50 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-white font-light focus:outline-none focus:border-curiol-500/50 transition-all resize-none"
-                                        />
-                                    </div>
-                                </div>
+                            {/* BACK SIDE (Interior) */}
+                            <div className={cn(
+                                "absolute inset-0 backface-hidden [transform:rotateY(180deg)] rounded-3xl p-10 flex flex-col shadow-3xl overflow-hidden border-t border-white/20",
+                                selectedTheme.id
+                            )} style={{ background: `var(--card-gradient, ${selectedTheme.color})` }}>
+                                <div className="absolute inset-4 border border-white/20 rounded-2xl pointer-events-none" />
 
-                                <div className="space-y-4">
-                                    <label className="text-tech-500 text-[10px] uppercase font-bold tracking-widest ml-1 flex items-center gap-2">
-                                        <Camera className="w-3 h-3" /> Selección de Experiencia
-                                    </label>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        {GIFT_PACKAGES.map((pkg) => (
-                                            <button
-                                                key={pkg.id}
-                                                onClick={() => setSelectedPackage(pkg)}
-                                                className={cn(
-                                                    "p-4 rounded-xl border transition-all text-left group",
-                                                    selectedPackage.id === pkg.id
-                                                        ? "border-curiol-500 bg-curiol-500/10 shadow-lg"
-                                                        : "border-white/10 bg-tech-950 hover:border-white/20"
+                                <div className="relative z-10 h-full flex flex-col text-center">
+                                    <span className="text-[9px] text-[#bf8b26] tracking-[0.4em] font-bold uppercase block mb-12 font-cinzel">Alberto Bustos Fotografía</span>
+
+                                    <div className="space-y-8 mb-12">
+                                        <h4 className="text-[#bf8b26] font-cinzel text-2xl tracking-[0.1em] font-bold italic">Sesión Fotográfica</h4>
+                                        <div className="inline-block bg-black/30 px-5 py-2 rounded-full border border-white/5">
+                                            <span className="text-white text-[9px] font-bold uppercase tracking-widest font-lato">
+                                                {selectedPackage.name} | 10 FOTOS
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex-grow flex items-center justify-center">
+                                        <p className="text-white font-cursive text-3xl leading-snug px-4">
+                                            "{message || "Los mejores momentos merecen ser eternos."}"
+                                        </p>
+                                    </div>
+
+                                    <div className="space-y-8 mt-auto">
+                                        <div className="grid grid-cols-2 gap-4 text-center">
+                                            <div>
+                                                <span className="text-[9px] text-white/40 tracking-widest uppercase font-bold block mb-1">Para</span>
+                                                <span className="text-[#bf8b26] font-cinzel text-lg font-bold uppercase">{to || "Especial"}</span>
+                                            </div>
+                                            <div>
+                                                <span className="text-[9px] text-white/40 tracking-widest uppercase font-bold block mb-1">De</span>
+                                                <span className="text-[#bf8b26] font-cinzel text-lg font-bold uppercase">{from || "Alguien"}</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="pt-8 border-t border-white/10 flex flex-col items-center gap-3">
+                                            <div className="flex items-center gap-2">
+                                                {viewMode && adminCode && (
+                                                    <span className="text-white/40 text-[8px] font-bold uppercase tracking-widest">Código: {adminCode}</span>
                                                 )}
-                                            >
-                                                <p className={cn("text-[10px] uppercase font-bold tracking-widest mb-1 transition-colors", selectedPackage.id === pkg.id ? "text-curiol-500" : "text-tech-600")}>{pkg.name}</p>
-                                                <p className="text-white text-xs font-serif italic">₡{pkg.price.toLocaleString()}</p>
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <label className="text-tech-500 text-[10px] uppercase font-bold tracking-widest ml-1 flex items-center gap-2">
-                                        <Palette className="w-3 h-3" /> Selector de Estilo
-                                    </label>
-                                    <div className="flex gap-4">
-                                        {GIFT_COLORS.map((color, i) => (
-                                            <button
-                                                key={i}
-                                                onClick={() => setSelectedColor(color)}
-                                                className={cn(
-                                                    "w-10 h-10 rounded-full border-2 transition-all transform hover:scale-110",
-                                                    color.class,
-                                                    selectedColor.name === color.name ? "border-white scale-110 shadow-lg" : "border-transparent opacity-60"
+                                                {!viewMode && (
+                                                    <span className="text-white/40 text-[8px] font-bold uppercase tracking-widest">Vista Borrador</span>
                                                 )}
-                                                title={color.name}
-                                            />
-                                        ))}
+                                            </div>
+                                            <a href="https://alberto-bustos.com" className="text-[#bf8b26] text-[8px] font-bold tracking-[0.2em] hover:underline transition-all">VISITAR ESTUDIO</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                        </motion.div>
 
-                            <div className="pt-6 border-t border-white/5">
-                                <p className="text-tech-500 text-[10px] uppercase font-bold tracking-[0.2em] mb-4 text-center">Inversión y Pago</p>
-                                <div className="bg-tech-950 p-6 rounded-2xl border border-curiol-500/10 mb-6 text-center">
-                                    <p className="text-curiol-500 text-3xl font-serif italic mb-1">₡{selectedPackage.price.toLocaleString()}</p>
-                                    <p className="text-tech-600 text-[8px] uppercase font-bold tracking-widest">Pago vía SINPE al 6060-2617</p>
-                                </div>
-                                <a
-                                    href={generateWhatsAppLink()}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="w-full py-5 bg-curiol-gradient text-white text-[11px] font-bold uppercase tracking-[0.3em] rounded-xl hover:scale-[1.02] transition-all shadow-2xl flex items-center justify-center gap-4"
+                        {/* Floating View Controls */}
+                        {isOpen && (
+                            <div className="absolute bottom-[-100px] left-1/2 -translate-x-1/2 flex gap-4 animate-fade-in">
+                                {finalAudioUrl && (
+                                    <button
+                                        onClick={toggleMusic}
+                                        className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 text-white flex items-center justify-center hover:bg-white/20 transition-all shadow-xl"
+                                    >
+                                        {isMuted ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
+                                    </button>
+                                )}
+                                <button
+                                    onClick={() => window.print()}
+                                    className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 text-white flex items-center justify-center hover:bg-white/20 transition-all shadow-xl"
                                 >
-                                    Solicitar y Enviar Comprobante <ArrowRight className="w-4 h-4" />
-                                </a>
+                                    <Camera className="w-6 h-6" />
+                                </button>
                             </div>
-                        </GlassCard>
+                        )}
                     </div>
+
+                    {!viewMode && !isOpen && (
+                        <motion.button
+                            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                            className="lg:hidden fixed bottom-6 right-6 bg-curiol-700 text-white px-8 py-5 rounded-full font-bold uppercase tracking-widest text-[11px] shadow-2xl flex items-center gap-3 z-[100]"
+                            onClick={() => document.getElementById('preview-point')?.scrollIntoView({ behavior: 'smooth' })}
+                        >
+                            <Eye className="w-4 h-4" /> Ver Tarjeta
+                        </motion.button>
+                    )}
                 </div>
+
+                {/* Print Hidden Anchor */}
+                <div id="preview-point" />
+
+                {/* Audio Element */}
+                {finalAudioUrl && (
+                    <audio
+                        ref={audioRef}
+                        src={finalAudioUrl}
+                        loop
+                        onPlay={() => setIsMuted(false)}
+                        onPause={() => setIsMuted(true)}
+                    />
+                )}
             </main>
 
             <Footer />
-
-            <style jsx global>{`
-                .perspective-1000 {
-                    perspective: 1000px;
-                }
-                .preserve-3d {
-                    transform-style: preserve-3d;
-                }
-                .backface-hidden {
-                    backface-visibility: hidden;
-                }
-                .shadow-3xl {
-                    box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.5);
-                }
-            `}</style>
         </div>
-    );
-}
-
-function ArrowRight(props: any) {
-    return (
-        <svg
-            {...props}
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <path d="M5 12h14"></path>
-            <path d="m12 5 7 7-7 7"></path>
-        </svg>
     );
 }

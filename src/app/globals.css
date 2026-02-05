@@ -20,6 +20,9 @@
   /* Typography */
   --font-serif: var(--font-cormorant), serif;
   --font-sans: var(--font-inter), sans-serif;
+  --font-cinzel: var(--font-cinzel), serif;
+  --font-lato: var(--font-lato), sans-serif;
+  --font-cursive: var(--font-great-vibes), cursive;
 
   /* Custom Animations */
   --animate-fade-in-up: fadeInUp 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
@@ -158,4 +161,58 @@ body {
 .hover-lift:hover {
   transform: translateY(-8px);
   box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+}
+
+/* Card Themes */
+.theme-red {
+  --active-theme: #a4161a;
+  --card-gradient: linear-gradient(135deg, #590d0e, #a4161a);
+}
+
+.theme-green {
+  --active-theme: #2d6a4f;
+  --card-gradient: linear-gradient(135deg, #081c15, #2d6a4f);
+}
+
+.theme-blue {
+  --active-theme: #1b263b;
+  --card-gradient: linear-gradient(135deg, #0d1b2a, #1b263b);
+}
+
+.theme-gold {
+  --active-theme: #b08968;
+  --card-gradient: linear-gradient(135deg, #7f5539, #b08968);
+}
+
+.theme-purple {
+  --active-theme: #7b1fa2;
+  --card-gradient: linear-gradient(135deg, #4a148c, #7b1fa2);
+}
+
+.theme-black {
+  --active-theme: #434343;
+  --card-gradient: linear-gradient(135deg, #000000, #434343);
+}
+
+.theme-pink {
+  --active-theme: #d81b60;
+  --card-gradient: linear-gradient(135deg, #880e4f, #d81b60);
+}
+
+.theme-teal {
+  --active-theme: #00897b;
+  --card-gradient: linear-gradient(135deg, #004d40, #00897b);
+}
+
+/* Perspective Utilities */
+.perspective-1200 {
+  perspective: 1200px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
 }
