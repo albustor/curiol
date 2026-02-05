@@ -10,7 +10,7 @@ Tu sitio está conectado directamente con tu repositorio de **GitHub**.
    - `git add .`
    - `git commit -m "Descripción de los cambios"`
    - `git push origin main`
-3. **Despliegue Automático**: En cuanto hagas el `push`, Vercel detectará el cambio y reconstruirá el sitio automáticamente en **https://curiol.vercel.app**.
+3. **Despliegue Automático**: En cuanto hagas el `push`, Vercel detectará el cambio y reconstruirá el sitio automáticamente en **https://curiolstudio.vercel.app**.
 
 ## 2. Gestión de Variables de Entorno (API Keys)
 Si necesitas cambiar las llaves de Firebase o Gemini:
