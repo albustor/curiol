@@ -47,7 +47,7 @@ export default function Home() {
       <main className="flex-grow">
         {/* Hero Section */}
         <section className="relative h-screen flex items-center justify-center overflow-hidden">
-          <div className="absolute inset-0 bg-tech-950">
+          <div className="absolute inset-0 bg-tech-950 bg-grain">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentImage}
@@ -56,7 +56,7 @@ export default function Home() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 2, ease: "easeInOut" }}
                 style={{ backgroundImage: `url(${heroImages[currentImage]})` }}
-                className="absolute inset-0 bg-cover bg-center mix-blend-luminosity"
+                className="absolute inset-0 bg-cover bg-center mix-blend-luminosity img-premium"
               />
             </AnimatePresence>
             <div className="absolute inset-0 bg-gradient-to-t from-tech-900 via-transparent to-tech-950" />

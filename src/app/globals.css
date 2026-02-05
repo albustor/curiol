@@ -79,8 +79,31 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+/* Premium Visual Quality Filters */
 .bg-grain {
+  position: relative;
+}
+
+.bg-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0.12;
   background-image: url('https://www.transparenttextures.com/patterns/natural-paper.png');
+  mix-blend-mode: overlay;
+}
+
+.img-premium {
+  filter: saturate(1.1) contrast(1.05) brightness(1.02);
+  transition: filter 0.5s ease;
+}
+
+.img-premium:hover {
+  filter: saturate(1.2) contrast(1.1) brightness(1.05);
 }
 
 .reveal {
