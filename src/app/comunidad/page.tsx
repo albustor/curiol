@@ -4,7 +4,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AiAssistant } from "@/components/AiAssistant";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { BookOpen, Users, Heart, ArrowRight } from "lucide-react";
+import { BookOpen, Users, Heart, ArrowRight, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 export default function ComunidadPage() {
@@ -142,27 +142,52 @@ export default function ComunidadPage() {
 
                 {/* Social Impact / RSE */}
 
-                <section className="bg-tech-950 py-32 border-y border-tech-800">
+                <section className="bg-tech-950 py-32 border-y border-tech-800" id="legado-azul">
                     <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-                        <div className="relative aspect-[4/5] bg-tech-900 rounded-3xl overflow-hidden border border-tech-800">
-                            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=2070')] bg-cover bg-center grayscale opacity-50" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-tech-950 via-transparent to-transparent" />
-                            <div className="absolute bottom-10 left-10">
-                                <p className="text-white font-serif text-3xl italic">Retratos de Futuro</p>
-                                <p className="text-tech-400 text-sm mt-2">Visitas a comunidades de Guanacaste 2025</p>
+                        <div className="relative aspect-[4/5] bg-tech-900 rounded-[3rem] overflow-hidden border border-white/5 shadow-2xl group">
+                            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=2070')] bg-cover bg-center grayscale opacity-40 group-hover:scale-105 transition-transform duration-1000" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-tech-950 via-tech-950/20 to-transparent" />
+                            <div className="absolute bottom-10 left-10 right-10">
+                                <span className="text-curiol-500 text-[10px] font-bold uppercase tracking-[0.4em] mb-4 block">Tributo al Legado</span>
+                                <h3 className="text-white font-serif text-4xl italic leading-tight">Zonas Azules: <br /> <span className="text-curiol-gradient">Huellas de Vida.</span></h3>
+                                <p className="text-tech-400 text-sm mt-4 font-light leading-relaxed">Nicoya es una de las 5 zonas más longevas del mundo. Documentamos la sabiduría de nuestros "personajes azules" y el potencial de las nuevas generaciones.</p>
                             </div>
                         </div>
                         <div>
-                            <Heart className="w-12 h-12 text-curiol-500 mb-8" />
-                            <h2 className="text-4xl md:text-5xl font-serif text-white mb-8 italic">Responsabilidad <br /> Humana.</h2>
-                            <p className="text-tech-400 text-lg font-light leading-relaxed mb-10">
-                                Parte de nuestras ganancias financia la documentación gratuita de adultos mayores en zonas rurales, asegurando que su legado visual no se pierda.
+                            <div className="inline-flex p-3 bg-curiol-500/10 rounded-full text-curiol-500 mb-8">
+                                <Heart className="w-8 h-8" />
+                            </div>
+                            <h2 className="text-4xl md:text-5xl font-serif text-white mb-8 italic">Responsabilidad con <br /> el Patrimonio Vivo.</h2>
+                            <p className="text-tech-400 text-lg font-light leading-relaxed mb-10 italic">
+                                "Honramos a los personajes azules que han dejado huella en nuestras comunidades, conectando su experiencia con la niñez potencial que hoy empieza a caminar."
                             </p>
+
+                            <div className="p-8 rounded-3xl bg-tech-900/50 border border-curiol-500/20 mb-12">
+                                <h4 className="text-curiol-500 text-xs font-bold uppercase tracking-widest mb-4">Experiencia Legado Zona Azul</h4>
+                                <ul className="space-y-4 text-tech-300 text-sm font-light">
+                                    <li className="flex gap-3">
+                                        <Sparkles className="w-4 h-4 text-curiol-500 shrink-0" />
+                                        <span>Sesión de 3 fotografías Fine Art en exterior (en contexto real).</span>
+                                    </li>
+                                    <li className="flex gap-3">
+                                        <Sparkles className="w-4 h-4 text-curiol-500 shrink-0" />
+                                        <span>Podcast del Corazón: Grabación de audio con diálogo e información del legado.</span>
+                                    </li>
+                                    <li className="flex gap-3">
+                                        <Sparkles className="w-4 h-4 text-curiol-500 shrink-0" />
+                                        <span>Entregable digital con realidad aumentada integrada.</span>
+                                    </li>
+                                </ul>
+                            </div>
+
                             <div className="grid grid-cols-2 gap-10">
                                 <div>
                                     <p className="text-3xl font-serif text-white italic">+150</p>
-                                    <p className="text-tech-500 text-xs uppercase tracking-widest mt-2">Familias Beneficiadas</p>
+                                    <p className="text-tech-500 text-[10px] uppercase tracking-widest mt-2 font-bold">Documentaciones Financiadas</p>
                                 </div>
+                                <Link href="/cotizar" className="flex items-center gap-2 text-curiol-500 text-xs font-bold uppercase tracking-widest hover:underline self-end pb-1">
+                                    Inmortalizar Historia <ArrowRight className="w-4 h-4" />
+                                </Link>
                             </div>
                         </div>
                     </div>
