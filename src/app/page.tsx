@@ -55,8 +55,11 @@ export default function Home() {
                 animate={{ opacity: 0.3, scale: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 2, ease: "easeInOut" }}
-                style={{ backgroundImage: `url(${heroImages[currentImage]})` }}
-                className="absolute inset-0 bg-cover bg-center mix-blend-luminosity img-premium"
+                style={{
+                  backgroundImage: `url(${heroImages[currentImage]})`,
+                  backgroundPosition: "center 15%"
+                }}
+                className="absolute inset-0 bg-cover mix-blend-luminosity img-premium"
               />
             </AnimatePresence>
             <div className="absolute inset-0 bg-gradient-to-t from-tech-900 via-transparent to-tech-950" />

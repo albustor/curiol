@@ -121,7 +121,7 @@ export default function PortfolioPage() {
                                     <img
                                         src={item.url}
                                         alt={item.titulo}
-                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 img-premium"
+                                        className="w-full h-full object-cover object-[center_10%] transition-transform duration-700 group-hover:scale-110 img-premium"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-tech-950 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8 text-left">
                                         <div className="flex items-center gap-2 mb-2">
