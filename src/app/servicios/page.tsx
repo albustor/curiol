@@ -14,8 +14,8 @@ const modalities = [
     { id: "legado", title: "Arquitectura de Memorias", icon: Camera, desc: "B2C: Guardianes del legado familiar interactivo con Memoria Viva (Música + Foto) y realidad aumentada." },
     { id: "aventura", title: "Aventura Mágica", icon: Sparkles, desc: "B2C: Transformamos la imaginación infantil en realidad con edición cinematográfica e IA." },
     { id: "marca", title: "Marca Personal Inteligente", icon: UserCheck, desc: "B2B: Tu imagen es tu herramienta de negocios. Retratos pro + Tarjeta NFC." },
-    { id: "pymes", title: "Aceleradora Digital Local", icon: Code, desc: "B2B: Infraestructura digital escalable con integración de bases de datos e IA para automatizar la gestión y análisis de información.", highlight: true },
-    { id: "phygital", title: "Experiencia Phygital", icon: Binary, desc: "Ecosistemas híbridos que conectan lo físico con soluciones digitales inteligentes.", highlight: true },
+    { id: "pymes", title: "Aceleradora Digital Local", icon: Code, desc: "B2B: Infraestructura digital escalable con integración de bases de datos robustas e IA de vanguardia para automatizar la gestión y análisis de información.", highlight: true },
+    { id: "phygital", title: "Ecosistemas Móviles", icon: Smartphone, desc: "Apps híbridas personalizadas a tu nicho que conectan lo físico con soluciones digitales inteligentes, notificaciones push y aprendizaje automático.", highlight: true },
     { id: "eventos", title: "Cobertura de Legado", icon: Briefcase, desc: "Documentación artística de hitos corporativos y vitales con enfoque en trascendencia." }
 ];
 
