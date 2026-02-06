@@ -16,7 +16,7 @@ export function FloatingGiftCard() {
             initial={{ opacity: 0, scale: 0.8, x: 20 }}
             animate={{ opacity: 1, scale: 1, x: 0 }}
             transition={{ delay: 1, duration: 0.5 }}
-            className="fixed bottom-10 right-10 z-50 hidden lg:block"
+            className="fixed bottom-10 right-32 z-50 hidden lg:block"
         >
             <Link
                 href="/regalo"

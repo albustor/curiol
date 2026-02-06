@@ -11,7 +11,8 @@ const navLinks = [
     { href: "/", label: "Inicio" },
     { href: "/portafolio", label: "Portafolio" },
     { href: "/servicios", label: "Servicios" },
-    { href: "/regalo", label: "Tarjeta Regalo", mobileOnly: true },
+    { href: "/experiencia", label: "Experiencia" },
+    { href: "/regalo", label: "Tarjeta Regalo" },
     { href: "/cotizar", label: "Cotizar" },
     { href: "/soluciones-web", label: "Soluciones Web" },
     { href: "/comunidad", label: "Comunidad" },
@@ -66,9 +67,10 @@ export function Navbar() {
                     ))}
                     <Link
                         href="/admin"
-                        className="text-tech-500 hover:text-curiol-500 transition-colors ml-4"
+                        className="flex items-center gap-2 text-tech-500 hover:text-curiol-500 transition-colors ml-4 pl-4 border-l border-tech-800 group/admin"
                     >
-                        <ShieldCheck className="w-5 h-5" />
+                        <ShieldCheck className="w-4 h-4" />
+                        <span className="text-[9px] font-bold uppercase tracking-[0.2em] opacity-0 group-hover/admin:opacity-100 transition-opacity">Panel Admin</span>
                     </Link>
                 </div>
 
@@ -132,12 +134,14 @@ export function Navbar() {
 
                         <div className="mt-auto pt-10 border-t border-white/5 space-y-4">
                             <p className="text-tech-600 text-[8px] uppercase tracking-[0.4em] font-bold">Arquitectura de Memorias</p>
-                            <div className="flex gap-4">
-                                <Link href="/admin" onClick={() => setIsOpen(false)} className="text-tech-500">
+                            <div className="flex items-center gap-6">
+                                <Link href="/admin" onClick={() => setIsOpen(false)} className="flex items-center gap-2 text-tech-500">
                                     <ShieldCheck className="w-5 h-5" />
+                                    <span className="text-xs font-bold uppercase tracking-widest">Administración</span>
                                 </Link>
-                                <Link href="/regalo" onClick={() => setIsOpen(false)} className="text-curiol-500">
+                                <Link href="/regalo" onClick={() => setIsOpen(false)} className="flex items-center gap-2 text-curiol-500">
                                     <Gift className="w-5 h-5" />
+                                    <span className="text-xs font-bold uppercase tracking-widest">Regalo</span>
                                 </Link>
                             </div>
                         </div>

@@ -22,6 +22,14 @@ export default function AdminDashboard() {
     const router = useRouter();
 
     useEffect(() => {
+        // Check for Master PIN session first
+        const isMaster = localStorage.getItem("master_admin") === "true";
+        if (isMaster) {
+            setUser({ email: "admin@curiol.studio", displayName: "Master Alberto" });
+            setLoading(false);
+            return;
+        }
+
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             if (!currentUser) {
                 router.push("/admin/login");
@@ -84,7 +92,11 @@ export default function AdminDashboard() {
                         <p className="text-tech-500 text-sm">Bienvenido, Maestro de Estrategia.</p>
                     </div>
                     <button
-                        onClick={() => auth.signOut()}
+                        onClick={() => {
+                            localStorage.removeItem("master_admin");
+                            localStorage.removeItem("admin_session_start");
+                            auth.signOut();
+                        }}
                         className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white rounded-xl transition-all text-[10px] font-bold uppercase tracking-widest"
                     >
                         <LogOut className="w-4 h-4" /> Cerrar Sesión
@@ -153,6 +165,19 @@ export default function AdminDashboard() {
                                     <div>
                                         <p className="text-white font-bold text-sm">Gestionar Blog</p>
                                         <p className="text-tech-500 text-[10px] uppercase tracking-widest">3 posts pendientes</p>
+                                    </div>
+                                </div>
+                                <ArrowRight className="w-4 h-4 text-tech-800 group-hover:text-white transition-all" />
+                            </button>
+                            <button
+                                onClick={() => router.push("/admin/cotizador")}
+                                className="w-full text-left p-6 bg-tech-900 border border-tech-800 rounded-2xl hover:bg-tech-800 transition-all flex items-center justify-between group"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <BarChart3 className="w-6 h-6 text-curiol-500" />
+                                    <div>
+                                        <p className="text-white font-bold text-sm">Cotizador Formal</p>
+                                        <p className="text-tech-500 text-[10px] uppercase tracking-widest">Generar Contratos PDF</p>
                                     </div>
                                 </div>
                                 <ArrowRight className="w-4 h-4 text-tech-800 group-hover:text-white transition-all" />

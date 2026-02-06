@@ -55,17 +55,16 @@ export default function PortfolioPage() {
                         transition={{ delay: 0.1 }}
                         className="text-5xl md:text-7xl font-serif text-white mb-8 italic"
                     >
-                        Portafolio <br /> <span className="text-curiol-gradient">Visual.</span>
+                        Arquitectura <br /> <span className="text-curiol-gradient">de Memorias.</span>
                     </motion.h1>
 
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="text-tech-400 text-lg max-w-2xl mx-auto mb-12 font-light"
+                        className="text-tech-400 text-lg max-w-2xl mx-auto mb-12 font-light leading-relaxed"
                     >
-                        Una colección curada de momentos que trascienden el tiempo.
-                        Desde la calidez familiar hasta la precisión corporativa.
+                        Nuestra curaduría visual trasciende la captura estática. Cada obra es un activo del ecosistema de "Digitalización Humana", diseñado para perdurar y cobrar vida.
                     </motion.p>
 
                     {/* Filters */}

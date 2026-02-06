@@ -9,9 +9,9 @@ import Link from "next/link";
 
 export default function ComunidadPage() {
     const posts = [
-        { title: "El futuro de la fotografía en la era de la IA", category: "Tecnología", date: "Feb 01" },
-        { title: "Preservando el legado Chorotega mediante Digitalización", category: "Cultura", date: "Jan 28" },
-        { title: "Cómo preparar tu marca personal para 2026", category: "Negocios", date: "Jan 20" }
+        { title: "Digitalización Humana: El puente entre el alma y el código", category: "Estrategia 2026", date: "Feb 05" },
+        { title: "Preservando el legado de Nicoya: La tecnología al servicio de la Zona Azul", category: "Cultura & RSE", date: "Jan 28" },
+        { title: "IDMV: Por qué tu negocio local no necesita un software inflado", category: "Negocios B2B", date: "Jan 20" }
     ];
 
     return (
@@ -19,13 +19,17 @@ export default function ComunidadPage() {
             <Navbar />
 
             <main className="flex-grow">
-                <header className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 mb-24">
+                <header className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 mb-24 mt-20">
                     <div className="max-w-3xl">
-                        <h1 className="text-5xl md:text-7xl font-serif text-white mb-8 leading-tight italic">
-                            Comunidad & <br /> <span className="text-curiol-gradient">Conocimiento.</span>
+                        <div className="flex items-center gap-3 mb-6">
+                            <span className="h-[1px] w-12 bg-curiol-500"></span>
+                            <span className="text-curiol-500 text-[10px] font-bold tracking-[0.3em] uppercase">Ecosistema Colaborativo</span>
+                        </div>
+                        <h1 className="text-5xl md:text-8xl font-serif text-white mb-8 leading-tight italic">
+                            Comunidad & <br /> <span className="text-curiol-gradient">Trascendencia.</span>
                         </h1>
                         <p className="text-tech-400 text-lg md:text-xl font-light leading-relaxed">
-                            En Curiol Studio creemos que la tecnología debe democratizarse. Aquí compartimos nuestros aprendizajes sobre TICs y celebramos el impacto social.
+                            Creemos en la tecnología como un democratizador de oportunidades. Aquí compartimos el impacto social de nuestras soluciones y el conocimiento que impulsa el futuro local.
                         </p>
                     </div>
                 </header>
@@ -34,55 +38,55 @@ export default function ComunidadPage() {
                 <section className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 mb-40">
                     <div className="flex items-center gap-4 mb-12">
                         <BookOpen className="text-curiol-500 w-6 h-6" />
-                        <h2 className="text-2xl font-serif text-white italic">El Blog del Curiol</h2>
+                        <h2 className="text-2xl font-serif text-white italic">Bitácora de Innovación</h2>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {posts.map((post) => (
-                            <GlassCard key={post.title} className="group cursor-pointer">
+                            <GlassCard key={post.title} className="group cursor-pointer border-white/5 hover:border-curiol-500/20">
                                 <span className="text-curiol-500 text-[10px] font-bold uppercase tracking-widest block mb-4">{post.category} • {post.date}</span>
                                 <h3 className="text-xl font-serif text-white mb-6 group-hover:text-curiol-500 transition-colors leading-snug">{post.title}</h3>
                                 <div className="flex items-center gap-2 text-tech-500 text-xs font-bold uppercase tracking-widest">
-                                    Leer más <ArrowRight className="w-4 h-4" />
+                                    Explorar artículo <ArrowRight className="w-4 h-4" />
                                 </div>
                             </GlassCard>
                         ))}
                     </div>
                 </section>
 
-                {/* Entrega por Categorías */}
+                {/* Niveles de Entrega - Alineados con 2026 */}
                 <section className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 mb-40">
                     <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
                         <div className="max-w-xl">
-                            <h2 className="text-4xl md:text-5xl font-serif text-white mb-6 italic">Modelos de <span className="text-curiol-gradient">Entrega.</span></h2>
-                            <p className="text-tech-400 font-light">Diseñamos diferentes niveles de experiencia para adaptarnos a la velocidad y profundidad que tu legado requiere.</p>
+                            <h2 className="text-4xl md:text-5xl font-serif text-white mb-6 italic">Promesa de <span className="text-curiol-gradient">Calidad.</span></h2>
+                            <p className="text-tech-400 font-light">Estandarizamos la excelencia técnica para asegurar que tu inversión digital tenga un retorno real y duradero.</p>
                         </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <GlassCard className="border-tech-800">
-                            <h4 className="font-serif text-2xl text-white italic mb-2">Estándar</h4>
-                            <p className="text-[10px] text-curiol-500 uppercase tracking-widest mb-6 font-bold">Entrega: 15 días</p>
-                            <p className="text-sm text-tech-400 font-light leading-relaxed">Álbum digital curado y video detrás de escena. La pureza de la imagen capturada con precisión profesional.</p>
+                            <h4 className="font-serif text-2xl text-white italic mb-2">Esencial</h4>
+                            <p className="text-[10px] text-curiol-500 uppercase tracking-widest mb-6 font-bold">Respuesta Inmediata</p>
+                            <p className="text-sm text-tech-400 font-light leading-relaxed">Calidad garantizada en activos digitales estándar: fotografía curada y web funcional en 15 días.</p>
                         </GlassCard>
 
                         <GlassCard className="border-curiol-500/30 bg-curiol-500/5 relative overflow-hidden">
                             <div className="absolute top-0 right-0 p-4">
                                 <div className="w-2 h-2 rounded-full bg-curiol-500 animate-pulse" />
                             </div>
-                            <h4 className="font-serif text-2xl text-white italic mb-2">Premium</h4>
+                            <h4 className="font-serif text-2xl text-white italic mb-2">Phygital</h4>
                             <p className="text-[10px] text-curiol-500 uppercase tracking-widest mb-6 font-bold">Entrega: 8 días</p>
-                            <p className="text-sm text-tech-400 font-light leading-relaxed">Portal exclusivo, Canción IA personalizada, Slideshow musical y Cuento Multimedia. Una narrativa completa para tus sentidos.</p>
+                            <p className="text-sm text-tech-400 font-light leading-relaxed">Fusión sensorial completa: Canción IA, portal interactivo y cuentos multimedia diseñados para trascender.</p>
                         </GlassCard>
 
                         <GlassCard className="border-tech-800">
-                            <h4 className="font-serif text-2xl text-white italic mb-2">Fine Art</h4>
-                            <p className="text-[10px] text-curiol-500 uppercase tracking-widest mb-6 font-bold">Novedad 2026</p>
-                            <p className="text-sm text-tech-400 font-light leading-relaxed">Álbumes profesionales impresos y Canvas de museo. Lo tangible se vuelve eterno a través de la impresión de alta gama.</p>
+                            <h4 className="font-serif text-2xl text-white italic mb-2">Premium Art</h4>
+                            <p className="text-[10px] text-curiol-500 uppercase tracking-widest mb-6 font-bold">Curaduría de Autor</p>
+                            <p className="text-sm text-tech-400 font-light leading-relaxed">Para legados que requieren lo tangible: impresión de museo y lienzos de alta gama para la posteridad.</p>
                         </GlassCard>
                     </div>
                 </section>
 
-                {/* Phygital Experience */}
+                {/* El resto de la página (RSE) se mantiene igual ya que es el núcleo Social */}
                 <section className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 mb-40">
                     <div className="bg-tech-900/50 border border-tech-800 rounded-[3rem] p-8 md:p-16 overflow-hidden relative">
                         <div className="absolute top-0 right-0 w-96 h-96 bg-curiol-500/10 blur-[100px] -mr-48 -mt-48" />
