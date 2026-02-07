@@ -48,7 +48,7 @@ export default function ServiciosPage() {
                             <span className="h-[1px] w-12 bg-curiol-500"></span>
                             <span className="text-curiol-500 text-[10px] font-bold tracking-[0.3em] uppercase">Digitalización Humana</span>
                         </div>
-                        <h1 className="text-4xl md:text-7xl font-serif text-white mb-8 leading-tight italic">
+                        <h1 className="text-5xl md:text-7xl font-serif text-white mb-8 leading-[0.9] italic">
                             Portafolio de <br /> <span className="text-curiol-gradient">Experiencias 2026.</span>
                         </h1>
                         <p className="text-tech-400 text-base md:text-xl font-light leading-relaxed">

@@ -54,7 +54,7 @@ export default function Home() {
 
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative h-screen flex items-center justify-center overflow-hidden">
+        <section className="relative min-h-screen pt-20 md:pt-0 flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0 bg-tech-950 bg-grain">
             <AnimatePresence>
               <motion.div
@@ -80,7 +80,7 @@ export default function Home() {
               <span className="h-[1px] w-12 bg-curiol-500"></span>
             </div>
 
-            <h1 className="text-6xl md:text-8xl lg:text-9xl font-serif text-white mb-8 leading-tight italic">
+            <h1 className="text-5xl md:text-7xl lg:text-9xl font-serif text-white mb-8 leading-[0.9] italic">
               Digitalización <br /> <span className="text-curiol-gradient">Humana.</span>
             </h1>
 

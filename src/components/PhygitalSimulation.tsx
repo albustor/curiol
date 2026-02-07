@@ -17,7 +17,7 @@ export function PhygitalSimulation() {
                         <div className="space-y-12">
                             <div>
                                 <span className="text-curiol-500 text-[10px] font-bold tracking-[0.4em] uppercase block mb-4">La Magia del Detalle</span>
-                                <h2 className="text-3xl md:text-6xl font-cinzel text-white leading-tight">
+                                <h2 className="text-3xl md:text-6xl font-serif italic text-white leading-tight">
                                     El Arte de lo <span className="text-curiol-gradient">Interactivo.</span>
                                 </h2>
                             </div>

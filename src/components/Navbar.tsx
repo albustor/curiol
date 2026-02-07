@@ -97,7 +97,7 @@ export function Navbar() {
                         className="fixed inset-0 bg-tech-950 z-[100] lg:hidden flex flex-col p-8"
                     >
                         {/* Mobile Header in Overlay */}
-                        <div className="flex justify-between items-center mb-20">
+                        <div className="flex justify-between items-center mb-12">
                             <div className="group flex flex-col items-center">
                                 <span className="font-serif text-xl tracking-[0.2em] text-white leading-none">
                                     CURIOL<span className="text-curiol-500 font-light ml-2">STUDIO</span>
@@ -123,8 +123,8 @@ export function Navbar() {
                                         href={link.href}
                                         onClick={() => setIsOpen(false)}
                                         className={cn(
-                                            "text-3xl font-cinzel tracking-widest uppercase transition-all",
-                                            pathname === link.href ? "text-curiol- gradient" : "text-white/60"
+                                            "text-xl font-serif italic tracking-widest uppercase transition-all",
+                                            pathname === link.href ? "text-curiol-500" : "text-white/60"
                                         )}
                                     >
                                         {link.label}
