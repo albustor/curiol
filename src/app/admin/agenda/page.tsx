@@ -9,12 +9,12 @@ import {
     CheckCircle2, AlertCircle, XCircle,
     Search, Filter, ExternalLink,
     ShieldCheck, Smartphone, Mail,
-    MessageCircle, Trash2
+    MessageCircle, Trash2, Settings, Plus, Save
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { db } from "@/lib/firebase";
-import { collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc, getDoc, setDoc } from "firebase/firestore";
 
 interface Booking {
     id: string;
@@ -35,6 +35,11 @@ export default function AdminAgendaPage() {
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [filter, setFilter] = useState<string>("all");
     const [isLoading, setIsLoading] = useState(true);
+    const [isSaving, setIsSaving] = useState(false);
+    const [scheduleSettings, setScheduleSettings] = useState<{ [key: string]: string[] }>({
+        "6": ["14:00", "17:00"], // Saturday
+        "0": ["17:00"]          // Sunday
+    });
 
     useEffect(() => {
         const q = query(collection(db, "bookings"), orderBy("createdAt", "desc"));
@@ -43,8 +48,48 @@ export default function AdminAgendaPage() {
             setBookings(data);
             setIsLoading(false);
         });
+
+        const fetchSettings = async () => {
+            const docRef = doc(db, "settings", "schedule");
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                setScheduleSettings(docSnap.data().slots);
+            }
+        };
+        fetchSettings();
+
         return () => unsubscribe();
     }, []);
+
+    const saveSchedule = async () => {
+        setIsSaving(true);
+        try {
+            await setDoc(doc(db, "settings", "schedule"), { slots: scheduleSettings });
+            alert("Configuración Guardada");
+        } catch (error) {
+            console.error("Error saving schedule:", error);
+        }
+        setIsSaving(false);
+    };
+
+    const addSlot = (day: string) => {
+        const time = prompt("Ingrese la hora (ej: 09:00, 14:00, 17:00):");
+        if (time && /^([01]\d|2[0-3]):([0-5]\d)$/.test(time)) {
+            setScheduleSettings(prev => ({
+                ...prev,
+                [day]: [...(prev[day] || []), time].sort()
+            }));
+        } else if (time) {
+            alert("Formato de hora inválido");
+        }
+    };
+
+    const removeSlot = (day: string, index: number) => {
+        setScheduleSettings(prev => ({
+            ...prev,
+            [day]: prev[day].filter((_, i) => i !== index)
+        }));
+    };
 
     const updateStatus = async (id: string, status: string) => {
         try {
@@ -98,6 +143,65 @@ export default function AdminAgendaPage() {
                     </div>
                 </header>
 
+                <section className="mb-16">
+                    <GlassCard className="p-10 border-curiol-500/10">
+                        <div className="flex items-center justify-between mb-10">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-curiol-500/10 rounded-2xl flex items-center justify-center text-curiol-500 border border-curiol-500/20">
+                                    <Settings className="w-6 h-6" />
+                                </div>
+                                <div>
+                                    <h2 className="text-2xl font-serif text-white italic">Configuración de Horarios</h2>
+                                    <p className="text-tech-500 text-[10px] uppercase font-bold tracking-widest mt-1">Define los bloques disponibles por día</p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={saveSchedule}
+                                disabled={isSaving}
+                                className="px-8 py-4 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest rounded-xl hover:scale-105 transition-all flex items-center gap-3"
+                            >
+                                <Save className="w-4 h-4" /> {isSaving ? "Guardando..." : "Guardar Cambios"}
+                            </button>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            {[
+                                { id: "6", label: "Sábados" },
+                                { id: "0", label: "Domingos" }
+                            ].map((day) => (
+                                <div key={day.id} className="bg-tech-900/30 p-8 rounded-3xl border border-white/5">
+                                    <div className="flex justify-between items-center mb-6">
+                                        <h3 className="text-lg font-serif text-white italic">{day.label}</h3>
+                                        <button
+                                            onClick={() => addSlot(day.id)}
+                                            className="w-8 h-8 rounded-full bg-tech-800 text-tech-400 flex items-center justify-center hover:bg-curiol-500 hover:text-white transition-all"
+                                        >
+                                            <Plus className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                    <div className="flex flex-wrap gap-3">
+                                        {scheduleSettings[day.id]?.length > 0 ? scheduleSettings[day.id].map((slot, i) => (
+                                            <div key={i} className="group relative">
+                                                <div className="px-6 py-3 bg-tech-950 border border-tech-800 rounded-xl text-white text-xs font-mono">
+                                                    {slot}
+                                                </div>
+                                                <button
+                                                    onClick={() => removeSlot(day.id, i)}
+                                                    className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-[10px]"
+                                                >
+                                                    <XCircle className="w-3 h-3" />
+                                                </button>
+                                            </div>
+                                        )) : (
+                                            <p className="text-tech-700 text-[10px] uppercase font-bold tracking-widest py-4 italic">No hay bloques definidos</p>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </GlassCard>
+                </section>
+
                 <div className="grid grid-cols-1 gap-6">
                     <AnimatePresence mode="popLayout">
                         {isLoading ? (
@@ -119,14 +223,12 @@ export default function AdminAgendaPage() {
                                             booking.status === "rejected" ? "border-l-red-500" : "border-l-curiol-500"
                                     )}>
                                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                                            {/* Date & Time */}
                                             <div className="lg:col-span-2 flex flex-col items-center justify-center p-4 bg-tech-950/50 rounded-2xl border border-white/5">
                                                 <CalendarIcon className="w-5 h-5 text-curiol-500 mb-2" />
                                                 <p className="text-xl font-serif text-white italic">{booking.date?.toDate().toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}</p>
                                                 <p className="text-[10px] font-bold text-tech-500 uppercase tracking-widest mt-1">{booking.time}</p>
                                             </div>
 
-                                            {/* Client Info */}
                                             <div className="lg:col-span-3">
                                                 <h3 className="text-xl font-serif text-white italic mb-2">{booking.name}</h3>
                                                 <div className="space-y-1">
@@ -139,7 +241,6 @@ export default function AdminAgendaPage() {
                                                 </div>
                                             </div>
 
-                                            {/* Service & Payment */}
                                             <div className="lg:col-span-3">
                                                 <div className="flex items-center gap-2 mb-2">
                                                     <div className={cn("px-3 py-1 rounded-full text-[8px] font-bold uppercase tracking-widest", booking.service === "legado" ? "bg-curiol-500/10 text-curiol-500" : "bg-tech-500/10 text-tech-500")}>
@@ -157,7 +258,6 @@ export default function AdminAgendaPage() {
                                                 </div>
                                             </div>
 
-                                            {/* Actions */}
                                             <div className="lg:col-span-4 flex justify-end gap-3">
                                                 {booking.status === "pending_approval" && (
                                                     <>

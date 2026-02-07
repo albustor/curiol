@@ -16,7 +16,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { db } from "@/lib/firebase";
-import { collection, addDoc, query, where, getDocs, Timestamp } from "firebase/firestore";
+import { collection, addDoc, query, where, getDocs, Timestamp, doc, getDoc } from "firebase/firestore";
 import { generateGoogleCalendarLink, generateAppleCalendarLink } from "@/lib/agenda";
 
 const STEPS = [
@@ -49,7 +49,52 @@ export default function AgendaPage() {
     const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
     const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
 
-    const times = ["08:00 AM", "10:00 AM", "01:00 PM", "03:00 PM", "05:00 PM"];
+    const [availableSlots, setAvailableSlots] = useState<string[]>([]);
+    const [occupiedSlots, setOccupiedSlots] = useState<string[]>([]);
+    const [scheduleConfig, setScheduleConfig] = useState<{ [key: string]: string[] }>({
+        "6": ["14:00", "17:00"],
+        "0": ["17:00"]
+    });
+
+    // Fetch Schedule Config on Mount
+    useEffect(() => {
+        const fetchConfig = async () => {
+            const docRef = doc(db, "settings", "schedule");
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                setScheduleConfig(docSnap.data().slots);
+            }
+        };
+        fetchConfig();
+    }, []);
+
+    // Fetch Availability when Date changes
+    useEffect(() => {
+        if (!selectedDate) return;
+
+        const dayOfWeek = selectedDate.getDay().toString();
+        const baseSlots = scheduleConfig[dayOfWeek] || [];
+        setAvailableSlots(baseSlots);
+        setSelectedTime(null);
+
+        const fetchOccupied = async () => {
+            const startOfDay = new Date(selectedDate);
+            startOfDay.setHours(0, 0, 0, 0);
+            const endOfDay = new Date(selectedDate);
+            endOfDay.setHours(23, 59, 59, 999);
+
+            const q = query(
+                collection(db, "bookings"),
+                where("date", ">=", Timestamp.fromDate(startOfDay)),
+                where("date", "<=", Timestamp.fromDate(endOfDay))
+            );
+
+            const querySnapshot = await getDocs(q);
+            const occupied = querySnapshot.docs.map(doc => doc.data().time);
+            setOccupiedSlots(occupied);
+        };
+        fetchOccupied();
+    }, [selectedDate, scheduleConfig]);
 
     const handleConfirmBooking = async () => {
         if (!paymentVoucher) return;
@@ -240,18 +285,26 @@ export default function AgendaPage() {
                                                     <Clock className="w-3 h-3" /> Disponibilidad para {selectedDate.toLocaleDateString()}
                                                 </p>
                                                 <div className="flex flex-wrap gap-3">
-                                                    {times.map(t => (
-                                                        <button
-                                                            key={t}
-                                                            onClick={() => setSelectedTime(t)}
-                                                            className={cn(
-                                                                "px-6 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all",
-                                                                selectedTime === t ? "bg-curiol-500 text-white" : "bg-tech-950 border border-tech-800 text-tech-500 hover:border-curiol-500/50"
-                                                            )}
-                                                        >
-                                                            {t}
-                                                        </button>
-                                                    ))}
+                                                    {availableSlots.length > 0 ? availableSlots.map(t => {
+                                                        const isOccupied = occupiedSlots.includes(t);
+                                                        return (
+                                                            <button
+                                                                key={t}
+                                                                disabled={isOccupied}
+                                                                onClick={() => setSelectedTime(t)}
+                                                                className={cn(
+                                                                    "px-6 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all",
+                                                                    selectedTime === t ? "bg-curiol-500 text-white" :
+                                                                        isOccupied ? "bg-tech-900/50 text-tech-800 cursor-not-allowed opacity-50" :
+                                                                            "bg-tech-950 border border-tech-800 text-tech-500 hover:border-curiol-500/50"
+                                                                )}
+                                                            >
+                                                                {t} {isOccupied && "• Ocupado"}
+                                                            </button>
+                                                        );
+                                                    }) : (
+                                                        <p className="text-tech-700 text-[10px] font-bold uppercase tracking-widest py-4 italic">No hay horarios disponibles para este día.</p>
+                                                    )}
                                                 </div>
                                             </div>
                                         )}
