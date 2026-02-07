@@ -570,8 +570,8 @@ export default function AdminCotizadorPage() {
                             <div>
                                 <div className="flex justify-center mb-4">
                                     <img
-                                        src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-S080OaIsYjH6vV7y3oT8z8lJ0WzP2S.png"
-                                        alt="Firma Curiol Studio"
+                                        src="https://drive.google.com/uc?export=download&id=1jHgxpjK4Vjo8t0UGsZfIyFbyS8TrGtoG"
+                                        alt="Logo Curiol Studio"
                                         className="h-12 object-contain"
                                     />
                                 </div>
