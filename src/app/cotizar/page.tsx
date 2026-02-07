@@ -18,33 +18,33 @@ const SECTIONS = [
 
 const PACKAGES: Record<string, Array<{ id: string; name: string; price: number; usdPrice: number; desc: string; isMonthly?: boolean; isHourly?: boolean }>> = {
     family: [
-        { id: "aventura", name: "Experiencia Aventura Mágica", price: 95000, usdPrice: 199, desc: "Sesión 1.5h. 15 Fotos Fine Art, Canción Original IA, Photobook y Realidad Aumentada." },
-        { id: "esencia", name: "Experiencia Esencia Familiar", price: 110000, usdPrice: 249, desc: "Sesión 1.5h. 20 Fotos High-End, App Privada y 'Cuadro Vivo' con RA integrado." },
-        { id: "marca", name: "Marca Personal Inteligente", price: 65000, usdPrice: 149, desc: "Sesión 1.5h. 15 Fotos Branding, Asesoría Visual y Tarjeta NFC Inteligente." },
-        { id: "legado", name: "Membresía Legado Anual", price: 25000, usdPrice: 59, desc: "3 Sesiones al año, prioridad de agenda y Anuario Familiar de lujo con RA.", isMonthly: true },
-        { id: "navidad", name: "Campaña Legado Navideño", price: 40000, usdPrice: 99, desc: "Sesión 1h temática. 15 Fotos Digitales + Video Mensaje RA + Tarjeta NFC." },
-        { id: "mini", name: "Mini Sesión Inclusión", price: 25000, usdPrice: 49, desc: "Sesión 40 min en locación. 8 Fotos Digitales Fine Art. (Accesibilidad social)" }
+        { id: "aventura", name: "Aventura Mágica (Phygital)", price: 95000, usdPrice: 199, desc: "15 Fotos Fine Art + IA. Realidad Aumentada y música personalizada. El arte físico cobra vida." },
+        { id: "esencia", name: "Esencia Familiar", price: 110000, usdPrice: 249, desc: "20 Fotos High-End. Cuadros Vivos interactivos con Realidad Aumentada y App de legado Hogar." },
+        { id: "marca", name: "Marca Personal", price: 65000, usdPrice: 149, desc: "15 Fotos de impacto. Incluye asesoría visual y tarjeta de contacto inteligente para networking." },
+        { id: "legado", name: "Membresía Legado", price: 25000, usdPrice: 59, desc: "Biógrafo familiar: 3 sesiones al año y custodia de herencia digital interactiva.", isMonthly: true },
+        { id: "navidad", name: "Instantes de Luz", price: 40000, usdPrice: 99, desc: "15 Fotos temáticas + Tarjeta física con mensaje de video en Realidad Aumentada incluido." },
+        { id: "mini", name: "Minisesiones Phygital", price: 25000, usdPrice: 49, desc: "8 Fotos ágiles. Incluye un detalle interactivo de Realidad Aumentada para compartir." }
     ],
     business: [
-        { id: "express", name: "Plan A: Presencia Express", price: 85000, usdPrice: 199, desc: "Landing de alto impacto (Link-in-bio). Generador de Textos Asistido por IA." },
-        { id: "negocio", name: "Plan B: Negocio Pro", price: 145000, usdPrice: 349, desc: "Web corporativa (4 secciones). Integra Chatbot y Módulos de IA para automatización." },
-        { id: "mantenimiento", name: "Mantenimiento Evolutivo", price: 15000, usdPrice: 39, desc: "Hosting, seguridad e Integración Trimestral de Insumos de IA.", isMonthly: true }
+        { id: "express", name: "Omni Core (Ventas)", price: 85000, usdPrice: 199, desc: "Motor de presencia. Landing de alto impacto + Chatbot IA con contexto total de tu negocio." },
+        { id: "negocio", name: "Omni Pro (Crecimiento)", price: 145000, usdPrice: 349, desc: "Tu sucursal digital 24/7. Web-App, Catálogo interactivo y Chatbot avanzado para cerrar ventas." },
+        { id: "mantenimiento", name: "Omni Sincro", price: 15000, usdPrice: 39, desc: "Evolución digital: actualización trimestral de inteligencia artificial y seguridad.", isMonthly: true }
     ],
     events: [
-        { id: "boda", name: "Gran Evento (Boda / XV)", price: 45000, usdPrice: 85, desc: "Cobertura profesional por hora. Incluye post-producción Fine Art y Galería Digital.", isHourly: true },
-        { id: "grad", name: "Graduación / Institucional", price: 45000, usdPrice: 85, desc: "Documentación de alta calidad para eventos académicos o corporativos.", isHourly: true },
-        { id: "cumple", name: "Cumpleaños / Fiesta", price: 45000, usdPrice: 85, desc: "Captura los momentos espontáneos de tu celebración más especial.", isHourly: true }
+        { id: "boda", name: "Memorias en Vivo (Gala)", price: 45000, usdPrice: 85, desc: "Cobertura narrativa por hora. Post-producción de autor y galería interactiva.", isHourly: true },
+        { id: "grad", name: "Evento Institucional", price: 45000, usdPrice: 85, desc: "Documentación estratégica de alta calidad para hitos académicos o corporativos.", isHourly: true },
+        { id: "cumple", name: "Celebración Social", price: 45000, usdPrice: 85, desc: "Captura de la energía y momentos espontáneos en tus fechas especiales.", isHourly: true }
     ],
     sports: [
-        { id: "surf", name: "Sesión de Surf / Agua", price: 35000, usdPrice: 65, desc: "Fotografía de acción desde la orilla o agua. Entrega rápida para redes.", isHourly: true },
-        { id: "golf", name: "Torneo / Sesión de Golf", price: 35000, usdPrice: 65, desc: "Cobertura de técnica y ambiente en el campo. Ideal para clubes.", isHourly: true }
+        { id: "surf", name: "Acción Surf/Agua", price: 35000, usdPrice: 65, desc: "Fotografía de adrenalina. Entrega rápida optimizada para impacto en redes sociales.", isHourly: true },
+        { id: "golf", name: "Acción Técnica (Golf)", price: 35000, usdPrice: 65, desc: "Cobertura de técnica y ambiente en campo para clubes y deportistas.", isHourly: true }
     ]
 };
 
 const UPSELLS = {
-    cuadro: { id: "cuadro", name: "Cuadro Vivo Extra", price: 45000, usdPrice: 95, desc: "Canvas 16x20\" adicional con Realidad Aumentada interactiva." },
-    nfc: { id: "nfc", name: "Tarjeta NFC Inteligente", price: 15000, usdPrice: 35, desc: "Tu legado o perfil de negocio en un toque físico." },
-    seo: { id: "seo", name: "Optimización IA Search", price: 25000, usdPrice: 55, desc: "Configuración avanzada de visibilidad local y textos optimizados." }
+    nfc: { id: "nfc", name: "Puente Físico Inteligente", price: 20000, usdPrice: 40, desc: "Tarjeta premium NFC con Realidad Aumentada integrada para impacto inmediato." },
+    cuadro: { id: "cuadro", name: "Cuadro Vivo Extra", price: 45000, usdPrice: 95, desc: "Canvas 16x20\" con Realidad Aumentada para expandir tu galería física." },
+    seo: { id: "seo", name: "Optimización IA Search", price: 25000, usdPrice: 55, desc: "Configuración de visibilidad local y textos persuasivos optimizados por IA." }
 };
 
 export default function CotizadorPage() {
@@ -128,24 +128,24 @@ export default function CotizadorPage() {
                                     onClick={() => { setCategory('family'); handleNext(); }}
                                 >
                                     <Camera className="w-12 h-12 text-curiol-500 mb-6" />
-                                    <h3 className="text-2xl font-serif text-white mb-2 italic">Arquitectura de Memorias</h3>
-                                    <p className="text-tech-400 text-sm font-light leading-relaxed">Familiar & Personal. Fotografía Fine Art y legados digitales que perduran.</p>
+                                    <h3 className="text-2xl font-serif text-white mb-2 italic">Legado Familiar</h3>
+                                    <p className="text-tech-400 text-sm font-light leading-relaxed">Arquitectura de Memorias & Personal. Fotografía Fine Art y legados digitales que perduran.</p>
                                 </GlassCard>
                                 <GlassCard
                                     className={cn("cursor-pointer border-2 transition-all", category === 'business' ? "border-tech-500 shadow-2xl shadow-tech-500/20" : "border-transparent")}
                                     onClick={() => { setCategory('business'); handleNext(); }}
                                 >
                                     <Code className="w-12 h-12 text-tech-500 mb-6" />
-                                    <h3 className="text-2xl font-serif text-white mb-2 italic">Aceleradora Digital Local</h3>
-                                    <p className="text-tech-400 text-sm font-light leading-relaxed">Comercios & Pymes. Infraestructura digital mínima viable para competir.</p>
+                                    <h3 className="text-2xl font-serif text-white mb-2 italic">Motor de Crecimiento OmniTech</h3>
+                                    <p className="text-tech-400 text-sm font-light leading-relaxed">Atraemos miradas, cerramos ventas. Tu negocio visible y creciendo 24/7 con infraestructura inteligente.</p>
                                 </GlassCard>
                                 <GlassCard
                                     className={cn("cursor-pointer border-2 transition-all", category === 'events' ? "border-curiol-500 shadow-2xl shadow-curiol-500/20" : "border-transparent")}
                                     onClick={() => { setCategory('events'); handleNext(); }}
                                 >
                                     <Sparkles className="w-12 h-12 text-curiol-500 mb-6" />
-                                    <h3 className="text-2xl font-serif text-white mb-2 italic">Eventos Memorables</h3>
-                                    <p className="text-tech-400 text-sm font-light leading-relaxed">Bodas, XV, Graduaciones & Fiestas. Capturamos la energía de tus celebraciones.</p>
+                                    <h3 className="text-2xl font-serif text-white mb-2 italic">Memorias en Vivo</h3>
+                                    <p className="text-tech-400 text-sm font-light leading-relaxed">Eventos Sociales & Corporativos. Capturamos la narrativa de tus grandes momentos.</p>
                                 </GlassCard>
                                 <GlassCard
                                     className={cn("cursor-pointer border-2 transition-all", category === 'sports' ? "border-tech-500 shadow-2xl shadow-tech-500/20" : "border-transparent")}

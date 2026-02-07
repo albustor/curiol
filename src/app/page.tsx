@@ -21,8 +21,14 @@ const DEFAULT_BACKGROUNDS = [
 
 export default function Home() {
   const [currentImage, setCurrentImage] = useState(0);
+  const [currentText, setCurrentText] = useState(0);
   const [heroImages, setHeroImages] = useState<string[]>(DEFAULT_BACKGROUNDS);
   const [portfolioTeaser, setPortfolioTeaser] = useState<PortfolioItem[]>([]);
+
+  const heroTexts = [
+    { main: "Memorias que", highlight: "cobran vida." },
+    { main: "Crecimiento comercial con", highlight: "nuestros servicios en tecnología" }
+  ];
 
   useEffect(() => {
     async function loadData() {
@@ -45,8 +51,14 @@ export default function Home() {
     const timer = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % heroImages.length);
     }, 10000);
-    return () => clearInterval(timer);
-  }, [heroImages.length]);
+    const textTimer = setInterval(() => {
+      setCurrentText((prev) => (prev + 1) % heroTexts.length);
+    }, 15000);
+    return () => {
+      clearInterval(timer);
+      clearInterval(textTimer);
+    };
+  }, [heroImages.length, heroTexts.length]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -80,8 +92,19 @@ export default function Home() {
               <span className="h-[1px] w-12 bg-curiol-500"></span>
             </div>
 
-            <h1 className="text-5xl md:text-7xl lg:text-9xl font-serif text-white mb-8 leading-[0.9] italic">
-              Digitalización <br /> <span className="text-curiol-gradient">Humana.</span>
+            <h1 className="text-5xl md:text-7xl lg:text-9xl font-serif text-white mb-8 leading-[0.9] italic min-h-[2.5em] flex flex-col justify-center">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentText}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.8 }}
+                >
+                  {heroTexts[currentText].main} <br />
+                  <span className="text-curiol-gradient">{heroTexts[currentText].highlight}</span>
+                </motion.div>
+              </AnimatePresence>
             </h1>
 
             <p className="text-tech-400 text-lg md:text-xl font-light max-w-2xl mx-auto mb-12 leading-relaxed">
@@ -130,19 +153,19 @@ export default function Home() {
                   <div className="w-16 h-16 rounded-2xl bg-curiol-500/10 flex items-center justify-center text-curiol-500 group-hover:bg-curiol-500 group-hover:text-white transition-all">
                     <Users className="w-8 h-8" />
                   </div>
-                  <span className="text-curiol-500 text-[10px] font-bold tracking-widest uppercase py-2 px-4 bg-curiol-500/5 rounded-full">Esfera Familiar</span>
+                  <span className="text-curiol-500 text-[10px] font-bold tracking-widest uppercase py-2 px-4 bg-curiol-500/5 rounded-full">Legado Familiar</span>
                 </div>
-                <h3 className="text-3xl font-serif text-white mb-6 italic">La Arquitectura de Memorias</h3>
-                <p className="text-tech-400 font-light mb-10 leading-relaxed italic">"Transformamos recuerdos en activos digitales vivos."</p>
+                <h3 className="text-3xl font-serif text-white mb-6 italic">Arquitectura de Memorias</h3>
+                <p className="text-tech-400 font-light mb-10 leading-relaxed italic">"Tus recuerdos convertidosen activos físicos con alma tecnológica."</p>
                 <p className="text-tech-300 text-sm font-light mb-10 leading-relaxed">
-                  Digitalización avanzada y catalogación de historias. Creamos cápsulas de tiempo digitales y narrativas interactivas (Phygital) para asegurar que tu historia no se pierda en formatos obsoletos.
+                  Digitalización avanzada y preservación de historias. Creamos activos Phygital (Físicos-Digitales) mediante Realidad Aumentada para asegurar que tu historia perdure con vida propia.
                 </p>
                 <div className="space-y-4 mb-12">
                   {[
                     "Visuales de Autor (Fine Art + IA)",
                     "Realidad Aumentada & Música Personalizada",
-                    "Cápsulas de Tiempo Digitales Privadas",
-                    "Membresía Legado (Docu-Sesiones)"
+                    "Cápsulas de Tiempo Digitales Interactivas",
+                    "Membresía Legado (Tu Biógrafo Privado)"
                   ].map(item => (
                     <div key={item} className="flex items-center gap-4 text-xs text-tech-400">
                       <div className="w-1.5 h-1.5 rounded-full bg-curiol-500" />
@@ -162,12 +185,12 @@ export default function Home() {
                   <div className="w-16 h-16 rounded-2xl bg-tech-500/10 flex items-center justify-center text-tech-500 group-hover:bg-tech-500 group-hover:text-white transition-all">
                     <Code className="w-8 h-8" />
                   </div>
-                  <span className="text-tech-500 text-[10px] font-bold tracking-widest uppercase py-2 px-4 bg-tech-500/5 rounded-full">Esfera Comercial</span>
+                  <span className="text-tech-500 text-[10px] font-bold tracking-widest uppercase py-2 px-4 bg-tech-500/5 rounded-full">Motor de Crecimiento</span>
                 </div>
-                <h3 className="text-3xl font-serif text-white mb-6 italic">La Aceleradora Digital Local</h3>
-                <p className="text-tech-400 font-light mb-10 leading-relaxed italic">"Infraestructura Digital Mínima Viable (IDMV)."</p>
+                <h3 className="text-3xl font-serif text-white mb-6 italic">Aceleradora OmniTech</h3>
+                <p className="text-tech-400 font-light mb-10 leading-relaxed italic">"Atraemos miradas, cerramos ventas. Presencia 24/7."</p>
                 <p className="text-tech-300 text-sm font-light mb-10 leading-relaxed">
-                  Soluciones robustas y eficientes para que el comercio local compita y destaque. Landing pages de alta conversión, micro-sistemas de gestión y optimización asistida por IA para un retorno de inversión real.
+                  Infraestructura inteligente diseñada para que el comercio local destaque. Landing pages de alta conversión, asistentes digitales personalizados y optimización asistida por IA para un impacto real en tus ventas.
                 </p>
                 <div className="space-y-4 mb-12">
                   {[

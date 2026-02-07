@@ -12,26 +12,25 @@ import {
 import Link from "next/link";
 
 const modalities = [
-    { id: "aventura", title: "Aventura Mágica", icon: Sparkles, desc: "Fotografía Fine Art + Fantasía IA. Incluye canción original y photobook con realidad aumentada. (₡95.000 / $199)." },
-    { id: "esencia", title: "Esencia Familiar", icon: Camera, desc: "Sesión High-End con 'Cuadros Vivos'. Tus fotos cobran vida a través de nuestra App de RA. (₡110.000 / $249)." },
-    { id: "marca", title: "Marca Personal Pro", icon: UserCheck, desc: "Retratos de impacto con asesoría visual y tarjeta NFC inteligente integrada. (₡65.000 / $149)." },
-    { id: "legado", title: "Membresía Legado", icon: Users, desc: "Tu biógrafo familiar: 3 sesiones al año, prioridad y herencia digital curada. (₡25.000 / $59 mes)." },
-    { id: "express", title: "Plan A: Presencia Express", icon: Smartphone, desc: "IDMV: Landing page de alto impacto con generador de textos asistido por IA. (₡85.000 / $199).", highlight: true },
-    { id: "negocio", title: "Plan B: Negocio Pro", icon: Code, desc: "Web corporativa con chatbot inteligente y módulos de automatización. (₡145.000 / $349).", highlight: true },
-    { id: "phygital", title: "Ecosistema Phygital", icon: Binary, desc: "Fusión de productos físicos con alma digital: catálogos AR y activos interactivos." },
-    { id: "mantenimiento", title: "Mantenimiento Evolutivo", icon: Sparkles, desc: "Gestión continua e integración trimestral de nuevos insumos de IA. (₡15.000 / $39 mes)." }
+    { id: "aventura", title: "Aventura Mágica", icon: Sparkles, desc: "Phygital Premium: 15 Fotos + Realidad Aumentada + Música IA. (₡95.000 / $199)." },
+    { id: "esencia", title: "Esencia Familiar", icon: Camera, desc: "El Corazón del Hogar: 20 Fotos + Cuadros Vivos con Realidad Aumentada. (₡110.000 / $249)." },
+    { id: "marca", title: "Marca Personal", icon: UserCheck, desc: "Impacto Profesional: 15 Fotos + Tarjeta Inteligente NFC. (₡65.000 / $149)." },
+    { id: "legado", title: "Membresía Legado", icon: Users, desc: "Tu Biógrafo: 3 sesiones anuales y custodia de herencia digital. (₡25.000 / $59 mes)." },
+    { id: "express", title: "Omni Core", icon: Smartphone, desc: "Imán de Clientes: Landing + Chatbot IA entrenado con tu negocio. (₡85.000 / $199).", highlight: true },
+    { id: "negocio", title: "Omni Pro", icon: Code, desc: "Motor de Ventas: Web-App completa + Asistente Inteligente 24/7. (₡145.000 / $349).", highlight: true },
+    { id: "phygital", title: "Ecosistema Phygital", icon: Binary, desc: "Fusión Física-Digital: Catálogos con Realidad Aumentada y activos interactivos." },
+    { id: "mantenimiento", title: "Omni Sincro", icon: Sparkles, desc: "Evolución IA: Actualización trimestral de innovaciones y seguridad. (₡15.000 / $39 mes)." }
 ];
 
 const generateServicesSummary = () => {
-    const summary = `*Curiol Studio 2026 - Portafolio Digitalización Humana*\n\n` +
-        `*FAMILIAS & LEGADO (B2C)*\n` +
+    const summary = `*Curiol Studio 2026 - Legado Familiar & OmniTech*\n\n` +
+        `*LEGADO FAMILIAR (B2C)*\n` +
         `• *Aventura Mágica*: ₡95k / $199\n` +
         `• *Esencia Familiar*: ₡110k / $249\n` +
         `• *Membresía Legado*: ₡25k / $59 mes\n\n` +
-        `*NEGOCIOS & ACELERACIÓN (B2B)*\n` +
-        `• *Marca Personal Pro*: ₡65k / $149\n` +
-        `• *Plan A: Presencia Express*: ₡85k / $199\n` +
-        `• *Plan B: Negocio Pro*: ₡145k / $349\n\n` +
+        `*ACELERADORA OMNITECH (B2B)*\n` +
+        `• *Omni Core*: ₡85k / $199\n` +
+        `• *Omni Pro*: ₡145k / $349\n\n` +
         `_Ingeniería digital con sensibilidad artística._`;
     return `https://wa.me/50660602617?text=${encodeURIComponent(summary)}`;
 };
@@ -46,7 +45,7 @@ export default function ServiciosPage() {
                     <div className="max-w-3xl">
                         <div className="flex items-center gap-3 mb-6">
                             <span className="h-[1px] w-12 bg-curiol-500"></span>
-                            <span className="text-curiol-500 text-[10px] font-bold tracking-[0.3em] uppercase">Digitalización Humana</span>
+                            <span className="text-curiol-500 text-[10px] font-bold tracking-[0.3em] uppercase">Legado Familiar</span>
                         </div>
                         <h1 className="text-5xl md:text-7xl font-serif text-white mb-8 leading-[0.9] italic">
                             Portafolio de <br /> <span className="text-curiol-gradient">Experiencias 2026.</span>

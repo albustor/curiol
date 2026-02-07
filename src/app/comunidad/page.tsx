@@ -34,22 +34,46 @@ export default function ComunidadPage() {
                     </div>
                 </header>
 
-                {/* Blog Section */}
+                {/* Curiol Academy Section */}
                 <section className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 mb-40">
-                    <div className="flex items-center gap-4 mb-12">
-                        <BookOpen className="text-curiol-500 w-6 h-6" />
-                        <h2 className="text-2xl font-serif text-white italic">Bitácora de Innovación</h2>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {posts.map((post) => (
-                            <GlassCard key={post.title} className="group cursor-pointer border-white/5 hover:border-curiol-500/20">
-                                <span className="text-curiol-500 text-[10px] font-bold uppercase tracking-widest block mb-4">{post.category} • {post.date}</span>
-                                <h3 className="text-xl font-serif text-white mb-6 group-hover:text-curiol-500 transition-colors leading-snug">{post.title}</h3>
-                                <div className="flex items-center gap-2 text-tech-500 text-xs font-bold uppercase tracking-widest">
-                                    Explorar artículo <ArrowRight className="w-4 h-4" />
+                    <div className="bg-gradient-to-br from-curiol-900/50 to-tech-900/50 border border-curiol-500/20 rounded-[3rem] p-8 md:p-16 relative overflow-hidden group">
+                        <div className="absolute top-0 left-0 w-full h-full bg-[url('/grid-subtle.svg')] opacity-5 pointer-events-none" />
+
+                        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                            <div>
+                                <div className="flex items-center gap-3 mb-6">
+                                    <Sparkles className="text-curiol-500 w-5 h-5" />
+                                    <span className="text-curiol-500 text-[10px] font-bold tracking-[0.4em] uppercase">Curiol Academy</span>
                                 </div>
-                            </GlassCard>
-                        ))}
+                                <h2 className="text-4xl md:text-6xl font-serif text-white mb-8 italic">Espacio de <br /> <span className="text-curiol-gradient">Aprendizaje Digital.</span></h2>
+                                <p className="text-tech-400 text-lg font-light leading-relaxed mb-10">
+                                    No solo entregamos tecnología, educamos para el futuro. Explora micro-lecciones y videos estratégicos generados con <span className="text-white font-bold">Google Veo 3</span> sobre cómo dominar la Realidad Aumentada y el crecimiento OmniTech.
+                                </p>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                    <div className="p-6 bg-tech-950/50 rounded-2xl border border-white/5 hover:border-curiol-500/30 transition-all">
+                                        <h4 className="text-white font-serif text-lg mb-2 italic">Domina tu Negocio</h4>
+                                        <p className="text-tech-500 text-xs font-light">Posts educativos sobre cómo el Chatbot de OmniTech cierra ventas por ti.</p>
+                                    </div>
+                                    <div className="p-6 bg-tech-950/50 rounded-2xl border border-white/5 hover:border-curiol-500/30 transition-all">
+                                        <h4 className="text-white font-serif text-lg mb-2 italic">Magia en tus Manos</h4>
+                                        <p className="text-tech-500 text-xs font-light">Tutoriales rápidos para interactuar con la Realidad Aumentada en tu hogar.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="aspect-video bg-tech-950 rounded-[2rem] border border-white/10 overflow-hidden relative group/video">
+                                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=2070')] bg-cover bg-center opacity-40 group-hover/video:scale-105 transition-transform duration-700" />
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <div className="w-16 h-16 rounded-full bg-curiol-500 flex items-center justify-center text-white shadow-2xl animate-pulse">
+                                        <Sparkles className="w-6 h-6" />
+                                    </div>
+                                </div>
+                                <div className="absolute bottom-6 left-6 right-6 p-4 bg-tech-900/80 backdrop-blur-md rounded-xl border border-white/5">
+                                    <p className="text-white text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+                                        <span className="w-2 h-2 bg-red-500 rounded-full" /> New Video: Powered by Google Veo 3
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
