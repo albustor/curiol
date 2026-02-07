@@ -12,6 +12,7 @@ const navLinks = [
     { href: "/portafolio", label: "Portafolio" },
     { href: "/servicios", label: "Servicios" },
     { href: "/experiencia", label: "Experiencia" },
+    { href: "/agenda", label: "Agenda" },
     { href: "/regalo", label: "Tarjeta Regalo" },
     { href: "/cotizar", label: "Cotizar" },
     { href: "/soluciones-web", label: "Soluciones Web" },
