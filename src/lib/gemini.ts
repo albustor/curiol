@@ -28,3 +28,24 @@ export async function generateAiChatResponse(clientMessage: string, channel: str
         return "Gracias por tu mensaje. Alberto se pondrá en contacto contigo pronto.";
     }
 }
+
+/**
+ * Generates creative copy for a new delivery (Title or Story)
+ */
+export async function generateDeliveryCopy(clientName: string, service: string, type: "song_title" | "story") {
+    if (!process.env.GEMINI_API_KEY) return "";
+
+    try {
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+        const prompt = type === "song_title"
+            ? `Genera 3 nombres cortos y poéticos para una canción o himno familiar de una sesión fotográfica de "${service}" para la "${clientName}". Solo los nombres, uno por línea.`
+            : `Escribe una historia muy corta y sumamente emotiva (máximo 60 palabras) que acompañe la entrega de fotos de la sesión "${service}" para la "${clientName}". Enfócate en el legado y el amor.`;
+
+        const result = await model.generateContent(prompt);
+        return result.response.text();
+    } catch (error) {
+        console.error("Gemini Copy Error:", error);
+        return "";
+    }
+}

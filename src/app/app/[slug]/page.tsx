@@ -35,14 +35,14 @@ export default function ClientAppPage({ params }: { params: Promise<{ slug: stri
 
         const fetchData = async () => {
             try {
-                const q = query(collection(db, "deliveries"), where("slug", "==", slug));
+                const q = query(collection(db, "deliveries"), where("slug", "==", slug), where("active", "==", true));
                 const querySnapshot = await getDocs(q);
 
                 if (!querySnapshot.empty) {
                     const docData = querySnapshot.docs[0].data();
                     setClientData(docData);
                 } else {
-                    console.error("No se encontró la entrega para el slug:", slug);
+                    console.error("No se encontró la entrega activa para el slug:", slug);
                 }
             } catch (error) {
                 console.error("Error fetching client data:", error);
@@ -152,11 +152,21 @@ export default function ClientAppPage({ params }: { params: Promise<{ slug: stri
                             </div>
                             <div className="bg-tech-950/50 p-6 rounded-2xl border border-tech-800 mb-6">
                                 <div className="flex items-center gap-4 mb-4">
-                                    <button className="w-14 h-14 bg-curiol-700 rounded-full flex items-center justify-center text-white hover:bg-curiol-500 transition-all shadow-lg ring-4 ring-curiol-700/20">
+                                    <button
+                                        onClick={() => {
+                                            if (clientData?.aiSongUrl) {
+                                                const audio = new Audio(clientData.aiSongUrl);
+                                                audio.play();
+                                            } else {
+                                                alert("El himno familiar se está procesando o no está disponible.");
+                                            }
+                                        }}
+                                        className="w-14 h-14 bg-curiol-700 rounded-full flex items-center justify-center text-white hover:bg-curiol-500 transition-all shadow-lg ring-4 ring-curiol-700/20"
+                                    >
                                         <Play className="w-6 h-6 fill-current" />
                                     </button>
                                     <div>
-                                        <p className="text-white text-base font-serif italic">Himno Familiar IA</p>
+                                        <p className="text-white text-base font-serif italic">{clientData?.aiSong || "Himno Familiar IA"}</p>
                                         <p className="text-tech-500 text-[10px] uppercase font-bold">Slideshow Fotográfico & Música</p>
                                     </div>
                                 </div>
@@ -165,13 +175,12 @@ export default function ClientAppPage({ params }: { params: Promise<{ slug: stri
                                         <div className="w-1/3 h-full bg-curiol-gradient animate-pulse" />
                                     </div>
                                     <div className="flex justify-between text-[8px] text-tech-600 font-bold uppercase">
-                                        <span>0:45</span>
-                                        <span>3:20</span>
+                                        <span>Procesando Legado...</span>
                                     </div>
                                 </div>
                             </div>
                             <p className="text-tech-400 text-xs font-light leading-relaxed mb-6">
-                                Tu historia convertida en una obra cinematográfica. Esta pieza fusiona tus mejores retratos con una composición musical generada para tu familia.
+                                {clientData?.multimediaStory || "Tu historia convertida en una obra cinematográfica. Esta pieza fusiona tus mejores retratos con una composición musical generada para tu familia."}
                             </p>
                         </GlassCard>
 
@@ -182,9 +191,18 @@ export default function ClientAppPage({ params }: { params: Promise<{ slug: stri
                                 <h4 className="text-white font-serif text-lg italic">Behind the Scenes</h4>
                             </div>
                             <div className="aspect-video bg-tech-900 rounded-xl overflow-hidden relative group cursor-pointer border border-tech-800">
-                                <div className="absolute inset-0 bg-tech-950/40 group-hover:bg-transparent transition-all flex items-center justify-center">
-                                    <Play className="w-10 h-10 text-white opacity-50 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100" />
-                                </div>
+                                {clientData?.btsVideoUrl ? (
+                                    <iframe
+                                        src={clientData.btsVideoUrl.replace("watch?v=", "embed/")}
+                                        className="w-full h-full border-none"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                    ></iframe>
+                                ) : (
+                                    <div className="absolute inset-0 bg-tech-950/40 group-hover:bg-transparent transition-all flex items-center justify-center">
+                                        <Play className="w-10 h-10 text-white opacity-50 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100" />
+                                    </div>
+                                )}
                             </div>
                             <p className="text-tech-500 text-[10px] mt-4 uppercase font-bold tracking-widest">Documental de la Sesión</p>
                         </GlassCard>

@@ -10,9 +10,11 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { GlassCard } from "@/components/ui/GlassCard";
 import {
-    Camera, Music, Sparkles, Upload, X, Check,
-    Loader2, ArrowRight, ArrowLeft, Image as ImageIcon
+    Camera, Music as MusicIcon, Sparkles, Upload, X, Check,
+    Loader2, ArrowRight, ArrowLeft, Image as ImageIcon,
+    Wand2, Play
 } from "lucide-react";
+import { generateDeliveryCopy } from "@/lib/gemini";
 
 export default function NewDeliveryPage() {
     const [loading, setLoading] = useState(true);
@@ -28,8 +30,12 @@ export default function NewDeliveryPage() {
         service: "Esencia Familiar + AR",
         date: new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }),
         aiSong: "",
+        aiSongUrl: "",
+        btsVideoUrl: "",
+        multimediaStory: "",
         arTrigger: "https://artivive.com",
     });
+    const [isGeneratingAi, setIsGeneratingAi] = useState<string | null>(null);
     const [files, setFiles] = useState<File[]>([]);
     const [previewUrls, setPreviewUrls] = useState<string[]>([]);
 
@@ -57,6 +63,22 @@ export default function NewDeliveryPage() {
     const removeFile = (index: number) => {
         setFiles(prev => prev.filter((_, i) => i !== index));
         setPreviewUrls(prev => prev.filter((_, i) => i !== index));
+    };
+
+    const handleAiGenerate = async (type: "song_title" | "story") => {
+        if (!formData.name) {
+            alert("Por favor ingresa primero el nombre del cliente.");
+            return;
+        }
+        setIsGeneratingAi(type);
+        const result = await generateDeliveryCopy(formData.name, formData.service, type);
+        if (type === "song_title") {
+            const firstTitle = result.split('\n')[0].replace(/^\d+\.\s*/, '').trim();
+            setFormData(prev => ({ ...prev, aiSong: firstTitle }));
+        } else {
+            setFormData(prev => ({ ...prev, multimediaStory: result }));
+        }
+        setIsGeneratingAi(null);
     };
 
     const handleCreateDelivery = async () => {
@@ -174,6 +196,8 @@ export default function NewDeliveryPage() {
                                                 <option>Aventura Mágica (IA)</option>
                                                 <option>Marca Personal Inteligente</option>
                                                 <option>Gran Evento (Boda/15)</option>
+                                                <option>Evento Institucional / Graduación</option>
+                                                <option>Acción Deportiva (Surf/Golf)</option>
                                                 <option>Membresía Legado</option>
                                             </select>
                                         </div>
@@ -225,9 +249,19 @@ export default function NewDeliveryPage() {
                                         <Sparkles className="w-6 h-6 text-curiol-500" />
                                         <h3 className="text-xl font-serif text-white italic">Configuración de Memoria Viva</h3>
                                     </div>
-                                    <div className="space-y-6">
-                                        <div>
-                                            <label className="block text-tech-400 text-[10px] font-bold uppercase tracking-widest mb-2">Nombre del Himno Familiar (IA)</label>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        {/* AI Song Section */}
+                                        <div className="space-y-4">
+                                            <div className="flex justify-between items-end">
+                                                <label className="block text-tech-400 text-[10px] font-bold uppercase tracking-widest">Nombre del Himno Familiar (IA)</label>
+                                                <button
+                                                    onClick={() => handleAiGenerate("song_title")}
+                                                    className="text-[8px] text-curiol-500 hover:text-white uppercase font-bold flex items-center gap-1 transition-all"
+                                                >
+                                                    {isGeneratingAi === "song_title" ? <Loader2 className="w-3 h-3 animate-spin" /> : <Wand2 className="w-3 h-3" />}
+                                                    Sugerir con IA
+                                                </button>
+                                            </div>
                                             <input
                                                 type="text"
                                                 value={formData.aiSong}
@@ -235,15 +269,54 @@ export default function NewDeliveryPage() {
                                                 placeholder="Ej: Resonancia Familiar"
                                                 className="w-full bg-tech-950 border border-tech-800 focus:border-curiol-500 outline-none p-4 rounded-xl text-white transition-all text-sm"
                                             />
+                                            <label className="block text-tech-400 text-[10px] font-bold uppercase tracking-widest">Link de Audio (Suno/Spotify/Hosting)</label>
+                                            <input
+                                                type="url"
+                                                value={formData.aiSongUrl}
+                                                onChange={(e) => setFormData({ ...formData, aiSongUrl: e.target.value })}
+                                                placeholder="https://suno.com/song/..."
+                                                className="w-full bg-tech-950 border border-tech-800 focus:border-curiol-500 outline-none p-4 rounded-xl text-white transition-all text-sm font-mono"
+                                            />
                                         </div>
-                                        <div>
-                                            <label className="block text-tech-400 text-[10px] font-bold uppercase tracking-widest mb-2">Link AR (Artivive/Awe.re)</label>
+
+                                        {/* Video & AR Section */}
+                                        <div className="space-y-4">
+                                            <label className="block text-tech-400 text-[10px] font-bold uppercase tracking-widest">Link Video Behind the Scenes (BTS)</label>
+                                            <input
+                                                type="url"
+                                                value={formData.btsVideoUrl}
+                                                onChange={(e) => setFormData({ ...formData, btsVideoUrl: e.target.value })}
+                                                placeholder="https://youtube.com/..."
+                                                className="w-full bg-tech-950 border border-tech-800 focus:border-curiol-500 outline-none p-4 rounded-xl text-white transition-all text-sm font-mono"
+                                            />
+                                            <label className="block text-tech-400 text-[10px] font-bold uppercase tracking-widest">Link AR (Artivive/Awe.re)</label>
                                             <input
                                                 type="url"
                                                 value={formData.arTrigger}
                                                 onChange={(e) => setFormData({ ...formData, arTrigger: e.target.value })}
                                                 placeholder="https://artivive.com/view/..."
-                                                className="w-full bg-tech-950 border border-tech-800 focus:border-curiol-500 outline-none p-4 rounded-xl text-white transition-all text-sm"
+                                                className="w-full bg-tech-950 border border-tech-800 focus:border-curiol-500 outline-none p-4 rounded-xl text-white transition-all text-sm font-mono"
+                                            />
+                                        </div>
+
+                                        {/* Multimedia Story */}
+                                        <div className="md:col-span-2 space-y-4">
+                                            <div className="flex justify-between items-end">
+                                                <label className="block text-tech-400 text-[10px] font-bold uppercase tracking-widest">Historia Multimedia (Narrativa Emotiva)</label>
+                                                <button
+                                                    onClick={() => handleAiGenerate("story")}
+                                                    className="text-[8px] text-curiol-500 hover:text-white uppercase font-bold flex items-center gap-1 transition-all"
+                                                >
+                                                    {isGeneratingAi === "story" ? <Loader2 className="w-3 h-3 animate-spin" /> : <Wand2 className="w-3 h-3" />}
+                                                    Redactar con IA
+                                                </button>
+                                            </div>
+                                            <textarea
+                                                value={formData.multimediaStory}
+                                                onChange={(e) => setFormData({ ...formData, multimediaStory: e.target.value })}
+                                                placeholder="Cuéntanos la historia detrás de esta sesión..."
+                                                rows={4}
+                                                className="w-full bg-tech-950 border border-tech-800 focus:border-curiol-500 outline-none p-6 rounded-xl text-white transition-all text-sm resize-none"
                                             />
                                         </div>
                                     </div>

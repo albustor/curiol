@@ -16,7 +16,7 @@ const SECTIONS = [
     { id: "summary", label: "Resumen" }
 ];
 
-const PACKAGES: Record<string, Array<{ id: string; name: string; price: number; usdPrice: number; desc: string; isMonthly?: boolean }>> = {
+const PACKAGES: Record<string, Array<{ id: string; name: string; price: number; usdPrice: number; desc: string; isMonthly?: boolean; isHourly?: boolean }>> = {
     family: [
         { id: "aventura", name: "Experiencia Aventura Mágica", price: 95000, usdPrice: 199, desc: "Sesión 1.5h. 15 Fotos Fine Art, Canción Original IA, Photobook y Realidad Aumentada." },
         { id: "esencia", name: "Experiencia Esencia Familiar", price: 110000, usdPrice: 249, desc: "Sesión 1.5h. 20 Fotos High-End, App Privada y 'Cuadro Vivo' con RA integrado." },
@@ -29,6 +29,15 @@ const PACKAGES: Record<string, Array<{ id: string; name: string; price: number; 
         { id: "express", name: "Plan A: Presencia Express", price: 85000, usdPrice: 199, desc: "Landing de alto impacto (Link-in-bio). Generador de Textos Asistido por IA." },
         { id: "negocio", name: "Plan B: Negocio Pro", price: 145000, usdPrice: 349, desc: "Web corporativa (4 secciones). Integra Chatbot y Módulos de IA para automatización." },
         { id: "mantenimiento", name: "Mantenimiento Evolutivo", price: 15000, usdPrice: 39, desc: "Hosting, seguridad e Integración Trimestral de Insumos de IA.", isMonthly: true }
+    ],
+    events: [
+        { id: "boda", name: "Gran Evento (Boda / XV)", price: 45000, usdPrice: 85, desc: "Cobertura profesional por hora. Incluye post-producción Fine Art y Galería Digital.", isHourly: true },
+        { id: "grad", name: "Graduación / Institucional", price: 45000, usdPrice: 85, desc: "Documentación de alta calidad para eventos académicos o corporativos.", isHourly: true },
+        { id: "cumple", name: "Cumpleaños / Fiesta", price: 45000, usdPrice: 85, desc: "Captura los momentos espontáneos de tu celebración más especial.", isHourly: true }
+    ],
+    sports: [
+        { id: "surf", name: "Sesión de Surf / Agua", price: 35000, usdPrice: 65, desc: "Fotografía de acción desde la orilla o agua. Entrega rápida para redes.", isHourly: true },
+        { id: "golf", name: "Torneo / Sesión de Golf", price: 35000, usdPrice: 65, desc: "Cobertura de técnica y ambiente en el campo. Ideal para clubes.", isHourly: true }
     ]
 };
 
@@ -41,14 +50,28 @@ const UPSELLS = {
 export default function CotizadorPage() {
     const [step, setStep] = useState(0);
     const [currency, setCurrency] = useState<"CRC" | "USD">("CRC");
-    const [category, setCategory] = useState<"family" | "business" | null>(null);
+    const [category, setCategory] = useState<"family" | "business" | "events" | "sports" | null>(null);
     const [selectedPackage, setSelectedPackage] = useState<any>(null);
     const [extras, setExtras] = useState<any[]>([]);
+    const [hours, setHours] = useState(2);
+    const [isCoastal, setIsCoastal] = useState(false);
 
     const handleNext = () => setStep(s => Math.min(s + 1, SECTIONS.length - 1));
     const handleBack = () => setStep(s => Math.max(s - 1, 0));
 
-    const total = (selectedPackage ? (currency === "CRC" ? selectedPackage.price : selectedPackage.usdPrice) : 0) +
+    const packageBaseTotal = selectedPackage
+        ? (currency === "CRC" ? selectedPackage.price : selectedPackage.usdPrice)
+        : 0;
+
+    const packageTotal = selectedPackage?.isHourly
+        ? packageBaseTotal * hours
+        : packageBaseTotal;
+
+    const coastalFee = isCoastal
+        ? (currency === "CRC" ? 15000 : 30)
+        : 0;
+
+    const total = packageTotal + coastalFee +
         extras.reduce((acc, curr) => acc + (currency === "CRC" ? curr.price : curr.usdPrice), 0);
 
     return (
@@ -116,6 +139,22 @@ export default function CotizadorPage() {
                                     <h3 className="text-2xl font-serif text-white mb-2 italic">Aceleradora Digital Local</h3>
                                     <p className="text-tech-400 text-sm font-light leading-relaxed">Comercios & Pymes. Infraestructura digital mínima viable para competir.</p>
                                 </GlassCard>
+                                <GlassCard
+                                    className={cn("cursor-pointer border-2 transition-all", category === 'events' ? "border-curiol-500 shadow-2xl shadow-curiol-500/20" : "border-transparent")}
+                                    onClick={() => { setCategory('events'); handleNext(); }}
+                                >
+                                    <Sparkles className="w-12 h-12 text-curiol-500 mb-6" />
+                                    <h3 className="text-2xl font-serif text-white mb-2 italic">Eventos Memorables</h3>
+                                    <p className="text-tech-400 text-sm font-light leading-relaxed">Bodas, XV, Graduaciones & Fiestas. Capturamos la energía de tus celebraciones.</p>
+                                </GlassCard>
+                                <GlassCard
+                                    className={cn("cursor-pointer border-2 transition-all", category === 'sports' ? "border-tech-500 shadow-2xl shadow-tech-500/20" : "border-transparent")}
+                                    onClick={() => { setCategory('sports'); handleNext(); }}
+                                >
+                                    <Camera className="w-12 h-12 text-tech-500 mb-6" />
+                                    <h3 className="text-2xl font-serif text-white mb-2 italic">Acción Deportiva</h3>
+                                    <p className="text-tech-400 text-sm font-light leading-relaxed">Surf, Golf & Entrenamientos. Fotografía de alto impacto para atletas y clubes.</p>
+                                </GlassCard>
                             </motion.div>
                         )}
 
@@ -147,6 +186,57 @@ export default function CotizadorPage() {
                                         </div>
                                     </GlassCard>
                                 ))}
+
+                                {selectedPackage?.isHourly && (
+                                    <div className="md:col-span-2 lg:col-span-3 mt-8 p-8 bg-tech-900 border border-tech-700 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-8">
+                                        <div className="space-y-2">
+                                            <p className="text-white font-serif text-xl italic">Calculadora de Cobertura</p>
+                                            <p className="text-tech-500 text-xs">Ajusta la cantidad de horas estimadas para tu evento.</p>
+                                        </div>
+                                        <div className="flex items-center gap-6">
+                                            <button
+                                                onClick={() => setHours(h => Math.max(2, h - 1))}
+                                                className="w-12 h-12 rounded-full border border-tech-700 flex items-center justify-center text-white hover:bg-tech-800 transition-all"
+                                            >
+                                                -
+                                            </button>
+                                            <div className="text-center min-w-[80px]">
+                                                <span className="text-3xl font-serif text-white italic">{hours}h</span>
+                                                <p className="text-[8px] text-tech-600 font-bold uppercase tracking-widest mt-1">Sugerido: ₡{total.toLocaleString()}</p>
+                                            </div>
+                                            <button
+                                                onClick={() => setHours(h => Math.min(12, h + 1))}
+                                                className="w-12 h-12 rounded-full border border-tech-700 flex items-center justify-center text-white hover:bg-tech-800 transition-all"
+                                            >
+                                                +
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Coastal Logistics Toggle */}
+                                {(category === 'events' || category === 'sports') && (
+                                    <div className="md:col-span-2 lg:col-span-3 mt-4 p-8 bg-curiol-500/5 border border-curiol-500/20 rounded-3xl flex items-center justify-between">
+                                        <div className="flex items-center gap-4">
+                                            <div className="p-3 bg-curiol-500/10 rounded-xl">
+                                                <ShoppingCart className="w-5 h-5 text-curiol-500" />
+                                            </div>
+                                            <div>
+                                                <p className="text-white font-bold text-sm">Logística Zona Costera</p>
+                                                <p className="text-tech-500 text-[10px] uppercase tracking-widest">Tamarindo, Pinilla, Flamingo, etc.</p>
+                                            </div>
+                                        </div>
+                                        <button
+                                            onClick={() => setIsCoastal(!isCoastal)}
+                                            className={cn(
+                                                "px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all",
+                                                isCoastal ? "bg-curiol-500 text-white" : "bg-tech-800 text-tech-500"
+                                            )}
+                                        >
+                                            {isCoastal ? "Activado (+ ₡15k)" : "Activar"}
+                                        </button>
+                                    </div>
+                                )}
                             </motion.div>
                         )}
 
@@ -228,10 +318,18 @@ export default function CotizadorPage() {
                                             </div>
                                             <span className="text-white font-bold">
                                                 {currency === "USD" ? "$" : "₡"}
-                                                {currency === "USD" ? selectedPackage?.usdPrice.toLocaleString() : selectedPackage?.price.toLocaleString()}
+                                                {total.toLocaleString()}
+                                                {selectedPackage?.isHourly && ` (${hours}h)`}
                                                 {selectedPackage?.isMonthly && " / mes"}
                                             </span>
                                         </div>
+
+                                        {isCoastal && (
+                                            <div className="flex justify-between text-curiol-500 text-xs italic">
+                                                <span>+ Logística Zona Costera</span>
+                                                <span>{currency === "USD" ? `$${coastalFee}` : `₡${coastalFee.toLocaleString()}`}</span>
+                                            </div>
+                                        )}
 
                                         {extras.length > 0 && (
                                             <div className="pt-6 border-t border-tech-800 space-y-4">
