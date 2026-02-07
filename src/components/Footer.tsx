@@ -35,7 +35,7 @@ export function Footer() {
                         <ul className="text-tech-300 text-sm space-y-4 font-light">
                             <li><Link href="/" className="hover:text-curiol-500 transition-all hover:translate-x-1 inline-block">Inicio</Link></li>
                             <li><Link href="/servicios" className="hover:text-curiol-500 transition-all hover:translate-x-1 inline-block">Servicios 2026</Link></li>
-                            <li><Link href="/soluciones-web" className="hover:text-curiol-500 transition-all hover:translate-x-1 inline-block">Aceleradora Digital</Link></li>
+                            <li><Link href="/soluciones-web" className="hover:text-curiol-500 transition-all hover:translate-x-1 inline-block">Soluciones Comerciales</Link></li>
                             <li><Link href="/cotizar" className="hover:text-curiol-500 transition-all hover:translate-x-1 inline-block">Cotizador Inteligente</Link></li>
                         </ul>
                     </div>
@@ -58,12 +58,13 @@ export function Footer() {
                     </div>
                 </div>
 
-                {/* Signature and Copyright */}
                 <div className="pt-12 border-t border-tech-800 flex flex-col md:flex-row justify-between items-center gap-12">
                     <div className="flex flex-col items-center md:items-start gap-4">
-                        <span className="font-['Great_Vibes'] text-4xl text-white/40 hover:text-white transition-all cursor-default">
-                            Alberto José Bustos Ortega
-                        </span>
+                        <img
+                            src="https://drive.google.com/uc?export=download&id=1jHgxpjK4Vjo8t0UGsZfIyFbyS8TrGtoG"
+                            alt="Firma Curiol Studio"
+                            className="h-16 object-contain opacity-50 hover:opacity-100 transition-all filter brightness-0 invert"
+                        />
                         <p className="text-[9px] text-tech-600 font-bold uppercase tracking-[0.3em]">
                             &copy; 2026 Curiol Studio. Todos los derechos reservados.
                         </p>

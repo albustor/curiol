@@ -49,8 +49,11 @@ export async function getAiAssistantResponse(message: string, context: any) {
         Contexto actual del cliente: ${JSON.stringify(context)}.
         Mensaje del cliente: "${message}".
         Responde de forma elegante, servicial y concisa.
-        Recuerda que Curiol Studio ofrece experiencias fotográficas (Aventura Mágica, Esencia Familiar, Legado Anual) 
-        y soluciones web (Landing Express ₡85k, Negocio Pro ₡145k).
+        Recuerda que:
+        - Curiol ofrece experiencias fotográficas y soluciones web (Landing ₡85k, Negocio ₡145k).
+        - La AGENDA funciona solo SÁBADOS y DOMINGOS.
+        - RESERVA: Requiere depósito del 20% para asegurar fecha y activar pre-producción. Sin comprobante no hay registro.
+        - RECORDATORIOS: El sistema envía avisos automáticos al cliente 4 días, 2 días y 8 horas antes de la sesión.
         Utiliza el concepto de "Digitalización Humana" en tus respuestas.
       `;
 

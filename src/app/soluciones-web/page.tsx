@@ -69,10 +69,10 @@ export default function SolucionesWebPage() {
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.8 }}
                     >
-                        <span className="text-curiol-500 text-xs font-bold tracking-[0.4em] uppercase mb-4 block animate-fade-in">Aceleradora Digital Local</span>
+                        <span className="text-curiol-500 text-xs font-bold tracking-[0.4em] uppercase mb-4 block animate-fade-in">Soluciones Comerciales & IA</span>
                         <h1 className="text-5xl md:text-8xl font-serif text-white italic mb-10 leading-tight">La Infraestructura <br /> <span className="text-curiol-gradient">Digital que Convierte.</span></h1>
                         <p className="text-tech-400 text-lg md:text-xl font-light max-w-3xl mx-auto leading-relaxed">
-                            Implementamos el **IDMV** (Infraestructura Digital Mínima Viable) para que el comercio local compita y destaque mediante tecnología de punta y procesos asistidos por Inteligencia Artificial.
+                            Implementamos Soluciones Comerciales basadas en el **IDMV** (Infraestructura Digital Mínima Viable) para que el comercio local compita y destaque mediante tecnología de punta y procesos asistidos por Inteligencia Artificial.
                         </p>
                     </motion.div>
                 </section>

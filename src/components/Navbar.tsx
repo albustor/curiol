@@ -13,9 +13,8 @@ const navLinks = [
     { href: "/servicios", label: "Servicios" },
     { href: "/experiencia", label: "Experiencia" },
     { href: "/agenda", label: "Agenda" },
-    { href: "/regalo", label: "Tarjeta Regalo" },
     { href: "/cotizar", label: "Cotizar" },
-    { href: "/soluciones-web", label: "Soluciones Web" },
+    { href: "/soluciones-web", label: "Soluciones Comerciales" },
     { href: "/comunidad", label: "Comunidad" },
 ];
 
@@ -38,16 +37,19 @@ export function Navbar() {
                 "fixed top-0 left-0 w-full z-50 transition-all duration-500 border-b",
                 isScrolled
                     ? "bg-tech-950/90 backdrop-blur-xl border-tech-800 py-4"
-                    : "bg-transparent border-transparent py-6"
+                    : "bg-transparent border-transparent py-6 lg:bg-transparent"
             )}
         >
+            {/* Top Gradient for visibility on mobile/light backgrounds */}
+            <div className="absolute inset-0 -z-10 bg-gradient-to-b from-tech-950/60 via-tech-950/20 to-transparent lg:hidden" />
+
             <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 flex justify-between items-center">
                 {/* Logo */}
                 <Link href="/" className="group flex flex-col items-center">
-                    <span className="font-serif text-2xl md:text-3xl tracking-[0.2em] text-white leading-none">
+                    <span className="font-serif text-2xl md:text-3xl tracking-[0.2em] text-white leading-none drop-shadow-lg">
                         CURIOL<span className="text-curiol-500 font-light ml-2">STUDIO</span>
                     </span>
-                    <p className="text-[0.6rem] md:text-[0.7rem] uppercase tracking-[0.5em] text-tech-500 text-center mt-1.5 group-hover:text-curiol-500 transition-colors">
+                    <p className="text-[0.6rem] md:text-[0.7rem] uppercase tracking-[0.5em] text-tech-400 text-center mt-1.5 group-hover:text-curiol-500 transition-colors drop-shadow-md">
                         Fotografía • Tecnología • Legado
                     </p>
                 </Link>
@@ -79,9 +81,9 @@ export function Navbar() {
                 <div className="lg:hidden flex items-center">
                     <button
                         onClick={() => setIsOpen(!isOpen)}
-                        className="text-curiol-500 p-2"
+                        className="text-curiol-500 p-2 bg-tech-950/40 backdrop-blur-md rounded-full border border-curiol-500/20 shadow-lg"
                     >
-                        {isOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
+                        {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                     </button>
                 </div>
             </div>
@@ -94,7 +96,7 @@ export function Navbar() {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: "100%" }}
                         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                        className="fixed inset-0 bg-tech-950 z-[100] lg:hidden flex flex-col p-8"
+                        className="fixed inset-0 bg-tech-950/98 backdrop-blur-2xl z-[100] lg:hidden flex flex-col p-8"
                     >
                         {/* Mobile Header in Overlay */}
                         <div className="flex justify-between items-center mb-12">
@@ -105,26 +107,26 @@ export function Navbar() {
                             </div>
                             <button
                                 onClick={() => setIsOpen(false)}
-                                className="text-curiol-500 p-2"
+                                className="text-curiol-500 p-2 bg-tech-900/50 rounded-full"
                             >
-                                <X className="w-8 h-8" />
+                                <X className="w-6 h-6" />
                             </button>
                         </div>
 
-                        <div className="flex flex-col items-start space-y-6">
+                        <div className="flex flex-col items-start space-y-6 flex-grow overflow-y-auto">
                             {navLinks.map((link, i) => (
                                 <motion.div
                                     key={link.href}
                                     initial={{ opacity: 0, x: 20 }}
                                     animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: i * 0.1 }}
+                                    transition={{ delay: i * 0.05 }}
                                 >
                                     <Link
                                         href={link.href}
                                         onClick={() => setIsOpen(false)}
                                         className={cn(
-                                            "text-xl font-serif italic tracking-widest uppercase transition-all",
-                                            pathname === link.href ? "text-curiol-500" : "text-white/60"
+                                            "text-2xl font-serif italic tracking-widest uppercase transition-all block",
+                                            pathname === link.href ? "text-curiol-500" : "text-white"
                                         )}
                                     >
                                         {link.label}
@@ -133,16 +135,16 @@ export function Navbar() {
                             ))}
                         </div>
 
-                        <div className="mt-auto pt-10 border-t border-white/5 space-y-4">
-                            <p className="text-tech-600 text-[8px] uppercase tracking-[0.4em] font-bold">Arquitectura de Memorias</p>
-                            <div className="flex items-center gap-6">
-                                <Link href="/admin" onClick={() => setIsOpen(false)} className="flex items-center gap-2 text-tech-500">
-                                    <ShieldCheck className="w-5 h-5" />
-                                    <span className="text-xs font-bold uppercase tracking-widest">Administración</span>
+                        <div className="mt-auto pt-10 border-t border-white/10 space-y-6">
+                            <p className="text-tech-500 text-[8px] uppercase tracking-[0.4em] font-bold">Memorias Vivas</p>
+                            <div className="grid grid-cols-2 gap-4">
+                                <Link href="/admin" onClick={() => setIsOpen(false)} className="flex items-center justify-center gap-2 p-4 bg-tech-900/50 rounded-xl border border-tech-800 text-tech-400">
+                                    <ShieldCheck className="w-4 h-4" />
+                                    <span className="text-[10px] font-bold uppercase tracking-widest">Admin</span>
                                 </Link>
-                                <Link href="/regalo" onClick={() => setIsOpen(false)} className="flex items-center gap-2 text-curiol-500">
-                                    <Gift className="w-5 h-5" />
-                                    <span className="text-xs font-bold uppercase tracking-widest">Regalo</span>
+                                <Link href="/regalo" onClick={() => setIsOpen(false)} className="flex items-center justify-center gap-2 p-4 bg-curiol-500/10 rounded-xl border border-curiol-500/20 text-curiol-500">
+                                    <Gift className="w-4 h-4" />
+                                    <span className="text-[10px] font-bold uppercase tracking-widest">Regalo</span>
                                 </Link>
                             </div>
                         </div>

@@ -17,10 +17,10 @@ import { useState } from "react";
 const PROCESS_STEPS = [
     {
         phase: "Antes",
-        title: "Conexión & Diseño",
-        desc: "Entendemos tu visión. Realizamos una sesión de consultoría para descubrir deseos profundos y definir la narrativa técnica o artística.",
+        title: "Conexión & Reserva",
+        desc: "Entendemos tu visión y aseguramos el espacio. Inicia con el agendamiento inteligente y la formalización mediante el depósito del 20%, activando la pre-producción IA.",
         icon: MessageCircle,
-        points: ["Briefing de Sensibilidad", "Moodboard Estratégico", "Definición de Escena"]
+        points: ["Agendamiento & Depósito 20%", "Briefing de Sensibilidad", "Moodboard Estratégico", "Diseño de Escena IA"]
     },
     {
         phase: "Durante",
@@ -40,7 +40,7 @@ const PROCESS_STEPS = [
 
 const INFOGRAPHIC = [
     {
-        title: "Arquitectura de Memorias",
+        title: "Memorias Vivas",
         target: "Para Familias & Individuos",
         color: "text-curiol-500",
         items: [

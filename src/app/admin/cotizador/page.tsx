@@ -25,16 +25,16 @@ interface Package {
 
 const EXTRAS = {
     legado: [
+        { id: "nfc", name: "Puente Físico (NFC + RA)", price: 20000, usd: 40, desc: "Tarjeta premium con Realidad Aumentada integrada." },
         { id: "cuadro", name: "Cuadro Vivo Extra (AR)", price: 45000, usd: 95, desc: "Canvas 16x20\" con Realidad Aumentada." },
-        { id: "nfc_extra", name: "Tarjeta Memoria Viva (NFC)", price: 15000, usd: 35, desc: "Acceso físico instantáneo a tu galería." },
         { id: "sesion_extra", name: "Sesión Adicional / Hora Extra", price: 35000, usd: 75, desc: "Más tiempo de cobertura para tu historia." },
         { id: "retoque_extra", name: "Retoque Fine Art (Por Foto)", price: 5000, usd: 10, desc: "Post-producción avanzada individual." }
     ],
     infra: [
+        { id: "nfc_business", name: "Puente Físico (Tarjeta IA NFC)", price: 20000, usd: 40, desc: "Tarjeta de contacto inteligente para networking." },
         { id: "seo", name: "Optimización SEO / IA Search", price: 25000, usd: 55, desc: "Visibilidad local y textos optimizados por IA." },
-        { id: "mantenimiento", name: "Mantenimiento Mensual", price: 15000, usd: 35, desc: "Soporte completo, hosting y actualizaciones." },
-        { id: "pagos", name: "Integración de Pagos", price: 45000, usd: 95, desc: "Configuración de pasarelas (SINPE/Tarjetas)." },
-        { id: "soporte", name: "Soporte Premium 24/7", price: 20000, usd: 45, desc: "Prioridad máxima en ajustes y consultas." }
+        { id: "mantenimiento", name: "Omni Sincro (Mantenimiento)", price: 15000, usd: 35, desc: "Soporte completo, hosting y actualizaciones." },
+        { id: "pagos", name: "Integración de Pagos", price: 45000, usd: 95, desc: "Configuración de pasarelas (SINPE/Tarjetas)." }
     ]
 };
 
@@ -42,54 +42,61 @@ const PACKAGES = {
     legado: [
         {
             id: "aventura",
-            name: "Aventura Mágica",
+            name: "Aventura Mágica (Phygital)",
             price: 95000,
             usd: 199,
-            desc: "Fantasía IA + Photobook + Música. Sesión Fine Art con intervención digital creativa."
+            desc: "15 Fotos Fine Art + IA. Realidad Aumentada y música personalizada."
         },
         {
             id: "esencia",
             name: "Esencia Familiar",
             price: 110000,
             usd: 249,
-            desc: "25 Fotos + Cuadro AR + Memoria Viva. El paquete más completo para el legado familiar."
+            desc: "20 Fotos High-End. Cuadros Vivos AR y App de legado Hogar."
+        },
+        {
+            id: "navidad",
+            name: "Instantes de Luz",
+            price: 40000,
+            usd: 99,
+            desc: "15 Fotos temáticas + Tarjeta física con mensaje de video en RA."
         },
         {
             id: "mini",
-            name: "Minisesiones",
+            name: "Minisesiones Phygital",
             price: 25000,
             usd: 49,
-            desc: "10 Fotos • 1 vez al mes en locaciones seleccionadas. Acceso democrático al arte."
+            desc: "8 Fotos ágiles. Incluye detalle interactivo de Realidad Aumentada."
         },
         {
             id: "membresia",
             name: "Membresía Legado Anual",
             price: 150000,
             usd: 299,
-            desc: "Biógrafo Familiar. Cobertura documental continua durante todo el año."
+            desc: "Biógrafo Familiar. 3 sesiones anuales y custodia de herencia digital."
         }
     ],
     infra: [
         {
             id: "marca",
-            name: "Marca Personal Inteligente (NFC)",
+            name: "Marca Personal",
             price: 65000,
             usd: 149,
-            desc: "Identidad digital con tarjeta inteligente NFC y perfil optimizado."
+            desc: "15 Fotos de impacto. Incluye asesoría visual y tarjeta NFC inteligente."
         },
         {
-            id: "impulso",
-            name: "Impulso Emprendedor (Web Pro)",
+            id: "core",
+            name: "Omni Core (Ventas)",
+            price: 85000,
+            usd: 199,
+            desc: "Landing de alto impacto + Chatbot IA con contexto de negocio."
+        },
+        {
+            id: "pro",
+            name: "Omni Pro (Crecimiento)",
             price: 145000,
             usd: 349,
-            desc: "Landing page de alta conversión + Estrategia de marca personal."
-        },
-        {
-            id: "aceleradora",
-            name: "Aceleradora Digital Local",
-            price: 285000,
-            usd: 599,
-            desc: "Sistema completo de ventas y presencia digital robusta."
+            desc: "Web-App completa, Catálogo interactivo y Chatbot avanzado."
         }
     ]
 };

@@ -129,7 +129,7 @@ export default function CotizadorPage() {
                                 >
                                     <Camera className="w-12 h-12 text-curiol-500 mb-6" />
                                     <h3 className="text-2xl font-serif text-white mb-2 italic">Legado Familiar</h3>
-                                    <p className="text-tech-400 text-sm font-light leading-relaxed">Arquitectura de Memorias & Personal. Fotografía Fine Art y legados digitales que perduran.</p>
+                                    <p className="text-tech-400 text-sm font-light leading-relaxed">Memorias Vivas & Personal. Fotografía Fine Art y legados digitales que perduran.</p>
                                 </GlassCard>
                                 <GlassCard
                                     className={cn("cursor-pointer border-2 transition-all", category === 'business' ? "border-tech-500 shadow-2xl shadow-tech-500/20" : "border-transparent")}

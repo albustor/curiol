@@ -5,16 +5,15 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { GlassCard } from "@/components/ui/GlassCard";
 import {
-    Calendar as CalendarIcon, Clock, User,
-    CheckCircle2, AlertCircle, XCircle,
-    Search, Filter, ExternalLink,
-    ShieldCheck, Smartphone, Mail,
-    MessageCircle, Trash2, Settings, Plus, Save
+    Calendar as CalendarIcon, Clock, CheckCircle2,
+    XCircle, ChevronLeft, ChevronRight, Filter,
+    Camera, Code, AlertCircle, Sparkles, User,
+    Mail, Smartphone, ShieldCheck
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { db } from "@/lib/firebase";
-import { collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc, getDoc, setDoc } from "firebase/firestore";
+import { collection, query, orderBy, onSnapshot, doc, updateDoc, Timestamp, where } from "firebase/firestore";
 
 interface Booking {
     id: string;
@@ -22,96 +21,42 @@ interface Booking {
     email: string;
     whatsapp: string;
     service: string;
-    date: any; // Firestore Timestamp
+    date: any;
     time: string;
-    status: "pending_approval" | "approved" | "rejected";
+    status: "pending_approval" | "confirmed" | "cancelled";
     paymentVerified: boolean;
-    aiConfidence?: number;
-    transactionId?: string;
-    createdAt: any;
+    aiConfidence: string;
 }
 
 export default function AdminAgendaPage() {
     const [bookings, setBookings] = useState<Booking[]>([]);
-    const [filter, setFilter] = useState<string>("all");
-    const [isLoading, setIsLoading] = useState(true);
-    const [isSaving, setIsSaving] = useState(false);
-    const [scheduleSettings, setScheduleSettings] = useState<{ [key: string]: string[] }>({
-        "6": ["14:00", "17:00"], // Saturday
-        "0": ["17:00"]          // Sunday
-    });
+    const [currentMonth, setCurrentMonth] = useState(new Date());
+    const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 
+    // Fetch Bookings
     useEffect(() => {
-        const q = query(collection(db, "bookings"), orderBy("createdAt", "desc"));
+        const q = query(collection(db, "bookings"), orderBy("date", "asc"));
         const unsubscribe = onSnapshot(q, (snapshot) => {
-            const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Booking[];
+            const data = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            })) as Booking[];
             setBookings(data);
-            setIsLoading(false);
         });
-
-        const fetchSettings = async () => {
-            const docRef = doc(db, "settings", "schedule");
-            const docSnap = await getDoc(docRef);
-            if (docSnap.exists()) {
-                setScheduleSettings(docSnap.data().slots);
-            }
-        };
-        fetchSettings();
-
         return () => unsubscribe();
     }, []);
 
-    const saveSchedule = async () => {
-        setIsSaving(true);
-        try {
-            await setDoc(doc(db, "settings", "schedule"), { slots: scheduleSettings });
-            alert("Configuración Guardada");
-        } catch (error) {
-            console.error("Error saving schedule:", error);
-        }
-        setIsSaving(false);
-    };
+    const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
+    const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
 
-    const addSlot = (day: string) => {
-        const time = prompt("Ingrese la hora (ej: 09:00, 14:00, 17:00):");
-        if (time && /^([01]\d|2[0-3]):([0-5]\d)$/.test(time)) {
-            setScheduleSettings(prev => ({
-                ...prev,
-                [day]: [...(prev[day] || []), time].sort()
-            }));
-        } else if (time) {
-            alert("Formato de hora inválido");
-        }
-    };
-
-    const removeSlot = (day: string, index: number) => {
-        setScheduleSettings(prev => ({
-            ...prev,
-            [day]: prev[day].filter((_, i) => i !== index)
-        }));
-    };
-
-    const updateStatus = async (id: string, status: string) => {
+    const handleStatusUpdate = async (id: string, status: string) => {
         try {
             await updateDoc(doc(db, "bookings", id), { status });
+            setSelectedBooking(null);
         } catch (error) {
-            console.error("Error updating status:", error);
+            console.error("Error updating booking status:", error);
         }
     };
-
-    const deleteBooking = async (id: string) => {
-        if (!confirm("¿Estás seguro de eliminar esta reserva?")) return;
-        try {
-            await deleteDoc(doc(db, "bookings", id));
-        } catch (error) {
-            console.error("Error deleting booking:", error);
-        }
-    };
-
-    const filteredBookings = bookings.filter(b => {
-        if (filter === "all") return true;
-        return b.status === filter;
-    });
 
     return (
         <div className="min-h-screen bg-tech-950 flex flex-col pt-32 pb-24 bg-grain">
@@ -121,183 +66,148 @@ export default function AdminAgendaPage() {
                 <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
                     <div>
                         <div className="flex items-center gap-3 mb-2">
-                            <span className="text-curiol-500 text-[10px] font-bold uppercase tracking-widest border border-curiol-500/30 px-3 py-1 rounded-full">Gestión de Tiempo</span>
+                            <CalendarIcon className="text-curiol-500 w-4 h-4" />
+                            <span className="text-curiol-500 text-[10px] font-bold uppercase tracking-widest">Sincronización Maestra</span>
                         </div>
-                        <h1 className="text-5xl font-serif text-white italic">Panel de Agenda</h1>
-                        <p className="text-tech-500 max-w-xl mt-4">Controla las reservaciones, valida comprobantes asistidos por IA y coordina el flujo de trabajo.</p>
-                    </div>
-
-                    <div className="flex bg-tech-900/50 p-1 rounded-xl border border-tech-800 backdrop-blur-md">
-                        {["all", "pending_approval", "approved", "rejected"].map((f) => (
-                            <button
-                                key={f}
-                                onClick={() => setFilter(f)}
-                                className={cn(
-                                    "px-4 py-2 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all",
-                                    filter === f ? "bg-curiol-700 text-white shadow-lg" : "text-tech-500 hover:text-white"
-                                )}
-                            >
-                                {f === "all" ? "Todos" : f === "pending_approval" ? "Pendientes" : f === "approved" ? "Aprobados" : "Rechazados"}
-                            </button>
-                        ))}
+                        <h1 className="text-5xl font-serif text-white italic">Centro de Agenda</h1>
+                        <p className="text-tech-500 mt-4">Gestión visual de sesiones, eventos y disponibilidad del estudio.</p>
                     </div>
                 </header>
 
-                <section className="mb-16">
-                    <GlassCard className="p-10 border-curiol-500/10">
-                        <div className="flex items-center justify-between mb-10">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    {/* Calendar View */}
+                    <GlassCard className="lg:col-span-8 p-10">
+                        <div className="flex justify-between items-center mb-10">
+                            <h2 className="text-2xl font-serif text-white italic">Calendario Visual</h2>
                             <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-curiol-500/10 rounded-2xl flex items-center justify-center text-curiol-500 border border-curiol-500/20">
-                                    <Settings className="w-6 h-6" />
-                                </div>
-                                <div>
-                                    <h2 className="text-2xl font-serif text-white italic">Configuración de Horarios</h2>
-                                    <p className="text-tech-500 text-[10px] uppercase font-bold tracking-widest mt-1">Define los bloques disponibles por día</p>
-                                </div>
+                                <button onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))} className="p-2 text-tech-400 hover:text-white transition-all"><ChevronLeft /></button>
+                                <span className="text-xs font-bold uppercase tracking-[0.2em] text-white">
+                                    {currentMonth.toLocaleString('es-ES', { month: 'long', year: 'numeric' })}
+                                </span>
+                                <button onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))} className="p-2 text-tech-400 hover:text-white transition-all"><ChevronRight /></button>
                             </div>
-                            <button
-                                onClick={saveSchedule}
-                                disabled={isSaving}
-                                className="px-8 py-4 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest rounded-xl hover:scale-105 transition-all flex items-center gap-3"
-                            >
-                                <Save className="w-4 h-4" /> {isSaving ? "Guardando..." : "Guardar Cambios"}
-                            </button>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            {[
-                                { id: "6", label: "Sábados" },
-                                { id: "0", label: "Domingos" }
-                            ].map((day) => (
-                                <div key={day.id} className="bg-tech-900/30 p-8 rounded-3xl border border-white/5">
-                                    <div className="flex justify-between items-center mb-6">
-                                        <h3 className="text-lg font-serif text-white italic">{day.label}</h3>
-                                        <button
-                                            onClick={() => addSlot(day.id)}
-                                            className="w-8 h-8 rounded-full bg-tech-800 text-tech-400 flex items-center justify-center hover:bg-curiol-500 hover:text-white transition-all"
-                                        >
-                                            <Plus className="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                    <div className="flex flex-wrap gap-3">
-                                        {scheduleSettings[day.id]?.length > 0 ? scheduleSettings[day.id].map((slot, i) => (
-                                            <div key={i} className="group relative">
-                                                <div className="px-6 py-3 bg-tech-950 border border-tech-800 rounded-xl text-white text-xs font-mono">
-                                                    {slot}
-                                                </div>
-                                                <button
-                                                    onClick={() => removeSlot(day.id, i)}
-                                                    className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-[10px]"
-                                                >
-                                                    <XCircle className="w-3 h-3" />
-                                                </button>
-                                            </div>
-                                        )) : (
-                                            <p className="text-tech-700 text-[10px] uppercase font-bold tracking-widest py-4 italic">No hay bloques definidos</p>
-                                        )}
-                                    </div>
-                                </div>
+                        <div className="grid grid-cols-7 gap-4 mb-4">
+                            {["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"].map(d => (
+                                <div key={d} className="text-[10px] font-bold text-tech-700 uppercase tracking-widest text-center">{d}</div>
                             ))}
                         </div>
-                    </GlassCard>
-                </section>
 
-                <div className="grid grid-cols-1 gap-6">
-                    <AnimatePresence mode="popLayout">
-                        {isLoading ? (
-                            <div className="py-20 text-center text-tech-700">Cargando reservaciones...</div>
-                        ) : filteredBookings.length === 0 ? (
-                            <div className="py-20 text-center text-tech-700 border-2 border-dashed border-tech-900 rounded-[2rem]">No hay reservaciones en esta categoría.</div>
-                        ) : (
-                            filteredBookings.map((booking) => (
-                                <motion.div
-                                    key={booking.id}
-                                    layout
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
-                                >
-                                    <GlassCard className={cn(
-                                        "p-8 border-l-8 transition-all",
-                                        booking.status === "approved" ? "border-l-green-500" :
-                                            booking.status === "rejected" ? "border-l-red-500" : "border-l-curiol-500"
-                                    )}>
-                                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                                            <div className="lg:col-span-2 flex flex-col items-center justify-center p-4 bg-tech-950/50 rounded-2xl border border-white/5">
-                                                <CalendarIcon className="w-5 h-5 text-curiol-500 mb-2" />
-                                                <p className="text-xl font-serif text-white italic">{booking.date?.toDate().toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}</p>
-                                                <p className="text-[10px] font-bold text-tech-500 uppercase tracking-widest mt-1">{booking.time}</p>
-                                            </div>
+                        <div className="grid grid-cols-7 gap-4">
+                            {Array.from({ length: firstDayOfMonth }).map((_, i) => <div key={`empty-${i}`} />)}
+                            {Array.from({ length: daysInMonth }).map((_, i) => {
+                                const day = i + 1;
+                                const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+                                const dayBookings = bookings.filter(b => b.date?.toDate().toDateString() === date.toDateString());
 
-                                            <div className="lg:col-span-3">
-                                                <h3 className="text-xl font-serif text-white italic mb-2">{booking.name}</h3>
-                                                <div className="space-y-1">
-                                                    <div className="flex items-center gap-2 text-[10px] text-tech-500 font-bold uppercase tracking-widest">
-                                                        <Mail className="w-3 h-3" /> {booking.email}
-                                                    </div>
-                                                    <div className="flex items-center gap-2 text-[10px] text-tech-500 font-bold uppercase tracking-widest">
-                                                        <Smartphone className="w-3 h-3" /> {booking.whatsapp}
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className="lg:col-span-3">
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    <div className={cn("px-3 py-1 rounded-full text-[8px] font-bold uppercase tracking-widest", booking.service === "legado" ? "bg-curiol-500/10 text-curiol-500" : "bg-tech-500/10 text-tech-500")}>
-                                                        {booking.service === "legado" ? "Arquitectura Memorias" : "Aceleradora Digital"}
-                                                    </div>
-                                                </div>
-                                                <div className="bg-tech-900/50 p-3 rounded-xl border border-white/5">
-                                                    <div className="flex justify-between items-center mb-1">
-                                                        <span className="text-[10px] text-tech-600 font-bold uppercase tracking-widest">Pago IA Validado</span>
-                                                        <span className={cn("text-[9px] font-bold", (booking.aiConfidence || 0) > 0.8 ? "text-green-500" : "text-yellow-500")}>
-                                                            {Math.round((booking.aiConfidence || 0) * 100)}% Confianza
-                                                        </span>
-                                                    </div>
-                                                    <p className="text-[10px] text-tech-400 font-mono">ID: {booking.transactionId}</p>
-                                                </div>
-                                            </div>
-
-                                            <div className="lg:col-span-4 flex justify-end gap-3">
-                                                {booking.status === "pending_approval" && (
-                                                    <>
-                                                        <button
-                                                            onClick={() => updateStatus(booking.id, "approved")}
-                                                            className="px-6 py-3 bg-green-600 text-white text-[9px] font-bold uppercase tracking-widest rounded-xl hover:bg-green-500 transition-all flex items-center gap-2"
-                                                        >
-                                                            <CheckCircle2 className="w-4 h-4" /> Aprobar
-                                                        </button>
-                                                        <button
-                                                            onClick={() => updateStatus(booking.id, "rejected")}
-                                                            className="px-6 py-3 bg-red-950 text-red-500 text-[9px] font-bold uppercase tracking-widest rounded-xl hover:bg-red-900 transition-all flex items-center gap-2 border border-red-900/30"
-                                                        >
-                                                            <XCircle className="w-4 h-4" /> Rechazar
-                                                        </button>
-                                                    </>
-                                                )}
-                                                {booking.status !== "pending_approval" && (
-                                                    <div className={cn(
-                                                        "px-6 py-3 rounded-xl text-[9px] font-bold uppercase tracking-widest flex items-center gap-2",
-                                                        booking.status === "approved" ? "bg-green-500/10 text-green-500" : "bg-red-500/10 text-red-500"
-                                                    )}>
-                                                        {booking.status === "approved" ? "Aprobado" : "Rechazado"}
-                                                    </div>
-                                                )}
+                                return (
+                                    <div key={day} className="min-h-[100px] bg-tech-950/30 border border-white/5 rounded-2xl p-3 flex flex-col gap-2 relative group hover:border-curiol-500/30 transition-all">
+                                        <span className="text-[10px] font-bold text-tech-700">{day}</span>
+                                        <div className="space-y-1">
+                                            {dayBookings.map(b => (
                                                 <button
-                                                    onClick={() => deleteBooking(booking.id)}
-                                                    className="p-3 text-tech-800 hover:text-red-500 transition-all"
+                                                    key={b.id}
+                                                    onClick={() => setSelectedBooking(b)}
+                                                    className={cn(
+                                                        "w-full text-[8px] font-bold uppercase tracking-widest p-1.5 rounded-lg truncate text-left transition-all",
+                                                        b.status === 'confirmed' ? "bg-green-500/10 text-green-500" :
+                                                            b.status === 'cancelled' ? "bg-red-500/10 text-red-500" : "bg-curiol-500/10 text-curiol-500"
+                                                    )}
                                                 >
-                                                    <Trash2 className="w-5 h-5" />
+                                                    {b.time} • {b.name}
                                                 </button>
-                                            </div>
+                                            ))}
                                         </div>
-                                    </GlassCard>
-                                </motion.div>
-                            ))
-                        )}
-                    </AnimatePresence>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </GlassCard>
+
+                    {/* Sidebar: Details/Next Citas */}
+                    <div className="lg:col-span-4 space-y-6">
+                        <header className="px-2">
+                            <h2 className="text-xl font-serif text-white italic">Próximas Reservas</h2>
+                            <p className="text-[9px] text-tech-700 font-bold uppercase tracking-widest mt-1">Pendientes de Aprobación</p>
+                        </header>
+
+                        <div className="space-y-4">
+                            {bookings.filter(b => b.status === 'pending_approval').map(b => (
+                                <GlassCard key={b.id} className="p-6 cursor-pointer hover:border-curiol-500/30 transition-all group" onClick={() => setSelectedBooking(b)}>
+                                    <div className="flex items-center gap-4 mb-4">
+                                        <div className="p-3 bg-tech-900 rounded-xl border border-white/5 text-curiol-500">
+                                            {b.service === 'legado' ? <Camera className="w-5 h-5" /> : <Code className="w-5 h-5" />}
+                                        </div>
+                                        <div>
+                                            <p className="text-white text-sm font-bold">{b.name}</p>
+                                            <p className="text-tech-500 text-[10px] uppercase tracking-widest">{b.date?.toDate().toLocaleDateString()} • {b.time}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <ShieldCheck className="w-3 h-3 text-green-500" />
+                                        <span className="text-[9px] font-bold uppercase tracking-widest text-green-500/60">Pago Validado por IA</span>
+                                    </div>
+                                </GlassCard>
+                            ))}
+                            {bookings.filter(b => b.status === 'pending_approval').length === 0 && (
+                                <p className="text-tech-700 text-xs italic text-center py-10">No hay reservas pendientes.</p>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </main>
+
+            {/* Booking Details Modal */}
+            <AnimatePresence>
+                {selectedBooking && (
+                    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-tech-950/90 backdrop-blur-md" onClick={() => setSelectedBooking(null)} />
+                        <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="relative bg-tech-900 border border-white/5 w-full max-w-2xl rounded-[2rem] shadow-2xl overflow-hidden p-10">
+                            <header className="mb-10 flex justify-between items-start">
+                                <div>
+                                    <span className="text-curiol-500 text-[10px] font-bold uppercase tracking-widest mb-4 block">Detalles de Reserva</span>
+                                    <h3 className="text-4xl font-serif text-white italic">{selectedBooking.name}</h3>
+                                </div>
+                                <div className={cn(
+                                    "px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest",
+                                    selectedBooking.status === 'confirmed' ? "bg-green-500/10 text-green-500" :
+                                        selectedBooking.status === 'cancelled' ? "bg-red-500/10 text-red-500" : "bg-curiol-500/10 text-curiol-500"
+                                )}>
+                                    {selectedBooking.status}
+                                </div>
+                            </header>
+
+                            <div className="grid grid-cols-2 gap-8 mb-10 text-white/80">
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-3"><Mail className="w-4 h-4 text-tech-500" /> <span className="text-sm">{selectedBooking.email}</span></div>
+                                    <div className="flex items-center gap-3"><Smartphone className="w-4 h-4 text-tech-500" /> <span className="text-sm">{selectedBooking.whatsapp}</span></div>
+                                    <div className="flex items-center gap-3"><Clock className="w-4 h-4 text-tech-500" /> <span className="text-sm">{selectedBooking.time}</span></div>
+                                </div>
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-3"><Sparkles className="w-4 h-4 text-tech-500" /> <span className="text-sm uppercase tracking-widest font-bold">{selectedBooking.service}</span></div>
+                                    <div className="flex items-center gap-3"><ShieldCheck className="w-4 h-4 text-green-500" /> <span className="text-sm text-green-500">IA Confianza: {selectedBooking.aiConfidence}%</span></div>
+                                </div>
+                            </div>
+
+                            <div className="flex gap-4 border-t border-white/5 pt-10">
+                                <button
+                                    onClick={() => handleStatusUpdate(selectedBooking.id, 'confirmed')}
+                                    className="flex-grow py-5 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest rounded-2xl flex items-center justify-center gap-2"
+                                >
+                                    <CheckCircle2 className="w-4 h-4" /> Aprobar y Agendar
+                                </button>
+                                <button
+                                    onClick={() => handleStatusUpdate(selectedBooking.id, 'cancelled')}
+                                    className="px-8 py-5 bg-tech-800 text-red-500 text-[10px] font-bold uppercase tracking-widest rounded-2xl flex items-center justify-center gap-2"
+                                >
+                                    <XCircle className="w-4 h-4" /> Cancelar
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
 
             <Footer />
         </div>

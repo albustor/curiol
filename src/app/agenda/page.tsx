@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, query, where, getDocs, Timestamp, doc, getDoc } from "firebase/firestore";
-import { generateGoogleCalendarLink, generateAppleCalendarLink } from "@/lib/agenda";
+import { notifyNewBooking } from "@/actions/notifications";
 
 const STEPS = [
     { id: "service", label: "Servicio", icon: Sparkles },
@@ -27,7 +27,7 @@ const STEPS = [
 ];
 
 const SERVICES = [
-    { id: "legado", name: "Arquitectura de Memorias", desc: "Sesión Fine Art / Personal", icon: Camera, color: "curiol-500" },
+    { id: "legado", name: "Memorias Vivas", desc: "Sesión Fine Art / Personal", icon: Camera, color: "curiol-500" },
     { id: "infra", name: "Aceleradora Digital", desc: "Negocio / Marca Personal", icon: Code, color: "tech-500" }
 ];
 
@@ -51,6 +51,7 @@ export default function AgendaPage() {
 
     const [availableSlots, setAvailableSlots] = useState<string[]>([]);
     const [occupiedSlots, setOccupiedSlots] = useState<string[]>([]);
+    const [monthBookings, setMonthBookings] = useState<any[]>([]);
     const [scheduleConfig, setScheduleConfig] = useState<{ [key: string]: string[] }>({
         "6": ["14:00", "17:00"],
         "0": ["17:00"]
@@ -68,6 +69,25 @@ export default function AgendaPage() {
         fetchConfig();
     }, []);
 
+    // Fetch all bookings for the current month view
+    useEffect(() => {
+        const fetchMonthBookings = async () => {
+            const startOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+            const endOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0, 23, 59, 59, 999);
+
+            const q = query(
+                collection(db, "bookings"),
+                where("date", ">=", Timestamp.fromDate(startOfMonth)),
+                where("date", "<=", Timestamp.fromDate(endOfMonth))
+            );
+
+            const querySnapshot = await getDocs(q);
+            const bookings = querySnapshot.docs.map(doc => doc.data());
+            setMonthBookings(bookings);
+        };
+        fetchMonthBookings();
+    }, [currentMonth]);
+
     // Fetch Availability when Date changes
     useEffect(() => {
         if (!selectedDate) return;
@@ -77,24 +97,14 @@ export default function AgendaPage() {
         setAvailableSlots(baseSlots);
         setSelectedTime(null);
 
-        const fetchOccupied = async () => {
-            const startOfDay = new Date(selectedDate);
-            startOfDay.setHours(0, 0, 0, 0);
-            const endOfDay = new Date(selectedDate);
-            endOfDay.setHours(23, 59, 59, 999);
+        const dayBookings = monthBookings.filter(b => {
+            const bDate = b.date instanceof Timestamp ? b.date.toDate() : new Date(b.date);
+            return bDate.toDateString() === selectedDate.toDateString();
+        });
 
-            const q = query(
-                collection(db, "bookings"),
-                where("date", ">=", Timestamp.fromDate(startOfDay)),
-                where("date", "<=", Timestamp.fromDate(endOfDay))
-            );
-
-            const querySnapshot = await getDocs(q);
-            const occupied = querySnapshot.docs.map(doc => doc.data().time);
-            setOccupiedSlots(occupied);
-        };
-        fetchOccupied();
-    }, [selectedDate, scheduleConfig]);
+        const occupied = dayBookings.map(b => b.time);
+        setOccupiedSlots(occupied);
+    }, [selectedDate, scheduleConfig, monthBookings]);
 
     const handleConfirmBooking = async () => {
         if (!paymentVoucher) return;
@@ -125,6 +135,7 @@ export default function AgendaPage() {
                     transactionId: aiResult.transactionId || "No detectado"
                 };
                 await addDoc(collection(db, "bookings"), bookingData);
+                await notifyNewBooking(bookingData);
                 setIsConfirmed(true);
             } else {
                 alert(`La IA no pudo validar el pago: ${aiResult.reason}`);
@@ -150,35 +161,6 @@ export default function AgendaPage() {
                             <p className="text-tech-400 mb-10 leading-relaxed font-light">
                                 Hola <span className="text-white font-bold">{clientData.name}</span>, hemos recibido tu comprobante. La IA está validando los detalles y Alberto aprobará tu fecha pronto.
                             </p>
-
-                            <div className="space-y-4 mb-10">
-                                <p className="text-tech-500 text-[10px] uppercase font-bold tracking-widest">Sincroniza con tu Agenda</p>
-                                <div className="flex flex-wrap justify-center gap-4">
-                                    <button
-                                        onClick={() => window.open(generateGoogleCalendarLink(
-                                            `Sesión Curiol Studio: ${selectedService}`,
-                                            selectedDate!,
-                                            new Date(selectedDate!.getTime() + 2 * 60 * 60 * 1000), // 2 hours duration
-                                            `Reserva para ${clientData.name}. Servicio: ${selectedService}. WhatsApp: ${clientData.whatsapp}`
-                                        ), "_blank")}
-                                        className="px-6 py-3 bg-tech-800 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl hover:bg-tech-700 transition-all border border-white/5"
-                                    >
-                                        Google Calendar
-                                    </button>
-                                    <a
-                                        href={generateAppleCalendarLink(
-                                            `Sesión Curiol Studio: ${selectedService}`,
-                                            selectedDate!,
-                                            new Date(selectedDate!.getTime() + 2 * 60 * 60 * 1000),
-                                            `Reserva para ${clientData.name}. Servicio: ${selectedService}. WhatsApp: ${clientData.whatsapp}`
-                                        )}
-                                        download="reserva_curiol.ics"
-                                        className="px-6 py-3 bg-tech-800 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl hover:bg-tech-700 transition-all border border-white/5"
-                                    >
-                                        Apple Calendar
-                                    </a>
-                                </div>
-                            </div>
 
                             <Link href="/experiencia" className="text-curiol-500 text-xs font-bold uppercase tracking-widest hover:underline transition-all">
                                 Volver a la Experiencia
@@ -262,18 +244,34 @@ export default function AgendaPage() {
                                                 const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
                                                 const isSelected = selectedDate?.toDateString() === date.toDateString();
                                                 const isPast = date < new Date(new Date().setHours(0, 0, 0, 0));
+
+                                                const dayOfWeek = date.getDay().toString();
+                                                const isWeekend = dayOfWeek === "6" || dayOfWeek === "0";
+
+                                                // Check if all slots are full
+                                                const baseSlots = scheduleConfig[dayOfWeek] || [];
+                                                const dayBookings = monthBookings.filter(b => {
+                                                    const bDate = b.date instanceof Timestamp ? b.date.toDate() : new Date(b.date);
+                                                    return bDate.toDateString() === date.toDateString();
+                                                });
+                                                const isFull = baseSlots.length > 0 && dayBookings.length >= baseSlots.length;
+                                                const isDisabled = isPast || !isWeekend || isFull;
+
                                                 return (
                                                     <button
                                                         key={day}
-                                                        disabled={isPast}
+                                                        disabled={isDisabled}
                                                         onClick={() => setSelectedDate(date)}
                                                         className={cn(
-                                                            "aspect-square rounded-xl flex items-center justify-center text-xs font-bold transition-all",
+                                                            "aspect-square rounded-xl flex flex-col items-center justify-center text-xs font-bold transition-all relative overflow-hidden",
                                                             isSelected ? "bg-curiol-500 text-white shadow-xl shadow-curiol-500/30" :
-                                                                isPast ? "opacity-10 cursor-not-allowed" : "text-tech-400 hover:bg-tech-800 hover:text-white"
+                                                                isDisabled ? "opacity-20 cursor-not-allowed bg-tech-950/50" : "text-tech-400 hover:bg-tech-800 hover:text-white"
                                                         )}
                                                     >
-                                                        {day}
+                                                        <span>{day}</span>
+                                                        {isFull && !isPast && isWeekend && (
+                                                            <span className="text-[6px] absolute bottom-1 uppercase font-black text-red-500/80">Lleno</span>
+                                                        )}
                                                     </button>
                                                 );
                                             })}
@@ -357,11 +355,16 @@ export default function AgendaPage() {
                             <motion.div key="step3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="max-w-xl mx-auto">
                                 <GlassCard className="p-10 text-center">
                                     <div className="bg-tech-900 rounded-[2rem] p-8 mb-10 border border-white/5">
-                                        <ShieldCheck className="w-12 h-12 text-curiol-500 mx-auto mb-6" />
-                                        <h3 className="text-2xl font-serif text-white italic mb-2">Requisito de Agenda</h3>
+                                        <Sparkles className="w-12 h-12 text-curiol-500 mx-auto mb-6" />
+                                        <h3 className="text-2xl font-serif text-white italic mb-2">Reserva de Espacio</h3>
                                         <p className="text-tech-500 text-sm font-light leading-relaxed">
-                                            Para asegurar el espacio y la pre-producción IA, es necesario adjuntar el comprobante del <span className="text-white font-bold">20% de adelanto</span>.
+                                            Para formalizar tu cita en la agenda, es indispensable reportar el <span className="text-white font-bold">20% de adelanto</span> vía SINPE o Depósito.
                                         </p>
+                                        <div className="mt-4 p-4 bg-curiol-500/10 rounded-2xl border border-curiol-500/20">
+                                            <p className="text-[10px] text-curiol-500 font-bold uppercase tracking-widest leading-relaxed">
+                                                Sin el comprobante, el sistema no permite completar el registro y el espacio permanecerá disponible para otros clientes.
+                                            </p>
+                                        </div>
                                     </div>
 
                                     <div className="space-y-6">

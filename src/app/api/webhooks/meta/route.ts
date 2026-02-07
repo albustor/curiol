@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/firebase";
-import { collection, query, where, getDocs, addDoc, Timestamp, doc, setDoc } from "firebase/firestore";
+import {
+    collection, query, where, getDocs,
+    addDoc, Timestamp, doc, setDoc,
+    getDoc, updateDoc
+} from "firebase/firestore";
 import { sendWhatsAppMessage, sendSocialMessage } from "@/lib/meta";
 import { generateAiChatResponse } from "@/lib/gemini";
 
@@ -22,8 +26,6 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-
-        // Process entry (could be from whatsapp, messenger, or instagram)
         const entry = body.entry?.[0];
         const changes = entry?.changes?.[0];
         const value = changes?.value;
@@ -31,8 +33,9 @@ export async function POST(req: Request) {
 
         if (messages && messages.length > 0) {
             const message = messages[0];
-            const from = message.from; // Phone number or IG/FB ID
-            const text = message.text?.body?.toUpperCase();
+            const from = message.from;
+            const text = message.text?.body;
+            const textUpper = text?.toUpperCase();
             const channel = body.object === "whatsapp_business_account" ? "whatsapp" : "social";
 
             // 1. Log the conversation
@@ -44,40 +47,83 @@ export async function POST(req: Request) {
                 timestamp: Timestamp.now()
             });
 
-            // 2. Find matching flow
+            // 2. Check for Active Session
+            const sessionRef = doc(db, "omni_sessions", from);
+            const sessionSnap = await getDoc(sessionRef);
+            let sessionData = sessionSnap.exists() ? sessionSnap.data() : null;
+
+            if (sessionData && sessionData.status === "active") {
+                const flowRef = doc(db, "omni_flows", sessionData.flowId);
+                const flowSnap = await getDoc(flowRef);
+
+                if (flowSnap.exists()) {
+                    const flow = flowSnap.data();
+                    const currentStepIdx = sessionData.currentStepIdx;
+                    const lastStep = flow.steps[currentStepIdx];
+
+                    if (lastStep.type === "capture") {
+                        const fieldName = lastStep.config?.field || "dato_extra";
+                        const newData = { ...sessionData.data, [fieldName]: text };
+                        await updateDoc(sessionRef, { data: newData });
+                        sessionData.data = newData;
+                    }
+
+                    const nextStepIdx = currentStepIdx + 1;
+                    if (nextStepIdx < flow.steps.length) {
+                        const nextStep = flow.steps[nextStepIdx];
+                        await sendStepMessage(from, nextStep, channel, body.object);
+                        await updateDoc(sessionRef, { currentStepIdx: nextStepIdx });
+                    } else {
+                        await updateDoc(sessionRef, { status: "completed" });
+                        if (Object.keys(sessionData.data || {}).length > 0) {
+                            await addDoc(collection(db, "leads"), {
+                                ...sessionData.data,
+                                source: "OmniFlow",
+                                flowName: flow.name,
+                                createdAt: Timestamp.now()
+                            });
+                        }
+                    }
+                    return NextResponse.json({ status: "ok" });
+                }
+            }
+
+            // 3. Find matching flow (Trigger)
             const flowsRef = collection(db, "omni_flows");
-            const q = query(flowsRef, where("triggerKeyword", "==", text), where("isActive", "==", true));
+            const q = query(flowsRef, where("triggerKeyword", "==", textUpper), where("isActive", "==", true));
             const flowSnap = await getDocs(q);
 
             if (!flowSnap.empty) {
+                const flowId = flowSnap.docs[0].id;
                 const flowData = flowSnap.docs[0].data();
-                const steps = flowData.steps || [];
+                const firstStep = flowData.steps[0];
 
-                // 3. Execute Steps
-                for (const step of steps) {
-                    if (step.type === "message" || step.type === "capture") {
-                        if (channel === "whatsapp") {
-                            await sendWhatsAppMessage(from, step.content);
-                        } else {
-                            // Detect platform from body.object or other metadata
-                            const platform = body.object === "instagram" ? "instagram" : "messenger";
-                            await sendSocialMessage(from, step.content, platform);
-                        }
-                    }
-                    // Capture logic: Wait for next message or handle state in Firestore
+                await setDoc(sessionRef, {
+                    flowId,
+                    currentStepIdx: 0,
+                    status: "active",
+                    data: {},
+                    lastUpdated: Timestamp.now()
+                });
+
+                await sendStepMessage(from, firstStep, channel, body.object);
+
+                if (flowData.steps.length > 1) {
+                    const secondStep = flowData.steps[1];
+                    await sendStepMessage(from, secondStep, channel, body.object);
+                    await updateDoc(sessionRef, { currentStepIdx: 1 });
                 }
             } else {
                 // 4. Fallback to Gemini AI
                 const aiResponse = await generateAiChatResponse(text, channel);
+                const platform = body.object === "instagram" ? "instagram" : "messenger";
 
                 if (channel === "whatsapp") {
                     await sendWhatsAppMessage(from, aiResponse);
                 } else {
-                    const platform = body.object === "instagram" ? "instagram" : "messenger";
                     await sendSocialMessage(from, aiResponse, platform);
                 }
 
-                // Log AI response
                 await addDoc(collection(db, "omni_conversations"), {
                     contactId: from,
                     message: aiResponse,
@@ -93,5 +139,15 @@ export async function POST(req: Request) {
     } catch (error) {
         console.error("Webhook Error:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }
+}
+
+async function sendStepMessage(from: string, step: any, channel: string, object: string) {
+    const content = step.content;
+    if (channel === "whatsapp") {
+        await sendWhatsAppMessage(from, content);
+    } else {
+        const platform = object === "instagram" ? "instagram" : "messenger";
+        await sendSocialMessage(from, content, platform);
     }
 }

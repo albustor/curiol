@@ -9,6 +9,7 @@ import { GiftCard } from "@/components/GiftCard";
 import { Camera, Binary, ArrowRight, Sparkles, Code, Users } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { AgendaWidget } from "@/components/AgendaWidget";
 
 import { getHeroImages, getPortfolioData, PortfolioItem } from "@/actions/portfolio";
 
@@ -66,7 +67,7 @@ export default function Home() {
 
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative min-h-screen pt-20 md:pt-0 flex items-center justify-center overflow-hidden">
+        <section className="relative min-h-screen pt-32 md:pt-40 flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0 bg-tech-950 bg-grain">
             <AnimatePresence>
               <motion.div
@@ -92,7 +93,7 @@ export default function Home() {
               <span className="h-[1px] w-12 bg-curiol-500"></span>
             </div>
 
-            <h1 className="text-5xl md:text-7xl lg:text-9xl font-serif text-white mb-8 leading-[0.9] italic min-h-[2.5em] flex flex-col justify-center">
+            <h1 className="text-4xl md:text-6xl lg:text-8xl font-serif text-white mb-8 leading-[0.9] italic min-h-[2.5em] flex flex-col justify-center">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentText}
@@ -120,9 +121,13 @@ export default function Home() {
               </Link>
             </div>
 
-            <p className="text-white text-sm italic font-light leading-relaxed max-w-2xl mx-auto animate-fade-in delay-500">
+            <p className="text-white/80 text-sm italic font-light leading-relaxed max-w-3xl mx-auto animate-fade-in delay-500 mt-8 border-t border-white/10 pt-8">
               "No vendemos solo código ni solo fotos; vendemos Presencia y Legado." <br />
-              Una propuesta integral para la esfera familiar y comercial.
+              <span className="block mt-4 text-tech-400 not-italic">
+                Emanado del corazón de Guaitil, el curiol es el alma mineral que ha dado color a nuestra historia Chorotega,
+                es la materia prima con que pintan las vasijas de barro. Hoy, esa esencia trasciende fronteras,
+                transformando la tierra en arte eterno con visión global.
+              </span>
             </p>
           </div>
 
@@ -155,7 +160,7 @@ export default function Home() {
                   </div>
                   <span className="text-curiol-500 text-[10px] font-bold tracking-widest uppercase py-2 px-4 bg-curiol-500/5 rounded-full">Legado Familiar</span>
                 </div>
-                <h3 className="text-3xl font-serif text-white mb-6 italic">Arquitectura de Memorias</h3>
+                <h3 className="text-3xl font-serif text-white mb-6 italic">Memorias Vivas</h3>
                 <p className="text-tech-400 font-light mb-10 leading-relaxed italic">"Tus recuerdos convertidosen activos físicos con alma tecnológica."</p>
                 <p className="text-tech-300 text-sm font-light mb-10 leading-relaxed">
                   Digitalización avanzada y preservación de historias. Creamos activos Phygital (Físicos-Digitales) mediante Realidad Aumentada para asegurar que tu historia perdure con vida propia.
@@ -304,20 +309,25 @@ export default function Home() {
         </section>
 
         {/* AI Assistant Hook */}
-        <section className="py-32 px-4 md:px-8 lg:px-16 bg-tech-900 border-t border-tech-800">
-          <div className="max-w-4xl mx-auto text-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="lg:col-span-12 text-center mb-16">
             <div className="inline-flex p-3 bg-curiol-500/10 rounded-full text-curiol-500 mb-8">
               <Binary className="w-6 h-6" />
             </div>
             <h2 className="text-4xl md:text-5xl font-serif text-white mb-10 italic text-curiol-gradient">¿Cuál es tu próximo legado?</h2>
-            <p className="text-tech-400 text-xl font-light mb-12 leading-relaxed">
+            <p className="text-tech-400 text-xl font-light mb-12 leading-relaxed max-w-2xl mx-auto">
               Nuestro asistente inteligente te guía para elegir la mejor ruta: ya sea inmortalizar tu historia familiar o construir la base tecnológica de tu negocio.
             </p>
-            <button className="px-12 py-6 bg-tech-950 border border-tech-700 text-curiol-500 text-xs font-bold uppercase tracking-widest hover:bg-tech-800 hover:border-curiol-500 transition-all rounded-full flex items-center gap-4 mx-auto">
+            <button className="px-12 py-6 bg-tech-100 text-tech-950 text-xs font-bold uppercase tracking-widest hover:bg-white transition-all rounded-full flex items-center gap-4 mx-auto shadow-2xl shadow-curiol-500/10">
               Conversar con Curiol IA <Sparkles className="w-4 h-4" />
             </button>
           </div>
-        </section>
+
+          {/* Agenda Integration */}
+          <div className="lg:col-start-4 lg:col-span-6 mt-12">
+            <AgendaWidget />
+          </div>
+        </div>
       </main>
 
       <Footer />

@@ -5,6 +5,7 @@ import { Footer } from "@/components/Footer";
 import { AiAssistant } from "@/components/AiAssistant";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { PhygitalSimulation } from "@/components/PhygitalSimulation";
+import { AgendaWidget } from "@/components/AgendaWidget";
 import {
     UserCheck, ShoppingBag, UtensilsCrossed, Home,
     Briefcase, Camera, Smartphone, Binary, ArrowRight, Sparkles, Code, MessageCircle, Users
@@ -23,12 +24,12 @@ const modalities = [
 ];
 
 const generateServicesSummary = () => {
-    const summary = `*Curiol Studio 2026 - Legado Familiar & OmniTech*\n\n` +
+    const summary = `*Curiol Studio 2026 - Legado Familiar & Soluciones Comerciales*\n\n` +
         `*LEGADO FAMILIAR (B2C)*\n` +
         `• *Aventura Mágica*: ₡95k / $199\n` +
         `• *Esencia Familiar*: ₡110k / $249\n` +
         `• *Membresía Legado*: ₡25k / $59 mes\n\n` +
-        `*ACELERADORA OMNITECH (B2B)*\n` +
+        `*SOLUCIONES COMERCIALES (B2B)*\n` +
         `• *Omni Core*: ₡85k / $199\n` +
         `• *Omni Pro*: ₡145k / $349\n\n` +
         `_Ingeniería digital con sensibilidad artística._`;
@@ -51,7 +52,7 @@ export default function ServiciosPage() {
                             Portafolio de <br /> <span className="text-curiol-gradient">Experiencias 2026.</span>
                         </h1>
                         <p className="text-tech-400 text-base md:text-xl font-light leading-relaxed">
-                            Diseñamos activos digitales que trascienden el tiempo. Desde la arquitectura de memorias familiares hasta la aceleración tecnológica para el comercio local.
+                            Diseñamos activos digitales que trascienden el tiempo. Desde las memorias vivas familiares hasta la aceleración tecnológica para el comercio local.
                         </p>
                     </div>
                 </header>
@@ -93,18 +94,15 @@ export default function ServiciosPage() {
                 </section>
 
                 {/* CTA Hero */}
-                <section className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16">
-                    <div className="bg-gradient-to-r from-tech-950 to-tech-900 border border-tech-800 p-12 md:p-24 rounded-[3rem] text-center relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-curiol-700/10 via-transparent to-transparent opacity-50" />
-
-                        <div className="relative z-10">
-                            <h2 className="text-4xl md:text-6xl font-serif text-white mb-10 italic">¿Cuál es tu próximo legado?</h2>
-                            <div className="flex flex-wrap justify-center gap-6">
-                                <Link href="/cotizar" className="px-12 py-6 bg-curiol-700 text-white text-xs font-bold uppercase tracking-widest hover:bg-curiol-500 transition-all transform hover:-translate-y-1 shadow-2xl flex items-center gap-3">
+                <section className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 mb-20">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        <AgendaWidget />
+                        <div className="bg-gradient-to-r from-tech-950 to-tech-900 border border-tech-800 p-12 rounded-[3rem] text-center relative overflow-hidden group">
+                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-curiol-700/10 via-transparent to-transparent opacity-50" />
+                            <div className="relative z-10">
+                                <h2 className="text-3xl font-serif text-white mb-8 italic">¿Listo para empezar?</h2>
+                                <Link href="/cotizar" className="inline-flex items-center gap-4 px-10 py-5 bg-curiol-700 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-curiol-500 transition-all rounded-full">
                                     Personalizar mi Legado <ArrowRight className="w-4 h-4" />
-                                </Link>
-                                <Link href="/soluciones-web" className="px-12 py-6 border border-tech-700 text-white text-xs font-bold uppercase tracking-widest hover:bg-tech-800 transition-all">
-                                    Ver Aceleradora Digital
                                 </Link>
                             </div>
                         </div>

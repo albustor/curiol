@@ -45,6 +45,9 @@ export default function OmnitechDashboard() {
                     </div>
 
                     <div className="flex gap-4">
+                        <Link href="/admin/omnitech/chat" className="px-8 py-4 bg-tech-900 border border-tech-800 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl hover:bg-tech-800 transition-all flex items-center gap-3">
+                            <MessageCircle className="w-4 h-4 text-curiol-500" /> Live Chat
+                        </Link>
                         <Link href="/admin/omnitech/flows" className="px-8 py-4 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest rounded-xl hover:scale-105 transition-all flex items-center gap-3">
                             <Plus className="w-4 h-4" /> Crear Nuevo Flujo
                         </Link>
