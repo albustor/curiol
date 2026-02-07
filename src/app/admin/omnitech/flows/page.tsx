@@ -16,9 +16,14 @@ import { collection, addDoc, query, onSnapshot, doc, updateDoc, deleteDoc, Times
 
 interface FlowStep {
     id: string;
-    type: "trigger" | "message" | "capture" | "ai";
+    type: "trigger" | "message" | "capture" | "ai" | "condition" | "delay";
     content: string;
-    config?: any;
+    config?: {
+        field?: string;
+        operator?: "equals" | "contains";
+        value?: string;
+        delaySeconds?: number;
+    };
     nextId?: string;
 }
 
@@ -179,7 +184,9 @@ export default function FlowBuilderPage() {
                                                     step.type === "trigger" ? "bg-blue-500/20 border-blue-500/30 text-blue-500" :
                                                         step.type === "message" ? "bg-green-500/20 border-green-500/30 text-green-500" :
                                                             step.type === "capture" ? "bg-yellow-500/20 border-yellow-500/30 text-yellow-500" :
-                                                                "bg-purple-500/20 border-purple-500/30 text-purple-500"
+                                                                step.type === "delay" ? "bg-orange-500/20 border-orange-500/30 text-orange-500" :
+                                                                    step.type === "condition" ? "bg-blue-300/20 border-blue-300/30 text-blue-300" :
+                                                                        "bg-purple-500/20 border-purple-500/30 text-purple-500"
                                                 )}>
                                                     {step.type === "trigger" ? <Zap className="w-5 h-5" /> :
                                                         step.type === "message" ? <Send className="w-5 h-5" /> :
@@ -208,11 +215,40 @@ export default function FlowBuilderPage() {
                                                         )}
                                                         {step.type === "capture" && (
                                                             <div className="mt-4 flex items-center gap-2">
-                                                                <span className="text-[8px] text-tech-600 font-bold uppercase tracking-widest">Guardar en el campo:</span>
+                                                                <span className="text-[8px] text-tech-600 font-bold uppercase tracking-widest">Campo:</span>
                                                                 <input
                                                                     value={step.config?.field || ""}
-                                                                    onChange={(e) => updateStep(step.id, step.content, { field: e.target.value })}
+                                                                    onChange={(e) => updateStep(step.id, step.content, { ...step.config, field: e.target.value })}
                                                                     className="bg-tech-950 border border-white/5 rounded px-2 py-1 text-[8px] text-yellow-500 font-mono"
+                                                                />
+                                                            </div>
+                                                        )}
+                                                        {step.type === "delay" && (
+                                                            <div className="mt-4 flex items-center gap-2">
+                                                                <span className="text-[8px] text-tech-600 font-bold uppercase tracking-widest">Segundos:</span>
+                                                                <input
+                                                                    type="number"
+                                                                    value={step.config?.delaySeconds || 0}
+                                                                    onChange={(e) => updateStep(step.id, step.content, { ...step.config, delaySeconds: parseInt(e.target.value) })}
+                                                                    className="bg-tech-950 border border-white/5 rounded px-2 py-1 text-[8px] text-orange-500 font-mono"
+                                                                />
+                                                            </div>
+                                                        )}
+                                                        {step.type === "condition" && (
+                                                            <div className="mt-4 grid grid-cols-2 gap-2">
+                                                                <select
+                                                                    value={step.config?.operator || "equals"}
+                                                                    onChange={(e) => updateStep(step.id, step.content, { ...step.config, operator: e.target.value as any })}
+                                                                    className="bg-tech-950 border border-white/5 rounded px-2 py-1 text-[8px] text-blue-300 font-bold uppercase"
+                                                                >
+                                                                    <option value="equals">Es igual a</option>
+                                                                    <option value="contains">Contiene</option>
+                                                                </select>
+                                                                <input
+                                                                    value={step.config?.value || ""}
+                                                                    onChange={(e) => updateStep(step.id, step.content, { ...step.config, value: e.target.value })}
+                                                                    className="bg-tech-950 border border-white/5 rounded px-2 py-1 text-[8px] text-blue-300 font-mono"
+                                                                    placeholder="Valor..."
                                                                 />
                                                             </div>
                                                         )}
@@ -226,7 +262,9 @@ export default function FlowBuilderPage() {
                                             {[
                                                 { type: "message", icon: MessageSquare, label: "Mensaje" },
                                                 { type: "capture", icon: Database, label: "Captura" },
-                                                { type: "ai", icon: Bot, label: "Respuesta IA" }
+                                                { type: "delay", icon: Zap, label: "Retraso" },
+                                                { type: "condition", icon: Sparkles, label: "Condición" },
+                                                { type: "ai", icon: Bot, label: "IA" }
                                             ].map((btn) => (
                                                 <button
                                                     key={btn.type}

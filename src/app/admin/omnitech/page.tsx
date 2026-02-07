@@ -1,155 +1,143 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
 import { GlassCard } from "@/components/ui/GlassCard";
 import {
-    MessageSquare, Users, Zap,
-    BarChart3, Settings, ArrowRight,
-    Search, Filter, Plus, MessageCircle,
-    Instagram, Facebook, Smartphone
+    Bot, MessageSquare, Zap, Users,
+    Clock, Instagram, Facebook, ChevronRight,
+    TrendingUp, Activity, BarChart3
 } from "lucide-react";
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { db } from "@/lib/firebase";
-import { collection, query, orderBy, limit, onSnapshot } from "firebase/firestore";
+import { useState } from "react";
 
 export default function OmnitechDashboard() {
-    const [stats, setStats] = useState({
-        totalChats: 248,
-        activeFlows: 12,
-        capturedLeads: 85,
-        avgResponseTime: "1.2s"
-    });
+    const stats = [
+        { label: "Conversaciones Totales", value: "1,284", icon: MessageSquare, sub: "+12% este mes", color: "text-blue-500" },
+        { label: "Leads Capturados", value: "482", icon: Users, sub: "+5.2% tasa conv.", color: "text-curiol-500" },
+        { label: "Flujos Activos", value: "24", icon: Zap, sub: "8 flujos IA", color: "text-purple-500" },
+        { label: "Tiempo de Respuesta", value: "0.8s", icon: Clock, sub: "Promedio global", color: "text-green-500" }
+    ];
 
     const channels = [
-        { name: "WhatsApp", icon: MessageCircle, status: "connected", color: "text-green-500", bg: "bg-green-500/10" },
-        { name: "Instagram", icon: Instagram, status: "pending", color: "text-pink-500", bg: "bg-pink-500/10" },
-        { name: "Facebook", icon: Facebook, status: "disconnected", color: "text-blue-500", bg: "bg-blue-500/10" }
+        { name: "WhatsApp", status: "Conectado", icon: MessageSquare, color: "text-green-500" },
+        { name: "Instagram DMs", status: "Conectado", icon: Instagram, color: "text-pink-500" },
+        { name: "Facebook Messenger", status: "Inactivo", icon: Facebook, color: "text-blue-500" }
     ];
 
     return (
-        <div className="min-h-screen bg-tech-950 flex flex-col pt-32 pb-24 bg-grain">
+        <div className="min-h-screen bg-tech-950 pt-32 pb-24">
             <Navbar />
 
-            <main className="flex-grow max-w-7xl mx-auto px-4 w-full">
-                <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
-                    <div>
-                        <div className="flex items-center gap-3 mb-2">
-                            <span className="text-curiol-500 text-[10px] font-bold uppercase tracking-widest border border-curiol-500/30 px-3 py-1 rounded-full">Inteligencia Omnicanal</span>
-                        </div>
-                        <h1 className="text-5xl font-serif text-white italic">Omnitech Dashboard</h1>
-                        <p className="text-tech-500 max-w-xl mt-4">Gestión unificada de automatizaciones, captura de datos y flujos conversacionales inteligentes.</p>
+            <main className="max-w-7xl mx-auto px-4">
+                <header className="mb-12">
+                    <div className="flex items-center gap-3 mb-2">
+                        <Bot className="text-curiol-500 w-4 h-4" />
+                        <span className="text-curiol-500 text-[10px] font-bold uppercase tracking-widest">Inteligencia Conversacional</span>
                     </div>
-
-                    <div className="flex gap-4">
-                        <Link href="/admin/omnitech/chat" className="px-8 py-4 bg-tech-900 border border-tech-800 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl hover:bg-tech-800 transition-all flex items-center gap-3">
-                            <MessageCircle className="w-4 h-4 text-curiol-500" /> Live Chat
-                        </Link>
-                        <Link href="/admin/omnitech/flows" className="px-8 py-4 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest rounded-xl hover:scale-105 transition-all flex items-center gap-3">
-                            <Plus className="w-4 h-4" /> Crear Nuevo Flujo
-                        </Link>
-                    </div>
+                    <h1 className="text-5xl font-serif text-white italic">OmniTech Center</h1>
+                    <p className="text-tech-500 mt-4">Gestión de automatización y métricas de interacción en tiempo real.</p>
                 </header>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                    {[
-                        { label: "Conversaciones Totales", value: stats.totalChats, icon: MessageSquare, color: "text-blue-500" },
-                        { label: "Flujos Activos", value: stats.activeFlows, icon: Zap, color: "text-yellow-500" },
-                        { label: "Leads Capturados", value: stats.capturedLeads, icon: Users, color: "text-curiol-500" },
-                        { label: "Velocidad IA", value: stats.avgResponseTime, icon: BarChart3, color: "text-green-500" }
-                    ].map((stat, i) => (
-                        <GlassCard key={i} className="p-8">
-                            <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center mb-6 bg-tech-900 border border-white/5", stat.color)}>
-                                <stat.icon className="w-6 h-6" />
+                    {stats.map((stat, idx) => (
+                        <GlassCard key={idx} className="p-6 border-white/5">
+                            <div className="flex justify-between items-start mb-4">
+                                <div className={`p-3 rounded-xl bg-tech-900 ${stat.color}`}>
+                                    <stat.icon className="w-5 h-5" />
+                                </div>
+                                <span className="text-[10px] text-green-500 font-bold">{stat.sub}</span>
                             </div>
-                            <h3 className="text-3xl font-serif text-white italic">{stat.value}</h3>
-                            <p className="text-[10px] text-tech-500 font-bold uppercase tracking-widest mt-1">{stat.label}</p>
+                            <h4 className="text-tech-500 text-[10px] font-bold uppercase tracking-widest mb-1">{stat.label}</h4>
+                            <p className="text-3xl font-serif text-white italic">{stat.value}</p>
                         </GlassCard>
                     ))}
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    {/* Canal Connections */}
-                    <div className="lg:col-span-4 space-y-6">
-                        <h2 className="text-xl font-serif text-white italic px-2">Canales Conectados</h2>
-                        {channels.map((ch, i) => (
-                            <GlassCard key={i} className="p-6">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <div className={cn("p-3 rounded-xl", ch.bg, ch.color)}>
-                                            <ch.icon className="w-6 h-6" />
-                                        </div>
-                                        <div>
-                                            <p className="text-white font-serif italic">{ch.name}</p>
-                                            <p className={cn("text-[9px] font-bold uppercase tracking-widest",
-                                                ch.status === "connected" ? "text-green-500" :
-                                                    ch.status === "pending" ? "text-yellow-500" : "text-tech-700"
-                                            )}>{ch.status === "connected" ? "En Línea" : ch.status === "pending" ? "Configurar" : "Desconectado"}</p>
-                                        </div>
-                                    </div>
-                                    <button className="p-2 text-tech-500 hover:text-white transition-all">
-                                        <Settings className="w-5 h-5" />
-                                    </button>
-                                </div>
-                            </GlassCard>
-                        ))}
-                    </div>
-
-                    {/* Recent Activities */}
-                    <div className="lg:col-span-8 space-y-6">
-                        <div className="flex items-center justify-between px-2">
-                            <h2 className="text-xl font-serif text-white italic">Actividad Reciente</h2>
-                            <button className="text-[10px] text-curiol-500 font-bold uppercase tracking-widest hover:underline">Ver Todo</button>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <GlassCard className="lg:col-span-2 p-8 h-[400px] flex flex-col">
+                        <div className="flex justify-between items-center mb-8">
+                            <div className="flex items-center gap-3">
+                                <Activity className="text-curiol-500 w-5 h-5" />
+                                <h3 className="text-xl font-serif text-white italic">Actividad de Conversación</h3>
+                            </div>
+                            <div className="flex gap-2">
+                                <span className="px-3 py-1 bg-tech-950 rounded-full text-[8px] text-tech-500 uppercase font-bold border border-white/5">Últimos 7 Días</span>
+                            </div>
                         </div>
-                        <GlassCard className="p-0 overflow-hidden">
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-left">
-                                    <thead className="bg-tech-900/50 border-b border-white/5">
-                                        <tr>
-                                            <th className="px-8 py-4 text-[9px] font-bold text-tech-500 uppercase tracking-widest">Cliente</th>
-                                            <th className="px-8 py-4 text-[9px] font-bold text-tech-500 uppercase tracking-widest">Canal</th>
-                                            <th className="px-8 py-4 text-[9px] font-bold text-tech-500 uppercase tracking-widest">Estado</th>
-                                            <th className="px-8 py-4 text-[9px] font-bold text-tech-500 uppercase tracking-widest text-right">Acción</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-white/5">
-                                        {[
-                                            { name: "Juan Pérez", channel: "WhatsApp", status: "Datos Capturados", date: "Hace 2m" },
-                                            { name: "María García", channel: "Instagram", status: "IA Respondiendo", date: "Hace 15m" },
-                                            { name: "Carlos Ruiz", channel: "Facebook", status: "Finalizado", date: "Hace 1h" }
-                                        ].map((act, i) => (
-                                            <tr key={i} className="hover:bg-white/[0.02] transition-colors group">
-                                                <td className="px-8 py-4">
-                                                    <p className="text-white text-sm font-serif italic">{act.name}</p>
-                                                    <p className="text-[10px] text-tech-700 font-mono">{act.date}</p>
-                                                </td>
-                                                <td className="px-8 py-4">
-                                                    <span className="text-[10px] text-tech-500 font-bold uppercase tracking-widest">{act.channel}</span>
-                                                </td>
-                                                <td className="px-8 py-4">
-                                                    <span className="px-3 py-1 bg-curiol-500/10 text-curiol-500 rounded-full text-[8px] font-bold uppercase tracking-widest">
-                                                        {act.status}
-                                                    </span>
-                                                </td>
-                                                <td className="px-8 py-4 text-right">
-                                                    <button className="p-2 text-tech-800 hover:text-white transition-all opacity-0 group-hover:opacity-100">
-                                                        <ArrowRight className="w-5 h-5" />
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                        <div className="flex-grow flex items-end gap-2 pb-4">
+                            {[40, 60, 45, 90, 65, 80, 50, 70, 45, 100, 85, 95].map((h, i) => (
+                                <div key={i} className="flex-grow bg-curiol-gradient opacity-20 hover:opacity-100 transition-all rounded-t-sm" style={{ height: `${h}%` }} />
+                            ))}
+                        </div>
+                    </GlassCard>
+
+                    <div className="space-y-6">
+                        <GlassCard className="p-8">
+                            <h3 className="text-xl font-serif text-white italic mb-6">Canales Conectados</h3>
+                            <div className="space-y-4">
+                                {channels.map((ch, i) => (
+                                    <div key={i} className="flex items-center justify-between p-4 bg-tech-950/50 rounded-2xl border border-white/5">
+                                        <div className="flex items-center gap-4">
+                                            <ch.icon className={`w-5 h-5 ${ch.color}`} />
+                                            <div>
+                                                <p className="text-white text-xs font-bold">{ch.name}</p>
+                                                <p className="text-tech-600 text-[8px] uppercase">{ch.status}</p>
+                                            </div>
+                                        </div>
+                                        <div className={`w-2 h-2 rounded-full ${ch.status === 'Conectado' ? 'bg-green-500 animate-pulse' : 'bg-tech-700'}`} />
+                                    </div>
+                                ))}
                             </div>
                         </GlassCard>
+
+                        <Link href="/admin/omnitech/flows">
+                            <GlassCard className="p-8 border-curiol-500/30 bg-curiol-500/5 hover:bg-curiol-500/10 transition-all cursor-pointer group">
+                                <div className="flex justify-between items-center">
+                                    <div>
+                                        <h3 className="text-xl font-serif text-white italic mb-1">Flow Builder</h3>
+                                        <p className="text-tech-500 text-xs font-light">Diseña embudos de venta automatizados al estilo ManyChat.</p>
+                                    </div>
+                                    <ChevronRight className="text-curiol-500 group-hover:translate-x-2 transition-transform" />
+                                </div>
+                            </GlassCard>
+                        </Link>
                     </div>
                 </div>
-            </main>
 
-            <Footer />
+                <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <GlassCard className="p-8">
+                        <div className="flex items-center gap-3 mb-6">
+                            <TrendingUp className="text-curiol-500 w-5 h-5" />
+                            <h3 className="text-xl font-serif text-white italic">Conversiones Mensuales</h3>
+                        </div>
+                        <p className="text-tech-500 text-sm font-light leading-relaxed">
+                            Has capturado un <span className="text-white font-bold">15% más de leads</span> este mes gracias a los flujos de calificación automática.
+                        </p>
+                    </GlassCard>
+                    <GlassCard className="p-8">
+                        <div className="flex items-center gap-3 mb-6">
+                            <BarChart3 className="text-curiol-500 w-5 h-5" />
+                            <h3 className="text-xl font-serif text-white italic">Métricas de Origen</h3>
+                        </div>
+                        <div className="space-y-3">
+                            <div className="flex justify-between text-[10px] uppercase font-bold">
+                                <span className="text-tech-500">Orgánico (Web)</span>
+                                <span className="text-white">65%</span>
+                            </div>
+                            <div className="w-full h-1 bg-tech-900 rounded-full overflow-hidden">
+                                <div className="h-full bg-curiol-500 w-[65%]" />
+                            </div>
+                            <div className="flex justify-between text-[10px] uppercase font-bold pt-2">
+                                <span className="text-tech-500">Social (IG/WA)</span>
+                                <span className="text-white">35%</span>
+                            </div>
+                            <div className="w-full h-1 bg-tech-900 rounded-full overflow-hidden">
+                                <div className="h-full bg-purple-500 w-[35%]" />
+                            </div>
+                        </div>
+                    </GlassCard>
+                </div>
+            </main>
         </div>
     );
 }
