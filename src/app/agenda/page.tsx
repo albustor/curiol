@@ -10,7 +10,7 @@ import {
     CreditCard, CheckCircle2, AlertCircle,
     ArrowRight, ChevronLeft, ChevronRight,
     Camera, Code, Upload, Sparkles, FileText,
-    ShieldCheck, Smartphone
+    ShieldCheck, Smartphone, Video
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -28,8 +28,11 @@ const STEPS = [
 
 const SERVICES = [
     { id: "legado", name: "Memorias Vivas", desc: "Sesión Fine Art / Personal", icon: Camera, color: "curiol-500" },
-    { id: "infra", name: "Aceleradora Digital", desc: "Negocio / Marca Personal", icon: Code, color: "tech-500" }
+    { id: "infra", name: "Aceleradora Digital", desc: "Negocio / Marca Personal", icon: Code, color: "tech-500" },
+    { id: "meet", name: "Pre-producción Elite", desc: "Videollamada • 60-80 min", icon: Video, color: "curiol-500" }
 ];
+
+const WEEKDAY_MEET_SLOTS = ["20:00", "21:15"]; // ~75 min chunks
 
 export default function AgendaPage() {
     const [step, setStep] = useState(0);
@@ -93,7 +96,14 @@ export default function AgendaPage() {
         if (!selectedDate) return;
 
         const dayOfWeek = selectedDate.getDay().toString();
-        const baseSlots = scheduleConfig[dayOfWeek] || [];
+
+        let baseSlots = [];
+        if (selectedService === "meet" && (dayOfWeek !== "0" && dayOfWeek !== "6")) {
+            baseSlots = WEEKDAY_MEET_SLOTS;
+        } else {
+            baseSlots = scheduleConfig[dayOfWeek] || [];
+        }
+
         setAvailableSlots(baseSlots);
         setSelectedTime(null);
 
@@ -248,14 +258,28 @@ export default function AgendaPage() {
                                                 const dayOfWeek = date.getDay().toString();
                                                 const isWeekend = dayOfWeek === "6" || dayOfWeek === "0";
 
+                                                let baseSlots = [];
+                                                let isServiceDay = false;
+
+                                                if (selectedService === "meet") {
+                                                    if (!isWeekend) {
+                                                        baseSlots = WEEKDAY_MEET_SLOTS;
+                                                        isServiceDay = true;
+                                                    }
+                                                } else {
+                                                    if (isWeekend) {
+                                                        baseSlots = scheduleConfig[dayOfWeek] || [];
+                                                        isServiceDay = true;
+                                                    }
+                                                }
+
                                                 // Check if all slots are full
-                                                const baseSlots = scheduleConfig[dayOfWeek] || [];
                                                 const dayBookings = monthBookings.filter(b => {
                                                     const bDate = b.date instanceof Timestamp ? b.date.toDate() : new Date(b.date);
                                                     return bDate.toDateString() === date.toDateString();
                                                 });
                                                 const isFull = baseSlots.length > 0 && dayBookings.length >= baseSlots.length;
-                                                const isDisabled = isPast || !isWeekend || isFull;
+                                                const isDisabled = isPast || !isServiceDay || isFull;
 
                                                 return (
                                                     <button
@@ -314,7 +338,12 @@ export default function AgendaPage() {
                         {step === 2 && (
                             <motion.div key="step2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="max-w-xl mx-auto">
                                 <GlassCard className="p-10 space-y-6">
-                                    <h3 className="text-2xl font-serif text-white italic mb-4">Tus Datos de Contacto</h3>
+                                    <div className="mb-8">
+                                        <h3 className="text-2xl font-serif text-white italic mb-2">Tus Datos de Contacto</h3>
+                                        <p className="text-[10px] text-curiol-500 font-bold uppercase tracking-widest">
+                                            {selectedService === 'meet' ? "Fase 0: Pre-producción esencial para conocer tu visión" : "Tus datos para coordinar la sesión"}
+                                        </p>
+                                    </div>
                                     <div className="space-y-4">
                                         <div className="relative group">
                                             <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-tech-700 group-focus-within:text-curiol-500 transition-colors" />

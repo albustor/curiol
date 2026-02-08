@@ -7,9 +7,10 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import {
     Plus, Save, Trash2, Edit3,
     Image as ImageIcon, Upload, X,
-    ChevronRight, Folder, Camera
+    ChevronRight, Folder, Camera, Sparkles
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { AiCompositionEditor } from "@/components/admin/AiCompositionEditor";
 import { db, storage } from "@/lib/firebase";
 import { collection, addDoc, query, onSnapshot, doc, updateDoc, deleteDoc, Timestamp, orderBy } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
@@ -29,6 +30,7 @@ export default function PortfolioAdminPage() {
     const [isEditing, setIsEditing] = useState<Partial<Album> | null>(null);
     const [uploading, setUploading] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [aiEditingPhoto, setAiEditingPhoto] = useState<string | null>(null);
 
     useEffect(() => {
         const q = query(collection(db, "portfolio_albums"), orderBy("createdAt", "desc"));
@@ -172,7 +174,23 @@ export default function PortfolioAdminPage() {
                                             {isEditing.photos?.map((p, idx) => (
                                                 <div key={idx} className="aspect-square bg-tech-950 rounded-lg relative overflow-hidden group">
                                                     <img src={p.url} className="w-full h-full object-cover" alt="" />
-                                                    <button type="button" onClick={() => setIsEditing({ ...isEditing, photos: isEditing.photos?.filter((_, i) => i !== idx) })} className="absolute top-1 right-1 p-1 bg-red-500 rounded text-white opacity-0 group-hover:opacity-100 transition-opacity"><X className="w-3 h-3" /></button>
+                                                    <div className="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setAiEditingPhoto(p.url)}
+                                                            className="p-1.5 bg-curiol-500 rounded text-white hover:scale-110 transition-all"
+                                                            title="Exportar con IA"
+                                                        >
+                                                            <Sparkles className="w-3 h-3" />
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setIsEditing({ ...isEditing, photos: isEditing.photos?.filter((_, i) => i !== idx) })}
+                                                            className="p-1.5 bg-red-500 rounded text-white hover:scale-110 transition-all"
+                                                        >
+                                                            <X className="w-3 h-3" />
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             ))}
                                             <label className="aspect-square bg-tech-950 border-2 border-dashed border-tech-800 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-curiol-500/50 transition-all">
@@ -199,6 +217,15 @@ export default function PortfolioAdminPage() {
                             </form>
                         </motion.div>
                     </div>
+                )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+                {aiEditingPhoto && (
+                    <AiCompositionEditor
+                        imageUrl={aiEditingPhoto}
+                        onClose={() => setAiEditingPhoto(null)}
+                    />
                 )}
             </AnimatePresence>
 
