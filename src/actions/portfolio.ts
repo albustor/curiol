@@ -1,5 +1,8 @@
 "use server";
 
+import { db } from "@/lib/firebase";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
+
 export interface PortfolioItem {
     categoria: string;
     subcategoria: string;
@@ -8,38 +11,30 @@ export interface PortfolioItem {
 }
 
 export async function getPortfolioData(): Promise<PortfolioItem[]> {
-    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR4OuEDRXmfwRB51PGyTyz2D9cxb5IwXnvDrSiHtzh37iGZY1to7EB0O1rPyKcVVcSHqeHFb1I4glNZ/pub?output=csv";
-
     try {
-        const response = await fetch(CSV_URL, {
-            next: { revalidate: 3600 } // Revalidar cada hora
+        const q = query(collection(db, "portfolio_albums"), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+
+        const items: PortfolioItem[] = [];
+
+        snapshot.docs.forEach(doc => {
+            const data = doc.data();
+            if (data.photos && Array.isArray(data.photos)) {
+                data.photos.forEach((photo: any) => {
+                    items.push({
+                        categoria: data.category || "General",
+                        subcategoria: data.title || "",
+                        url: photo.url,
+                        titulo: data.title || ""
+                    });
+                });
+            }
         });
 
-        if (!response.ok) {
-            throw new Error("Error fetching portfolio data");
-        }
-
-        const csvText = await response.text();
-
-        // Parser simple para el CSV
-        const lines = csvText.split(/\r?\n/).filter(line => line.trim() !== "");
-        const [_header, ...rows] = lines;
-
-        const data: PortfolioItem[] = rows.map(row => {
-            // Manejar comas dentro de comillas (títulos)
-            const matches = row.match(/(".*?"|[^",\s][^",]*|(?<=,)(?=,)|(?<=^)(?=,))/g);
-            if (!matches) return null;
-
-            const [categoria, subcategoria, url, titulo] = matches.map(val =>
-                val.replace(/^"|"$/g, "").trim()
-            );
-
-            return { categoria, subcategoria, url, titulo };
-        }).filter(item => item !== null) as PortfolioItem[];
-
-        return data;
+        // Fallback or combine with CSV if needed? No, User wanted to sync with new Admin.
+        return items;
     } catch (error) {
-        console.error("Portfolio Fetch Error:", error);
+        console.error("Firestore Portfolio Fetch Error:", error);
         return [];
     }
 }

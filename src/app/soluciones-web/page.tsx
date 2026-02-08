@@ -72,7 +72,7 @@ export default function SolucionesWebPage() {
                         <span className="text-curiol-500 text-xs font-bold tracking-[0.4em] uppercase mb-4 block animate-fade-in">Soluciones Comerciales & IA</span>
                         <h1 className="text-5xl md:text-8xl font-serif text-white italic mb-10 leading-tight">La Infraestructura <br /> <span className="text-curiol-gradient">Digital que Convierte.</span></h1>
                         <p className="text-tech-400 text-lg md:text-xl font-light max-w-3xl mx-auto leading-relaxed">
-                            Implementamos Soluciones Comerciales basadas en el **IDMV** (Infraestructura Digital Mínima Viable) para que el comercio local compita y destaque mediante tecnología de punta y procesos asistidos por Inteligencia Artificial.
+                            Implementamos Soluciones Comerciales basadas en el **IDMV** (Infraestructura Digital Mínima Viable). Ahora con una fase obligatoria de **Pre-producción Elite** vía videollamada para asegurar el éxito de cada proyecto.
                         </p>
                     </motion.div>
                 </section>
@@ -105,6 +105,13 @@ export default function SolucionesWebPage() {
                             <GlassCard className="p-12 border-tech-800">
                                 <div className="space-y-8">
                                     <h4 className="text-xl font-serif text-white italic mb-6">Metodología Curiol Studio</h4>
+                                    <div className="flex gap-6 items-start">
+                                        <div className="w-10 h-10 rounded-full bg-curiol-500 flex items-center justify-center text-xs font-bold text-white shrink-0 shadow-lg shadow-curiol-500/20">0</div>
+                                        <div>
+                                            <p className="text-white text-sm font-bold uppercase tracking-widest mb-1 italic">Pre-producción Elite</p>
+                                            <p className="text-tech-500 text-xs font-light">Videollamada estratégica (8:00 PM+) para definir el ADN del proyecto.</p>
+                                        </div>
+                                    </div>
                                     <div className="flex gap-6 items-start">
                                         <div className="w-10 h-10 rounded-full bg-tech-800 flex items-center justify-center text-xs font-bold text-white shrink-0">1</div>
                                         <div>

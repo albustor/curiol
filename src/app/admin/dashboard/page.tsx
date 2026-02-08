@@ -178,6 +178,26 @@ export default function AdminDashboard() {
                         <h3 className="text-2xl font-serif text-white italic flex items-center gap-3">
                             <LayoutDashboard className="w-6 h-6 text-tech-500" /> Herramientas Rápidas
                         </h3>
+
+                        <GlassCard className="p-8 border-curiol-500/30 bg-curiol-500/10 relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <Video className="w-16 h-16 text-curiol-500" />
+                            </div>
+                            <div className="relative z-10">
+                                <span className="text-curiol-500 text-[10px] font-bold uppercase tracking-widest mb-2 block">Acceso Prioritario</span>
+                                <h4 className="text-2xl font-serif text-white italic mb-4">Meet Admin Center</h4>
+                                <p className="text-tech-500 text-xs font-light mb-8 leading-relaxed">
+                                    Inicia o únete a videollamadas de pre-producción al instante con cifrado de grado militar.
+                                </p>
+                                <button
+                                    onClick={() => router.push("/admin/videollamadas")}
+                                    className="w-full py-4 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest rounded-xl shadow-lg shadow-curiol-500/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
+                                >
+                                    <Video className="w-4 h-4" /> Entrar al Centro de Control
+                                </button>
+                            </div>
+                        </GlassCard>
+
                         <div className="grid grid-cols-1 gap-4">
                             <button className="w-full text-left p-6 bg-tech-900 border border-tech-800 rounded-2xl hover:bg-tech-800 transition-all flex items-center justify-between group">
                                 <div className="flex items-center gap-4">
@@ -216,14 +236,14 @@ export default function AdminDashboard() {
                                 <ArrowRight className="w-4 h-4 text-tech-800 group-hover:text-white transition-all" />
                             </button>
                             <button
-                                onClick={() => router.push("/admin/videollamadas")}
-                                className="w-full text-left p-6 bg-tech-900 border border-curiol-500/20 rounded-2xl hover:bg-tech-800 transition-all flex items-center justify-between group"
+                                onClick={() => router.push("/admin/portafolio")}
+                                className="w-full text-left p-6 bg-tech-900 border border-tech-800 rounded-2xl hover:bg-tech-800 transition-all flex items-center justify-between group"
                             >
                                 <div className="flex items-center gap-4">
-                                    <Video className="w-6 h-6 text-curiol-500" />
+                                    <ImageIcon className="w-6 h-6 text-purple-500" />
                                     <div>
-                                        <p className="text-white font-bold text-sm">Videollamadas</p>
-                                        <p className="text-tech-500 text-[10px] uppercase tracking-widest">Meet Admin Center</p>
+                                        <p className="text-white font-bold text-sm">Gestionar Portafolio</p>
+                                        <p className="text-tech-500 text-[10px] uppercase tracking-widest">Álbumnes y Fotos IA</p>
                                     </div>
                                 </div>
                                 <ArrowRight className="w-4 h-4 text-tech-800 group-hover:text-white transition-all" />
