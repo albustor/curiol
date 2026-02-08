@@ -8,7 +8,7 @@ import {
     FileText, Download, Briefcase, Heart,
     ArrowRight, CheckCircle2, User,
     Sparkles, Trash2, Plus,
-    ShieldCheck, Clock, FileCheck, X
+    ShieldCheck, Clock, FileCheck, X, Camera
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -35,6 +35,14 @@ const EXTRAS = {
         { id: "seo", name: "Optimización SEO / IA Search", price: 25000, usd: 55, desc: "Visibilidad local y textos optimizados por IA." },
         { id: "mantenimiento", name: "Omni Sincro (Mantenimiento)", price: 15000, usd: 35, desc: "Soporte completo, hosting y actualizaciones." },
         { id: "pagos", name: "Integración de Pagos", price: 45000, usd: 95, desc: "Configuración de pasarelas (SINPE/Tarjetas)." }
+    ],
+    sociales: [
+        { id: "cobertura_hora", name: "Hora de Cobertura Extra", price: 45000, usd: 85, desc: "Tiempo adicional de captura para eventos sociales." },
+        { id: "edicion_premium", name: "Edición Premium / Retoque", price: 15000, usd: 30, desc: "Post-producción avanzada para momentos clave." }
+    ],
+    deportes: [
+        { id: "sesion_accion", name: "Sesión de Acción (Hora)", price: 35000, usd: 65, desc: "Cobertura de alto impacto para deportistas." },
+        { id: "entrega_express", name: "Entrega Express (24h)", price: 20000, usd: 40, desc: "Prioridad en edición para redes sociales." }
     ]
 };
 
@@ -98,11 +106,20 @@ const PACKAGES = {
             usd: 349,
             desc: "Web-App completa, Catálogo interactivo y Chatbot avanzado."
         }
+    ],
+    sociales: [
+        { id: "boda", name: "Memorias en Vivo (Gala)", price: 45000, usd: 85, desc: "Cobertura narrativa por hora. Post-producción de autor y galería interactiva." },
+        { id: "grad", name: "Evento Institucional", price: 45000, usd: 85, desc: "Documentación estratégica para hitos académicos o corporativos." },
+        { id: "cumple", name: "Celebración Social", price: 45000, usd: 85, desc: "Captura de la energía y momentos espontáneos." }
+    ],
+    deportes: [
+        { id: "surf", name: "Acción Surf/Agua", price: 35000, usd: 65, desc: "Fotografía de adrenalina. Optimizado para impacto en redes." },
+        { id: "golf", name: "Acción Técnica (Golf)", price: 35000, usd: 65, desc: "Cobertura de técnica y ambiente en campo." }
     ]
 };
 
 export default function AdminCotizadorPage() {
-    const [tab, setTab] = useState<"legado" | "infra">("legado");
+    const [tab, setTab] = useState<"legado" | "infra" | "sociales" | "deportes">("legado");
     const [clientName, setClientName] = useState("");
     const [currency, setCurrency] = useState<"CRC" | "USD">("CRC");
     const [selectedPackages, setSelectedPackages] = useState<Package[]>([]);
@@ -295,6 +312,32 @@ export default function AdminCotizadorPage() {
                                 <div>
                                     <p className="text-white font-serif text-xl italic leading-none mb-1">Infraestructura Digital</p>
                                     <p className="text-tech-500 text-[8px] uppercase tracking-[0.2em] font-bold">B2B • Marca Personal • Aceleración IA</p>
+                                </div>
+                            </button>
+                            <button
+                                onClick={() => { setTab("sociales"); setSelectedPackages([]); setSelectedExtras([]); }}
+                                className={cn(
+                                    "p-6 rounded-2xl border transition-all flex items-center gap-6 group text-left",
+                                    tab === "sociales" ? "bg-curiol-500/10 border-curiol-500 shadow-2xl shadow-curiol-500/10" : "bg-tech-900/50 border-tech-800 hover:border-tech-700"
+                                )}
+                            >
+                                <Sparkles className={cn("w-8 h-8", tab === "sociales" ? "text-curiol-500" : "text-tech-500")} />
+                                <div>
+                                    <p className="text-white font-serif text-xl italic leading-none mb-1">Eventos Sociales</p>
+                                    <p className="text-tech-500 text-[8px] uppercase tracking-[0.2em] font-bold">Gala • Cumpleaños • Institucional</p>
+                                </div>
+                            </button>
+                            <button
+                                onClick={() => { setTab("deportes"); setSelectedPackages([]); setSelectedExtras([]); }}
+                                className={cn(
+                                    "p-6 rounded-2xl border transition-all flex items-center gap-6 group text-left",
+                                    tab === "deportes" ? "bg-tech-500/10 border-tech-500 shadow-2xl shadow-tech-500/10" : "bg-tech-900/50 border-tech-800 hover:border-tech-700"
+                                )}
+                            >
+                                <Camera className={cn("w-8 h-8", tab === "deportes" ? "text-tech-500" : "text-tech-500")} />
+                                <div>
+                                    <p className="text-white font-serif text-xl italic leading-none mb-1">Acción Deportiva</p>
+                                    <p className="text-tech-500 text-[8px] uppercase tracking-[0.2em] font-bold">Surf • Golf • Entrenamiento</p>
                                 </div>
                             </button>
                         </div>

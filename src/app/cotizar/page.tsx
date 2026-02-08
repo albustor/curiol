@@ -29,15 +29,6 @@ const PACKAGES: Record<string, Array<{ id: string; name: string; price: number; 
         { id: "express", name: "Omni Core (Ventas)", price: 85000, usdPrice: 199, desc: "Motor de presencia. Landing de alto impacto + Chatbot IA con contexto total de tu negocio." },
         { id: "negocio", name: "Omni Pro (Crecimiento)", price: 145000, usdPrice: 349, desc: "Tu sucursal digital 24/7. Web-App, Catálogo interactivo y Chatbot avanzado para cerrar ventas." },
         { id: "mantenimiento", name: "Omni Sincro", price: 15000, usdPrice: 39, desc: "Evolución digital: actualización trimestral de inteligencia artificial y seguridad.", isMonthly: true }
-    ],
-    events: [
-        { id: "boda", name: "Memorias en Vivo (Gala)", price: 45000, usdPrice: 85, desc: "Cobertura narrativa por hora. Post-producción de autor y galería interactiva.", isHourly: true },
-        { id: "grad", name: "Evento Institucional", price: 45000, usdPrice: 85, desc: "Documentación estratégica de alta calidad para hitos académicos o corporativos.", isHourly: true },
-        { id: "cumple", name: "Celebración Social", price: 45000, usdPrice: 85, desc: "Captura de la energía y momentos espontáneos en tus fechas especiales.", isHourly: true }
-    ],
-    sports: [
-        { id: "surf", name: "Acción Surf/Agua", price: 35000, usdPrice: 65, desc: "Fotografía de adrenalina. Entrega rápida optimizada para impacto en redes sociales.", isHourly: true },
-        { id: "golf", name: "Acción Técnica (Golf)", price: 35000, usdPrice: 65, desc: "Cobertura de técnica y ambiente en campo para clubes y deportistas.", isHourly: true }
     ]
 };
 
@@ -50,7 +41,7 @@ const UPSELLS = {
 export default function CotizadorPage() {
     const [step, setStep] = useState(0);
     const [currency, setCurrency] = useState<"CRC" | "USD">("CRC");
-    const [category, setCategory] = useState<"family" | "business" | "events" | "sports" | null>(null);
+    const [category, setCategory] = useState<"family" | "business" | null>(null);
     const [selectedPackage, setSelectedPackage] = useState<any>(null);
     const [extras, setExtras] = useState<any[]>([]);
     const [hours, setHours] = useState(2);
@@ -139,22 +130,6 @@ export default function CotizadorPage() {
                                     <h3 className="text-2xl font-serif text-white mb-2 italic">Motor de Soluciones Comerciales</h3>
                                     <p className="text-tech-400 text-sm font-light leading-relaxed">Atraemos miradas, cerramos ventas. Tu negocio visible y creciendo 24/7 con infraestructura inteligente.</p>
                                 </GlassCard>
-                                <GlassCard
-                                    className={cn("cursor-pointer border-2 transition-all", category === 'events' ? "border-curiol-500 shadow-2xl shadow-curiol-500/20" : "border-transparent")}
-                                    onClick={() => { setCategory('events'); handleNext(); }}
-                                >
-                                    <Sparkles className="w-12 h-12 text-curiol-500 mb-6" />
-                                    <h3 className="text-2xl font-serif text-white mb-2 italic">Memorias en Vivo</h3>
-                                    <p className="text-tech-400 text-sm font-light leading-relaxed">Eventos Sociales & Corporativos. Capturamos la narrativa de tus grandes momentos.</p>
-                                </GlassCard>
-                                <GlassCard
-                                    className={cn("cursor-pointer border-2 transition-all", category === 'sports' ? "border-tech-500 shadow-2xl shadow-tech-500/20" : "border-transparent")}
-                                    onClick={() => { setCategory('sports'); handleNext(); }}
-                                >
-                                    <Camera className="w-12 h-12 text-tech-500 mb-6" />
-                                    <h3 className="text-2xl font-serif text-white mb-2 italic">Acción Deportiva</h3>
-                                    <p className="text-tech-400 text-sm font-light leading-relaxed">Surf, Golf & Entrenamientos. Fotografía de alto impacto para atletas y clubes.</p>
-                                </GlassCard>
                             </motion.div>
                         )}
 
@@ -214,29 +189,6 @@ export default function CotizadorPage() {
                                     </div>
                                 )}
 
-                                {/* Coastal Logistics Toggle */}
-                                {(category === 'events' || category === 'sports') && (
-                                    <div className="md:col-span-2 lg:col-span-3 mt-4 p-8 bg-curiol-500/5 border border-curiol-500/20 rounded-3xl flex items-center justify-between">
-                                        <div className="flex items-center gap-4">
-                                            <div className="p-3 bg-curiol-500/10 rounded-xl">
-                                                <ShoppingCart className="w-5 h-5 text-curiol-500" />
-                                            </div>
-                                            <div>
-                                                <p className="text-white font-bold text-sm">Logística Zona Costera</p>
-                                                <p className="text-tech-500 text-[10px] uppercase tracking-widest">Tamarindo, Pinilla, Flamingo, etc.</p>
-                                            </div>
-                                        </div>
-                                        <button
-                                            onClick={() => setIsCoastal(!isCoastal)}
-                                            className={cn(
-                                                "px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all",
-                                                isCoastal ? "bg-curiol-500 text-white" : "bg-tech-800 text-tech-500"
-                                            )}
-                                        >
-                                            {isCoastal ? "Activado (+ ₡15k)" : "Activar"}
-                                        </button>
-                                    </div>
-                                )}
                             </motion.div>
                         )}
 
