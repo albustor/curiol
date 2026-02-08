@@ -192,7 +192,7 @@ export default function Home() {
                   </div>
                   <span className="text-tech-500 text-[10px] font-bold tracking-widest uppercase py-2 px-4 bg-tech-500/5 rounded-full">Motor de Crecimiento</span>
                 </div>
-                <h3 className="text-3xl font-serif text-white mb-6 italic">Aceleradora OmniTech</h3>
+                <h3 className="text-3xl font-serif text-white mb-6 italic">Aceleradora Soluciones Comerciales</h3>
                 <p className="text-tech-400 font-light mb-10 leading-relaxed italic">"Atraemos miradas, cerramos ventas. Presencia 24/7."</p>
                 <p className="text-tech-300 text-sm font-light mb-10 leading-relaxed">
                   Infraestructura inteligente diseñada para que el comercio local destaque. Landing pages de alta conversión, asistentes digitales personalizados y optimización asistida por IA para un impacto real en tus ventas.

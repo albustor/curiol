@@ -136,7 +136,7 @@ export default function CotizadorPage() {
                                     onClick={() => { setCategory('business'); handleNext(); }}
                                 >
                                     <Code className="w-12 h-12 text-tech-500 mb-6" />
-                                    <h3 className="text-2xl font-serif text-white mb-2 italic">Motor de Crecimiento OmniTech</h3>
+                                    <h3 className="text-2xl font-serif text-white mb-2 italic">Motor de Soluciones Comerciales</h3>
                                     <p className="text-tech-400 text-sm font-light leading-relaxed">Atraemos miradas, cerramos ventas. Tu negocio visible y creciendo 24/7 con infraestructura inteligente.</p>
                                 </GlassCard>
                                 <GlassCard
