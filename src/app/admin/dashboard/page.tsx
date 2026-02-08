@@ -11,7 +11,7 @@ import Link from "next/link";
 import {
     LayoutDashboard, Users, Image as ImageIcon, MessageSquare,
     Plus, ExternalLink, Settings, BarChart3, LogOut, ArrowRight, Loader2, Sparkles,
-    Calendar as CalendarIcon, Video, FileText
+    Calendar as CalendarIcon, Video, FileText, Brain
 } from "lucide-react";
 
 import { collection, query, orderBy, limit, onSnapshot } from "firebase/firestore";
@@ -281,6 +281,19 @@ export default function AdminDashboard() {
                                     </div>
                                 </div>
                                 <ArrowRight className="w-4 h-4 text-tech-800 group-hover:text-white transition-all" />
+                            </button>
+                            <button
+                                onClick={() => router.push("/admin/insumos")}
+                                className="w-full text-left p-6 bg-curiol-500/5 border border-curiol-500/20 rounded-2xl hover:bg-curiol-500/10 transition-all flex items-center justify-between group"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <Brain className="w-6 h-6 text-curiol-500" />
+                                    <div>
+                                        <p className="text-white font-bold text-sm">Insumos para IA</p>
+                                        <p className="text-curiol-500/60 text-[10px] uppercase tracking-widest">Alimentación de Cerebro Estratégico</p>
+                                    </div>
+                                </div>
+                                <ArrowRight className="w-4 h-4 text-curiol-500 group-hover:text-white transition-all" />
                             </button>
                         </div>
                     </div>
