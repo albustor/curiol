@@ -11,7 +11,7 @@ import Link from "next/link";
 import {
     LayoutDashboard, Users, Image as ImageIcon, MessageSquare,
     Plus, ExternalLink, Settings, BarChart3, LogOut, ArrowRight, Loader2, Sparkles,
-    Calendar as CalendarIcon
+    Calendar as CalendarIcon, Video
 } from "lucide-react";
 
 import { collection, query, orderBy, limit, onSnapshot } from "firebase/firestore";
@@ -211,6 +211,19 @@ export default function AdminDashboard() {
                                     <div>
                                         <p className="text-white font-bold text-sm">Gestionar Academy</p>
                                         <p className="text-tech-500 text-[10px] uppercase tracking-widest">Lecciones y Videos Veo</p>
+                                    </div>
+                                </div>
+                                <ArrowRight className="w-4 h-4 text-tech-800 group-hover:text-white transition-all" />
+                            </button>
+                            <button
+                                onClick={() => router.push("/admin/videollamadas")}
+                                className="w-full text-left p-6 bg-tech-900 border border-curiol-500/20 rounded-2xl hover:bg-tech-800 transition-all flex items-center justify-between group"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <Video className="w-6 h-6 text-curiol-500" />
+                                    <div>
+                                        <p className="text-white font-bold text-sm">Videollamadas</p>
+                                        <p className="text-tech-500 text-[10px] uppercase tracking-widest">Meet Admin Center</p>
                                     </div>
                                 </div>
                                 <ArrowRight className="w-4 h-4 text-tech-800 group-hover:text-white transition-all" />
