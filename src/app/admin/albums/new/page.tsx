@@ -1,3 +1,4 @@
+"use client";
 import { useState, useRef } from "react";
 import { Navbar } from "@/components/Navbar";
 import { GlassCard } from "@/components/ui/GlassCard";
