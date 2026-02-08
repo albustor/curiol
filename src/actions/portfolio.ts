@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/firebase";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, addDoc, serverTimestamp } from "firebase/firestore";
 
 export interface PortfolioItem {
     categoria: string;
@@ -68,5 +68,50 @@ export async function getHeroImages(): Promise<string[]> {
     } catch (error) {
         console.error("Hero Images Fetch Error:", error);
         return [];
+    }
+}
+export async function migrateCsvToFirestore(): Promise<{ success: boolean; count: number }> {
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR4OuEDRXmfwRB51PGyTyz2D9cxb5IwXnvDrSiHtzh37iGZY1to7EB0O1rPyKcVVcSHqeHFb1I4glNZ/pub?output=csv";
+
+    try {
+        const response = await fetch(CSV_URL);
+        if (!response.ok) throw new Error("Error fetching CSV");
+
+        const csvText = await response.text();
+        const lines = csvText.split(/\r?\n/).filter(line => line.trim() !== "");
+        const [_header, ...rows] = lines;
+
+        const albumsMap: Record<string, any> = {};
+
+        rows.forEach(row => {
+            const matches = row.match(/(".*?"|[^",\s][^",]*|(?<=,)(?=,)|(?<=^)(?=,))/g);
+            if (!matches) return;
+
+            const [categoria, subcategoria, url, titulo] = matches.map(val =>
+                val.replace(/^"|"$/g, "").trim()
+            );
+
+            const albumKey = `${categoria}-${subcategoria}`;
+            if (!albumsMap[albumKey]) {
+                albumsMap[albumKey] = {
+                    title: subcategoria || titulo || "Sin título",
+                    category: categoria || "General",
+                    createdAt: serverTimestamp(),
+                    photos: []
+                };
+            }
+            albumsMap[albumKey].photos.push({ url });
+        });
+
+        let count = 0;
+        for (const key in albumsMap) {
+            await addDoc(collection(db, "portfolio_albums"), albumsMap[key]);
+            count++;
+        }
+
+        return { success: true, count };
+    } catch (error) {
+        console.error("Migration Error:", error);
+        return { success: false, count: 0 };
     }
 }
