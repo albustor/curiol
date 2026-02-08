@@ -9,14 +9,15 @@ import { cn } from "@/lib/utils";
 interface Props {
     imageUrl: string;
     onClose: () => void;
+    initialFormat?: Format;
 }
 
 type Rule = "thirds" | "golden" | "gaze" | "center";
 type Format = "ig-post" | "ig-story" | "fb-post";
 
-export function AiCompositionEditor({ imageUrl, onClose }: Props) {
+export function AiCompositionEditor({ imageUrl, onClose, initialFormat }: Props) {
     const [rule, setRule] = useState<Rule>("thirds");
-    const [format, setFormat] = useState<Format>("ig-post");
+    const [format, setFormat] = useState<Format>(initialFormat || "ig-post");
     const [facePos, setFacePos] = useState({ x: 50, y: 35 }); // Simulated face position in %
     const [isExporting, setIsExporting] = useState(false);
     const [exportDone, setExportDone] = useState(false);

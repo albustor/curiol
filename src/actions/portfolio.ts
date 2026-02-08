@@ -4,10 +4,30 @@ import { db } from "@/lib/firebase";
 import { collection, getDocs, orderBy, query, addDoc, serverTimestamp } from "firebase/firestore";
 
 export interface PortfolioItem {
+    id?: string;
     categoria: string;
     subcategoria: string;
     url: string;
     titulo: string;
+    slug?: string;
+}
+
+export interface PortfolioAlbum {
+    id: string;
+    title: string;
+    description: string;
+    category: string;
+    coverUrl?: string;
+    photos: { url: string; id: string }[];
+    createdAt: any;
+    eventDate?: string;
+    slug?: string;
+    password?: string;
+    settings?: {
+        allowLikes: boolean;
+        allowDownloads: boolean;
+        allowSharing: boolean;
+    };
 }
 
 export async function getPortfolioData(): Promise<PortfolioItem[]> {
@@ -22,20 +42,48 @@ export async function getPortfolioData(): Promise<PortfolioItem[]> {
             if (data.photos && Array.isArray(data.photos)) {
                 data.photos.forEach((photo: any) => {
                     items.push({
+                        id: doc.id,
                         categoria: data.category || "General",
                         subcategoria: data.title || "",
                         url: photo.url,
-                        titulo: data.title || ""
+                        titulo: data.title || "",
+                        slug: data.slug || doc.id
                     });
                 });
             }
         });
 
-        // Fallback or combine with CSV if needed? No, User wanted to sync with new Admin.
         return items;
     } catch (error) {
         console.error("Firestore Portfolio Fetch Error:", error);
         return [];
+    }
+}
+
+export async function getAlbums(): Promise<PortfolioAlbum[]> {
+    try {
+        const q = query(collection(db, "portfolio_albums"), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as PortfolioAlbum[];
+    } catch (error) {
+        console.error("Firestore Albums Fetch Error:", error);
+        return [];
+    }
+}
+
+export async function getAlbumBySlug(slug: string): Promise<PortfolioAlbum | null> {
+    try {
+        const q = query(collection(db, "portfolio_albums"));
+        const snapshot = await getDocs(q);
+
+        // Find by slug or ID
+        const doc = snapshot.docs.find(d => d.data().slug === slug || d.id === slug);
+
+        if (!doc) return null;
+        return { id: doc.id, ...doc.data() } as PortfolioAlbum;
+    } catch (error) {
+        console.error("Firestore Album Fetch Error:", error);
+        return null;
     }
 }
 

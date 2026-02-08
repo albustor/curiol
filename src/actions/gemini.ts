@@ -75,3 +75,53 @@ export async function getAiAssistantResponse(message: string, context: any) {
         return `${userMessage} (Detalle técnico: ${error.message})`;
     }
 }
+export async function generateAcademyBatch(track: "legacy" | "tech" = "tech") {
+    try {
+        const model = getModel();
+
+        const legacyTopics = "Legado familiar, identidad, la familia, importancia de una imagen, el retrato y su historia, teoría del color para la piel (colorimetría), estética premium.";
+        const techTopics = "Tecnología aplicada, desarrollo web, beneficios de automatización, Triángulo Mágico de la productividad, cómo emprender hoy, tendencias IA, Web3.";
+
+        const prompt = `
+        Actúa como el Maestro Alberto Bustos, un fotógrafo y tecnólogo de élite en Curiol Studio.
+        Genera un lote (batch) de 4 lecciones estratégicas para la "Academia" en el track de: ${track === "legacy" ? "LEGADO FAMILIAR & IDENTIDAD" : "TECNOLOGÍA & DESARROLLO"}.
+        
+        Distribución OBLIGATORIA:
+        - 2 artículos de texto profundo (type: "lesson").
+        - 1 guion de podcast (type: "podcast").
+        - 1 guion de video (type: "video").
+
+        Temas a cubrir prioritariamente: ${track === "legacy" ? legacyTopics : techTopics}
+
+        Para CADA lección (incluyendo video y podcast), debes incluir una "body" que sea la explicación o artículo base, y para los tipos 'video' y 'podcast' un 'mediaScript' con el guion detallado.
+
+        Devuelve un JSON array con 4 objetos exactamente así:
+        [
+          {
+            "title": "Título sugerente y profesional",
+            "description": "Resumen que genere curiosidad",
+            "type": "video" | "lesson" | "podcast",
+            "category": "${track === 'legacy' ? 'Legado' : 'Tecnología'}",
+            "body": "Artículo extenso (4+ párrafos) que explique el concepto a fondo",
+            "infographicHighlight": "Dato o frase impactante para diseño visual",
+            "mediaScript": "Guion narrativo completo (300+ palabras) si es video/podcast, de lo contrario vacío",
+            "visualConcept": "Descripción detallada del contenido visual atractivo (colores, composición, miniaturas premium)"
+          }
+        ]
+        
+        Tono: Maestro Alberto (Elegante, trascendental, culto). Devuelve SOLAMENTE el JSON array.
+      `;
+
+        const result = await model.generateContent(prompt);
+        const responseText = result.response.text();
+
+        const jsonMatch = responseText.match(/\[[\s\S]*\]/);
+        if (jsonMatch) {
+            return JSON.parse(jsonMatch[0]);
+        }
+        throw new Error("Invalid JSON response from AI");
+    } catch (error: any) {
+        console.error("DEBUG - Gemini Academy Error:", error);
+        return { error: error.message };
+    }
+}

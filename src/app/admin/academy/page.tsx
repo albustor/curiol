@@ -16,9 +16,15 @@ interface AcademyContent {
     id: string;
     title: string;
     description: string;
-    type: "video" | "lesson";
+    type: "video" | "lesson" | "podcast";
     category: string;
+    track?: "legacy" | "tech";
+    isRestricted?: boolean;
     videoUrl?: string;
+    body?: string;
+    infographicHighlight?: string;
+    mediaScript?: string;
+    visualConcept?: string;
     isPublished: boolean;
     createdAt: any;
     commentsCount?: number;
@@ -44,7 +50,7 @@ export default function AcademyManagerPage() {
         ? new Date(Math.max(...contents.map(c => c.createdAt?.toDate().getTime() || 0)))
         : new Date();
 
-    const nextGenerationDate = new Date(lastContentDate.getTime() + 6 * 24 * 60 * 60 * 1000);
+    const nextGenerationDate = new Date(lastContentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
     const daysUntilNext = Math.ceil((nextGenerationDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
 
     const handleSave = async (e: React.FormEvent) => {
@@ -61,7 +67,9 @@ export default function AcademyManagerPage() {
                     ...data,
                     createdAt: Timestamp.now(),
                     commentsCount: 0,
-                    sharesCount: 0
+                    sharesCount: 0,
+                    track: isEditing.track || "tech", // Default to tech if not set
+                    isRestricted: isEditing.isRestricted || false // Default to false if not set
                 });
             }
             setIsEditing(null);
@@ -92,16 +100,16 @@ export default function AcademyManagerPage() {
                             <span className="text-curiol-500 text-[10px] font-bold uppercase tracking-widest">Educación & Innovación</span>
                         </div>
                         <h1 className="text-5xl font-serif text-white italic">Aprendiendo de nuevas tendencias</h1>
-                        <p className="text-tech-500 mt-4 max-w-2xl">Administra lecciones unificadas y materiales estratégicos. Ciclo de 6 días activado.</p>
+                        <p className="text-tech-500 mt-4 max-w-2xl">Administra lecciones unificadas y materiales estratégicos. Ciclo de 7 días activado.</p>
                     </div>
 
                     <div className="flex gap-4">
                         <div className="bg-tech-900 p-1 rounded-xl border border-white/5 flex">
                             <button onClick={() => setActiveTab("content")} className={`px-6 py-3 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'content' ? 'bg-tech-800 text-white shadow-lg' : 'text-tech-500 hover:text-white'}`}>Contenido</button>
-                            <button onClick={() => setActiveTab("planner")} className={`px-6 py-3 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'planner' ? 'bg-tech-800 text-white shadow-lg' : 'text-tech-500 hover:text-white'}`}>Planeador</button>
+                            <button onClick={() => setActiveTab("planner")} className={`px-6 py-3 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'planner' ? 'bg-tech-800 text-white shadow-lg' : 'text-tech-500 hover:text-white'}`}>Generación IA</button>
                         </div>
                         <button
-                            onClick={() => setIsEditing({ id: "", title: "", description: "", type: "video", category: "IA", isPublished: true, createdAt: null })}
+                            onClick={() => setIsEditing({ id: "", title: "", description: "", type: "video", category: "IA", isPublished: true, createdAt: null, track: "tech", isRestricted: false })}
                             className="px-8 py-4 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest rounded-xl hover:scale-105 transition-all flex items-center gap-3"
                         >
                             <Plus className="w-4 h-4" /> Nuevo Contenido
@@ -111,64 +119,141 @@ export default function AcademyManagerPage() {
 
                 <AnimatePresence mode="wait">
                     {activeTab === 'content' ? (
-                        <motion.div key="content" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {contents.map((item) => (
-                                <GlassCard key={item.id} className="p-6 group relative overflow-hidden">
-                                    <div className="flex justify-between items-start mb-6">
-                                        <div className="p-3 bg-tech-900 rounded-xl text-curiol-500">
-                                            {item.type === "video" ? <Video className="w-6 h-6" /> : <BookOpen className="w-6 h-6" />}
+                        <motion.div key="content" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-12">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                {contents.map((item) => (
+                                    <GlassCard key={item.id} className="p-6 group relative overflow-hidden">
+                                        {item.isRestricted && (
+                                            <div className="absolute top-2 right-2 px-2 py-1 bg-curiol-500 rounded text-[8px] font-bold text-white uppercase tracking-widest z-20">Premium {item.track === 'legacy' ? 'Legacy' : 'Tech'}</div>
+                                        )}
+                                        <div className="flex justify-between items-start mb-6">
+                                            <div className="p-3 bg-tech-900 rounded-xl text-curiol-500">
+                                                {item.type === "video" ? <Video className="w-6 h-6" /> : item.type === "podcast" ? <MessageSquare className="w-6 h-6" /> : <BookOpen className="w-6 h-6" />}
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <button onClick={() => setIsEditing(item)} className="p-2 text-tech-500 hover:text-white transition-all"><Edit3 className="w-4 h-4" /></button>
+                                                <button onClick={() => handleDelete(item.id)} className="p-2 text-tech-500 hover:text-red-500 transition-all"><Trash2 className="w-4 h-4" /></button>
+                                            </div>
                                         </div>
-                                        <div className="flex gap-2">
-                                            <button onClick={() => setIsEditing(item)} className="p-2 text-tech-500 hover:text-white transition-all"><Edit3 className="w-4 h-4" /></button>
-                                            <button onClick={() => handleDelete(item.id)} className="p-2 text-tech-500 hover:text-red-500 transition-all"><Trash2 className="w-4 h-4" /></button>
+                                        <h3 className="text-xl font-serif text-white italic mb-2">{item.title}</h3>
+                                        <p className="text-xs text-tech-500 font-light mb-6 line-clamp-2">{item.description}</p>
+                                        <div className="flex items-center justify-between pt-6 border-t border-white/5">
+                                            <span className="text-[10px] font-bold uppercase tracking-widest text-curiol-500/60">{item.category}</span>
+                                            <div className="flex gap-3 text-tech-600">
+                                                <div className="flex items-center gap-1 text-[8px] font-bold uppercase"><MessageSquare className="w-3 h-3" /> {item.commentsCount || 0}</div>
+                                                <div className="flex items-center gap-1 text-[8px] font-bold uppercase"><Share2 className="w-3 h-3" /> {item.sharesCount || 0}</div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <h3 className="text-xl font-serif text-white italic mb-2">{item.title}</h3>
-                                    <p className="text-xs text-tech-500 font-light mb-6 line-clamp-2">{item.description}</p>
-                                    <div className="flex items-center justify-between pt-6 border-t border-white/5">
-                                        <span className="text-[10px] font-bold uppercase tracking-widest text-curiol-500/60">{item.category}</span>
-                                        <div className="flex gap-3 text-tech-600">
-                                            <div className="flex items-center gap-1 text-[8px] font-bold uppercase"><MessageSquare className="w-3 h-3" /> {item.commentsCount || 0}</div>
-                                            <div className="flex items-center gap-1 text-[8px] font-bold uppercase"><Share2 className="w-3 h-3" /> {item.sharesCount || 0}</div>
-                                        </div>
-                                    </div>
-                                </GlassCard>
-                            ))}
+                                    </GlassCard>
+                                ))}
+                            </div>
                         </motion.div>
                     ) : (
                         <motion.div key="planner" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                            <GlassCard className="p-12 border-curiol-500/20 bg-curiol-500/5 overflow-hidden relative">
-                                <div className="absolute top-0 right-0 p-12 text-curiol-500/5">
-                                    <Calendar className="w-64 h-64 rotate-12" />
-                                </div>
-                                <div className="relative z-10 flex flex-col items-center text-center max-w-2xl mx-auto">
-                                    <div className="w-20 h-20 bg-tech-950 rounded-[2rem] border border-curiol-500/30 flex items-center justify-center mb-8">
-                                        <Clock className="w-8 h-8 text-curiol-500" />
-                                    </div>
-                                    <h2 className="text-4xl font-serif text-white italic mb-4">Ciclo de Generación IA</h2>
-                                    <p className="text-tech-400 font-light mb-12">
-                                        El sistema establece una ventana de <span className="text-white font-bold">6 días</span> para la creación de nuevo material estratégico.
-                                    </p>
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                                <GlassCard className="lg:col-span-1 p-8 border-curiol-500/20 bg-curiol-500/5">
+                                    <div className="flex flex-col items-center text-center">
+                                        <div className="w-16 h-16 bg-tech-950 rounded-2xl border border-curiol-500/30 flex items-center justify-center mb-6">
+                                            <Clock className="w-6 h-6 text-curiol-500" />
+                                        </div>
+                                        <h2 className="text-2xl font-serif text-white italic mb-4">Ciclo de 7 Días</h2>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mb-12">
-                                        <div className="p-8 bg-tech-950 rounded-3xl border border-white/5 text-center">
-                                            <p className="text-[10px] text-tech-500 font-bold uppercase tracking-widest mb-2">Última Publicación</p>
-                                            <p className="text-2xl text-white font-serif italic">{lastContentDate.toLocaleDateString()}</p>
-                                        </div>
-                                        <div className="p-8 bg-tech-950 rounded-3xl border border-curiol-500/20 text-center">
-                                            <p className="text-[10px] text-curiol-500 font-bold uppercase tracking-widest mb-2">Próxima Generación</p>
-                                            <p className="text-2xl text-curiol-gradient font-serif italic">{nextGenerationDate.toLocaleDateString()}</p>
+                                        <div className="space-y-6 w-full">
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <button
+                                                    onClick={async () => {
+                                                        setLoading(true);
+                                                        const { generateAcademyBatch } = await import("@/actions/gemini");
+                                                        const batch = await generateAcademyBatch("legacy");
+                                                        if (!batch.error) {
+                                                            if (confirm("He generado 4 lecciones de Legado Familiar. ¿Programar ahora?")) {
+                                                                for (let i = 0; i < batch.length; i++) {
+                                                                    const lesson = batch[i];
+                                                                    const publishDate = new Date();
+                                                                    publishDate.setDate(publishDate.getDate() + (i * 7));
+                                                                    await addDoc(collection(db, "academy_content"), {
+                                                                        ...lesson,
+                                                                        track: "legacy",
+                                                                        isRestricted: true,
+                                                                        createdAt: Timestamp.fromDate(publishDate),
+                                                                        isPublished: true,
+                                                                        commentsCount: 0,
+                                                                        sharesCount: 0
+                                                                    });
+                                                                }
+                                                                alert("Batch Legado programado.");
+                                                            }
+                                                        }
+                                                        setLoading(false);
+                                                    }}
+                                                    disabled={loading}
+                                                    className="py-4 bg-curiol-500/10 border border-curiol-500/20 text-curiol-500 text-[8px] font-bold uppercase tracking-widest rounded-xl hover:bg-curiol-500 hover:text-white transition-all"
+                                                >
+                                                    Generar Legado
+                                                </button>
+                                                <button
+                                                    onClick={async () => {
+                                                        setLoading(true);
+                                                        const { generateAcademyBatch } = await import("@/actions/gemini");
+                                                        const batch = await generateAcademyBatch("tech");
+                                                        if (!batch.error) {
+                                                            if (confirm("He generado 4 lecciones Tecnológicas. ¿Programar ahora?")) {
+                                                                for (let i = 0; i < batch.length; i++) {
+                                                                    const lesson = batch[i];
+                                                                    const publishDate = new Date();
+                                                                    publishDate.setDate(publishDate.getDate() + (i * 7));
+                                                                    await addDoc(collection(db, "academy_content"), {
+                                                                        ...lesson,
+                                                                        track: "tech",
+                                                                        isRestricted: true,
+                                                                        createdAt: Timestamp.fromDate(publishDate),
+                                                                        isPublished: true,
+                                                                        commentsCount: 0,
+                                                                        sharesCount: 0
+                                                                    });
+                                                                }
+                                                                alert("Batch Tech programado.");
+                                                            }
+                                                        }
+                                                        setLoading(false);
+                                                    }}
+                                                    disabled={loading}
+                                                    className="py-4 bg-tech-500/10 border border-tech-500/20 text-tech-400 text-[8px] font-bold uppercase tracking-widest rounded-xl hover:bg-tech-500 hover:text-white transition-all"
+                                                >
+                                                    Generar Tech
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
+                                </GlassCard>
 
-                                    <div className="flex flex-col items-center gap-4">
-                                        <div className="flex items-center gap-3">
-                                            <span className="w-3 h-3 bg-curiol-500 rounded-full animate-pulse" />
-                                            <p className="text-white text-sm font-bold">Faltan {daysUntilNext} días para el nuevo material.</p>
-                                        </div>
+                                <div className="lg:col-span-2 space-y-6">
+                                    <h3 className="text-xl font-serif text-white italic px-4">Calendario de Publicaciones</h3>
+                                    <div className="space-y-4">
+                                        {contents.filter(c => c.createdAt?.toDate().getTime() > Date.now()).map((item) => (
+                                            <div key={item.id} className="p-6 bg-tech-900/50 rounded-3xl border border-white/5 flex items-center justify-between group">
+                                                <div className="flex items-center gap-6">
+                                                    <div className="w-12 h-12 rounded-xl bg-tech-950 flex items-center justify-center text-tech-700">
+                                                        <Calendar className="w-5 h-5" />
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="text-white font-serif text-lg italic leading-tight">{item.title}</h4>
+                                                        <p className="text-[10px] text-curiol-500 font-bold uppercase tracking-widest mt-1">Programado: {item.createdAt?.toDate().toLocaleDateString()}</p>
+                                                    </div>
+                                                </div>
+                                                <button onClick={() => handleDelete(item.id)} className="p-3 text-tech-700 hover:text-red-500 transition-all opacity-0 group-hover:opacity-100">
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            </div>
+                                        ))}
+                                        {contents.filter(c => c.createdAt?.toDate().getTime() > Date.now()).length === 0 && (
+                                            <div className="p-12 text-center bg-tech-900/20 rounded-3xl border border-white/5 border-dashed">
+                                                <p className="text-tech-500 text-sm font-light italic">No hay publicaciones programadas para el futuro.</p>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
-                            </GlassCard>
+                            </div>
                         </motion.div>
                     )}
                 </AnimatePresence>
@@ -190,10 +275,27 @@ export default function AcademyManagerPage() {
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
+                                            <label className="text-[10px] text-tech-500 font-bold uppercase tracking-widest block mb-2">Track</label>
+                                            <select value={isEditing.track || "tech"} onChange={(e) => setIsEditing({ ...isEditing, track: e.target.value as any })} className="w-full bg-tech-950 border border-tech-800 rounded-xl p-4 text-white text-sm outline-none">
+                                                <option value="tech">Tecnología</option>
+                                                <option value="legacy">Legado Familiar</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] text-tech-500 font-bold uppercase tracking-widest block mb-2">Acceso</label>
+                                            <select value={isEditing.isRestricted ? "true" : "false"} onChange={(e) => setIsEditing({ ...isEditing, isRestricted: e.target.value === "true" })} className="w-full bg-tech-950 border border-tech-800 rounded-xl p-4 text-white text-sm outline-none">
+                                                <option value="false">Libre</option>
+                                                <option value="true">Restringido (Premium)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
                                             <label className="text-[10px] text-tech-500 font-bold uppercase tracking-widest block mb-2">Tipo</label>
                                             <select value={isEditing.type} onChange={(e) => setIsEditing({ ...isEditing, type: e.target.value as any })} className="w-full bg-tech-950 border border-tech-800 rounded-xl p-4 text-white text-sm outline-none">
                                                 <option value="video">Video</option>
                                                 <option value="lesson">Lección</option>
+                                                <option value="podcast">Podcast</option>
                                             </select>
                                         </div>
                                         <div>
@@ -203,7 +305,11 @@ export default function AcademyManagerPage() {
                                     </div>
                                     <div>
                                         <label className="text-[10px] text-tech-500 font-bold uppercase tracking-widest block mb-2">Descripción</label>
-                                        <textarea rows={4} value={isEditing.description} onChange={(e) => setIsEditing({ ...isEditing, description: e.target.value })} className="w-full bg-tech-950 border border-tech-800 rounded-xl p-4 text-white text-sm outline-none focus:border-curiol-500 resize-none" />
+                                        <textarea rows={2} value={isEditing.description} onChange={(e) => setIsEditing({ ...isEditing, description: e.target.value })} className="w-full bg-tech-950 border border-tech-800 rounded-xl p-4 text-white text-sm outline-none focus:border-curiol-500 resize-none" />
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] text-tech-500 font-bold uppercase tracking-widest block mb-2">Cuerpo / Guion</label>
+                                        <textarea rows={8} value={isEditing.body || isEditing.mediaScript || ""} onChange={(e) => setIsEditing({ ...isEditing, body: e.target.value })} className="w-full bg-tech-950 border border-tech-800 rounded-xl p-4 text-white text-sm outline-none focus:border-curiol-500 resize-none" />
                                     </div>
                                     {isEditing.type === 'video' && (
                                         <div>

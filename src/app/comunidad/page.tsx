@@ -15,9 +15,15 @@ interface AcademyContent {
     id: string;
     title: string;
     description: string;
-    type: "video" | "lesson";
+    type: "video" | "lesson" | "podcast";
     category: string;
+    track?: "legacy" | "tech";
+    isRestricted?: boolean;
     videoUrl?: string;
+    body?: string;
+    infographicHighlight?: string;
+    mediaScript?: string;
+    visualConcept?: string;
     isPublished: boolean;
     createdAt: any;
     commentsCount?: number;
@@ -35,7 +41,14 @@ export default function ComunidadPage() {
     const [academyContent, setAcademyContent] = useState<AcademyContent[]>([]);
 
     useEffect(() => {
-        const q = query(collection(db, "academy_content"), where("isPublished", "==", true), orderBy("createdAt", "desc"));
+        // Mostramos solo lo publicado que YA llegó a su fecha (o es pasado)
+        const now = Timestamp.now();
+        const q = query(
+            collection(db, "academy_content"),
+            where("isPublished", "==", true),
+            where("createdAt", "<=", now),
+            orderBy("createdAt", "desc")
+        );
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as AcademyContent[];
             setAcademyContent(data);
@@ -160,6 +173,9 @@ function AcademyCard({ item }: { item: AcademyContent }) {
     const [showComments, setShowComments] = useState(false);
     const [comments, setComments] = useState<Comment[]>([]);
     const [newComment, setNewComment] = useState("");
+    const [isUnlocked, setIsUnlocked] = useState(false);
+    const [accessCode, setAccessCode] = useState("");
+    const [unlockError, setUnlockError] = useState(false);
 
     useEffect(() => {
         if (!showComments) return;
@@ -170,6 +186,22 @@ function AcademyCard({ item }: { item: AcademyContent }) {
         });
         return () => unsubscribe();
     }, [showComments, item.id]);
+
+    const handleUnlock = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setUnlockError(false);
+        // Simplificación: Un código maestro o validación contra Firestore
+        // Buscamos en la colección 'academy_codes' un documento con el ID del código
+        // que coincida con el track del item.
+        const codeQuery = query(collection(db, "academy_codes"), where("code", "==", accessCode.toUpperCase()), where("track", "==", item.track || "tech"));
+        // O más simple para este MVP: Códigos directos
+        if (accessCode.toUpperCase() === "CURIOL2026" || accessCode.toUpperCase() === "LEGADO2026") {
+            setIsUnlocked(true);
+            return;
+        }
+
+        setUnlockError(true);
+    };
 
     const handleAddComment = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -191,7 +223,7 @@ function AcademyCard({ item }: { item: AcademyContent }) {
 
     const handleShare = (platform: string) => {
         const url = typeof window !== 'undefined' ? window.location.href : '';
-        const text = `Mira esto en Aprendiendo de nuevas tendencias: ${item.title}`;
+        const text = `Mira esto en la Academia: ${item.title}`;
         let shareUrl = '';
 
         if (platform === 'facebook') shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
@@ -205,14 +237,40 @@ function AcademyCard({ item }: { item: AcademyContent }) {
         }
     };
 
+    if (item.isRestricted && !isUnlocked) {
+        return (
+            <GlassCard className="p-8 border-curiol-500/20 bg-tech-950/50 flex flex-col items-center text-center">
+                <div className="w-16 h-16 rounded-full bg-tech-900 flex items-center justify-center text-curiol-500 mb-6">
+                    <Sparkles className="w-6 h-6 animate-pulse" />
+                </div>
+                <h3 className="text-xl font-serif text-white italic mb-2">{item.title}</h3>
+                <p className="text-[10px] text-curiol-500 font-bold uppercase tracking-widest mb-6">Contenido Exclusivo {item.track === 'legacy' ? 'Legado' : 'Tecnología'}</p>
+
+                <form onSubmit={handleUnlock} className="w-full max-w-xs space-y-4">
+                    <input
+                        required
+                        type="text"
+                        placeholder="Ingresa tu código"
+                        value={accessCode}
+                        onChange={(e) => setAccessCode(e.target.value)}
+                        className="w-full bg-tech-900 border border-white/10 rounded-xl px-4 py-3 text-center text-white text-xs outline-none focus:border-curiol-500/50"
+                    />
+                    {unlockError && <p className="text-[10px] text-red-500 font-bold uppercase">Código inválido</p>}
+                    <button type="submit" className="w-full py-3 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest rounded-xl">Desbloquear</button>
+                </form>
+                <p className="mt-6 text-[9px] text-tech-500 font-light italic">Este contenido es un plus exclusivo para nuestros clientes premium.</p>
+            </GlassCard>
+        );
+    }
+
     return (
         <GlassCard className="p-0 overflow-hidden flex flex-col group border-white/5 hover:border-curiol-500/30 transition-all duration-500">
-            {item.type === 'video' && item.videoUrl && (
+            {item.type !== 'lesson' && (
                 <div className="aspect-video bg-tech-950 relative overflow-hidden group/video">
                     <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=2070')] bg-cover bg-center opacity-40 group-hover/video:scale-105 transition-transform duration-700" />
                     <div className="absolute inset-0 flex items-center justify-center">
                         <div className="w-16 h-16 rounded-full bg-curiol-500 flex items-center justify-center text-white shadow-2xl group-hover/video:scale-110 transition-all cursor-pointer">
-                            <Sparkles className="w-6 h-6" />
+                            {item.type === 'podcast' ? <MessageSquare className="w-6 h-6" /> : <Sparkles className="w-6 h-6" />}
                         </div>
                     </div>
                 </div>
@@ -226,6 +284,34 @@ function AcademyCard({ item }: { item: AcademyContent }) {
                 </div>
                 <h3 className="text-2xl font-serif text-white italic mb-4 leading-tight">{item.title}</h3>
                 <p className="text-sm text-tech-400 font-light leading-relaxed mb-8">{item.description}</p>
+
+                {item.body && (
+                    <div className="mb-8 p-6 bg-tech-950/50 rounded-2xl border border-white/5">
+                        <p className="text-sm text-tech-300 font-light leading-relaxed whitespace-pre-wrap">{item.body}</p>
+                    </div>
+                )}
+
+                {item.infographicHighlight && (
+                    <div className="mb-8 p-8 bg-curiol-gradient rounded-3xl relative overflow-hidden group/info">
+                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover/info:scale-110 transition-transform">
+                            <Sparkles className="w-12 h-12 text-white" />
+                        </div>
+                        <p className="text-[10px] text-white/60 font-bold uppercase tracking-widest mb-2">AI Infographic Insight</p>
+                        <p className="text-white text-lg font-serif italic leading-tight">"{item.infographicHighlight}"</p>
+                    </div>
+                )}
+
+                {item.mediaScript && (
+                    <div className="mb-8 p-6 bg-tech-900 border border-white/5 rounded-2xl">
+                        <div className="flex items-center gap-2 mb-4">
+                            <MessageSquare className="w-4 h-4 text-tech-500" />
+                            <span className="text-[10px] text-tech-500 font-bold uppercase tracking-widest">Guion de Producción IA</span>
+                        </div>
+                        <p className="text-[11px] text-tech-400 font-light leading-relaxed whitespace-pre-wrap italic">
+                            {item.mediaScript}
+                        </p>
+                    </div>
+                )}
 
                 <div className="flex items-center justify-between pt-6 border-t border-white/5">
                     <div className="flex gap-4">

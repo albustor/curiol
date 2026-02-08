@@ -1,19 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AiAssistant } from "@/components/AiAssistant";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { Camera, Code, ArrowRight, CheckCircle2, AlertCircle, ShoppingCart, Sparkles } from "lucide-react";
+import { Camera, Code, ArrowRight, CheckCircle2, ShoppingCart, Sparkles, CreditCard, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { db } from "@/lib/firebase";
+import { collection, addDoc, Timestamp } from "firebase/firestore";
 
 const SECTIONS = [
     { id: "category", label: "Categoría" },
     { id: "package", label: "Paquete" },
     { id: "upsell", label: "Complementos" },
-    { id: "summary", label: "Resumen" }
+    { id: "summary", label: "Resumen" },
+    { id: "payment", label: "Pago" }
 ];
 
 const PACKAGES: Record<string, Array<{ id: string; name: string; price: number; usdPrice: number; desc: string; isMonthly?: boolean; isHourly?: boolean }>> = {
@@ -46,6 +49,12 @@ export default function CotizadorPage() {
     const [extras, setExtras] = useState<any[]>([]);
     const [hours, setHours] = useState(2);
     const [isCoastal, setIsCoastal] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState<"sinpe" | "transfer" | "card" | null>(null);
+    const [quoteId, setQuoteId] = useState("");
+
+    useEffect(() => {
+        setQuoteId(`CP-${Math.floor(Math.random() * 90000) + 10000}`);
+    }, []);
 
     const handleNext = () => setStep(s => Math.min(s + 1, SECTIONS.length - 1));
     const handleBack = () => setStep(s => Math.max(s - 1, 0));
@@ -249,7 +258,6 @@ export default function CotizadorPage() {
                                 className="max-w-xl mx-auto"
                             >
                                 <GlassCard className="border-tech-800 relative overflow-hidden">
-                                    {/* Watermark Logo Signature */}
                                     <div className="absolute -bottom-10 -right-10 font-['Great_Vibes'] text-8xl text-white/5 pointer-events-none select-none -rotate-12">
                                         Alberto Bustos
                                     </div>
@@ -310,12 +318,173 @@ export default function CotizadorPage() {
                                         <button className="py-5 bg-tech-800 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-tech-700 transition-all rounded-xl">
                                             Exportar Detalle
                                         </button>
-                                        <button className="py-5 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest hover:brightness-110 transition-all rounded-xl shadow-xl shadow-curiol-500/20">
-                                            Confirmar WhatsApp
+                                        <button
+                                            onClick={handleNext}
+                                            className="py-5 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest hover:brightness-110 transition-all rounded-xl shadow-xl shadow-curiol-500/20"
+                                        >
+                                            Proceder al Pago
                                         </button>
                                     </div>
                                     <button onClick={handleBack} className="w-full text-center mt-8 text-tech-500 hover:text-white transition-all text-[10px] uppercase font-bold tracking-widest">Modificar Selección</button>
                                 </GlassCard>
+                            </motion.div>
+                        )}
+
+                        {step === 4 && (
+                            <motion.div
+                                key="step4"
+                                initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
+                                className="max-w-2xl mx-auto"
+                            >
+                                <div className="text-center mb-10">
+                                    <h3 className="text-3xl font-serif text-white mb-4 italic">Método de Pago</h3>
+                                    <p className="text-tech-400">Selecciona tu forma de pago preferida para asegurar tu espacio de forma rápida.</p>
+                                </div>
+
+                                <div className="grid grid-cols-1 gap-4">
+                                    {/* SINPE Option */}
+                                    <GlassCard
+                                        className={cn("cursor-pointer border-2 transition-all p-8 flex items-center justify-between", paymentMethod === 'sinpe' ? "border-curiol-500" : "border-transparent")}
+                                        onClick={() => setPaymentMethod('sinpe')}
+                                    >
+                                        <div className="flex items-center gap-6">
+                                            <div className="w-12 h-12 bg-curiol-500/10 rounded-2xl flex items-center justify-center text-curiol-500 font-bold text-lg">SM</div>
+                                            <div>
+                                                <p className="text-white font-serif text-xl italic leading-none mb-1">SINPE Móvil</p>
+                                                <p className="text-tech-500 text-[10px] uppercase font-bold tracking-widest">Pago inmediato al 6060-2617</p>
+                                            </div>
+                                        </div>
+                                        <div className={cn("w-6 h-6 rounded-full border-2", paymentMethod === 'sinpe' ? "border-curiol-500 bg-curiol-500 ring-4 ring-curiol-500/20" : "border-tech-800")} />
+                                    </GlassCard>
+
+                                    {/* Bank Transfer Option */}
+                                    <GlassCard
+                                        className={cn("cursor-pointer border-2 transition-all p-8 flex items-center justify-between", paymentMethod === 'transfer' ? "border-curiol-500" : "border-transparent")}
+                                        onClick={() => setPaymentMethod('transfer')}
+                                    >
+                                        <div className="flex items-center gap-6">
+                                            <div className="w-12 h-12 bg-tech-500/10 rounded-2xl flex items-center justify-center text-tech-500 font-bold text-lg">BCR</div>
+                                            <div>
+                                                <p className="text-white font-serif text-xl italic leading-none mb-1">Transferencia Bancaria (BCR)</p>
+                                                <p className="text-tech-500 text-[10px] uppercase font-bold tracking-widest">Cuentas en Colones y Dólares</p>
+                                            </div>
+                                        </div>
+                                        <div className={cn("w-6 h-6 rounded-full border-2", paymentMethod === 'transfer' ? "border-curiol-500 bg-curiol-500 ring-4 ring-curiol-500/20" : "border-tech-800")} />
+                                    </GlassCard>
+
+                                    {/* Credit Card Option (Request Link) */}
+                                    <GlassCard
+                                        className={cn("cursor-pointer border-2 transition-all p-8 flex items-center justify-between", paymentMethod === 'card' ? "border-curiol-500" : "border-transparent")}
+                                        onClick={() => setPaymentMethod('card')}
+                                    >
+                                        <div className="flex items-center gap-6">
+                                            <div className="w-12 h-12 bg-curiol-gradient rounded-2xl flex items-center justify-center text-white">
+                                                <CreditCard className="w-6 h-6" />
+                                            </div>
+                                            <div>
+                                                <p className="text-white font-serif text-xl italic leading-none mb-1">Solicitar Link de Pago (Tarjeta)</p>
+                                                <p className="text-tech-500 text-[10px] uppercase font-bold tracking-widest">Visa / MasterCard / American Express</p>
+                                            </div>
+                                        </div>
+                                        <div className={cn("w-6 h-6 rounded-full border-2", paymentMethod === 'card' ? "border-curiol-500 bg-curiol-500 ring-4 ring-curiol-500/20" : "border-tech-800")} />
+                                    </GlassCard>
+                                </div>
+
+                                <AnimatePresence>
+                                    {paymentMethod === 'sinpe' && (
+                                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-8 p-8 bg-curiol-500/5 border border-curiol-500/20 rounded-3xl text-center">
+                                            <p className="text-tech-400 text-[8px] uppercase tracking-widest font-bold mb-4">Detalles de SINPE Móvil</p>
+                                            <p className="text-4xl font-serif text-white italic mb-2 tracking-tighter">6060-2617</p>
+                                            <p className="text-curiol-500 font-bold text-xs uppercase tracking-[0.2em] mb-6">Alberto Bustos Ortega</p>
+                                            <div className="bg-tech-950 p-4 rounded-xl inline-flex items-center gap-3 text-tech-400 text-[10px]">
+                                                <Send className="w-3 h-3" /> Favor enviar comprobante por WhatsApp
+                                            </div>
+                                        </motion.div>
+                                    )}
+
+                                    {paymentMethod === 'transfer' && (
+                                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-8 p-8 bg-tech-800/50 border border-tech-700 rounded-3xl">
+                                            <p className="text-tech-500 text-[8px] uppercase tracking-widest font-bold mb-6 text-center">Cuentas BCR - Alberto Bustos Ortega</p>
+                                            <div className="space-y-6">
+                                                <div className="flex flex-col gap-1">
+                                                    <span className="text-tech-600 text-[7px] font-bold uppercase tracking-[0.3em]">Dólares (IBAN)</span>
+                                                    <span className="text-white font-mono text-sm select-all tracking-wider">CR57015202001299024529</span>
+                                                </div>
+                                                <div className="flex flex-col gap-1 border-t border-white/5 pt-4">
+                                                    <span className="text-tech-600 text-[7px] font-bold uppercase tracking-[0.3em]">Colones (IBAN)</span>
+                                                    <span className="text-white font-mono text-sm select-all tracking-wider">CR84015202322000422006</span>
+                                                </div>
+                                            </div>
+                                        </motion.div>
+                                    )}
+
+                                    {paymentMethod === 'card' && (
+                                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-8 p-10 bg-curiol-gradient/5 border border-curiol-500/20 rounded-3xl text-center">
+                                            <div className="max-w-sm mx-auto">
+                                                <Sparkles className="w-10 h-10 text-curiol-500 mx-auto mb-6" />
+                                                <p className="text-white font-serif text-2xl italic mb-4 leading-tight">Link de Pago Seguro</p>
+                                                <p className="text-tech-400 text-xs font-light leading-relaxed mb-8">
+                                                    Para tu seguridad, generamos un enlace de pago único a través de la plataforma certificada de nuestro banco. Lo recibirás de inmediato por WhatsApp para completar tu transacción de forma 100% segura.
+                                                </p>
+                                                <div className="flex justify-center gap-4 grayscale opacity-50">
+                                                    <div className="w-10 h-10 bg-white/10 rounded flex items-center justify-center font-bold text-[8px]">VISA</div>
+                                                    <div className="w-10 h-10 bg-white/10 rounded flex items-center justify-center font-bold text-[8px]">MC</div>
+                                                    <div className="w-10 h-10 bg-white/10 rounded flex items-center justify-center font-bold text-[8px]">AMEX</div>
+                                                </div>
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+
+                                <div className="mt-12 flex flex-col items-center gap-6">
+                                    <div className="text-center mb-4">
+                                        <p className="text-tech-700 text-[8px] uppercase font-bold tracking-[0.4em] mb-1">Referencia Proforma</p>
+                                        <p className="text-white/40 font-mono text-xs tracking-widest">{quoteId}</p>
+                                    </div>
+                                    <button
+                                        className="px-16 py-6 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-[0.3em] hover:brightness-110 transition-all rounded-full shadow-2xl shadow-curiol-500/20 flex items-center gap-4"
+                                        onClick={async () => {
+                                            const methodText = paymentMethod === 'sinpe' ? 'SINPE Móvil' :
+                                                paymentMethod === 'transfer' ? 'Transferencia Bancaria' :
+                                                    'Link de Pago Seguro (Tarjeta)';
+
+                                            const cardNote = paymentMethod === 'card' ? '\n\n*Nota:* Favor enviarme el link de pago seguro para proceder con la tarjeta.' : '';
+
+                                            // Save to Firestore
+                                            try {
+                                                await addDoc(collection(db, "quotes"), {
+                                                    quoteId,
+                                                    package: selectedPackage?.name,
+                                                    categoryId: category,
+                                                    total,
+                                                    currency,
+                                                    paymentMethod,
+                                                    status: paymentMethod === 'card' ? 'pending_link' : 'pending_confirmation',
+                                                    createdAt: Timestamp.now(),
+                                                    items: [
+                                                        { name: selectedPackage?.name, price: currency === "USD" ? selectedPackage?.usd : selectedPackage?.price },
+                                                        ...extras.map(e => ({ name: e.name, price: currency === "USD" ? e.usd : e.price }))
+                                                    ]
+                                                });
+                                            } catch (e) {
+                                                console.error("Error saving quote:", e);
+                                            }
+
+                                            const message = encodeURIComponent(`Hola Alberto, he generado una propuesta en Curiol Studio.
+Ref: ${quoteId}
+
+Paquete: ${selectedPackage?.name}
+Inversión total: ${currency === "USD" ? "$" : "₡"}${total.toLocaleString()}
+Método de pago preferido: ${methodText}${cardNote}
+
+Quedo a la espera de los siguientes pasos para confirmar mi sesión.`);
+                                            window.open(`https://wa.me/50660602617?text=${message}`, '_blank');
+                                        }}
+                                    >
+                                        Finalizar & Enviar WhatsApp
+                                    </button>
+                                    <button onClick={handleBack} className="text-tech-500 hover:text-white transition-all text-[10px] uppercase tracking-[0.2em] font-bold">Volver al Resumen</button>
+                                </div>
                             </motion.div>
                         )}
                     </AnimatePresence>
@@ -324,8 +493,8 @@ export default function CotizadorPage() {
                 {/* Navigation Buttons (Bottom) */}
                 {step > 0 && step < 3 && (
                     <div className="mt-16 flex justify-between items-center px-4">
-                        <button onClick={handleBack} className="text-tech-500 hover:text-white transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-widest">
-                            Volver
+                        <button onClick={handleBack} className="text-tech-500 hover:text-white transition-all flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest">
+                            <ArrowRight className="w-4 h-4 rotate-180" /> Volver
                         </button>
                         <button onClick={handleNext} className="px-8 py-3 bg-tech-800 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-tech-700 transition-all flex items-center gap-2">
                             Continuar <ArrowRight className="w-4 h-4" />

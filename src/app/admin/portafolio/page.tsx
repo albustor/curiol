@@ -7,9 +7,13 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import {
     Plus, Save, Trash2, Edit3,
     Image as ImageIcon, Upload, X,
-    ChevronRight, Folder, Camera, Sparkles
+    ChevronRight, Folder, Camera, Sparkles,
+    Settings, Share2, Heart, Calendar, Link as LinkIcon,
+    ChevronLeft, Download
 } from "lucide-react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 import { AiCompositionEditor } from "@/components/admin/AiCompositionEditor";
 import { db, storage } from "@/lib/firebase";
 import { collection, addDoc, query, onSnapshot, doc, updateDoc, deleteDoc, Timestamp, orderBy } from "firebase/firestore";
@@ -23,14 +27,24 @@ interface Album {
     coverUrl?: string;
     photos: { url: string; id: string }[];
     createdAt: any;
+    eventDate?: string;
+    slug?: string;
+    password?: string;
+    settings?: {
+        allowLikes: boolean;
+        allowDownloads: boolean;
+        allowSharing: boolean;
+    };
 }
 
 export default function PortfolioAdminPage() {
     const [albums, setAlbums] = useState<Album[]>([]);
     const [isEditing, setIsEditing] = useState<Partial<Album> | null>(null);
     const [uploading, setUploading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(0);
     const [loading, setLoading] = useState(false);
     const [aiEditingPhoto, setAiEditingPhoto] = useState<string | null>(null);
+    const [activeTab, setActiveTab] = useState<"general" | "interactions" | "downloads">("general");
 
     useEffect(() => {
         const q = query(collection(db, "portfolio_albums"), orderBy("createdAt", "desc"));
@@ -43,35 +57,56 @@ export default function PortfolioAdminPage() {
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files || !isEditing) return;
-        const file = e.target.files[0];
+        const files = Array.from(e.target.files);
         setUploading(true);
+        setUploadProgress(0);
+
+        const newPhotos: { url: string; id: string }[] = [];
+        let completed = 0;
 
         try {
-            const storageRef = ref(storage, `portfolio/${Date.now()}_${file.name}`);
-            const snapshot = await uploadBytes(storageRef, file);
-            const url = await getDownloadURL(snapshot.ref);
+            for (const file of files) {
+                const storageRef = ref(storage, `portfolio/${Date.now()}_${file.name}`);
+                const snapshot = await uploadBytes(storageRef, file);
+                const url = await getDownloadURL(snapshot.ref);
+                newPhotos.push({ url, id: Date.now().toString() + Math.random().toString(36).substr(2, 5) });
 
-            const newPhoto = { url, id: Date.now().toString() };
+                completed++;
+                setUploadProgress(Math.round((completed / files.length) * 100));
+            }
+
             setIsEditing({
                 ...isEditing,
-                photos: [...(isEditing.photos || []), newPhoto],
-                coverUrl: isEditing.coverUrl || url
+                photos: [...(isEditing.photos || []), ...newPhotos],
+                coverUrl: isEditing.coverUrl || newPhotos[0]?.url
             });
         } catch (error) {
-            console.error("Error uploading file:", error);
+            console.error("Error uploading files:", error);
         }
         setUploading(false);
+        setUploadProgress(0);
     };
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!isEditing) return;
         setLoading(true);
         try {
+            const albumData = {
+                ...isEditing,
+                slug: isEditing.slug || isEditing.title?.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+                settings: isEditing.settings || {
+                    allowLikes: true,
+                    allowDownloads: true,
+                    allowSharing: true
+                }
+            };
+
             if (isEditing?.id) {
-                await updateDoc(doc(db, "portfolio_albums", isEditing.id), { ...isEditing });
+                await updateDoc(doc(db, "portfolio_albums", isEditing.id), albumData);
             } else {
                 await addDoc(collection(db, "portfolio_albums"), {
-                    ...isEditing,
+                    ...albumData,
                     createdAt: Timestamp.now()
                 });
             }
@@ -96,6 +131,14 @@ export default function PortfolioAdminPage() {
             <Navbar />
 
             <main className="max-w-7xl mx-auto px-4 w-full">
+                <nav className="flex items-center gap-2 text-tech-500 text-[10px] font-bold uppercase tracking-widest mb-8">
+                    <Link href="/admin/dashboard" className="hover:text-white transition-colors flex items-center gap-1">
+                        <ChevronLeft className="w-3 h-3" /> Dashboard
+                    </Link>
+                    <ChevronRight className="w-3 h-3 opacity-20" />
+                    <span className="text-white">Portafolio & Álbumes</span>
+                </nav>
+
                 <header className="mb-12 flex justify-between items-end">
                     <div>
                         <div className="flex items-center gap-3 mb-2">
@@ -106,7 +149,14 @@ export default function PortfolioAdminPage() {
                         <p className="text-tech-500 mt-4">Crea y organiza galerías fotográficas para el portafolio 2026.</p>
                     </div>
                     <button
-                        onClick={() => setIsEditing({ title: "", description: "", category: "Legado Familiar", photos: [] })}
+                        onClick={() => setIsEditing({
+                            title: "",
+                            description: "",
+                            category: "Legado Familiar",
+                            photos: [],
+                            eventDate: new Date().toISOString().split('T')[0],
+                            settings: { allowLikes: true, allowDownloads: true, allowSharing: true }
+                        })}
                         className="px-8 py-4 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest rounded-xl hover:scale-105 transition-all flex items-center gap-3"
                     >
                         <Plus className="w-4 h-4" /> Nuevo Álbum
@@ -143,78 +193,241 @@ export default function PortfolioAdminPage() {
             <AnimatePresence>
                 {isEditing && (
                     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-tech-950/90 backdrop-blur-md" onClick={() => setIsEditing(null)} />
-                        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="relative bg-tech-900 border border-white/5 w-full max-w-4xl max-h-[90vh] rounded-[2rem] shadow-2xl overflow-hidden flex flex-col">
-                            <form onSubmit={handleSave} className="p-10 space-y-8 overflow-y-auto">
-                                <h3 className="text-2xl font-serif text-white italic">Gestionar Álbum</h3>
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-tech-950/95 backdrop-blur-xl" onClick={() => setIsEditing(null)} />
+                        <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="relative bg-tech-900 border border-white/5 w-full max-w-5xl h-[85vh] rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col">
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div className="space-y-4">
-                                        <div>
-                                            <label className="text-[10px] text-tech-500 font-bold uppercase tracking-widest block mb-2">Título del Álbum</label>
-                                            <input required value={isEditing.title} onChange={(e) => setIsEditing({ ...isEditing, title: e.target.value })} className="w-full bg-tech-950 border border-tech-800 rounded-xl p-4 text-white text-sm outline-none focus:border-curiol-500" />
-                                        </div>
-                                        <div>
-                                            <label className="text-[10px] text-tech-500 font-bold uppercase tracking-widest block mb-2">Categoría</label>
-                                            <select value={isEditing.category} onChange={(e) => setIsEditing({ ...isEditing, category: e.target.value as any })} className="w-full bg-tech-950 border border-tech-800 rounded-xl p-4 text-white text-sm outline-none">
-                                                <option value="Legado Familiar">Legado Familiar</option>
-                                                <option value="Soluciones Comerciales">Soluciones Comerciales</option>
-                                                <option value="Arte Fine Art">Arte Fine Art</option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label className="text-[10px] text-tech-500 font-bold uppercase tracking-widest block mb-2">Descripción</label>
-                                            <textarea rows={3} value={isEditing.description} onChange={(e) => setIsEditing({ ...isEditing, description: e.target.value })} className="w-full bg-tech-950 border border-tech-800 rounded-xl p-4 text-white text-sm outline-none focus:border-curiol-500 resize-none font-light" />
-                                        </div>
+                            {/* Modal Header */}
+                            <div className="p-8 border-b border-white/5 flex items-center justify-between bg-tech-950/50">
+                                <div>
+                                    <h3 className="text-2xl font-serif text-white italic">Configuración de Galería</h3>
+                                    <p className="text-tech-500 text-[10px] uppercase tracking-widest mt-1 font-bold">{isEditing.title || "Nuevo Álbum"}</p>
+                                </div>
+                                <div className="flex gap-4">
+                                    <div className="flex bg-tech-950 p-1 rounded-xl border border-white/5">
+                                        {(["general", "interactions", "downloads"] as const).map((t) => (
+                                            <button
+                                                key={t}
+                                                onClick={() => setActiveTab(t)}
+                                                className={cn(
+                                                    "px-6 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all",
+                                                    activeTab === t ? "bg-curiol-gradient text-white shadow-lg" : "text-tech-500 hover:text-white"
+                                                )}
+                                            >
+                                                {t === "general" ? "General" : t === "interactions" ? "Interacciones" : "Descargas"}
+                                            </button>
+                                        ))}
                                     </div>
+                                    <button onClick={() => setIsEditing(null)} className="p-2 text-tech-500 hover:text-white transition-colors"><X className="w-6 h-6" /></button>
+                                </div>
+                            </div>
 
-                                    <div className="space-y-4">
-                                        <label className="text-[10px] text-tech-500 font-bold uppercase tracking-widest block mb-2">Fotos del Álbum</label>
-                                        <div className="grid grid-cols-3 gap-3">
-                                            {isEditing.photos?.map((p, idx) => (
-                                                <div key={idx} className="aspect-square bg-tech-950 rounded-lg relative overflow-hidden group">
-                                                    <img src={p.url} className="w-full h-full object-cover" alt="" />
-                                                    <div className="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <form onSubmit={handleSave} className="flex-grow overflow-y-auto custom-scrollbar">
+                                <div className="p-10">
+                                    {activeTab === "general" && (
+                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                                            <div className="space-y-8">
+                                                <section>
+                                                    <h4 className="text-white font-serif text-lg italic mb-6 flex items-center gap-3">
+                                                        <Settings className="w-4 h-4 text-curiol-500" /> Básico
+                                                    </h4>
+                                                    <div className="space-y-6">
+                                                        <div>
+                                                            <label className="text-[10px] text-tech-500 font-bold uppercase tracking-widest block mb-2">Nombre de la galería</label>
+                                                            <input required value={isEditing.title || ""} onChange={(e) => setIsEditing({ ...isEditing, title: e.target.value })} className="w-full bg-tech-950 border border-tech-800 rounded-xl p-4 text-white text-sm outline-none focus:border-curiol-500 transition-all font-light" />
+                                                        </div>
+                                                        <div>
+                                                            <label className="text-[10px] text-tech-500 font-bold uppercase tracking-widest block mb-2">Fecha de sesión</label>
+                                                            <div className="relative">
+                                                                <input type="date" value={isEditing.eventDate || ""} onChange={(e) => setIsEditing({ ...isEditing, eventDate: e.target.value })} className="w-full bg-tech-950 border border-tech-800 rounded-xl p-4 text-white text-sm outline-none focus:border-curiol-500 transition-all font-light appearance-none" />
+                                                                <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-tech-600 pointer-events-none" />
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <label className="text-[10px] text-tech-500 font-bold uppercase tracking-widest block mb-2">Categoría del Proyecto</label>
+                                                            <select value={isEditing.category || "Legado Familiar"} onChange={(e) => setIsEditing({ ...isEditing, category: e.target.value as any })} className="w-full bg-tech-950 border border-tech-800 rounded-xl p-4 text-white text-sm outline-none focus:border-curiol-500 transition-all">
+                                                                <option value="Legado Familiar">Legado Familiar</option>
+                                                                <option value="Soluciones Comerciales">Soluciones Comerciales</option>
+                                                                <option value="Arte Fine Art">Arte Fine Art</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </section>
+
+                                                <section>
+                                                    <h4 className="text-white font-serif text-lg italic mb-6 flex items-center gap-3">
+                                                        <LinkIcon className="w-4 h-4 text-curiol-500" /> Acceso
+                                                    </h4>
+                                                    <div className="space-y-6">
+                                                        <div>
+                                                            <label className="text-[10px] text-tech-500 font-bold uppercase tracking-widest block mb-2">URL de la galería (Slug)</label>
+                                                            <div className="flex items-center gap-2 bg-tech-950 border border-tech-800 rounded-xl px-4 text-tech-600 text-xs">
+                                                                <span>/portafolio/</span>
+                                                                <input placeholder="ej-boda-juan" value={isEditing.slug || ""} onChange={(e) => setIsEditing({ ...isEditing, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })} className="flex-grow bg-transparent py-4 text-white outline-none font-light" />
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <label className="text-[10px] text-tech-500 font-bold uppercase tracking-widest block mb-2">Contraseña (Opcional)</label>
+                                                            <input type="password" placeholder="Proteger con clave" value={isEditing.password || ""} onChange={(e) => setIsEditing({ ...isEditing, password: e.target.value })} className="w-full bg-tech-950 border border-tech-800 rounded-xl p-4 text-white text-sm outline-none focus:border-curiol-500 transition-all font-light" />
+                                                        </div>
+                                                    </div>
+                                                </section>
+                                            </div>
+
+                                            <div className="space-y-8">
+                                                <section className="h-full flex flex-col">
+                                                    <div className="flex justify-between items-center mb-6">
+                                                        <h4 className="text-white font-serif text-lg italic flex items-center gap-3">
+                                                            <ImageIcon className="w-4 h-4 text-curiol-500" /> Fotos del Álbum
+                                                        </h4>
+                                                        {uploading && (
+                                                            <div className="flex items-center gap-3 bg-curiol-500/10 px-4 py-2 rounded-full border border-curiol-500/20">
+                                                                <div className="w-2 h-2 bg-curiol-500 rounded-full animate-pulse" />
+                                                                <span className="text-[10px] font-bold text-curiol-500 uppercase tracking-widest">{uploadProgress}% Subiendo</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+
+                                                    <div className="flex-grow bg-tech-950/50 rounded-3xl border border-dashed border-tech-800 p-6 flex flex-col">
+                                                        <div className="grid grid-cols-3 gap-4 auto-rows-min mb-6 overflow-y-auto max-h-[300px] pr-2 custom-scrollbar">
+                                                            {isEditing.photos?.map((p, idx) => (
+                                                                <div key={idx} className="aspect-square bg-tech-900 rounded-2xl relative overflow-hidden group border border-white/5">
+                                                                    <img src={p.url} className="w-full h-full object-cover" alt="" />
+                                                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                                                                        <button type="button" onClick={() => setAiEditingPhoto(p.url)} className="p-2 bg-curiol-500 rounded-xl text-white hover:scale-110 transition-all"><Sparkles className="w-4 h-4" /></button>
+                                                                        <button type="button" onClick={() => setIsEditing({ ...isEditing, photos: isEditing.photos?.filter((_, i) => i !== idx) })} className="p-2 bg-red-500 rounded-xl text-white hover:scale-110 transition-all"><X className="w-4 h-4" /></button>
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+
+                                                            <label className="aspect-square bg-tech-900 border-2 border-dashed border-tech-800 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-curiol-500/50 hover:bg-curiol-500/5 transition-all group">
+                                                                <input type="file" multiple className="hidden" accept="image/*" onChange={handleFileUpload} />
+                                                                <Upload className="w-8 h-8 text-tech-700 group-hover:text-curiol-500 transition-colors" />
+                                                                <span className="text-[8px] text-tech-700 font-bold uppercase mt-2 group-hover:text-curiol-500 transition-colors">Añadir Fotos</span>
+                                                            </label>
+                                                        </div>
+
+                                                        <div className="mt-auto p-6 bg-tech-900 rounded-2xl border border-white/5">
+                                                            <div className="flex items-center gap-4">
+                                                                <div className="w-12 h-12 rounded-xl bg-tech-950 flex items-center justify-center text-tech-600">
+                                                                    <ImageIcon className="w-6 h-6" />
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-white text-sm font-bold">{isEditing.photos?.length || 0} Archivos seleccionados</p>
+                                                                    <p className="text-tech-600 text-[10px] uppercase font-bold tracking-widest mt-0.5">Límite recomendado: 200 fotos por álbum</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </section>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {activeTab === "interactions" && (
+                                        <div className="max-w-2xl mx-auto space-y-12">
+                                            <div className="text-center mb-12">
+                                                <Heart className="w-12 h-12 text-curiol-500 mx-auto mb-4" />
+                                                <h4 className="text-2xl font-serif text-white italic">Interacciones del Cliente</h4>
+                                                <p className="text-tech-500 text-sm font-light">Configura cómo los usuarios pueden interactuar con las fotografías.</p>
+                                            </div>
+
+                                            <div className="space-y-6">
+                                                {[
+                                                    { id: "allowLikes", label: "Permitir Favoritos/Likes", desc: "El cliente puede marcar fotos con un corazón para su selección final.", icon: Heart },
+                                                    { id: "allowSharing", label: "Permitir Compartir", desc: "Habilitar botones para compartir fotos individuales o todo el álbum.", icon: Share2 }
+                                                ].map((item) => (
+                                                    <div key={item.id} className="flex items-center justify-between p-8 bg-tech-950 border border-tech-800 rounded-3xl group hover:border-curiol-500/30 transition-all">
+                                                        <div className="flex items-center gap-6">
+                                                            <div className="w-12 h-12 rounded-2xl bg-tech-900 border border-white/5 flex items-center justify-center text-tech-500 group-hover:text-curiol-500 transition-colors">
+                                                                <item.icon className="w-5 h-5" />
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-white font-bold text-sm">{item.label}</p>
+                                                                <p className="text-tech-500 text-xs font-light">{item.desc}</p>
+                                                            </div>
+                                                        </div>
                                                         <button
                                                             type="button"
-                                                            onClick={() => setAiEditingPhoto(p.url)}
-                                                            className="p-1.5 bg-curiol-500 rounded text-white hover:scale-110 transition-all"
-                                                            title="Exportar con IA"
+                                                            onClick={() => setIsEditing({
+                                                                ...isEditing,
+                                                                settings: {
+                                                                    ...(isEditing.settings || { allowLikes: true, allowDownloads: true, allowSharing: true }),
+                                                                    [item.id]: !isEditing.settings?.[item.id as keyof typeof isEditing.settings]
+                                                                }
+                                                            })}
+                                                            className={cn(
+                                                                "w-14 h-8 rounded-full relative transition-all duration-300",
+                                                                isEditing.settings?.[item.id as keyof typeof isEditing.settings] ? "bg-curiol-gradient" : "bg-tech-800"
+                                                            )}
                                                         >
-                                                            <Sparkles className="w-3 h-3" />
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => setIsEditing({ ...isEditing, photos: isEditing.photos?.filter((_, i) => i !== idx) })}
-                                                            className="p-1.5 bg-red-500 rounded text-white hover:scale-110 transition-all"
-                                                        >
-                                                            <X className="w-3 h-3" />
+                                                            <div className={cn(
+                                                                "absolute top-1 w-6 h-6 bg-white rounded-full shadow-lg transition-all duration-300",
+                                                                isEditing.settings?.[item.id as keyof typeof isEditing.settings] ? "left-7" : "left-1"
+                                                            )} />
                                                         </button>
                                                     </div>
-                                                </div>
-                                            ))}
-                                            <label className="aspect-square bg-tech-950 border-2 border-dashed border-tech-800 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-curiol-500/50 transition-all">
-                                                <input type="file" className="hidden" accept="image/*" onChange={handleFileUpload} />
-                                                {uploading ? (
-                                                    <div className="animate-spin text-curiol-500"><Plus className="w-6 h-6" /></div>
-                                                ) : (
-                                                    <>
-                                                        <Plus className="w-6 h-6 text-tech-700" />
-                                                        <span className="text-[8px] text-tech-700 font-bold uppercase mt-1">Subir</span>
-                                                    </>
-                                                )}
-                                            </label>
+                                                ))}
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
+                                    )}
 
-                                <div className="flex gap-4 pt-8">
-                                    <button type="submit" disabled={loading} className="flex-grow py-4 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest rounded-xl flex items-center justify-center gap-3">
-                                        <Save className="w-4 h-4" /> {loading ? "Guardando..." : "Guardar Álbum"}
-                                    </button>
-                                    <button type="button" onClick={() => setIsEditing(null)} className="px-8 py-4 bg-tech-800 text-tech-400 text-[10px] font-bold uppercase tracking-widest rounded-xl">Cancelar</button>
+                                    {activeTab === "downloads" && (
+                                        <div className="max-w-2xl mx-auto space-y-12">
+                                            <div className="text-center mb-12">
+                                                <Download className="w-12 h-12 text-curiol-500 mx-auto mb-4" />
+                                                <h4 className="text-2xl font-serif text-white italic">Control de Descargas</h4>
+                                                <p className="text-tech-500 text-sm font-light">Gestiona la entrega de archivos digitales a tus clientes.</p>
+                                            </div>
+
+                                            <div className="space-y-6">
+                                                <div className="flex items-center justify-between p-8 bg-tech-950 border border-tech-800 rounded-3xl group hover:border-curiol-500/30 transition-all">
+                                                    <div className="flex items-center gap-6">
+                                                        <div className="w-12 h-12 rounded-2xl bg-tech-900 border border-white/5 flex items-center justify-center text-tech-500 group-hover:text-curiol-500 transition-colors">
+                                                            <Download className="w-5 h-5" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-white font-bold text-sm">Habilitar Descarga de Álbum</p>
+                                                            <p className="text-tech-500 text-xs font-light">Permite al cliente descargar todas las fotos en un archivo ZIP.</p>
+                                                        </div>
+                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setIsEditing({
+                                                            ...isEditing,
+                                                            settings: {
+                                                                ...(isEditing.settings || { allowLikes: true, allowDownloads: true, allowSharing: true }),
+                                                                allowDownloads: !isEditing.settings?.allowDownloads
+                                                            }
+                                                        })}
+                                                        className={cn(
+                                                            "w-14 h-8 rounded-full relative transition-all duration-300",
+                                                            isEditing.settings?.allowDownloads ? "bg-curiol-gradient" : "bg-tech-800"
+                                                        )}
+                                                    >
+                                                        <div className={cn(
+                                                            "absolute top-1 w-6 h-6 bg-white rounded-full shadow-lg transition-all duration-300",
+                                                            isEditing.settings?.allowDownloads ? "left-7" : "left-1"
+                                                        )} />
+                                                    </button>
+                                                </div>
+
+                                                <GlassCard className="p-8 border-tech-800 bg-curiol-500/5">
+                                                    <p className="text-tech-400 text-xs font-light italic text-center">
+                                                        "Las descargas siempre se realizan en la resolución original subida a Firebase Storage para garantizar la máxima calidad de entrega."
+                                                    </p>
+                                                </GlassCard>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </form>
+
+                            <div className="p-10 bg-tech-950/50 border-t border-white/5 flex gap-4">
+                                <button type="button" onClick={handleSave} disabled={loading} className="flex-grow py-5 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest rounded-2xl flex items-center justify-center gap-3 shadow-xl hover:brightness-110 active:scale-[0.98] transition-all">
+                                    <Save className="w-4 h-4" /> {loading ? "Procesando cambios..." : "Publicar Galería"}
+                                </button>
+                                <button type="button" onClick={() => setIsEditing(null)} className="px-10 py-5 bg-tech-800 text-tech-400 text-[10px] font-bold uppercase tracking-widest rounded-2xl hover:bg-tech-700 transition-all">Descartar</button>
+                            </div>
                         </motion.div>
                     </div>
                 )}

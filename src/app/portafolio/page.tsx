@@ -4,34 +4,32 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { getPortfolioData, PortfolioItem } from "@/actions/portfolio";
+import { getAlbums, PortfolioAlbum } from "@/actions/portfolio";
 import { cn } from "@/lib/utils";
-import { Camera, Image as ImageIcon, Filter, Sparkles } from "lucide-react";
+import { Camera, Image as ImageIcon, Filter, Sparkles, ChevronRight, Calendar } from "lucide-react";
+import Link from "next/link";
 
 export default function PortfolioPage() {
-    const [items, setItems] = useState<PortfolioItem[]>([]);
+    const [albums, setAlbums] = useState<PortfolioAlbum[]>([]);
     const [categories, setCategories] = useState<string[]>([]);
     const [activeCategory, setActiveCategory] = useState("Todos");
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         async function load() {
-            const data = await getPortfolioData();
+            const data = await getAlbums();
+            setAlbums(data);
 
-            // Random Shuffle
-            const shuffled = [...data].sort(() => Math.random() - 0.5);
-            setItems(shuffled);
-
-            const cats = ["Todos", ...new Set(data.map(item => item.categoria))];
+            const cats = ["Todos", ...new Set(data.map(album => album.category))];
             setCategories(cats);
             setLoading(false);
         }
         load();
     }, []);
 
-    const filteredItems = activeCategory === "Todos"
-        ? items
-        : items.filter(item => item.categoria === activeCategory);
+    const filteredAlbums = activeCategory === "Todos"
+        ? albums
+        : albums.filter(album => album.category === activeCategory);
 
     return (
         <main className="min-h-screen bg-tech-950">
@@ -110,47 +108,69 @@ export default function PortfolioPage() {
                         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
                     >
                         <AnimatePresence mode="popLayout">
-                            {filteredItems.map((item, idx) => (
-                                <motion.div
-                                    key={item.url}
-                                    layout
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.9 }}
-                                    transition={{ duration: 0.4, delay: idx * 0.05 }}
-                                    className="group relative aspect-square rounded-2xl overflow-hidden bg-tech-900 border border-tech-800 bg-grain image-overlay"
+                            {filteredAlbums.map((album, idx) => (
+                                <Link
+                                    key={album.id}
+                                    href={`/portafolio/${album.slug || album.id}`}
                                 >
-                                    <img
-                                        src={item.url}
-                                        alt={item.titulo}
-                                        className="w-full h-full object-cover object-[center_10%] transition-transform duration-700 group-hover:scale-110 img-premium"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-tech-950 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8 text-left">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-curiol-500 bg-curiol-500/10 px-2 py-1 rounded">
-                                                {item.subcategoria}
-                                            </span>
+                                    <motion.div
+                                        layout
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.9 }}
+                                        transition={{ duration: 0.4, delay: idx * 0.05 }}
+                                        className="group relative aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-tech-900 border border-white/5 shadow-2xl"
+                                    >
+                                        <img
+                                            src={album.coverUrl || (album.photos.length > 0 ? album.photos[0].url : "")}
+                                            alt={album.title}
+                                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60 group-hover:opacity-80"
+                                        />
+
+                                        <div className="absolute inset-0 bg-gradient-to-t from-tech-950 via-tech-950/20 to-transparent p-10 flex flex-col justify-end">
+                                            <div className="flex items-center gap-3 mb-4">
+                                                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-curiol-500 bg-curiol-500/10 px-3 py-1 rounded-full border border-curiol-500/20">
+                                                    {album.category}
+                                                </span>
+                                                {album.eventDate && (
+                                                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-tech-500 flex items-center gap-2">
+                                                        <Calendar className="w-3 h-3" />
+                                                        {new Date(album.eventDate).getFullYear()}
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            <h3 className="text-3xl font-serif text-white italic mb-4 leading-tight group-hover:text-curiol-200 transition-colors">
+                                                {album.title}
+                                            </h3>
+
+                                            <div className="flex items-center justify-between pt-6 border-t border-white/5 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                                                <span className="text-tech-500 text-[10px] font-bold uppercase tracking-widest">{album.photos.length} Fotografías</span>
+                                                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-tech-950 group-hover:scale-110 transition-transform">
+                                                    <ChevronRight className="w-5 h-5" />
+                                                </div>
+                                            </div>
                                         </div>
-                                        <h3 className="text-xl font-serif text-white italic line-clamp-2">
-                                            {item.titulo}
-                                        </h3>
-                                    </div>
-                                    <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <div className="bg-tech-950/80 backdrop-blur-md p-2 rounded-full border border-tech-700">
-                                            <Sparkles className="w-4 h-4 text-curiol-500" />
-                                        </div>
-                                    </div>
-                                </motion.div>
+
+                                        {album.password && (
+                                            <div className="absolute top-6 right-6">
+                                                <div className="bg-tech-950/80 backdrop-blur-md p-2 rounded-full border border-tech-700">
+                                                    <Filter className="w-3 h-3 text-curiol-500" />
+                                                </div>
+                                            </div>
+                                        )}
+                                    </motion.div>
+                                </Link>
                             ))}
                         </AnimatePresence>
                     </motion.div>
                 )}
 
                 {/* Empty State */}
-                {!loading && filteredItems.length === 0 && (
+                {!loading && filteredAlbums.length === 0 && (
                     <div className="text-center py-20">
                         <Camera className="w-12 h-12 text-tech-800 mx-auto mb-4" />
-                        <p className="text-tech-500 font-light">No se encontraron fotografías en esta categoría.</p>
+                        <p className="text-tech-500 font-light">No se encontraron álbumes en esta categoría.</p>
                     </div>
                 )}
             </section>

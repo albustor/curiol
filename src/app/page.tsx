@@ -109,7 +109,7 @@ export default function Home() {
             </h1>
 
             <p className="text-tech-400 text-lg md:text-xl font-light max-w-2xl mx-auto mb-12 leading-relaxed">
-              Donde la raíz guanacasteca se encuentra con la tecnología del futuro. Fusionamos la sensibilidad artística con la ingeniería digital avanzada para construir un ecosistema de legado que perdura y escala.
+              Donde el legado se encuentra con la tecnología del futuro. Fusionamos la sensibilidad artística con la ingeniería digital avanzada para construir un ecosistema perdurable, a la escala e innovador.
             </p>
 
             <div className="flex flex-wrap justify-center gap-6 mb-12">

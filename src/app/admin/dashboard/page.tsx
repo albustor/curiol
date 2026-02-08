@@ -11,7 +11,7 @@ import Link from "next/link";
 import {
     LayoutDashboard, Users, Image as ImageIcon, MessageSquare,
     Plus, ExternalLink, Settings, BarChart3, LogOut, ArrowRight, Loader2, Sparkles,
-    Calendar as CalendarIcon, Video
+    Calendar as CalendarIcon, Video, FileText
 } from "lucide-react";
 
 import { collection, query, orderBy, limit, onSnapshot } from "firebase/firestore";
@@ -22,6 +22,7 @@ export default function AdminDashboard() {
     const [recentDeliveries, setRecentDeliveries] = useState<any[]>([]);
     const [leads, setLeads] = useState<any[]>([]);
     const [bookings, setBookings] = useState<any[]>([]);
+    const [quotes, setQuotes] = useState<any[]>([]);
     const router = useRouter();
 
     useEffect(() => {
@@ -68,7 +69,14 @@ export default function AdminDashboard() {
             setBookings(data);
         });
 
-        return () => { unsubDeliveries(); unsubLeads(); unsubBookings(); };
+        // Quotes
+        const qQuotes = query(collection(db, "quotes"), orderBy("createdAt", "desc"), limit(5));
+        const unsubQuotes = onSnapshot(qQuotes, (snapshot) => {
+            const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            setQuotes(data);
+        });
+
+        return () => { unsubDeliveries(); unsubLeads(); unsubBookings(); unsubQuotes(); };
     }, [user]);
 
     const exportLeads = () => {
@@ -93,7 +101,7 @@ export default function AdminDashboard() {
     const stats = [
         { label: "Entregas Totales", value: recentDeliveries.length.toString(), icon: ImageIcon, color: "text-curiol-500" },
         { label: "Leads Comunidad", value: leads.length.toString(), icon: Users, color: "text-tech-500" },
-        { label: "Citas Pendientes", value: bookings.filter(b => b.status === "pending_approval").length.toString(), icon: CalendarIcon, color: "text-yellow-500" }
+        { label: "Presupuestos", value: quotes.length.toString(), icon: FileText, color: "text-amber-500" }
     ];
 
     if (loading) return (
@@ -244,6 +252,19 @@ export default function AdminDashboard() {
                                     <div>
                                         <p className="text-white font-bold text-sm">Gestionar Portafolio</p>
                                         <p className="text-tech-500 text-[10px] uppercase tracking-widest">Álbumnes y Fotos IA</p>
+                                    </div>
+                                </div>
+                                <ArrowRight className="w-4 h-4 text-tech-800 group-hover:text-white transition-all" />
+                            </button>
+                            <button
+                                onClick={() => router.push("/admin/presupuestos")}
+                                className="w-full text-left p-6 bg-tech-900 border border-tech-800 rounded-2xl hover:bg-tech-800 transition-all flex items-center justify-between group"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <FileText className="w-6 h-6 text-amber-500" />
+                                    <div>
+                                        <p className="text-white font-bold text-sm">Gestionar Presupuestos</p>
+                                        <p className="text-tech-500 text-[10px] uppercase tracking-widest">{quotes.filter((q: any) => q.status === 'pending_link').length} pendientes de link</p>
                                     </div>
                                 </div>
                                 <ArrowRight className="w-4 h-4 text-tech-800 group-hover:text-white transition-all" />

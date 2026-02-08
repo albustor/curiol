@@ -7,7 +7,8 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import {
     Plus, Save, Trash2, ArrowRight,
     Zap, MessageSquare, Database, Sparkles,
-    ChevronDown, ChevronUp, Bot, Send
+    ChevronDown, ChevronUp, Bot, Send,
+    Clock, ListChecks
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -175,105 +176,153 @@ export default function FlowBuilderPage() {
                                         </div>
                                     </div>
 
-                                    <div className="space-y-8 relative">
-                                        <div className="absolute left-6 top-0 bottom-0 w-[1px] bg-tech-800 z-0"></div>
+                                    <div className="space-y-0 relative">
                                         {selectedFlow.steps.map((step, idx) => (
-                                            <div key={step.id} className="relative z-10 flex gap-8 group">
-                                                <div className={cn(
-                                                    "w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border transition-all",
-                                                    step.type === "trigger" ? "bg-blue-500/20 border-blue-500/30 text-blue-500" :
-                                                        step.type === "message" ? "bg-green-500/20 border-green-500/30 text-green-500" :
-                                                            step.type === "capture" ? "bg-yellow-500/20 border-yellow-500/30 text-yellow-500" :
-                                                                step.type === "delay" ? "bg-orange-500/20 border-orange-500/30 text-orange-500" :
-                                                                    step.type === "condition" ? "bg-blue-300/20 border-blue-300/30 text-blue-300" :
-                                                                        "bg-purple-500/20 border-purple-500/30 text-purple-500"
-                                                )}>
-                                                    {step.type === "trigger" ? <Zap className="w-5 h-5" /> :
-                                                        step.type === "message" ? <Send className="w-5 h-5" /> :
-                                                            step.type === "capture" ? <Database className="w-5 h-5" /> :
-                                                                <Sparkles className="w-5 h-5" />}
-                                                </div>
-                                                <div className="flex-grow">
-                                                    <div className="bg-tech-900/30 p-6 rounded-2xl border border-white/5 hover:border-white/10 transition-all">
-                                                        <div className="flex justify-between items-center mb-4">
-                                                            <span className="text-[9px] font-bold uppercase tracking-widest text-tech-500">{step.type}</span>
-                                                            {idx > 0 && (
-                                                                <button onClick={() => removeStep(step.id)} className="opacity-0 group-hover:opacity-100 transition-opacity text-tech-700 hover:text-red-500">
-                                                                    <Trash2 className="w-3 h-3" />
-                                                                </button>
-                                                            )}
+                                            <div key={step.id} className="relative flex flex-col items-center">
+                                                {/* Connector Line */}
+                                                {idx > 0 && (
+                                                    <div className="w-[2px] h-12 bg-gradient-to-b from-curiol-500/50 to-tech-800 my-2" />
+                                                )}
+
+                                                <div className="w-full flex gap-8 group">
+                                                    <div className={cn(
+                                                        "w-14 h-14 rounded-[1.25rem] flex items-center justify-center shrink-0 border-2 shadow-2xl transition-all relative z-10",
+                                                        step.type === "trigger" ? "bg-blue-500/20 border-blue-500/40 text-blue-400" :
+                                                            step.type === "message" ? "bg-curiol-500/20 border-curiol-500/40 text-curiol-400" :
+                                                                step.type === "capture" ? "bg-yellow-500/20 border-yellow-500/40 text-yellow-400" :
+                                                                    step.type === "delay" ? "bg-orange-500/20 border-orange-500/40 text-orange-400" :
+                                                                        step.type === "condition" ? "bg-indigo-300/20 border-indigo-300/40 text-indigo-300" :
+                                                                            "bg-purple-500/20 border-purple-500/40 text-purple-400"
+                                                    )}>
+                                                        <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-tech-950 border border-white/10 flex items-center justify-center text-[10px] font-bold text-tech-400">
+                                                            {idx + 1}
                                                         </div>
-                                                        {step.type === "trigger" ? (
-                                                            <p className="text-white italic text-sm">{step.content}</p>
-                                                        ) : (
-                                                            <textarea
-                                                                value={step.content}
-                                                                onChange={(e) => updateStep(step.id, e.target.value)}
-                                                                className="bg-transparent w-full text-white text-sm italic outline-none resize-none overflow-hidden"
-                                                                rows={2}
-                                                            />
-                                                        )}
-                                                        {step.type === "capture" && (
-                                                            <div className="mt-4 flex items-center gap-2">
-                                                                <span className="text-[8px] text-tech-600 font-bold uppercase tracking-widest">Campo:</span>
-                                                                <input
-                                                                    value={step.config?.field || ""}
-                                                                    onChange={(e) => updateStep(step.id, step.content, { ...step.config, field: e.target.value })}
-                                                                    className="bg-tech-950 border border-white/5 rounded px-2 py-1 text-[8px] text-yellow-500 font-mono"
-                                                                />
+                                                        {step.type === "trigger" ? <Zap className="w-6 h-6" /> :
+                                                            step.type === "message" ? <Send className="w-6 h-6" /> :
+                                                                step.type === "capture" ? <Database className="w-6 h-6" /> :
+                                                                    step.type === "delay" ? <Clock className="w-6 h-6" /> :
+                                                                        step.type === "condition" ? <ListChecks className="w-6 h-6" /> :
+                                                                            <Bot className="w-6 h-6" />}
+                                                    </div>
+
+                                                    <div className="flex-grow">
+                                                        <div className="bg-tech-900/40 backdrop-blur-md p-8 rounded-[2rem] border border-white/5 hover:border-curiol-500/30 transition-all shadow-xl">
+                                                            <div className="flex justify-between items-center mb-6">
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-tech-500">Bloque de {step.type}</span>
+                                                                    {step.type === "trigger" && <span className="px-2 py-0.5 bg-blue-500/10 text-blue-400 text-[8px] font-bold rounded-full uppercase">Inicio</span>}
+                                                                </div>
+                                                                {idx > 0 && (
+                                                                    <button onClick={() => removeStep(step.id)} className="p-2 bg-tech-950 rounded-lg text-tech-700 hover:text-red-500 hover:bg-red-500/10 transition-all">
+                                                                        <Trash2 className="w-4 h-4" />
+                                                                    </button>
+                                                                )}
                                                             </div>
-                                                        )}
-                                                        {step.type === "delay" && (
-                                                            <div className="mt-4 flex items-center gap-2">
-                                                                <span className="text-[8px] text-tech-600 font-bold uppercase tracking-widest">Segundos:</span>
-                                                                <input
-                                                                    type="number"
-                                                                    value={step.config?.delaySeconds || 0}
-                                                                    onChange={(e) => updateStep(step.id, step.content, { ...step.config, delaySeconds: parseInt(e.target.value) })}
-                                                                    className="bg-tech-950 border border-white/5 rounded px-2 py-1 text-[8px] text-orange-500 font-mono"
+
+                                                            {step.type === "trigger" ? (
+                                                                <div className="p-4 bg-tech-950/50 rounded-xl border border-white/5">
+                                                                    <p className="text-white font-serif italic text-lg leading-relaxed">{step.content}</p>
+                                                                </div>
+                                                            ) : (
+                                                                <textarea
+                                                                    value={step.content}
+                                                                    onChange={(e) => updateStep(step.id, e.target.value)}
+                                                                    className="bg-tech-950/30 w-full p-4 rounded-xl text-white text-base italic outline-none resize-none border border-transparent focus:border-white/10 transition-all"
+                                                                    rows={3}
+                                                                    placeholder="Configura el mensaje..."
                                                                 />
+                                                            )}
+
+                                                            {/* Step Specific Configs */}
+                                                            <div className="mt-6 pt-6 border-t border-white/5">
+                                                                {step.type === "capture" && (
+                                                                    <div className="flex items-center gap-4">
+                                                                        <Database className="w-4 h-4 text-yellow-500" />
+                                                                        <span className="text-[10px] text-tech-600 font-bold uppercase tracking-widest">Atributo a Guardar:</span>
+                                                                        <input
+                                                                            value={step.config?.field || ""}
+                                                                            onChange={(e) => updateStep(step.id, step.content, { ...step.config, field: e.target.value })}
+                                                                            className="bg-tech-950 border border-white/5 rounded-lg px-4 py-2 text-[10px] text-yellow-500 font-mono outline-none focus:border-yellow-500/50"
+                                                                            placeholder="ej: nombre_lead"
+                                                                        />
+                                                                    </div>
+                                                                )}
+                                                                {step.type === "delay" && (
+                                                                    <div className="flex items-center gap-4">
+                                                                        <Clock className="w-4 h-4 text-orange-500" />
+                                                                        <span className="text-[10px] text-tech-600 font-bold uppercase tracking-widest">Tiempo de Espera:</span>
+                                                                        <div className="flex items-center gap-2">
+                                                                            <input
+                                                                                type="number"
+                                                                                value={step.config?.delaySeconds || 0}
+                                                                                onChange={(e) => updateStep(step.id, step.content, { ...step.config, delaySeconds: parseInt(e.target.value) })}
+                                                                                className="bg-tech-950 border border-white/5 rounded-lg px-4 py-2 w-20 text-[10px] text-orange-500 font-mono outline-none focus:border-orange-500/50"
+                                                                            />
+                                                                            <span className="text-[10px] text-tech-600 font-bold">segundos</span>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                                {step.type === "condition" && (
+                                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                        <div className="flex flex-col gap-2">
+                                                                            <span className="text-[9px] text-tech-600 font-bold uppercase">Si el mensaje...</span>
+                                                                            <select
+                                                                                value={step.config?.operator || "equals"}
+                                                                                onChange={(e) => updateStep(step.id, step.content, { ...step.config, operator: e.target.value as any })}
+                                                                                className="bg-tech-950 border border-white/5 rounded-lg px-4 py-2 text-[10px] text-indigo-300 font-bold outline-none"
+                                                                            >
+                                                                                <option value="equals">Es igual a</option>
+                                                                                <option value="contains">Contiene</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div className="flex flex-col gap-2">
+                                                                            <span className="text-[9px] text-tech-600 font-bold uppercase">Valor esperado</span>
+                                                                            <input
+                                                                                value={step.config?.value || ""}
+                                                                                onChange={(e) => updateStep(step.id, step.content, { ...step.config, value: e.target.value })}
+                                                                                className="bg-tech-950 border border-white/5 rounded-lg px-4 py-2 text-[10px] text-indigo-300 font-mono outline-none focus:border-indigo-500/50"
+                                                                                placeholder="Valor..."
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                                {step.type === "ai" && (
+                                                                    <div className="flex items-center gap-4">
+                                                                        <Sparkles className="w-4 h-4 text-purple-500" />
+                                                                        <p className="text-[10px] text-tech-500 font-medium">La IA analizará el contexto del cliente para responder dinámicamente.</p>
+                                                                    </div>
+                                                                )}
                                                             </div>
-                                                        )}
-                                                        {step.type === "condition" && (
-                                                            <div className="mt-4 grid grid-cols-2 gap-2">
-                                                                <select
-                                                                    value={step.config?.operator || "equals"}
-                                                                    onChange={(e) => updateStep(step.id, step.content, { ...step.config, operator: e.target.value as any })}
-                                                                    className="bg-tech-950 border border-white/5 rounded px-2 py-1 text-[8px] text-blue-300 font-bold uppercase"
-                                                                >
-                                                                    <option value="equals">Es igual a</option>
-                                                                    <option value="contains">Contiene</option>
-                                                                </select>
-                                                                <input
-                                                                    value={step.config?.value || ""}
-                                                                    onChange={(e) => updateStep(step.id, step.content, { ...step.config, value: e.target.value })}
-                                                                    className="bg-tech-950 border border-white/5 rounded px-2 py-1 text-[8px] text-blue-300 font-mono"
-                                                                    placeholder="Valor..."
-                                                                />
-                                                            </div>
-                                                        )}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         ))}
 
-                                        {/* ADD BUTTONS */}
-                                        <div className="flex gap-4 pl-20 pt-4">
-                                            {[
-                                                { type: "message", icon: MessageSquare, label: "Mensaje" },
-                                                { type: "capture", icon: Database, label: "Captura" },
-                                                { type: "delay", icon: Zap, label: "Retraso" },
-                                                { type: "condition", icon: Sparkles, label: "Condición" },
-                                                { type: "ai", icon: Bot, label: "IA" }
-                                            ].map((btn) => (
-                                                <button
-                                                    key={btn.type}
-                                                    onClick={() => addStep(btn.type as any)}
-                                                    className="px-4 py-2 bg-tech-900 border border-white/5 rounded-xl text-[8px] font-bold uppercase tracking-widest text-tech-500 hover:text-white hover:border-curiol-500/50 transition-all flex items-center gap-2"
-                                                >
-                                                    <btn.icon className="w-3 h-3" /> {btn.label}
-                                                </button>
-                                            ))}
+                                        {/* ADD BUTTONS - Dynamic Canvas Adder */}
+                                        <div className="relative flex flex-col items-center mt-12">
+                                            <div className="w-[2px] h-12 bg-tech-800 mb-4" />
+                                            <div className="flex flex-wrap justify-center gap-3 p-6 bg-tech-900/50 backdrop-blur-xl border border-white/5 rounded-[2.5rem] shadow-2xl">
+                                                {[
+                                                    { type: "message", icon: MessageSquare, label: "Mensaje", color: "hover:text-curiol-500" },
+                                                    { type: "capture", icon: Database, label: "Captura", color: "hover:text-yellow-500" },
+                                                    { type: "delay", icon: Clock, label: "Retraso", color: "hover:text-orange-500" },
+                                                    { type: "condition", icon: ListChecks, label: "Condición", color: "hover:text-indigo-400" },
+                                                    { type: "ai", icon: Bot, label: "IA", color: "hover:text-purple-400" }
+                                                ].map((btn) => (
+                                                    <button
+                                                        key={btn.type}
+                                                        onClick={() => addStep(btn.type as any)}
+                                                        className={cn(
+                                                            "group flex items-center gap-3 px-6 py-3 bg-tech-950 border border-white/5 rounded-2xl text-[10px] font-bold uppercase tracking-widest text-tech-500 transition-all hover:scale-105 hover:bg-tech-800 hover:border-white/10",
+                                                            btn.color
+                                                        )}
+                                                    >
+                                                        <btn.icon className="w-4 h-4 transition-transform group-hover:rotate-12" />
+                                                        {btn.label}
+                                                    </button>
+                                                ))}
+                                            </div>
                                         </div>
                                     </div>
                                 </GlassCard>

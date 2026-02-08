@@ -4,7 +4,11 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AiAssistant } from "@/components/AiAssistant";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { Target, TrendingUp, Zap, MessageSquare, ArrowRight, Check, Sparkles, Code, Binary, UtensilsCrossed, Compass, Landmark } from "lucide-react";
+import {
+    Target, TrendingUp, Zap, MessageSquare, ArrowRight,
+    Check, Sparkles, Code, Binary, UtensilsCrossed,
+    Compass, Landmark, Bot, Database
+} from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -21,39 +25,52 @@ export default function SolucionesWebPage() {
                 "Optimización de Enlace Bio (Links)",
                 "Generador de Textos con IA",
                 "Integración WhatsApp Business",
-                "Alineación Visual de Marca"
+                "Acceso Academia (Básico)"
             ],
             color: "tech"
         },
         {
             name: "Plan B: Negocio Pro",
             subtitle: "Escalabilidad & Automatización",
-            price: 145000,
-            usdPrice: 349,
+            price: 185000,
+            usdPrice: 399,
             features: [
-                "Sitio Web Corporativo (4 Secciones)",
-                "Chatbot Inteligente de Atención",
-                "Módulos de IA para Pedidos/Citas",
-                "Dashboard de Gestión Pyme",
-                "Hosting & Seguridad de Alta Gama"
+                "Sitio Web Premium (6 Secciones)",
+                "Galerías Pixellu-Style",
+                "OmniFlow: manyChat-style Automation",
+                "IA Composition Editor",
+                "Acceso Academia (Premium + Código)"
             ],
-            primary: true,
             color: "curiol"
         },
         {
-            name: "Mantenimiento Evolutivo",
-            subtitle: "Crecimiento Continuo",
-            price: 15000,
-            usdPrice: 39,
-            isMonthly: true,
+            name: "Plan C: Ecosistema Corporativo",
+            subtitle: "Potencia & Trascendencia",
+            price: 450000,
+            usdPrice: 899,
             features: [
-                "Actualizaciones de Seguridad",
-                "Nuevos Insumos de IA Trimestrales",
-                "Soporte Estratégico Prioritario",
-                "Optimización SEO Permanente",
-                "Gestión de Infraestructura"
+                "Sitio Web Avanzado (Secciones Ilimitadas)",
+                "CRM Live Chat Integrado",
+                "Sistema de Reservas & Agenda Pro",
+                "Asistente IA de Negocio Personalizado",
+                "Acceso Academia (Premium de por vida)"
             ],
+            primary: true,
             color: "gold"
+        },
+        {
+            name: "Omnitech Total Ecosystem",
+            subtitle: "La Solución Definitiva",
+            price: 1150000,
+            usdPrice: 2000,
+            features: [
+                "Todo lo anterior incluido",
+                "Gestión de Redes con IA (1 mes)",
+                "App Web Progresiva (PWA)",
+                "Soporte Estratégico Mensual",
+                "Ecosistema Completo de Ventas"
+            ],
+            color: "white"
         }
     ];
 
@@ -139,6 +156,97 @@ export default function SolucionesWebPage() {
                     </div>
                 </section>
 
+                {/* OmniFlow Showcase */}
+                <section className="py-32 relative overflow-hidden">
+                    <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+                            <motion.div
+                                initial={{ opacity: 0, x: -20 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                            >
+                                <div className="flex items-center gap-3 mb-6">
+                                    <Bot className="text-curiol-500 w-5 h-5" />
+                                    <span className="text-curiol-500 text-[10px] font-bold uppercase tracking-[0.3em]">OmniFlow Engine</span>
+                                </div>
+                                <h2 className="text-4xl md:text-6xl font-serif text-white italic mb-10 leading-tight">Automatización <span className="text-curiol-gradient">Estilo ManyChat.</span></h2>
+                                <p className="text-tech-400 text-lg font-light leading-relaxed mb-12">
+                                    Convierte cada interacción en Instagram, Facebook y WhatsApp en una oportunidad de negocio real. Diseñamos flujos conversacionales que califican a tus leads 24/7, sin errores y con la calidez de la IA avanzada.
+                                </p>
+
+                                <div className="space-y-6">
+                                    {[
+                                        { title: "Captura & Calificación", desc: "Obtén datos clave (presupuesto, fecha, interés) antes de hablar con el humano.", icon: Database },
+                                        { title: "Respuestas con IA", desc: "La IA de Curiol Studio responde dudas complejas basándose en tu ADN de marca.", icon: Sparkles },
+                                        { title: "Sincronización Meta", desc: "Integración directa con el ecosistema de Mark Zuckerberg (IG/FB/WA).", icon: MessageSquare }
+                                    ].map((item, i) => (
+                                        <div key={i} className="flex gap-6 p-6 bg-tech-900/40 rounded-3xl border border-white/5 hover:border-curiol-500/20 transition-all">
+                                            <div className="w-12 h-12 rounded-2xl bg-tech-950 flex items-center justify-center text-curiol-500 shrink-0">
+                                                <item.icon className="w-5 h-5" />
+                                            </div>
+                                            <div>
+                                                <h4 className="text-white font-serif text-xl italic mb-1">{item.title}</h4>
+                                                <p className="text-tech-500 text-sm font-light">{item.desc}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </motion.div>
+
+                            <div className="relative">
+                                <GlassCard className="p-8 border-curiol-500/30 bg-tech-900/50 relative z-10 overflow-hidden">
+                                    <div className="absolute top-0 right-0 p-4">
+                                        <Zap className="w-6 h-6 text-curiol-500 animate-pulse" />
+                                    </div>
+
+                                    <div className="space-y-4 relative">
+                                        {/* Visual Flow Representation */}
+                                        <div className="flex flex-col items-center">
+                                            <div className="w-full bg-tech-950 p-4 rounded-2xl border border-white/5 text-center">
+                                                <p className="text-[9px] text-tech-600 font-bold uppercase tracking-widest mb-1">Trigger</p>
+                                                <p className="text-white text-xs italic">Cliente escribe: <span className="text-curiol-400 font-bold">"PORTAFOLIO"</span></p>
+                                            </div>
+                                            <div className="w-[1px] h-6 bg-curiol-500/30 mx-auto" />
+                                            <div className="w-full bg-tech-950 p-4 rounded-2xl border border-curiol-500/20 text-center relative overflow-hidden">
+                                                <div className="absolute inset-0 bg-curiol-gradient opacity-5" />
+                                                <p className="text-[9px] text-curiol-500 font-bold uppercase tracking-widest mb-1">IA Smart Response</p>
+                                                <p className="text-white text-xs italic">"¡Hola! Te envío mis galerías. ¿Qué tipo de evento buscas?"</p>
+                                            </div>
+                                            <div className="w-[1px] h-6 bg-curiol-500/30 mx-auto" />
+                                            <div className="grid grid-cols-2 gap-4 w-full">
+                                                <div className="bg-tech-950 p-3 rounded-xl border border-white/5 text-center">
+                                                    <p className="text-[8px] text-tech-500 font-bold uppercase mb-1">Opción A</p>
+                                                    <p className="text-white text-[10px]">Bodas</p>
+                                                </div>
+                                                <div className="bg-tech-950 p-3 rounded-xl border border-white/5 text-center">
+                                                    <p className="text-[8px] text-tech-500 font-bold uppercase mb-1">Opción B</p>
+                                                    <p className="text-white text-[10px]">Corporativo</p>
+                                                </div>
+                                            </div>
+                                            <div className="w-[1px] h-6 bg-curiol-500/30 mx-auto" />
+                                            <div className="w-full bg-curiol-gradient p-4 rounded-2xl text-center shadow-xl shadow-curiol-500/20">
+                                                <p className="text-[9px] text-white/70 font-bold uppercase tracking-widest mb-1">Success</p>
+                                                <p className="text-white text-xs font-bold italic">Lead calificado & enviado al CRM.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-8 pt-6 border-t border-white/5 text-center">
+                                        <p className="text-[10px] text-tech-600 font-bold uppercase tracking-widest mb-4 italic">Intervención humana en vivo disponible.</p>
+                                        <div className="flex justify-center gap-2">
+                                            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                                            <span className="text-[9px] text-tech-500 uppercase font-bold">Sistema OmniFlow Activo</span>
+                                        </div>
+                                    </div>
+                                </GlassCard>
+
+                                {/* Background Glow */}
+                                <div className="absolute -inset-20 bg-curiol-500/20 blur-[120px] rounded-full -z-10 animate-pulse" />
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
                 {/* Pricing Cards */}
                 <section className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 mb-40">
                     <div className="text-center mb-20">
@@ -170,7 +278,6 @@ export default function SolucionesWebPage() {
                                                 ₡{plan.price.toLocaleString()}
                                             </span>
                                             <span className="text-tech-600 text-[10px] uppercase font-bold">/ ${plan.usdPrice}</span>
-                                            {plan.isMonthly && <span className="text-tech-400 text-xs italic ml-2">mes</span>}
                                         </div>
                                         <p className="text-tech-600 text-[9px] uppercase font-bold mt-2 tracking-widest">Pago Único de Implementación</p>
                                     </div>
@@ -197,6 +304,74 @@ export default function SolucionesWebPage() {
                             </GlassCard>
                         ))}
                     </div>
+
+                    {/* Hosting & Maintenance Tiers */}
+                    <section className="max-w-5xl mx-auto px-4 mb-40">
+                        <div className="text-center mb-16">
+                            <Database className="w-10 h-10 text-curiol-500 mx-auto mb-6" />
+                            <h2 className="text-4xl font-serif text-white italic mb-4">Suscripciones de Hosting</h2>
+                            <p className="text-tech-500 text-[10px] uppercase font-bold tracking-[0.3em]">Continuidad, Seguridad & Evolución Agéntica</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <GlassCard className="p-10 border-tech-800 hover:border-tech-700 transition-all">
+                                <h3 className="text-2xl font-serif text-white italic mb-2">Hosting Esencial</h3>
+                                <p className="text-tech-500 text-[10px] uppercase tracking-widest font-bold mb-6">Estabilidad & Soporte Básico</p>
+                                <div className="flex items-baseline gap-2 mb-8">
+                                    <span className="text-3xl font-serif text-white italic">₡15,000</span>
+                                    <span className="text-tech-600 text-[10px] uppercase font-bold">/ mes ($29)</span>
+                                </div>
+                                <ul className="space-y-4 mb-10">
+                                    <li className="flex gap-3 text-xs text-tech-400">
+                                        <Check className="w-4 h-4 text-tech-600 shrink-0" />
+                                        Hosting Ultra-Rápido (Edge Network)
+                                    </li>
+                                    <li className="flex gap-3 text-xs text-tech-400">
+                                        <Check className="w-4 h-4 text-tech-600 shrink-0" />
+                                        Certificado SSL & Seguridad WAF
+                                        0</li>
+                                    <li className="flex gap-3 text-xs text-tech-400">
+                                        <Check className="w-4 h-4 text-tech-600 shrink-0" />
+                                        Mantenimiento Técnico Mensual
+                                    </li>
+                                </ul>
+                            </GlassCard>
+
+                            <GlassCard className="p-10 border-curiol-500/30 bg-curiol-500/5 hover:border-curiol-500 transition-all relative overflow-hidden">
+                                <div className="absolute top-4 right-4">
+                                    <Sparkles className="w-5 h-5 text-curiol-500 animate-pulse" />
+                                </div>
+                                <h3 className="text-2xl font-serif text-white italic mb-2">Mantenimiento Agéntico</h3>
+                                <p className="text-curiol-500 text-[10px] uppercase tracking-widest font-bold mb-6">IA Evolution & Soporte Prioritario</p>
+                                <div className="flex items-baseline gap-2 mb-8">
+                                    <span className="text-3xl font-serif text-white italic">₡25,000</span>
+                                    <span className="text-tech-600 text-[10px] uppercase font-bold">/ mes ($49)</span>
+                                </div>
+                                <ul className="space-y-4 mb-10">
+                                    <li className="flex gap-3 text-xs text-tech-300">
+                                        <Check className="w-4 h-4 text-curiol-500 shrink-0" />
+                                        Todo lo incluido en Esencial
+                                    </li>
+                                    <li className="flex gap-3 text-xs text-tech-300">
+                                        <Check className="w-4 h-4 text-curiol-500 shrink-0" />
+                                        Actualizaciones de Modelos IA (Gemini)
+                                    </li>
+                                    <li className="flex gap-3 text-xs text-tech-300">
+                                        <Check className="w-4 h-4 text-curiol-500 shrink-0" />
+                                        Soporte Estratégico & Evolución Circular
+                                    </li>
+                                    <li className="flex gap-3 text-xs text-tech-300 font-bold italic">
+                                        <Check className="w-4 h-4 text-curiol-500 shrink-0" />
+                                        Optimización Agéntica Mensual
+                                    </li>
+                                </ul>
+                            </GlassCard>
+                        </div>
+
+                        <p className="mt-12 text-tech-700 text-[10px] italic font-light text-center">
+                            * Los planes de hosting se activan automáticamente tras el despliegue del IDMV.
+                        </p>
+                    </section>
                 </section>
 
                 {/* Tech ROI Proposition */}

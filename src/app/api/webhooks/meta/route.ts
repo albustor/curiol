@@ -26,10 +26,16 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
     try {
         const body = await req.json();
+        console.log("-----------------------------------------");
+        console.log("META WEBHOOK RECEIVED");
+        console.log("Body Object:", body.object);
+
         const entry = body.entry?.[0];
         const changes = entry?.changes?.[0];
         const value = changes?.value;
         const messages = value?.messages;
+
+        console.log("Messages count:", messages?.length || 0);
 
         if (messages && messages.length > 0) {
             const message = messages[0];
@@ -38,10 +44,12 @@ export async function POST(req: Request) {
             const textUpper = text?.toUpperCase();
             const channel = body.object === "whatsapp_business_account" ? "whatsapp" : "social";
 
+            console.log("Message from:", from, "Text:", text, "Channel:", channel);
+
             // 1. Log the conversation
             await addDoc(collection(db, "omni_conversations"), {
                 contactId: from,
-                message: text,
+                message: text || "",
                 channel: channel,
                 direction: "inbound",
                 timestamp: Timestamp.now()
@@ -53,6 +61,7 @@ export async function POST(req: Request) {
             let sessionData = sessionSnap.exists() ? sessionSnap.data() : null;
 
             if (sessionData && sessionData.status === "active") {
+                console.log("Active session found for:", from, "Flow ID:", sessionData.flowId);
                 const flowRef = doc(db, "omni_flows", sessionData.flowId);
                 const flowSnap = await getDoc(flowRef);
 
@@ -71,9 +80,11 @@ export async function POST(req: Request) {
                     const nextStepIdx = currentStepIdx + 1;
                     if (nextStepIdx < flow.steps.length) {
                         const nextStep = flow.steps[nextStepIdx];
+                        console.log("Advancing to step:", nextStepIdx);
                         await sendStepMessage(from, nextStep, channel, body.object);
                         await updateDoc(sessionRef, { currentStepIdx: nextStepIdx });
                     } else {
+                        console.log("Flow completed for:", from);
                         await updateDoc(sessionRef, { status: "completed" });
                         if (Object.keys(sessionData.data || {}).length > 0) {
                             await addDoc(collection(db, "leads"), {
@@ -90,12 +101,13 @@ export async function POST(req: Request) {
 
             // 3. Find matching flow (Trigger)
             const flowsRef = collection(db, "omni_flows");
-            const q = query(flowsRef, where("triggerKeyword", "==", textUpper), where("isActive", "==", true));
+            const q = query(flowsRef, where("triggerKeyword", "==", textUpper || ""), where("isActive", "==", true));
             const flowSnap = await getDocs(q);
 
             if (!flowSnap.empty) {
                 const flowId = flowSnap.docs[0].id;
                 const flowData = flowSnap.docs[0].data();
+                console.log("Trigger match found! Flow ID:", flowId);
                 const firstStep = flowData.steps[0];
 
                 await setDoc(sessionRef, {
@@ -106,21 +118,27 @@ export async function POST(req: Request) {
                     lastUpdated: Timestamp.now()
                 });
 
+                console.log("Sending first step...");
                 await sendStepMessage(from, firstStep, channel, body.object);
 
                 if (flowData.steps.length > 1) {
                     const secondStep = flowData.steps[1];
+                    console.log("Sending second step...");
                     await sendStepMessage(from, secondStep, channel, body.object);
                     await updateDoc(sessionRef, { currentStepIdx: 1 });
                 }
             } else {
                 // 4. Fallback to Gemini AI
-                const aiResponse = await generateAiChatResponse(text, channel);
-                const platform = body.object === "instagram" ? "instagram" : "messenger";
+                console.log("No flow match. Falling back to Gemini...");
+                const aiResponse = await generateAiChatResponse(text || "", channel);
+                console.log("AI Response generated:", aiResponse);
 
                 if (channel === "whatsapp") {
+                    console.log("Sending AI Response via WhatsApp to:", from);
                     await sendWhatsAppMessage(from, aiResponse);
                 } else {
+                    const platform = body.object === "instagram" ? "instagram" : "messenger";
+                    console.log("Sending AI Response via Social to:", from);
                     await sendSocialMessage(from, aiResponse, platform);
                 }
 
@@ -133,11 +151,13 @@ export async function POST(req: Request) {
                     timestamp: Timestamp.now()
                 });
             }
+        } else {
+            console.log("No messages in entry");
         }
 
         return NextResponse.json({ status: "ok" });
     } catch (error) {
-        console.error("Webhook Error:", error);
+        console.error("CRITICAL WEBHOOK ERROR:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
