@@ -17,7 +17,10 @@ export default function PortfolioPage() {
     useEffect(() => {
         async function load() {
             const data = await getPortfolioData();
-            setItems(data);
+
+            // Random Shuffle
+            const shuffled = [...data].sort(() => Math.random() - 0.5);
+            setItems(shuffled);
 
             const cats = ["Todos", ...new Set(data.map(item => item.categoria))];
             setCategories(cats);
