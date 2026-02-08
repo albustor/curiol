@@ -8,7 +8,7 @@ import {
     Calendar as CalendarIcon, Clock, CheckCircle2,
     XCircle, ChevronLeft, ChevronRight, Filter,
     Camera, Code, AlertCircle, Sparkles, User,
-    Mail, Smartphone, ShieldCheck
+    Mail, Smartphone, ShieldCheck, Heart
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -99,6 +99,11 @@ export default function AdminAgendaPage() {
                             {Array.from({ length: daysInMonth }).map((_, i) => {
                                 const day = i + 1;
                                 const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+                                const isSunday = date.getDay() === 0;
+                                // 4th Sunday calculation
+                                const dayOfMonth = date.getDate();
+                                const is4thSunday = isSunday && dayOfMonth > 21 && dayOfMonth <= 28;
+
                                 const dayBookings = bookings.filter(b => b.date?.toDate().toDateString() === date.toDateString());
 
                                 return (
@@ -118,6 +123,11 @@ export default function AdminAgendaPage() {
                                                     {b.time} • {b.name}
                                                 </button>
                                             ))}
+                                            {is4thSunday && (
+                                                <div className="w-full text-[8px] font-bold uppercase tracking-widest p-1.5 rounded-lg bg-pink-500/20 text-pink-400 border border-pink-500/20 flex items-center gap-1">
+                                                    <Heart className="w-2 h-2" /> Acción Social
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 );

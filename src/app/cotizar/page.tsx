@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
+import { logInteraction } from "@/actions/analytics";
 
 const SECTIONS = [
     { id: "category", label: "Categoría" },
@@ -19,19 +20,221 @@ const SECTIONS = [
     { id: "payment", label: "Pago" }
 ];
 
-const PACKAGES: Record<string, Array<{ id: string; name: string; price: number; usdPrice: number; desc: string; isMonthly?: boolean; isHourly?: boolean }>> = {
+const PACKAGES: Record<string, Array<{
+    id: string;
+    name: string;
+    price: number;
+    usdPrice: number;
+    desc: string;
+    isMonthly?: boolean;
+    isHourly?: boolean;
+    problem: string;
+    solution?: string;
+    promise?: string;
+    photoCount: number;
+    physicalProduct: string;
+    techIntegrated: string;
+    caseStudy?: { title: string; story: string };
+    variants?: Array<{
+        id: string;
+        name: string;
+        price: number;
+        usdPrice: number;
+        desc: string;
+        problem: string;
+        solution?: string;
+        promise?: string;
+        photoCount?: number;
+        physicalProduct: string;
+        techIntegrated: string;
+        caseStudy?: { title: string; story: string };
+    }>
+}>> = {
     family: [
-        { id: "aventura", name: "Aventura Mágica (Phygital)", price: 95000, usdPrice: 199, desc: "15 Fotos Fine Art + IA. Realidad Aumentada y música personalizada. El arte físico cobra vida." },
-        { id: "esencia", name: "Esencia Familiar", price: 110000, usdPrice: 249, desc: "20 Fotos High-End. Cuadros Vivos interactivos con Realidad Aumentada y App de legado Hogar." },
-        { id: "marca", name: "Marca Personal", price: 65000, usdPrice: 149, desc: "15 Fotos de impacto. Incluye asesoría visual y tarjeta de contacto inteligente para networking." },
-        { id: "legado", name: "Membresía Legado", price: 25000, usdPrice: 59, desc: "Biógrafo familiar: 3 sesiones al año y custodia de herencia digital interactiva.", isMonthly: true },
-        { id: "navidad", name: "Instantes de Luz", price: 40000, usdPrice: 99, desc: "15 Fotos temáticas + Tarjeta física con mensaje de video en Realidad Aumentada incluido." },
-        { id: "mini", name: "Minisesiones Phygital", price: 25000, usdPrice: 49, desc: "8 Fotos ágiles. Incluye un detalle interactivo de Realidad Aumentada para compartir." }
+        {
+            id: "aventura",
+            name: "Aventura Mágica (Phygital)",
+            price: 99000,
+            usdPrice: 199,
+            desc: "La experiencia fotográfica más avanzada para niños.",
+            problem: "¿Cómo capturar la imaginación sin límites de un niño antes de que crezca? Resolvemos la pérdida de la magia infantil creando mundos donde ellos son los protagonistas.",
+            photoCount: 15,
+            physicalProduct: "Retablo 5x7\" con integración NFC/QR para lanzamiento instantáneo.",
+            techIntegrated: "IA Generativa (Fondos personalizados), Memoria Viva (Slideshow + Canción IA original), NFC Digital Bridge.",
+            caseStudy: {
+                title: "El Bloom de la Confianza",
+                story: "Santi se sentía pequeño e invisible en la escuela. Al verte como el 'Guardián del Espacio' en su obra física, algo cambió. Sus padres usan el NFC para recordarle cada mañana: 'Tú eres capaz de conquistar cualquier mundo'."
+            }
+        },
+        {
+            id: "esencia_familiar",
+            name: "Esencia Familiar",
+            price: 32500,
+            usdPrice: 65,
+            desc: "Preserva tu legado con arte tangible. Fotografía profesional con narrativa emocional y revelado Fine Art.",
+            problem: "La fragilidad de los recuerdos digitales que se pierden en el celular. Resolvemos la necesidad de un legado tangible y eterno para todos.",
+            photoCount: 15,
+            physicalProduct: "Retablos artesanales o Canvas de alta gama.",
+            techIntegrated: "Revelado Fine Art, Narrativa IA, Soporte Digital.",
+            variants: [
+                {
+                    id: "esencia_semilla",
+                    name: "Esencia Semilla",
+                    price: 32500,
+                    usdPrice: 65,
+                    desc: "La primera semilla de tu historia familiar.",
+                    problem: "El deseo de conservar un momento especial con calidad profesional de forma sencilla.",
+                    photoCount: 10,
+                    physicalProduct: "Retablo 6x8\" (Borde 12mm) + Impresión.",
+                    techIntegrated: "Video Detrás de Cámaras (NFC/QR a YouTube).",
+                    caseStudy: {
+                        title: "La Primera Semilla",
+                        story: "Doña Marta nunca pudo tener fotos profesionales de sus nietos. Con Semilla, ahora tiene ese retablo en su repisa. El QR le permite ver las risas del día de la sesión cada vez que extraña a los pequeños."
+                    }
+                },
+                {
+                    id: "esencia_base",
+                    name: "Esencia Base",
+                    price: 77000,
+                    usdPrice: 149,
+                    desc: "La solución perfecta para capturar el crecimiento rápido de tus hijos.",
+                    problem: "El tiempo vuela y los detalles se olvidan. Capturamos la esencia antes de que cambie.",
+                    physicalProduct: "Retablo 5x7\" (Borde 15mm) + Impresión.",
+                    techIntegrated: "Revelado Fine Art + IA Narrativa.",
+                    caseStudy: {
+                        title: "El Ancla de la Mañana",
+                        story: "Elena sentía que solo tenía fotos borrosas en su nube. Este retablo en su mesa de noche es lo primero que ve al despertar, recordándole que su amor es la base de todo lo que construye."
+                    }
+                },
+                {
+                    id: "esencia_hogar",
+                    name: "Esencia Hogar",
+                    price: 89000,
+                    usdPrice: 179,
+                    desc: "Resuelve el vacío de tus paredes con significado.",
+                    problem: "Paredes vacías o con fotos sin alma. Transformamos tu hogar en un altar de memorias vivas.",
+                    physicalProduct: "Retablo 11x14\" (Borde 15mm) + Impresión.",
+                    techIntegrated: "Revelado Fine Art + IA Narrativa.",
+                    caseStudy: {
+                        title: "De Casa a Hogar",
+                        story: "La familia Ruiz se mudó a un lugar nuevo y frío. Fue colocar su retablo artesanal en la sala lo que finalmente les dio esa sensación de 'pertenencia'. Ahora, el eco de su risa vive en la pared."
+                    }
+                },
+                {
+                    id: "esencia_galeria",
+                    name: "Esencia Galería",
+                    price: 225000,
+                    usdPrice: 450,
+                    desc: "Para familias que ven su historia como una obra maestra.",
+                    problem: "La falta de una pieza central que cuente la historia de éxito y amor de la familia.",
+                    physicalProduct: "Canvas 20x30\" Full Color Calidad Museo.",
+                    techIntegrated: "Revelado Fine Art + IA Narrativa.",
+                    caseStudy: {
+                        title: "El Altar del Éxito Familiar",
+                        story: "Don Carlos quería dejar algo que sus nietos vieran y respetaran. Este Canvas domina su salón, no solo como decoración, sino como la evidencia visual de una generación que supo amar y prosperar."
+                    }
+                }
+            ]
+        },
+        {
+            id: "legado",
+            name: "Membresía Legado",
+            price: 25000,
+            usdPrice: 59,
+            desc: "Tu biógrafo familiar permanente.",
+            problem: "La historia familiar se dispersa. Resolvemos la desconexión con 3 sesiones 'Hogar' al año + Custodia Digital.",
+            photoCount: 45, // 15 per session
+            physicalProduct: "Ahorro garantizado frente a 3 sesiones Hogar individuales (₡267k).",
+            techIntegrated: "Custodia de Herencia Digital, 3 Sesiones anuales, App de Legado.",
+            isMonthly: true,
+            caseStudy: {
+                title: "La Herencia Viva",
+                story: "Los abuelos de Sofía fallecieron sin dejar sus historias grabadas. Ella juró que no pasaría lo mismo. Con la Membresía, su biógrafo captura cada cambio, asegurando que su voz nunca se apague."
+            }
+        },
+        {
+            id: "navidad",
+            name: "Instantes de Luz",
+            price: 45000,
+            usdPrice: 99,
+            desc: "Momentos mágicos de temporada.",
+            problem: "La prisa de fin de año impide conectar. Creamos una pausa mágica para celebrar la unión.",
+            photoCount: 15,
+            physicalProduct: "Tarjeta física con mensaje de video integrado.",
+            techIntegrated: "Realidad Aumentada (Mensaje de Video), Fondos Temáticos IA.",
+            caseStudy: {
+                title: "El Abrazo Digital",
+                story: "Su hijo estaba fuera del país. Al abrir la tarjeta física y ver su video cobrar vida en AR, sintieron que Navidad finalmente había llegado a casa. La distancia se rompió por un instante."
+            }
+        },
+        {
+            id: "mini",
+            name: "Minisesiones Phygital",
+            price: 30000,
+            usdPrice: 59,
+            desc: "Calidad profesional en formato ágil.",
+            problem: "Falta de tiempo. Resolvemos la necesidad de fotos WOW de forma rápida y accesible.",
+            photoCount: 15,
+            physicalProduct: "Detalle interactivo impreso.",
+            techIntegrated: "Realidad Aumentada básica, Smart Delivery.",
+            caseStudy: {
+                title: "Actualización de Amor",
+                story: "Entre el trabajo y la escuela, los Brown solo tenían 30 min. Esa mini-sesión les dio la foto perfecta de perfil y un detalle AR que los hizo reír toda la cena."
+            }
+        }
     ],
     business: [
-        { id: "express", name: "Omni Core (Ventas)", price: 85000, usdPrice: 199, desc: "Motor de presencia. Landing de alto impacto + Chatbot IA con contexto total de tu negocio." },
-        { id: "negocio", name: "Omni Pro (Crecimiento)", price: 145000, usdPrice: 349, desc: "Tu sucursal digital 24/7. Web-App, Catálogo interactivo y Chatbot avanzado para cerrar ventas." },
-        { id: "mantenimiento", name: "Omni Sincro", price: 15000, usdPrice: 39, desc: "Evolución digital: actualización trimestral de inteligencia artificial y seguridad.", isMonthly: true }
+        {
+            id: "omni_local",
+            name: "Omni Local (Guanacaste)",
+            price: 250000,
+            usdPrice: 500,
+            desc: "Digitalización esencial para el comercio local de Santa Cruz.",
+            problem: "Invisibilidad comercial y dependencia del local físico. Muchos negocios locales pierden clientes porque los turistas no encuentran información clara fuera de horas de oficina.",
+            solution: "Creamos una base digital sólida. Una Micro-Landing Page auto-gestionable con un Cotizador Básico que atiende 24/7 e incluye una Tarjeta NFC personalizada para convertir cada encuentro físico en un lead digital.",
+            promise: "Tu negocio dejará de ser invisible. Tendrás una presencia profesional que trabaja por ti mientras descansas.",
+            photoCount: 20,
+            physicalProduct: "Tarjeta NFC Curiol Business personalizada (Bambú/Aluminio).",
+            techIntegrated: "Micro-Landing, Cotizador Básico, NFC Smart Bridge.",
+            caseStudy: {
+                title: "De la Calle al Smartphone",
+                story: "Un artesano local duplicó sus consultas al permitir que los turistas escanearan su tarjeta y vieran sus servicios y precios de inmediato sin barreras de idioma."
+            }
+        },
+        {
+            id: "omni_pro_resident",
+            name: "Omni Pro (Resident/Expat)",
+            price: 750000,
+            usdPrice: 1500,
+            desc: "Automatización premium para marcas de servicios exclusivos.",
+            problem: "Caos en la gestión de citas y pérdida de tiempo con prospectos no calificados. Los clientes residentes esperan inmediatez y autogestión que un chat manual no puede dar.",
+            solution: "Infraestructura inteligente de ventas. Una Web-App con Agenda integrada y un filtro de IA (Gemini) que pre-califica a los interesados, junto a un Panel Admin para control total.",
+            promise: "Recupera tu tiempo. Tu negocio funcionará como una máquina bien engrasada que solo te entrega leads calificados y listos para el cierre.",
+            photoCount: 20,
+            physicalProduct: "Kit de bienvenida digital + Tarjeta NFC Premium.",
+            techIntegrated: "Web-App Pro, Agenda Inteligente, Filtro Lead IA (Gemini).",
+            caseStudy: {
+                title: "Escalabilidad en la Zona",
+                story: "Una empresa de servicios en Flamingo automatizó el 70% de sus citas. Ahora la agenda se llena sola mientras ellos se enfocan en la calidad del servicio."
+            }
+        },
+        {
+            id: "omni_ultra",
+            name: "Omni Ultra (Curiol OS)",
+            price: 1500000,
+            usdPrice: 3000,
+            desc: "Tu ecosistema digital absoluto y escalable.",
+            problem: "Herramientas desconectadas y falta de inteligencia de datos estratégica. Tienes presencia, pero no sabes exactamente qué quiere tu cliente o cómo predecir futuras ventas.",
+            solution: "El ecosistema absoluto (Curiol OS). Integramos todas nuestras herramientas: Cotizador Pro, Album Studio, Analytics con Insights de IA y el sistema de WhatsApp para alimentar tu propia IA.",
+            promise: "Convierte tu negocio en una empresa de tecnología. Tendrás el control total, predicción de ventas y una experiencia de cliente tan premium que será imposible ignorarte.",
+            photoCount: 20,
+            physicalProduct: "Soporte VIP + Ecosistema Total Curiol (Hardware/Software).",
+            techIntegrated: "Cotizador Pro, Album Studio, AI Analytics, WhatsApp Insumos IA (Curiol OS).",
+            caseStudy: {
+                title: "Control Total del Futuro",
+                story: "Al integrar todo el ecosistema, esta firma ya no adivina qué vender; su IA analiza los datos y les dice exactamente cuál será su próximo producto estrella."
+            }
+        }
     ]
 };
 
@@ -41,12 +244,48 @@ const UPSELLS = {
     seo: { id: "seo", name: "Optimización IA Search", price: 25000, usdPrice: 55, desc: "Configuración de visibilidad local y textos persuasivos optimizados por IA." }
 };
 
+const COMPLEMENTS = [
+    { id: "memoria_viva", name: "Memoria Viva (Slideshow + Música)", price: 20000, usdPrice: 40, desc: "Tu historia en un slideshow con música original. Emociones humanas, asistencia tecnológica." },
+    { id: "cancion_ia", name: "Canción Personalizada (IA)", price: 18000, usdPrice: 35, desc: "Creada con tus ideas y el mensaje que desees. Las ideas y emociones son humanas, la música es asistida por IA." },
+    { id: "detras_camaras", name: "Detrás de Cámaras (YouTube NFC)", price: 8000, usdPrice: 15, desc: "Acceso instantáneo al video del proceso creativo." },
+    { id: "extra_photos", name: "Paquete +5 Fotos Extra", price: 18000, usdPrice: 35, desc: "Más momentos capturados con el mismo nivel de detalle." }
+];
+
+const UPGRADE_SIZES = [
+    {
+        type: "Retablo 12mm", sizes: [
+            { label: "8x10\"", price: 125000, usdPrice: 250 },
+            { label: "11x14\"", price: 135000, usdPrice: 270 },
+            { label: "16x24\"", price: 185000, usdPrice: 370 },
+            { label: "20x30\"", price: 245000, usdPrice: 490 }
+        ]
+    },
+    {
+        type: "Retablo 15mm", sizes: [
+            { label: "8x10\"", price: 130000, usdPrice: 260 },
+            { label: "11x14\"", price: 145000, usdPrice: 290 },
+            { label: "16x24\"", price: 195000, usdPrice: 390 },
+            { label: "20x30\"", price: 285000, usdPrice: 570 }
+        ]
+    },
+    {
+        type: "Canvas Full Color", sizes: [
+            { label: "11x14\"", price: 135000, usdPrice: 270 },
+            { label: "16x20\"", price: 180000, usdPrice: 360 },
+            { label: "20x30\"", price: 235000, usdPrice: 470 }
+        ]
+    }
+];
+
 export default function CotizadorPage() {
     const [step, setStep] = useState(0);
     const [currency, setCurrency] = useState<"CRC" | "USD">("CRC");
     const [category, setCategory] = useState<"family" | "business" | null>(null);
     const [selectedPackage, setSelectedPackage] = useState<any>(null);
     const [extras, setExtras] = useState<any[]>([]);
+    const [selectedComplementIds, setSelectedComplementIds] = useState<string[]>([]);
+    const [upgradeSize, setUpgradeSize] = useState<{ label: string; price: number; usdPrice: number } | null>(null);
+    const [showSizes, setShowSizes] = useState(false);
     const [hours, setHours] = useState(2);
     const [isCoastal, setIsCoastal] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState<"sinpe" | "transfer" | "card" | null>(null);
@@ -60,18 +299,24 @@ export default function CotizadorPage() {
     const handleBack = () => setStep(s => Math.max(s - 1, 0));
 
     const packageBaseTotal = selectedPackage
-        ? (currency === "CRC" ? selectedPackage.price : selectedPackage.usdPrice)
+        ? (upgradeSize
+            ? (currency === "CRC" ? upgradeSize.price : upgradeSize.usdPrice)
+            : (currency === "CRC" ? selectedPackage.price : selectedPackage.usdPrice))
         : 0;
 
     const packageTotal = selectedPackage?.isHourly
         ? packageBaseTotal * hours
         : packageBaseTotal;
 
+    const complementTotal = COMPLEMENTS
+        .filter(c => selectedComplementIds.includes(c.id))
+        .reduce((acc, curr) => acc + (currency === "CRC" ? curr.price : curr.usdPrice), 0) * 0.85;
+
     const coastalFee = isCoastal
         ? (currency === "CRC" ? 15000 : 30)
         : 0;
 
-    const total = packageTotal + coastalFee +
+    const total = packageTotal + coastalFee + complementTotal +
         extras.reduce((acc, curr) => acc + (currency === "CRC" ? curr.price : curr.usdPrice), 0);
 
     return (
@@ -80,7 +325,7 @@ export default function CotizadorPage() {
 
             <main className="flex-grow max-w-5xl mx-auto px-4 w-full">
                 {/* Currency Toggle */}
-                <div className="flex justify-end mb-8">
+                <div className={cn("flex justify-end mb-8 transition-opacity duration-500", category === 'business' ? "opacity-0 pointer-events-none" : "opacity-100")}>
                     <div className="flex bg-tech-800 p-1 rounded-full border border-tech-700">
                         <button
                             onClick={() => setCurrency("CRC")}
@@ -125,7 +370,11 @@ export default function CotizadorPage() {
                             >
                                 <GlassCard
                                     className={cn("cursor-pointer border-2 transition-all", category === 'family' ? "border-curiol-500 shadow-2xl shadow-curiol-500/20" : "border-transparent")}
-                                    onClick={() => { setCategory('family'); handleNext(); }}
+                                    onClick={() => {
+                                        setCategory('family');
+                                        handleNext();
+                                        logInteraction("package_view", { category: "family", status: "category_selected" });
+                                    }}
                                 >
                                     <Camera className="w-12 h-12 text-curiol-500 mb-6" />
                                     <h3 className="text-2xl font-serif text-white mb-2 italic">Legado Familiar</h3>
@@ -133,7 +382,12 @@ export default function CotizadorPage() {
                                 </GlassCard>
                                 <GlassCard
                                     className={cn("cursor-pointer border-2 transition-all", category === 'business' ? "border-tech-500 shadow-2xl shadow-tech-500/20" : "border-transparent")}
-                                    onClick={() => { setCategory('business'); handleNext(); }}
+                                    onClick={() => {
+                                        setCategory('business');
+                                        setCurrency('USD');
+                                        handleNext();
+                                        logInteraction("package_view", { category: "business", status: "category_selected" });
+                                    }}
                                 >
                                     <Code className="w-12 h-12 text-tech-500 mb-6" />
                                     <h3 className="text-2xl font-serif text-white mb-2 italic">Motor de Soluciones Comerciales</h3>
@@ -152,17 +406,88 @@ export default function CotizadorPage() {
                                     <GlassCard
                                         key={pkg.id}
                                         className={cn("cursor-pointer border-2 h-full flex flex-col justify-between transition-all hover:border-curiol-500/50", selectedPackage?.id === pkg.id ? "border-curiol-500 scale-[1.02] shadow-2xl shadow-curiol-500/10" : "border-transparent")}
-                                        onClick={() => { setSelectedPackage(pkg); handleNext(); }}
+                                        onClick={() => {
+                                            setSelectedPackage(pkg);
+                                            // Si no tiene variantes, avanzamos. Si tiene, el usuario las verá en el mismo paso o el siguiente.
+                                            if (!(pkg as any).variants) {
+                                                handleNext();
+                                            }
+                                            logInteraction("package_view", {
+                                                packageId: pkg.id,
+                                                packageName: pkg.name,
+                                                category
+                                            });
+                                        }}
                                     >
-                                        <div>
-                                            <h4 className="text-xl font-serif text-white mb-4 italic leading-tight">{pkg.name}</h4>
-                                            <p className="text-tech-400 text-xs font-light mb-6 leading-relaxed">{pkg.desc}</p>
+                                        <div className="space-y-4">
+                                            <div>
+                                                <h4 className="text-xl font-serif text-white mb-2 italic leading-tight">{pkg.name}</h4>
+
+                                                <div className="space-y-4 my-6">
+                                                    <div>
+                                                        <p className="text-curiol-500/80 text-[10px] font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
+                                                            <span className="w-1 h-1 bg-curiol-500 rounded-full"></span>
+                                                            EL PROBLEMA
+                                                        </p>
+                                                        <p className="text-tech-400 text-[11px] font-light italic leading-relaxed pl-3 border-l border-tech-800">
+                                                            {pkg.problem}
+                                                        </p>
+                                                    </div>
+
+                                                    {pkg.solution && (
+                                                        <div>
+                                                            <p className="text-curiol-500/80 text-[10px] font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
+                                                                <span className="w-1 h-1 bg-curiol-500 rounded-full"></span>
+                                                                LA SOLUCIÓN
+                                                            </p>
+                                                            <p className="text-tech-200 text-[11px] font-medium leading-relaxed pl-3 border-l border-tech-800">
+                                                                {pkg.solution}
+                                                            </p>
+                                                        </div>
+                                                    )}
+
+                                                    {pkg.promise && (
+                                                        <div>
+                                                            <p className="text-curiol-500/80 text-[10px] font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
+                                                                <span className="w-1 h-1 bg-curiol-500 rounded-full"></span>
+                                                                LA PROMESA
+                                                            </p>
+                                                            <p className="text-white text-[11px] font-bold leading-relaxed pl-3 border-l border-curiol-500/50 bg-curiol-500/5 py-1">
+                                                                {pkg.promise}
+                                                            </p>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-3 pt-2">
+                                                <div className="space-y-1">
+                                                    <p className="text-tech-500 text-[9px] uppercase tracking-tighter">Fotos Fine Art</p>
+                                                    <p className="text-white text-[11px] font-medium">{pkg.photoCount} seleccionadas</p>
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <p className="text-tech-500 text-[9px] uppercase tracking-tighter">Tecnología</p>
+                                                    <p className="text-curiol-400 text-[11px] font-medium">{pkg.techIntegrated.split(',')[0]}</p>
+                                                </div>
+                                                <div className="col-span-2 space-y-1">
+                                                    <p className="text-tech-500 text-[9px] uppercase tracking-tighter">Físico</p>
+                                                    <p className="text-white text-[11px] font-medium">{pkg.physicalProduct}</p>
+                                                </div>
+                                            </div>
+
+                                            {pkg.caseStudy && (
+                                                <div className="mt-4 p-4 bg-curiol-500/5 border border-curiol-500/10 rounded-xl relative">
+                                                    <p className="text-[8px] font-bold uppercase tracking-[0.2em] text-curiol-500 mb-1">Impacto Real</p>
+                                                    <p className="text-white text-[10px] font-serif italic leading-relaxed">"{pkg.caseStudy.story}"</p>
+                                                </div>
+                                            )}
                                         </div>
                                         <div className="pt-6 border-t border-tech-800 flex justify-between items-center">
                                             <span className="text-curiol-500 font-bold">
                                                 {currency === "USD" ? "$" : "₡"}
                                                 {currency === "USD" ? pkg.usdPrice.toLocaleString() : pkg.price.toLocaleString()}
-                                                {pkg.isMonthly && " / mes"}
+                                                {!(pkg as any).variants && pkg.isMonthly && " / mes"}
+                                                {(pkg as any).variants && " desde"}
                                             </span>
                                             <div className="w-8 h-8 rounded-full bg-tech-800 flex items-center justify-center">
                                                 <ArrowRight className="w-4 h-4 text-tech-500" />
@@ -170,6 +495,124 @@ export default function CotizadorPage() {
                                         </div>
                                     </GlassCard>
                                 ))}
+
+                                {/* Variant Selection Modal/View inside Step 1 */}
+                                <AnimatePresence>
+                                    {selectedPackage?.variants && (
+                                        <motion.div
+                                            initial={{ opacity: 0, scale: 0.95 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0, scale: 0.95 }}
+                                            className="md:col-span-2 lg:col-span-3 mt-12 p-8 bg-tech-950 border border-curiol-500/20 rounded-3xl shadow-3xl overflow-hidden relative"
+                                        >
+                                            <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 text-center md:text-left">
+                                                <div>
+                                                    <h4 className="text-2xl font-serif text-white italic">Selecciona tu nivel de Esencia</h4>
+                                                    <p className="text-tech-500 text-xs mt-1">Cada opción incluye 15 fotos Fine Art y narrativa personalizada.</p>
+                                                </div>
+                                                <button
+                                                    onClick={() => setSelectedPackage(null)}
+                                                    className="text-[10px] font-bold uppercase tracking-widest text-tech-600 hover:text-white transition-all"
+                                                >
+                                                    Cerrar
+                                                </button>
+                                            </div>
+
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                {selectedPackage.variants.map((v: any) => (
+                                                    <div
+                                                        key={v.id}
+                                                        onClick={() => {
+                                                            const finalPkg = { ...selectedPackage, ...v };
+                                                            delete finalPkg.variants;
+                                                            setSelectedPackage(finalPkg);
+                                                            handleNext();
+                                                        }}
+                                                        className="p-6 bg-tech-900 border border-tech-800 rounded-2xl cursor-pointer hover:border-curiol-500 transition-all group"
+                                                    >
+                                                        <h5 className="text-white font-serif text-lg italic mb-2 group-hover:text-curiol-500 transition-colors">{v.name}</h5>
+                                                        <p className="text-tech-500 text-[9px] uppercase tracking-widest mb-2 italic">{v.problem}</p>
+                                                        <div className="space-y-3 mb-6">
+                                                            <div className="flex items-center gap-2">
+                                                                <div className="w-1.5 h-1.5 rounded-full bg-curiol-500" />
+                                                                <p className="text-tech-400 text-[10px]">{v.physicalProduct}</p>
+                                                            </div>
+                                                            <div className="flex items-center gap-2">
+                                                                <div className="w-1.5 h-1.5 rounded-full bg-tech-500" />
+                                                                <p className="text-tech-400 text-[10px]">{v.techIntegrated}</p>
+                                                            </div>
+                                                        </div>
+
+                                                        {v.caseStudy && (
+                                                            <div className="mb-6 p-3 bg-white/5 rounded-lg border-l-2 border-curiol-500">
+                                                                <p className="text-white text-[9px] font-serif italic leading-relaxed">"{v.caseStudy.story}"</p>
+                                                            </div>
+                                                        )}
+                                                        <span className="text-curiol-500 font-bold block">
+                                                            {currency === "USD" ? "$" : "₡"}
+                                                            {currency === "USD" ? v.usdPrice.toLocaleString() : v.price.toLocaleString()}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+
+                                            {/* Size Upgrade Matrix Toggle */}
+                                            <div className="mt-8 pt-8 border-t border-tech-800">
+                                                <label className="flex items-center gap-3 cursor-pointer group w-fit">
+                                                    <div className={cn(
+                                                        "w-5 h-5 rounded border-2 flex items-center justify-center transition-all",
+                                                        showSizes ? "bg-curiol-500 border-curiol-500" : "border-tech-700 bg-tech-950 group-hover:border-curiol-500/50"
+                                                    )} onClick={() => setShowSizes(!showSizes)}>
+                                                        {showSizes && <CheckCircle2 className="w-3 h-3 text-white" />}
+                                                    </div>
+                                                    <span className="text-[11px] font-bold uppercase tracking-widest text-tech-400 group-hover:text-white transition-colors">
+                                                        Deseo conocer otros tamaños de impresión
+                                                    </span>
+                                                </label>
+
+                                                <AnimatePresence>
+                                                    {showSizes && (
+                                                        <motion.div
+                                                            initial={{ opacity: 0, height: 0 }}
+                                                            animate={{ opacity: 1, height: "auto" }}
+                                                            exit={{ opacity: 0, height: 0 }}
+                                                            className="mt-6 overflow-hidden"
+                                                        >
+                                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 bg-curiol-500/5 rounded-2xl border border-curiol-500/10">
+                                                                {UPGRADE_SIZES.map((group) => (
+                                                                    <div key={group.type} className="space-y-3">
+                                                                        <p className="text-[10px] font-black uppercase tracking-widest text-curiol-500">{group.type}</p>
+                                                                        <div className="space-y-2">
+                                                                            {group.sizes.map((s) => (
+                                                                                <button
+                                                                                    key={s.label}
+                                                                                    onClick={() => {
+                                                                                        setUpgradeSize(s);
+                                                                                        handleNext();
+                                                                                    }}
+                                                                                    className="w-full flex justify-between items-center p-3 bg-tech-900/50 hover:bg-curiol-500/20 border border-tech-800 rounded-lg group/btn transition-all text-left"
+                                                                                >
+                                                                                    <span className="text-xs text-white group-hover/btn:text-curiol-400">{s.label}</span>
+                                                                                    <span className="text-[10px] font-bold text-tech-400">
+                                                                                        {currency === "USD" ? "$" : "₡"}
+                                                                                        {currency === "USD" ? s.usdPrice.toLocaleString() : s.price.toLocaleString()}
+                                                                                    </span>
+                                                                                </button>
+                                                                            ))}
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                            <p className="mt-4 text-[9px] text-tech-600 italic">
+                                                                * Los precios de tamaños superiores mantienen los mismos criterios de cálculo artístico y producción.
+                                                            </p>
+                                                        </motion.div>
+                                                    )}
+                                                </AnimatePresence>
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
 
                                 {selectedPackage?.isHourly && (
                                     <div className="md:col-span-2 lg:col-span-3 mt-8 p-8 bg-tech-900 border border-tech-700 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-8">
@@ -212,6 +655,59 @@ export default function CotizadorPage() {
                                 </div>
 
                                 <div className="max-w-2xl mx-auto space-y-4">
+                                    <section className="mb-8 p-6 bg-curiol-500/5 border border-curiol-500/10 rounded-3xl">
+                                        <div className="flex items-center gap-3 mb-6">
+                                            <Sparkles className="w-5 h-5 text-curiol-500" />
+                                            <h4 className="text-white font-serif text-xl italic">Complementa tu Memoria</h4>
+                                        </div>
+                                        <p className="text-tech-500 text-xs mb-6">Añade estas posibilidades exclusivas a tu paquete con un 15% de descuento incluido.</p>
+
+                                        <div className="space-y-3">
+                                            {COMPLEMENTS.map((c) => (
+                                                <div
+                                                    key={c.id}
+                                                    onClick={() => {
+                                                        if (selectedComplementIds.includes(c.id)) {
+                                                            setSelectedComplementIds(selectedComplementIds.filter(id => id !== c.id));
+                                                        } else {
+                                                            setSelectedComplementIds([...selectedComplementIds, c.id]);
+                                                        }
+                                                    }}
+                                                    className={cn(
+                                                        "p-4 rounded-xl border transition-all cursor-pointer flex justify-between items-center group",
+                                                        selectedComplementIds.includes(c.id)
+                                                            ? "border-curiol-500 bg-curiol-500/10"
+                                                            : "border-tech-800 bg-tech-950/30 hover:border-tech-700"
+                                                    )}
+                                                >
+                                                    <div className="flex-grow">
+                                                        <p className="text-white text-xs font-medium group-hover:text-curiol-400 transition-colors">{c.name}</p>
+                                                        <p className="text-tech-600 text-[9px] mt-1">{c.desc}</p>
+                                                    </div>
+                                                    <div className="text-right flex items-center gap-4">
+                                                        <div className="flex flex-col items-end">
+                                                            <span className="text-tech-600 line-through text-[9px]">
+                                                                {currency === "USD" ? "$" : "₡"}{currency === "USD" ? c.usdPrice.toLocaleString() : c.price.toLocaleString()}
+                                                            </span>
+                                                            <span className="text-curiol-500 font-bold text-[11px]">
+                                                                {currency === "USD" ? "$" : "₡"}
+                                                                {currency === "USD" ? (c.usdPrice * 0.85).toLocaleString() : (c.price * 0.85).toLocaleString()}
+                                                            </span>
+                                                        </div>
+                                                        <div className={cn(
+                                                            "w-4 h-4 rounded border flex items-center justify-center transition-all",
+                                                            selectedComplementIds.includes(c.id) ? "bg-curiol-500 border-curiol-500" : "border-tech-700"
+                                                        )}>
+                                                            {selectedComplementIds.includes(c.id) && <CheckCircle2 className="w-2.5 h-2.5 text-white" />}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </section>
+
+                                    <p className="text-tech-500 text-[10px] uppercase font-bold tracking-[0.2em] text-center mb-6">Mejoras de Producto & SEO</p>
+
                                     {Object.values(UPSELLS).map((up) => (
                                         <div key={up.id} className="p-6 bg-tech-800/30 border border-tech-700 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-6 hover:border-curiol-500/30 transition-all group">
                                             <div className="flex items-center gap-4">
@@ -273,15 +769,33 @@ export default function CotizadorPage() {
                                     <div className="space-y-6 mb-12">
                                         <div className="flex justify-between items-end">
                                             <div>
-                                                <p className="text-tech-500 text-[9px] font-bold uppercase tracking-widest mb-1">Paquete Base</p>
+                                                <p className="text-tech-500 text-[9px] font-bold uppercase tracking-widest mb-1">Paquete Seleccionado</p>
                                                 <p className="text-white text-lg font-serif italic">{selectedPackage?.name}</p>
                                             </div>
                                             <span className="text-white font-bold">
                                                 {currency === "USD" ? "$" : "₡"}
-                                                {total.toLocaleString()}
+                                                {upgradeSize
+                                                    ? (currency === "USD" ? upgradeSize.usdPrice : upgradeSize.price).toLocaleString()
+                                                    : (currency === "USD" ? selectedPackage?.usdPrice : selectedPackage?.price).toLocaleString()
+                                                }
                                                 {selectedPackage?.isHourly && ` (${hours}h)`}
                                                 {selectedPackage?.isMonthly && " / mes"}
                                             </span>
+                                        </div>
+
+                                        <div className="grid grid-cols-3 gap-2 py-4 border-y border-tech-800/50">
+                                            <div className="text-center">
+                                                <p className="text-tech-600 text-[7px] uppercase tracking-widest font-bold mb-1">Fotos</p>
+                                                <p className="text-white text-[10px]">{selectedPackage?.photoCount}</p>
+                                            </div>
+                                            <div className="text-center border-x border-tech-800/50">
+                                                <p className="text-tech-600 text-[7px] uppercase tracking-widest font-bold mb-1">Producto</p>
+                                                <p className="text-white text-[10px] truncate px-2">{selectedPackage?.physicalProduct?.split(' ')[0]} {selectedPackage?.physicalProduct?.split(' ')[1]}</p>
+                                            </div>
+                                            <div className="text-center">
+                                                <p className="text-tech-600 text-[7px] uppercase tracking-widest font-bold mb-1">Tecnología</p>
+                                                <p className="text-curiol-500 text-[10px]">{selectedPackage?.techIntegrated?.split(',')[0]}</p>
+                                            </div>
                                         </div>
 
                                         {isCoastal && (
@@ -291,9 +805,15 @@ export default function CotizadorPage() {
                                             </div>
                                         )}
 
-                                        {extras.length > 0 && (
+                                        {(extras.length > 0 || selectedComplementIds.length > 0) && (
                                             <div className="pt-6 border-t border-tech-800 space-y-4">
                                                 <p className="text-tech-500 text-[9px] font-bold uppercase tracking-widest">Complementos Seleccionados</p>
+                                                {COMPLEMENTS.filter(c => selectedComplementIds.includes(c.id)).map((c) => (
+                                                    <div key={c.id} className="flex justify-between text-curiol-500 text-sm italic">
+                                                        <span>+ {c.name} <span className="text-[10px] text-tech-600 line-through ml-2">{currency === "USD" ? "$" : "₡"}{currency === "USD" ? c.usdPrice.toLocaleString() : c.price.toLocaleString()}</span></span>
+                                                        <span>{currency === "USD" ? "$" : "₡"}{currency === "USD" ? (c.usdPrice * 0.85).toLocaleString() : (c.price * 0.85).toLocaleString()}</span>
+                                                    </div>
+                                                ))}
                                                 {extras.map((ex, idx) => (
                                                     <div key={idx} className="flex justify-between text-curiol-500 text-sm italic">
                                                         <span>+ {ex.name}</span>
@@ -462,8 +982,20 @@ export default function CotizadorPage() {
                                                     status: paymentMethod === 'card' ? 'pending_link' : 'pending_confirmation',
                                                     createdAt: Timestamp.now(),
                                                     items: [
-                                                        { name: selectedPackage?.name, price: currency === "USD" ? selectedPackage?.usd : selectedPackage?.price },
-                                                        ...extras.map(e => ({ name: e.name, price: currency === "USD" ? e.usd : e.price }))
+                                                        {
+                                                            name: `${selectedPackage?.name}${upgradeSize ? ` (Upgrade ${upgradeSize.label})` : ''}`,
+                                                            price: upgradeSize
+                                                                ? (currency === "USD" ? upgradeSize.usdPrice : upgradeSize.price)
+                                                                : (currency === "USD" ? selectedPackage?.usdPrice : selectedPackage?.price)
+                                                        },
+                                                        ...COMPLEMENTS.filter(c => selectedComplementIds.includes(c.id)).map(c => ({
+                                                            name: c.name,
+                                                            price: currency === "USD" ? c.usdPrice : c.price
+                                                        })),
+                                                        ...extras.map(e => ({
+                                                            name: e.name,
+                                                            price: currency === "USD" ? e.usdPrice : e.price
+                                                        }))
                                                     ]
                                                 });
                                             } catch (e) {
@@ -473,11 +1005,20 @@ export default function CotizadorPage() {
                                             const message = encodeURIComponent(`Hola Alberto, he generado una propuesta en Curiol Studio.
 Ref: ${quoteId}
 
-Paquete: ${selectedPackage?.name}
+Paquete: ${selectedPackage?.name} ${upgradeSize ? `(Upgrade a ${upgradeSize.label})` : ''}
+${selectedComplementIds.length > 0 ? `Complementos: ${COMPLEMENTS.filter(c => selectedComplementIds.includes(c.id)).map(c => c.name).join(', ')}\n` : ''}
 Inversión total: ${currency === "USD" ? "$" : "₡"}${total.toLocaleString()}
 Método de pago preferido: ${methodText}${cardNote}
 
 Quedo a la espera de los siguientes pasos para confirmar mi sesión.`);
+                                            // Log interaction: Sent WhatsApp
+                                            logInteraction("link_click", {
+                                                type: "whatsapp_quote",
+                                                quoteId,
+                                                packageName: selectedPackage?.name,
+                                                total
+                                            });
+
                                             window.open(`https://wa.me/50660602617?text=${message}`, '_blank');
                                         }}
                                     >
@@ -491,20 +1032,22 @@ Quedo a la espera de los siguientes pasos para confirmar mi sesión.`);
                 </div>
 
                 {/* Navigation Buttons (Bottom) */}
-                {step > 0 && step < 3 && (
-                    <div className="mt-16 flex justify-between items-center px-4">
-                        <button onClick={handleBack} className="text-tech-500 hover:text-white transition-all flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest">
-                            <ArrowRight className="w-4 h-4 rotate-180" /> Volver
-                        </button>
-                        <button onClick={handleNext} className="px-8 py-3 bg-tech-800 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-tech-700 transition-all flex items-center gap-2">
-                            Continuar <ArrowRight className="w-4 h-4" />
-                        </button>
-                    </div>
-                )}
-            </main>
+                {
+                    step > 0 && step < 3 && (
+                        <div className="mt-16 flex justify-between items-center px-4">
+                            <button onClick={handleBack} className="text-tech-500 hover:text-white transition-all flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest">
+                                <ArrowRight className="w-4 h-4 rotate-180" /> Volver
+                            </button>
+                            <button onClick={handleNext} className="px-8 py-3 bg-tech-800 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-tech-700 transition-all flex items-center gap-2">
+                                Continuar <ArrowRight className="w-4 h-4" />
+                            </button>
+                        </div>
+                    )
+                }
+            </main >
 
             <Footer />
             <AiAssistant />
-        </div>
+        </div >
     );
 }

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/firebase";
-import { collection, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { collection, query, where, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { sendWhatsAppMessage } from "@/lib/meta";
 
 /**
@@ -45,7 +45,9 @@ export async function GET(req: Request) {
             );
 
             // Mark warning as sent
-            await deleteDoc(doc(db, "albums", albumDoc.id)); // Actually update status if keeping records
+            await updateDoc(doc(db, "albums", albumDoc.id), {
+                warningSent: true
+            });
         }
 
         // 2. Process Deletions

@@ -1,16 +1,31 @@
-"use client";
-
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Navbar } from "@/components/Navbar";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     X, Layout, Palette, Share2, Crop,
     Save, Eye, Trash2, Plus, Image as ImageIcon,
-    Settings, Zap, CheckCircle2, ChevronRight
+    Settings, Zap, CheckCircle2, ChevronRight, Loader2
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { storage } from "@/lib/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { generateSocialCrop } from "@/actions/image-ai";
+import { createAlbum } from "@/actions/albums";
+import { generateDeliveryCopy } from "@/lib/gemini";
+
+interface UploadedImage {
+    file: File;
+    originalUrl: string;
+    caption: string;
+    processing: boolean;
+    social?: {
+        story?: string;
+        post?: string;
+        portrait?: string;
+    };
+}
 
 export default function NewAlbumStudio() {
     const router = useRouter();
@@ -18,12 +33,96 @@ export default function NewAlbumStudio() {
     const [albumName, setAlbumName] = useState("");
     const [theme, setTheme] = useState("dark-canvas");
     const [uploading, setUploading] = useState(false);
+    const [images, setImages] = useState<UploadedImage[]>([]);
+    const [clientEmail, setClientEmail] = useState("");
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const themes = [
         { id: "dark-canvas", name: "Dark Canvas", primary: "bg-tech-950", accent: "border-curiol-500" },
         { id: "minimal-white", name: "Minimal White", primary: "bg-white", accent: "border-tech-900" },
         { id: "sepia-legacy", name: "Sepia Legacy", primary: "bg-[#2d241e]", accent: "border-[#c4a484]" }
     ];
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files || []);
+        if (files.length === 0) return;
+
+        setUploading(true);
+
+        const newImages: UploadedImage[] = await Promise.all(
+            files.map(async (file) => {
+                const storageRef = ref(storage, `albums/temp/${Date.now()}_${file.name}`);
+                await uploadBytes(storageRef, file);
+                const url = await getDownloadURL(storageRef);
+
+                return {
+                    file,
+                    originalUrl: url,
+                    caption: "Generando leyenda...",
+                    processing: true
+                };
+            })
+        );
+
+        setImages(prev => [...prev, ...newImages]);
+        setUploading(false);
+
+        // Process AI in background for each
+        newImages.forEach((img, idx) => {
+            processAI(images.length + idx);
+        });
+    };
+
+    const processAI = async (index: number) => {
+        // Fetch current state
+        setImages(prev => {
+            const currentImg = prev[index];
+            if (!currentImg) return prev;
+
+            // Trigger AI bits
+            (async () => {
+                const caption = await generateDeliveryCopy(albumName || "Cliente", "Sesión", "story");
+                const story = await generateSocialCrop(currentImg.originalUrl, "story");
+                const post = await generateSocialCrop(currentImg.originalUrl, "post");
+                const portrait = await generateSocialCrop(currentImg.originalUrl, "portrait");
+
+                setImages(current => {
+                    const updated = [...current];
+                    updated[index] = {
+                        ...updated[index],
+                        caption: caption || "Momento capturado",
+                        processing: false,
+                        social: { story, post, portrait }
+                    };
+                    return updated;
+                });
+            })();
+
+            return prev;
+        });
+    };
+
+    const handleFinalize = async () => {
+        setUploading(true);
+        const result = await createAlbum({
+            name: albumName,
+            theme,
+            clientName: "Cliente",
+            clientPhone: "", // In real app, get from lead
+            images: images.map(img => ({
+                original: img.originalUrl,
+                captions: img.caption,
+                social: img.social
+            }))
+        });
+
+        if (result.success) {
+            setStep(3);
+        } else {
+            alert("Error al guardar: " + result.error);
+        }
+        setUploading(false);
+    };
 
     return (
         <div className="min-h-screen bg-tech-950 text-white selection:bg-curiol-500/30">
@@ -56,12 +155,16 @@ export default function NewAlbumStudio() {
                             </div>
                         ))}
                     </div>
-                    <button className="flex items-center gap-2 px-6 py-2 bg-white/5 hover:bg-white/10 text-[10px] font-bold uppercase tracking-widest rounded-lg border border-white/10 transition-all">
-                        <Eye className="w-4 h-4" /> Previsualizar
-                    </button>
-                    <button className="flex items-center gap-2 px-6 py-2 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest rounded-lg shadow-lg shadow-curiol-500/20 hover:scale-[1.02] transition-all">
-                        <Save className="w-4 h-4" /> Finalizar Entrega
-                    </button>
+                    {step === 2 && (
+                        <button
+                            onClick={handleFinalize}
+                            disabled={uploading}
+                            className="flex items-center gap-2 px-6 py-2 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest rounded-lg shadow-lg shadow-curiol-500/20 hover:scale-[1.02] transition-all disabled:opacity-50"
+                        >
+                            {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                            Finalizar Entrega
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -136,16 +239,28 @@ export default function NewAlbumStudio() {
 
                             {/* Center/Right: Photo Management */}
                             <div className="lg:col-span-2 space-y-8">
-                                <section className="min-h-[500px] border-2 border-dashed border-white/5 rounded-[2rem] flex flex-col items-center justify-center p-12 bg-tech-900/20 hover:bg-tech-900/40 transition-all group">
+                                <section className="min-h-[500px] border-2 border-dashed border-white/5 rounded-[2rem] flex flex-col items-center justify-center p-12 bg-tech-900/20 hover:bg-tech-900/40 transition-all group relative overflow-hidden">
+                                    <input
+                                        type="file"
+                                        multiple
+                                        className="absolute inset-0 opacity-0 cursor-pointer"
+                                        onChange={handleFileChange}
+                                        disabled={uploading}
+                                    />
                                     <div className="w-20 h-20 bg-tech-900 rounded-full flex items-center justify-center mb-6 border border-white/5 group-hover:scale-110 transition-transform">
-                                        <Plus className="w-8 h-8 text-curiol-500" />
+                                        {uploading ? <Loader2 className="w-8 h-8 text-curiol-500 animate-spin" /> : <Plus className="w-8 h-8 text-curiol-500" />}
                                     </div>
                                     <h4 className="text-2xl font-serif italic mb-2">Arrastra las memorias aquí</h4>
                                     <p className="text-tech-500 text-sm font-light mb-8">Arrastra archivos o haz clic para seleccionar.</p>
-                                    <input type="file" multiple className="hidden" id="file-upload" />
-                                    <label htmlFor="file-upload" className="px-10 py-5 bg-white text-tech-950 text-[10px] font-bold uppercase tracking-widest rounded-full hover:brightness-90 transition-all flex items-center gap-3 cursor-pointer">
-                                        <Layout className="w-4 h-4" /> Seleccionar Archivos
-                                    </label>
+
+                                    {/* Upload Progress Preview */}
+                                    <div className="grid grid-cols-4 gap-4 mt-8 w-full">
+                                        {images.slice(-4).map((img, i) => (
+                                            <div key={i} className="aspect-square bg-tech-950 rounded-lg overflow-hidden border border-white/5">
+                                                <img src={img.originalUrl} className="w-full h-full object-cover opacity-50" alt="Preview" />
+                                            </div>
+                                        ))}
+                                    </div>
                                 </section>
 
                                 <div className="grid grid-cols-3 gap-6">
@@ -189,24 +304,49 @@ export default function NewAlbumStudio() {
                             </div>
 
                             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                                {[1, 2, 3, 4, 5, 6].map((idx) => (
+                                {images.map((img, idx) => (
                                     <GlassCard key={idx} className="p-0 overflow-hidden group/item">
                                         <div className="aspect-[4/5] bg-tech-900 relative">
+                                            <img src={img.originalUrl} className="w-full h-full object-cover" alt="Memory" />
                                             <div className="absolute inset-0 bg-tech-950/40 opacity-0 group-hover/item:opacity-100 transition-all flex items-center justify-center gap-4 z-10">
                                                 <button className="p-3 bg-white text-tech-950 rounded-full hover:scale-110 transition-all shadow-xl">
                                                     <Crop className="w-4 h-4" />
                                                 </button>
-                                                <button className="p-3 bg-red-500 text-white rounded-full hover:scale-110 transition-all shadow-xl">
+                                                <button
+                                                    onClick={() => setImages(prev => prev.filter((_, i) => i !== idx))}
+                                                    className="p-3 bg-red-500 text-white rounded-full hover:scale-110 transition-all shadow-xl"
+                                                >
                                                     <Trash2 className="w-4 h-4" />
                                                 </button>
                                             </div>
-                                            <div className="absolute top-4 left-4 z-20">
-                                                <span className="px-2 py-1 bg-curiol-500 text-white text-[8px] font-bold uppercase rounded">Face Detected</span>
-                                            </div>
+                                            {img.processing ? (
+                                                <div className="absolute inset-0 bg-tech-950/80 backdrop-blur-sm flex flex-col items-center justify-center gap-3">
+                                                    <Loader2 className="w-6 h-6 text-curiol-500 animate-spin" />
+                                                    <span className="text-[8px] font-bold uppercase tracking-widest text-curiol-500">Analizando con IA...</span>
+                                                </div>
+                                            ) : (
+                                                <div className="absolute top-4 left-4 z-20">
+                                                    <span className="px-2 py-1 bg-green-500 text-white text-[8px] font-bold uppercase rounded flex items-center gap-1">
+                                                        <CheckCircle2 className="w-3 h-3" /> IA Optimized
+                                                    </span>
+                                                </div>
+                                            )}
                                         </div>
                                         <div className="p-4 bg-tech-900/40 border-t border-white/5">
-                                            <p className="text-[10px] text-tech-500 font-bold uppercase mb-1">Leyenda IA Sugerida</p>
-                                            <p className="text-[11px] text-white/80 line-clamp-2 italic font-light">"La luz perfecta capturando la esencia de un momento eterno."</p>
+                                            <p className="text-[10px] text-tech-500 font-bold uppercase mb-1">Leyenda IA</p>
+                                            <textarea
+                                                value={img.caption}
+                                                onChange={(e) => {
+                                                    const val = e.target.value;
+                                                    setImages(prev => {
+                                                        const u = [...prev];
+                                                        u[idx].caption = val;
+                                                        return u;
+                                                    });
+                                                }}
+                                                className="w-full bg-transparent border-none text-[11px] text-white/80 italic font-light resize-none focus:ring-0 p-0"
+                                                rows={2}
+                                            />
                                         </div>
                                     </GlassCard>
                                 ))}

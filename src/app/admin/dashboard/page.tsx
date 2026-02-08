@@ -14,7 +14,7 @@ import {
     Calendar as CalendarIcon, Video, FileText, Brain
 } from "lucide-react";
 
-import { collection, query, orderBy, limit, onSnapshot } from "firebase/firestore";
+import { collection, query, orderBy, limit, onSnapshot, where, getDocs, Timestamp } from "firebase/firestore";
 
 export default function AdminDashboard() {
     const [loading, setLoading] = useState(true);
@@ -23,6 +23,8 @@ export default function AdminDashboard() {
     const [leads, setLeads] = useState<any[]>([]);
     const [bookings, setBookings] = useState<any[]>([]);
     const [quotes, setQuotes] = useState<any[]>([]);
+    const [albums, setAlbums] = useState<any[]>([]);
+    const [interactionCount, setInteractionCount] = useState<number | string>("...");
     const router = useRouter();
 
     useEffect(() => {
@@ -76,7 +78,26 @@ export default function AdminDashboard() {
             setQuotes(data);
         });
 
-        return () => { unsubDeliveries(); unsubLeads(); unsubBookings(); unsubQuotes(); };
+        // Albums (New System)
+        const qAlbums = query(collection(db, "albums"), orderBy("createdAt", "desc"), limit(5));
+        const unsubAlbums = onSnapshot(qAlbums, (snapshot) => {
+            const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            setAlbums(data);
+        });
+
+        // Interactions (Last 30 days)
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        const qInteractions = query(collection(db, "interactions"), where("timestamp", ">=", Timestamp.fromDate(thirtyDaysAgo)));
+        getDocs(qInteractions).then(snap => setInteractionCount(snap.size)).catch(() => setInteractionCount(0));
+
+        return () => {
+            unsubDeliveries();
+            unsubLeads();
+            unsubBookings();
+            unsubQuotes();
+            unsubAlbums();
+        };
     }, [user]);
 
     const exportLeads = () => {
@@ -99,8 +120,8 @@ export default function AdminDashboard() {
     };
 
     const stats = [
-        { label: "Entregas Totales", value: recentDeliveries.length.toString(), icon: ImageIcon, color: "text-curiol-500" },
-        { label: "Leads Comunidad", value: leads.length.toString(), icon: Users, color: "text-tech-500" },
+        { label: "Galerías Activas", value: albums.length.toString(), icon: ImageIcon, color: "text-curiol-500" },
+        { label: "Interacciones", value: interactionCount.toString(), icon: BarChart3, color: "text-tech-500" },
         { label: "Presupuestos", value: quotes.length.toString(), icon: FileText, color: "text-amber-500" }
     ];
 
@@ -149,35 +170,59 @@ export default function AdminDashboard() {
                     <div className="lg:col-span-2 space-y-6">
                         <div className="flex justify-between items-center">
                             <h3 className="text-2xl font-serif text-white italic flex items-center gap-3">
-                                <ImageIcon className="w-6 h-6 text-curiol-500" /> Entregas Recientes
+                                <Sparkles className="w-6 h-6 text-curiol-500" /> Galerías Premium V2
                             </h3>
                             <Link
-                                href="/admin/dashboard/new"
-                                className="flex items-center gap-2 px-4 py-2 bg-curiol-700 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-curiol-500 transition-all rounded-lg"
+                                href="/admin/albums/new"
+                                target="_blank"
+                                className="flex items-center gap-2 px-4 py-2 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest hover:brightness-110 transition-all rounded-lg shadow-lg shadow-curiol-500/20"
                             >
-                                <Plus className="w-4 h-4" /> Nueva Entrega
+                                <Plus className="w-4 h-4" /> Nuevo Pro Studio
                             </Link>
                         </div>
                         <div className="space-y-4">
-                            {recentDeliveries.map((delivery) => (
-                                <div key={delivery.id} className="p-6 bg-tech-900/50 border border-tech-800 rounded-2xl flex items-center justify-between hover:border-curiol-500/30 transition-all group">
-                                    <div>
-                                        <p className="text-white font-serif text-lg italic">{delivery.name}</p>
-                                        <p className="text-tech-500 text-xs">ID: {delivery.id} • {delivery.date}</p>
+                            {albums.map((album) => (
+                                <div key={album.id} className="p-6 bg-tech-900 border border-white/5 rounded-2xl flex items-center justify-between hover:border-curiol-500/30 transition-all group">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 bg-tech-950 rounded-lg overflow-hidden border border-white/5">
+                                            {album.images?.[0]?.original && <img src={album.images[0].original} className="w-full h-full object-cover opacity-60" />}
+                                        </div>
+                                        <div>
+                                            <p className="text-white font-serif text-lg italic">{album.name}</p>
+                                            <p className="text-tech-600 text-[10px] uppercase font-bold tracking-widest">{album.clientName} • {album.images?.length || 0} fotos</p>
+                                        </div>
                                     </div>
                                     <div className="flex items-center gap-4">
-                                        <span className={`text-[8px] font-bold uppercase tracking-widest px-2 py-1 rounded ${delivery.status === 'Entregado' ? 'bg-green-500/10 text-green-500' : 'bg-curiol-500/10 text-curiol-500'}`}>
-                                            {delivery.status}
-                                        </span>
-                                        <a href={`/app/${delivery.id}`} target="_blank" className="p-2 text-tech-500 hover:text-white transition-all">
-                                            <ExternalLink className="w-5 h-5" />
-                                        </a>
-                                        <button className="p-2 text-tech-500 hover:text-white transition-all">
+                                        <button
+                                            onClick={() => router.push("/admin/albums")} // Link to new Albums List
+                                            className="p-2 text-tech-500 hover:text-white transition-all"
+                                        >
                                             <Settings className="w-5 h-5" />
                                         </button>
+                                        <a href={`/album/${album.id}`} target="_blank" className="p-3 bg-curiol-500/10 text-curiol-500 rounded-xl hover:bg-curiol-500 hover:text-white transition-all">
+                                            <ExternalLink className="w-5 h-5" />
+                                        </a>
                                     </div>
                                 </div>
                             ))}
+                        </div>
+
+                        {/* Traditional Deliveries (Legacy/Simple) */}
+                        <div className="pt-12">
+                            <h3 className="text-xl font-serif text-white/40 italic flex items-center gap-3 mb-6">
+                                <ImageIcon className="w-5 h-5" /> Entregas Simples (Legado)
+                            </h3>
+                            <div className="space-y-3">
+                                {recentDeliveries.slice(0, 3).map((delivery) => (
+                                    <div key={delivery.id} className="p-4 bg-tech-950 border border-white/5 rounded-xl flex items-center justify-between opacity-60">
+                                        <p className="text-white text-sm">{delivery.name}</p>
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-[8px] font-bold uppercase tracking-widest px-2 py-1 rounded bg-white/5">{delivery.status}</span>
+                                            <a href={`/app/${delivery.id}`} target="_blank" className="text-tech-700 hover:text-white"><ExternalLink className="w-4 h-4" /></a>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
 
@@ -207,7 +252,20 @@ export default function AdminDashboard() {
                         </GlassCard>
 
                         <div className="grid grid-cols-1 gap-4">
-                            <button className="w-full text-left p-6 bg-tech-900 border border-tech-800 rounded-2xl hover:bg-tech-800 transition-all flex items-center justify-between group">
+                            <button
+                                onClick={() => router.push("/admin/analytics")}
+                                className="w-full text-left p-6 bg-tech-900 border border-tech-800 rounded-2xl hover:bg-tech-800 transition-all flex items-center justify-between group"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <BarChart3 className="w-6 h-6 text-curiol-500" />
+                                    <div>
+                                        <p className="text-white font-bold text-sm">Analítica Estratégica</p>
+                                        <p className="text-tech-500 text-[10px] uppercase tracking-widest">Insights y Tendencias IA</p>
+                                    </div>
+                                </div>
+                                <ArrowRight className="w-4 h-4 text-tech-800 group-hover:text-white transition-all" />
+                            </button>
+                            <button className="w-full text-left p-6 bg-tech-950/50 border border-white/5 rounded-2xl opacity-40 flex items-center justify-between cursor-not-allowed">
                                 <div className="flex items-center gap-4">
                                     <MessageSquare className="w-6 h-6 text-tech-500" />
                                     <div>
@@ -215,7 +273,7 @@ export default function AdminDashboard() {
                                         <p className="text-tech-500 text-[10px] uppercase tracking-widest">3 posts pendientes</p>
                                     </div>
                                 </div>
-                                <ArrowRight className="w-4 h-4 text-tech-800 group-hover:text-white transition-all" />
+                                <ArrowRight className="w-4 h-4 text-tech-800 transition-all" />
                             </button>
                             <button
                                 onClick={() => router.push("/admin/cotizador")}

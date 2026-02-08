@@ -4,30 +4,32 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AiAssistant } from "@/components/AiAssistant";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { BookOpen, Users, Heart, ArrowRight, Sparkles, MessageSquare, Share2, Send, Facebook, Instagram, Twitter } from "lucide-react";
+import { BookOpen, Users, Heart, ArrowRight, Sparkles, MessageSquare, Share2, Send, Facebook, Instagram, Twitter, Lock, Calendar } from "lucide-react";
 import Link from "next/link";
 import { db } from "@/lib/firebase";
 import { collection, query, where, orderBy, onSnapshot, addDoc, Timestamp, increment, updateDoc, doc } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { logInteraction } from "@/actions/analytics";
 
 interface AcademyContent {
     id: string;
     title: string;
     description: string;
-    type: "video" | "lesson" | "podcast";
+    excerpt: string;
     category: string;
-    track?: "legacy" | "tech";
-    isRestricted?: boolean;
+    imageUrl: string;
+    content: string;
     videoUrl?: string;
-    body?: string;
-    infographicHighlight?: string;
-    mediaScript?: string;
-    visualConcept?: string;
+    isLocked: boolean;
+    unlockCode?: string;
+    accessLevel?: 'public' | 'premium'; // New field for Phase 20
+    author?: string;
+    readTime?: string;
+    sharesCount?: number;
+    commentsCount?: number;
     isPublished: boolean;
     createdAt: any;
-    commentsCount?: number;
-    sharesCount?: number;
 }
 
 interface Comment {
@@ -170,37 +172,44 @@ export default function ComunidadPage() {
 }
 
 function AcademyCard({ item }: { item: AcademyContent }) {
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [showUnlockModal, setShowUnlockModal] = useState(false);
+    const [unlockKey, setUnlockKey] = useState("");
+    const [error, setError] = useState("");
+
     const [showComments, setShowComments] = useState(false);
     const [comments, setComments] = useState<Comment[]>([]);
     const [newComment, setNewComment] = useState("");
-    const [isUnlocked, setIsUnlocked] = useState(false);
-    const [accessCode, setAccessCode] = useState("");
-    const [unlockError, setUnlockError] = useState(false);
 
     useEffect(() => {
         if (!showComments) return;
+
+        // Log interaction: Opened comments
+        logInteraction("academy_read", {
+            articleId: item.id,
+            articleTitle: item.title,
+            action: "view_comments"
+        });
+
         const q = query(collection(db, `academy_content/${item.id}/comments`), orderBy("createdAt", "desc"));
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Comment[];
             setComments(data);
         });
         return () => unsubscribe();
-    }, [showComments, item.id]);
+    }, [showComments, item.id, item.title]);
 
     const handleUnlock = async (e: React.FormEvent) => {
         e.preventDefault();
-        setUnlockError(false);
-        // Simplificación: Un código maestro o validación contra Firestore
-        // Buscamos en la colección 'academy_codes' un documento con el ID del código
-        // que coincida con el track del item.
-        const codeQuery = query(collection(db, "academy_codes"), where("code", "==", accessCode.toUpperCase()), where("track", "==", item.track || "tech"));
-        // O más simple para este MVP: Códigos directos
-        if (accessCode.toUpperCase() === "CURIOL2026" || accessCode.toUpperCase() === "LEGADO2026") {
-            setIsUnlocked(true);
-            return;
-        }
+        setError("");
 
-        setUnlockError(true);
+        if (item.unlockCode && unlockKey.toUpperCase() === item.unlockCode.toUpperCase()) {
+            setIsExpanded(true); // Unlock and expand the content
+            setShowUnlockModal(false);
+            // Optionally, update a user's session or state to remember this unlock
+        } else {
+            setError("Llave incorrecta. Intenta de nuevo.");
+        }
     };
 
     const handleAddComment = async (e: React.FormEvent) => {
@@ -215,6 +224,14 @@ function AcademyCard({ item }: { item: AcademyContent }) {
             await updateDoc(doc(db, "academy_content", item.id), {
                 commentsCount: increment(1)
             });
+
+            // Log interaction: Added comment
+            logInteraction("academy_read", {
+                articleId: item.id,
+                articleTitle: item.title,
+                action: "add_comment"
+            });
+
             setNewComment("");
         } catch (error) {
             console.error("Error adding comment:", error);
@@ -234,140 +251,141 @@ function AcademyCard({ item }: { item: AcademyContent }) {
             updateDoc(doc(db, "academy_content", item.id), {
                 sharesCount: increment(1)
             });
+
+            // Log interaction: Shared
+            logInteraction("link_click", {
+                articleId: item.id,
+                articleTitle: item.title,
+                platform
+            });
         }
     };
 
-    if (item.isRestricted && !isUnlocked) {
-        return (
-            <GlassCard className="p-8 border-curiol-500/20 bg-tech-950/50 flex flex-col items-center text-center">
-                <div className="w-16 h-16 rounded-full bg-tech-900 flex items-center justify-center text-curiol-500 mb-6">
-                    <Sparkles className="w-6 h-6 animate-pulse" />
-                </div>
-                <h3 className="text-xl font-serif text-white italic mb-2">{item.title}</h3>
-                <p className="text-[10px] text-curiol-500 font-bold uppercase tracking-widest mb-6">Contenido Exclusivo {item.track === 'legacy' ? 'Legado' : 'Tecnología'}</p>
-
-                <form onSubmit={handleUnlock} className="w-full max-w-xs space-y-4">
-                    <input
-                        required
-                        type="text"
-                        placeholder="Ingresa tu código"
-                        value={accessCode}
-                        onChange={(e) => setAccessCode(e.target.value)}
-                        className="w-full bg-tech-900 border border-white/10 rounded-xl px-4 py-3 text-center text-white text-xs outline-none focus:border-curiol-500/50"
-                    />
-                    {unlockError && <p className="text-[10px] text-red-500 font-bold uppercase">Código inválido</p>}
-                    <button type="submit" className="w-full py-3 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest rounded-xl">Desbloquear</button>
-                </form>
-                <p className="mt-6 text-[9px] text-tech-500 font-light italic">Este contenido es un plus exclusivo para nuestros clientes premium.</p>
-            </GlassCard>
-        );
-    }
+    const isPremium = item.accessLevel === 'premium';
+    const isActuallyLocked = item.isLocked || isPremium;
 
     return (
-        <GlassCard className="p-0 overflow-hidden flex flex-col group border-white/5 hover:border-curiol-500/30 transition-all duration-500">
-            {item.type !== 'lesson' && (
-                <div className="aspect-video bg-tech-950 relative overflow-hidden group/video">
-                    <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=2070')] bg-cover bg-center opacity-40 group-hover/video:scale-105 transition-transform duration-700" />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-16 h-16 rounded-full bg-curiol-500 flex items-center justify-center text-white shadow-2xl group-hover/video:scale-110 transition-all cursor-pointer">
-                            {item.type === 'podcast' ? <MessageSquare className="w-6 h-6" /> : <Sparkles className="w-6 h-6" />}
+        <>
+            <GlassCard
+                className="group cursor-pointer hover:border-curiol-500/50 transition-all flex flex-col h-full overflow-hidden"
+                onClick={() => !isActuallyLocked && setIsExpanded(true)}
+            >
+                <div className="relative h-48 overflow-hidden">
+                    <img
+                        src={item.imageUrl}
+                        alt={item.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-tech-950/20 group-hover:bg-tech-950/0 transition-colors" />
+                    <div className="absolute top-4 left-4">
+                        <span className="px-3 py-1 bg-tech-950/80 backdrop-blur-md border border-white/10 rounded-full text-[8px] font-bold uppercase tracking-widest text-curiol-500">
+                            {item.category}
+                        </span>
+                    </div>
+                    {isActuallyLocked && (
+                        <div className="absolute top-4 right-4 p-2 bg-tech-950/80 backdrop-blur-md border border-white/10 rounded-full text-white">
+                            <Lock className="w-3 h-3" />
                         </div>
-                    </div>
-                </div>
-            )}
-
-            <div className="p-8 flex-grow">
-                <div className="flex items-center gap-3 mb-4">
-                    <span className="text-curiol-500 text-[10px] font-bold uppercase tracking-[0.3em]">{item.category}</span>
-                    <span className="text-tech-700 text-[10px]">•</span>
-                    <span className="text-tech-500 text-[10px] uppercase tracking-widest">{item.type}</span>
-                </div>
-                <h3 className="text-2xl font-serif text-white italic mb-4 leading-tight">{item.title}</h3>
-                <p className="text-sm text-tech-400 font-light leading-relaxed mb-8">{item.description}</p>
-
-                {item.body && (
-                    <div className="mb-8 p-6 bg-tech-950/50 rounded-2xl border border-white/5">
-                        <p className="text-sm text-tech-300 font-light leading-relaxed whitespace-pre-wrap">{item.body}</p>
-                    </div>
-                )}
-
-                {item.infographicHighlight && (
-                    <div className="mb-8 p-8 bg-curiol-gradient rounded-3xl relative overflow-hidden group/info">
-                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover/info:scale-110 transition-transform">
-                            <Sparkles className="w-12 h-12 text-white" />
-                        </div>
-                        <p className="text-[10px] text-white/60 font-bold uppercase tracking-widest mb-2">AI Infographic Insight</p>
-                        <p className="text-white text-lg font-serif italic leading-tight">"{item.infographicHighlight}"</p>
-                    </div>
-                )}
-
-                {item.mediaScript && (
-                    <div className="mb-8 p-6 bg-tech-900 border border-white/5 rounded-2xl">
-                        <div className="flex items-center gap-2 mb-4">
-                            <MessageSquare className="w-4 h-4 text-tech-500" />
-                            <span className="text-[10px] text-tech-500 font-bold uppercase tracking-widest">Guion de Producción IA</span>
-                        </div>
-                        <p className="text-[11px] text-tech-400 font-light leading-relaxed whitespace-pre-wrap italic">
-                            {item.mediaScript}
-                        </p>
-                    </div>
-                )}
-
-                <div className="flex items-center justify-between pt-6 border-t border-white/5">
-                    <div className="flex gap-4">
-                        <button
-                            onClick={() => setShowComments(!showComments)}
-                            className="flex items-center gap-2 text-[10px] text-tech-500 font-bold uppercase tracking-widest hover:text-white transition-all"
-                        >
-                            <MessageSquare className="w-4 h-4" /> {item.commentsCount || 0}
-                        </button>
-                        <div className="flex items-center gap-2 text-[10px] text-tech-500 font-bold uppercase tracking-widest">
-                            <Share2 className="w-4 h-4" /> {item.sharesCount || 0}
-                        </div>
-                    </div>
-
-                    <div className="flex gap-3">
-                        <button onClick={() => handleShare('facebook')} className="p-2 bg-tech-900 rounded-lg text-tech-500 hover:text-white transition-all"><Facebook className="w-4 h-4" /></button>
-                        <button onClick={() => handleShare('twitter')} className="p-2 bg-tech-900 rounded-lg text-tech-500 hover:text-white transition-all"><Twitter className="w-4 h-4" /></button>
-                    </div>
+                    )}
                 </div>
 
-                <AnimatePresence>
-                    {showComments && (
+                <div className="p-6 flex flex-col flex-grow">
+                    <div className="flex justify-between items-start mb-4">
+                        <div className="flex items-center gap-2 text-tech-500 text-[10px] font-bold uppercase tracking-widest">
+                            <Calendar className="w-3 h-3" />
+                            {item.readTime || "5 min read"}
+                        </div>
+                        {isActuallyLocked ? (
+                            <button
+                                onClick={(e) => { e.stopPropagation(); setShowUnlockModal(true); }}
+                                className="flex items-center gap-2 text-curiol-500 text-[10px] font-bold uppercase tracking-widest hover:text-white transition-all"
+                            >
+                                <Sparkles className="w-3 h-3" /> Desbloquear
+                            </button>
+                        ) : (
+                            <div className="flex items-center gap-2 text-green-500 text-[10px] font-bold uppercase tracking-widest">
+                                <Sparkles className="w-3 h-3" /> Abierto
+                            </div>
+                        )}
+                    </div>
+
+                    <h3 className="text-xl font-serif text-white italic mb-3 group-hover:text-curiol-500 transition-colors">
+                        {item.title}
+                    </h3>
+                    <p className="text-tech-400 text-xs font-light leading-relaxed line-clamp-3 mb-6">
+                        {item.excerpt}
+                    </p>
+
+                    <div className="mt-auto pt-6 border-t border-white/5 flex justify-between items-center">
+                        <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-1 text-tech-600 text-[10px]">
+                                <MessageSquare className="w-3 h-3" /> {item.commentsCount || 0}
+                            </div>
+                            <div className="flex items-center gap-1 text-tech-600 text-[10px]">
+                                <Share2 className="w-3 h-3" /> {item.sharesCount || 0}
+                            </div>
+                        </div>
+                        <ArrowRight className="w-4 h-4 text-tech-800 group-hover:text-white transition-all translate-x-0 group-hover:translate-x-1" />
+                    </div>
+                </div>
+            </GlassCard>
+
+            {/* Unlock Modal */}
+            <AnimatePresence>
+                {showUnlockModal && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                         <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            className="overflow-hidden"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="absolute inset-0 bg-tech-950/90 backdrop-blur-md"
+                            onClick={() => setShowUnlockModal(false)}
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="relative bg-tech-900 border border-white/10 w-full max-w-md rounded-[2.5rem] p-10 shadow-2xl overflow-hidden"
                         >
-                            <div className="pt-8 mt-6 space-y-4">
-                                <form onSubmit={handleAddComment} className="flex gap-3 mb-6">
-                                    <input
-                                        value={newComment}
-                                        onChange={(e) => setNewComment(e.target.value)}
-                                        placeholder="Escribe un comentario..."
-                                        className="flex-grow bg-tech-950 border border-white/10 rounded-xl px-4 py-3 text-xs text-white outline-none focus:border-curiol-500/50"
-                                    />
-                                    <button type="submit" className="p-3 bg-curiol-gradient rounded-xl text-white"><Send className="w-4 h-4" /></button>
-                                </form>
-                                <div className="space-y-4 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                                    {comments.map((comment) => (
-                                        <div key={comment.id} className="p-4 bg-tech-950/50 rounded-xl border border-white/5">
-                                            <div className="flex justify-between items-center mb-1">
-                                                <span className="text-[10px] text-curiol-500 font-bold uppercase tracking-widest">{comment.author}</span>
-                                                <span className="text-[8px] text-tech-700 font-mono">
-                                                    {comment.createdAt?.toDate().toLocaleDateString()}
-                                                </span>
-                                            </div>
-                                            <p className="text-xs text-tech-400 font-light">{comment.text}</p>
-                                        </div>
-                                    ))}
+                            <div className="absolute -top-24 -right-24 w-48 h-48 bg-curiol-500/10 rounded-full blur-3xl" />
+
+                            <div className="text-center relative z-10">
+                                <div className="w-16 h-16 bg-curiol-500/10 rounded-2xl flex items-center justify-center text-curiol-500 mx-auto mb-6">
+                                    <Lock className="w-8 h-8" />
                                 </div>
+                                <h3 className="text-2xl font-serif text-white italic mb-4">Área Exclusiva</h3>
+                                <p className="text-tech-400 text-sm font-light leading-relaxed mb-8">
+                                    {isPremium
+                                        ? "Este contenido está reservado para el Círculo de Confianza Curiol (clientes activos con historial de adquisición)."
+                                        : "Esta lección requiere una llave de acceso especial para visualizar su contenido completo."
+                                    }
+                                </p>
+
+                                <form onSubmit={handleUnlock} className="space-y-4">
+                                    <input
+                                        type="text"
+                                        placeholder="Ingresa tu Llave Maestra"
+                                        className="w-full bg-tech-800 border-white/5 rounded-xl px-6 py-4 text-white text-sm focus:outline-none focus:border-curiol-500 transition-all text-center tracking-widest uppercase font-bold"
+                                        value={unlockKey}
+                                        onChange={(e) => setUnlockKey(e.target.value)}
+                                    />
+                                    {error && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest">{error}</p>}
+                                    <button className="w-full py-4 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest rounded-xl shadow-lg shadow-curiol-500/20 hover:brightness-110 transition-all">
+                                        Validar Acceso
+                                    </button>
+                                </form>
+
+                                <button
+                                    onClick={() => setShowUnlockModal(false)}
+                                    className="mt-6 text-tech-600 hover:text-white transition-all text-[8px] font-bold uppercase tracking-widest"
+                                >
+                                    Tal vez luego
+                                </button>
                             </div>
                         </motion.div>
-                    )}
-                </AnimatePresence>
-            </div>
-        </GlassCard>
+                    </div>
+                )}
+            </AnimatePresence>
+        </>
     );
 }
