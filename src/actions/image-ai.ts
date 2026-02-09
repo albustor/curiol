@@ -36,7 +36,14 @@ export async function generateSocialCrop(imageUrl: string, format: SocialFormat)
         // based on the image URL or a lower-res version.
 
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const analysisPrompt = `Analiza esta imagen (${imageUrl}) y dime las coordenadas x,y del rostro principal o sujeto de interés en una escala de 0 a 100.
+        const analysisPrompt = `Analiza esta imagen (${imageUrl}) y detecta el centro de interés o el rostro principal.
+        Considera las siguientes reglas de composición fotográfica para determinar las coordenadas ideales (x,y) en una escala de 0 a 100:
+        1. Regla de los Tercios (intersecciones ideales).
+        2. Proporción Áurea (armonía visual).
+        3. Líneas Guía y Encuadre Natural.
+        4. Espacio de Mirada (deja aire hacia donde mira el sujeto).
+        
+        Devuelve ÚNICAMENTE las coordenadas del punto de interés principal.
         Formato JSON: { "x": 50, "y": 40 }`;
 
         const result = await model.generateContent(analysisPrompt);

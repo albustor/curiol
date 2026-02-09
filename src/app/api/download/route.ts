@@ -30,6 +30,13 @@ export async function GET(request: NextRequest) {
                 .jpeg({ quality: 85 })
                 .toBuffer();
             filename += '-instagram.jpg';
+        } else if (format === 'optimized') {
+            // "Magic" Setting: Long Edge 1350px, quality 85%
+            processedBuffer = await sharp(buffer)
+                .resize(1350, 1350, { fit: 'inside', withoutEnlargement: true })
+                .jpeg({ quality: 85 })
+                .toBuffer();
+            filename += '-optimized.jpg';
         } else {
             // Original
             processedBuffer = buffer;

@@ -13,7 +13,8 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { db } from "@/lib/firebase";
-import { collection, query, orderBy, onSnapshot, doc, updateDoc, Timestamp, where } from "firebase/firestore";
+import { collection, query, orderBy, onSnapshot, doc, updateDoc, Timestamp, where, getDoc } from "firebase/firestore";
+import { recordTaxTransaction } from "@/actions/accounting";
 
 interface Booking {
     id: string;
@@ -52,6 +53,21 @@ export default function AdminAgendaPage() {
     const handleStatusUpdate = async (id: string, status: string) => {
         try {
             await updateDoc(doc(db, "bookings", id), { status });
+
+            if (status === 'confirmed') {
+                const bookingSnap = await getDoc(doc(db, "bookings", id));
+                if (bookingSnap.exists()) {
+                    const bookingData = bookingSnap.data();
+                    // Automate tax transaction recording
+                    await recordTaxTransaction({
+                        type: 'income',
+                        category: bookingData.service === 'software' ? 'software' : 'photography',
+                        amount: bookingData.service === 'legado' ? 250000 : 85000, // Simulated logic based on standard prices
+                        description: `Sesión Confirmada: ${bookingData.service} para ${bookingData.name}`,
+                        relatedId: id
+                    });
+                }
+            }
             setSelectedBooking(null);
         } catch (error) {
             console.error("Error updating booking status:", error);

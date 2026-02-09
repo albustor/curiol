@@ -7,11 +7,9 @@ import { AiAssistant } from "@/components/AiAssistant";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Camera, Code, ArrowRight, CheckCircle2, ShoppingCart, Sparkles, CreditCard, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
-import { logInteraction } from "@/actions/analytics";
 
 const SECTIONS = [
     { id: "category", label: "Categoría" },
@@ -374,7 +372,6 @@ export default function CotizadorPage() {
                                     onClick={() => {
                                         setCategory('family');
                                         handleNext();
-                                        logInteraction("package_view", { category: "family", status: "category_selected" });
                                     }}
                                 >
                                     <Camera className="w-12 h-12 text-curiol-500 mb-6" />
@@ -387,7 +384,6 @@ export default function CotizadorPage() {
                                         setCategory('business');
                                         setCurrency('USD');
                                         handleNext();
-                                        logInteraction("package_view", { category: "business", status: "category_selected" });
                                     }}
                                 >
                                     <Code className="w-12 h-12 text-tech-500 mb-6" />
@@ -413,11 +409,6 @@ export default function CotizadorPage() {
                                             if (!(pkg as any).variants) {
                                                 handleNext();
                                             }
-                                            logInteraction("package_view", {
-                                                packageId: pkg.id,
-                                                packageName: pkg.name,
-                                                category
-                                            });
                                         }}
                                     >
                                         <div className="space-y-4">
@@ -426,19 +417,10 @@ export default function CotizadorPage() {
 
                                                 <div className="space-y-4 my-6">
                                                     <div>
-                                                        <div className="flex justify-between items-center mb-2">
-                                                            <p className="text-curiol-500/80 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
-                                                                <span className="w-1 h-1 bg-curiol-500 rounded-full"></span>
-                                                                TU DESAFÍO
-                                                            </p>
-                                                            <Link
-                                                                href={`/portafolio?category=${category}`}
-                                                                className="text-[9px] text-tech-500 hover:text-curiol-500 transition-colors flex items-center gap-1"
-                                                                onClick={(e) => e.stopPropagation()}
-                                                            >
-                                                                Ver Ejemplos <ArrowRight className="w-2.5 h-2.5" />
-                                                            </Link>
-                                                        </div>
+                                                        <p className="text-curiol-500/80 text-[10px] font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
+                                                            <span className="w-1 h-1 bg-curiol-500 rounded-full"></span>
+                                                            TU DESAFÍO
+                                                        </p>
                                                         <p className="text-tech-400 text-[11px] font-light italic leading-relaxed pl-3 border-l border-tech-800">
                                                             {pkg.problem}
                                                         </p>
@@ -800,11 +782,13 @@ export default function CotizadorPage() {
                                             </div>
                                             <div className="text-center border-x border-tech-800/50">
                                                 <p className="text-tech-600 text-[7px] uppercase tracking-widest font-bold mb-1">Producto</p>
-                                                <p className="text-white text-[10px] truncate px-2">{selectedPackage?.physicalProduct?.split(' ')[0]} {selectedPackage?.physicalProduct?.split(' ')[1]}</p>
+                                                <p className="text-white text-[10px] truncate px-2">
+                                                    {selectedPackage?.physicalProduct?.split(' ')?.[0] || ""} {selectedPackage?.physicalProduct?.split(' ')?.[1] || ""}
+                                                </p>
                                             </div>
                                             <div className="text-center">
                                                 <p className="text-tech-600 text-[7px] uppercase tracking-widest font-bold mb-1">Tecnología</p>
-                                                <p className="text-curiol-500 text-[10px]">{selectedPackage?.techIntegrated?.split(',')[0]}</p>
+                                                <p className="text-curiol-500 text-[10px]">{selectedPackage?.techIntegrated?.split(',')?.[0] || ""}</p>
                                             </div>
                                         </div>
 
@@ -1021,14 +1005,6 @@ Inversión total: ${currency === "USD" ? "$" : "₡"}${total.toLocaleString()}
 Método de pago preferido: ${methodText}${cardNote}
 
 Quedo a la espera de los siguientes pasos para confirmar mi sesión.`);
-                                            // Log interaction: Sent WhatsApp
-                                            logInteraction("link_click", {
-                                                type: "whatsapp_quote",
-                                                quoteId,
-                                                packageName: selectedPackage?.name,
-                                                total
-                                            });
-
                                             window.open(`https://wa.me/50660602617?text=${message}`, '_blank');
                                         }}
                                     >

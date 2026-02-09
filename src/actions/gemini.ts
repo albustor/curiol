@@ -52,8 +52,10 @@ export async function getAiAssistantResponse(message: string, context: any) {
         Recuerda que:
         - Curiol ofrece experiencias fotográficas y soluciones web (Landing ₡85k, Negocio ₡145k).
         - La AGENDA funciona solo SÁBADOS y DOMINGOS.
-        - RESERVA: Requiere depósito del 20% para asegurar fecha y activar pre-producción. Sin comprobante no hay registro.
-        - RECORDATORIOS: El sistema envía avisos automáticos al cliente 4 días, 2 días y 8 horas antes de la sesión.
+        - RESERVA: Requiere depósito del 20% para asegurar fecha y activar pre-producción.
+        - ESTÁNDAR DE FOTOGRAFÍA: Exportamos a 1350px (Lado Largo) para máxima calidad en IG/FB.
+        - COMPOSICIÓN: Usamos IA para alinear fotos según la Regla de los Tercios y Proporción Áurea.
+        - RECORDATORIOS: El sistema envía avisos automáticos 4 días, 2 días y 8 horas antes.
         Utiliza el concepto de "Digitalización Humana" en tus respuestas.
       `;
 

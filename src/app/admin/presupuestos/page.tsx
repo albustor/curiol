@@ -13,7 +13,8 @@ import {
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { db } from "@/lib/firebase";
-import { collection, query, orderBy, onSnapshot, updateDoc, doc, Timestamp } from "firebase/firestore";
+import { collection, query, orderBy, onSnapshot, updateDoc, doc, Timestamp, getDoc } from "firebase/firestore";
+import { recordTaxTransaction } from "@/actions/accounting";
 
 interface Quote {
     id: string;
@@ -46,6 +47,20 @@ export default function AdminPresupuestosPage() {
     const updateStatus = async (id: string, newStatus: string) => {
         try {
             await updateDoc(doc(db, "quotes", id), { status: newStatus });
+
+            if (newStatus === 'converted') {
+                const quoteSnap = await getDoc(doc(db, "quotes", id));
+                if (quoteSnap.exists()) {
+                    const quoteData = quoteSnap.data();
+                    await recordTaxTransaction({
+                        type: 'income',
+                        category: quoteData.package?.toLowerCase().includes('software') ? 'software' : 'photography',
+                        amount: quoteData.total,
+                        description: `Venta Confirmada: ${quoteData.package} (${quoteData.quoteId})`,
+                        relatedId: id
+                    });
+                }
+            }
         } catch (error) {
             console.error("Error updating status:", error);
         }

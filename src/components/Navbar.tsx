@@ -136,7 +136,7 @@ export function Navbar() {
                         </div>
 
                         <div className="mt-auto pt-10 border-t border-white/10 space-y-6">
-                            <p className="text-tech-500 text-[8px] uppercase tracking-[0.4em] font-bold">Memorias Vivas</p>
+                            <p className="text-tech-500 text-[8px] uppercase tracking-[0.4em] font-bold">Curiol Studio • Legado</p>
                             <div className="grid grid-cols-2 gap-4">
                                 <Link href="/admin" onClick={() => setIsOpen(false)} className="flex items-center justify-center gap-2 p-4 bg-tech-900/50 rounded-xl border border-tech-800 text-tech-400">
                                     <ShieldCheck className="w-4 h-4" />

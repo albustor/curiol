@@ -11,8 +11,9 @@ import Link from "next/link";
 import {
     LayoutDashboard, Users, Image as ImageIcon, MessageSquare,
     Plus, ExternalLink, Settings, BarChart3, LogOut, ArrowRight, Loader2, Sparkles,
-    Calendar as CalendarIcon, Video, FileText, Brain
+    Calendar as CalendarIcon, Video, FileText, Brain, Aperture, CheckCircle2, AlertCircle, PieChart
 } from "lucide-react";
+import { getPhotographyDashboardData, PhotographyInsight, analyzeAlbumComposition } from "@/actions/photography-ai";
 
 import { collection, query, orderBy, limit, onSnapshot, where, getDocs, Timestamp } from "firebase/firestore";
 
@@ -25,6 +26,8 @@ export default function AdminDashboard() {
     const [quotes, setQuotes] = useState<any[]>([]);
     const [albums, setAlbums] = useState<any[]>([]);
     const [interactionCount, setInteractionCount] = useState<number | string>("...");
+    const [photographyInsight, setPhotographyInsight] = useState<PhotographyInsight | null>(null);
+    const [isAnalyzing, setIsAnalyzing] = useState(false);
     const router = useRouter();
 
     useEffect(() => {
@@ -91,6 +94,11 @@ export default function AdminDashboard() {
         const qInteractions = query(collection(db, "interactions"), where("timestamp", ">=", Timestamp.fromDate(thirtyDaysAgo)));
         getDocs(qInteractions).then(snap => setInteractionCount(snap.size)).catch(() => setInteractionCount(0));
 
+        // Photography Insights
+        getPhotographyDashboardData(1).then(data => {
+            if (data.length > 0) setPhotographyInsight(data[0]);
+        });
+
         return () => {
             unsubDeliveries();
             unsubLeads();
@@ -140,16 +148,26 @@ export default function AdminDashboard() {
                         <h1 className="text-4xl font-serif text-white italic mb-2">Gestión de Legado</h1>
                         <p className="text-tech-500 text-sm">Bienvenido, Maestro de Estrategia.</p>
                     </div>
-                    <button
-                        onClick={() => {
-                            localStorage.removeItem("master_admin");
-                            localStorage.removeItem("admin_session_start");
-                            auth.signOut();
-                        }}
-                        className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white rounded-xl transition-all text-[10px] font-bold uppercase tracking-widest"
-                    >
-                        <LogOut className="w-4 h-4" /> Cerrar Sesión
-                    </button>
+                    <div className="flex items-center gap-4">
+                        {user?.displayName === "Master Alberto" && (
+                            <Link
+                                href="/admin/equilibrio"
+                                className="flex items-center gap-2 p-3 bg-curiol-500/10 border border-curiol-500/20 text-curiol-500 hover:bg-curiol-500 hover:text-white rounded-xl transition-all text-[10px] font-bold uppercase tracking-widest"
+                            >
+                                <PieChart className="w-4 h-4" /> Equilibrio
+                            </Link>
+                        )}
+                        <button
+                            onClick={() => {
+                                localStorage.removeItem("master_admin");
+                                localStorage.removeItem("admin_session_start");
+                                auth.signOut();
+                            }}
+                            className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white rounded-xl transition-all text-[10px] font-bold uppercase tracking-widest"
+                        >
+                            <LogOut className="w-4 h-4" /> Cerrar Sesión
+                        </button>
+                    </div>
                 </header>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
@@ -223,6 +241,108 @@ export default function AdminDashboard() {
                                     </div>
                                 ))}
                             </div>
+                        </div>
+
+                        {/* Photography Intelligence Section */}
+                        <div className="pt-12">
+                            <h3 className="text-2xl font-serif text-white italic flex items-center gap-3 mb-8">
+                                <Aperture className="w-6 h-6 text-curiol-500" /> Inteligencia Fotográfica (IA)
+                            </h3>
+
+                            {photographyInsight ? (
+                                <GlassCard className="p-8 border-curiol-500/20 bg-tech-900/50">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div>
+                                            <p className="text-tech-500 text-[10px] uppercase font-bold tracking-[0.2em] mb-4">Salud del Legado</p>
+                                            <div className="flex gap-4 items-end mb-8">
+                                                <div className="text-center">
+                                                    <p className="text-3xl font-serif text-white italic mb-1">{photographyInsight.technicalScore}%</p>
+                                                    <p className="text-[8px] text-tech-600 uppercase font-bold tracking-widest">Técnico</p>
+                                                </div>
+                                                <div className="w-px h-10 bg-white/10" />
+                                                <div className="text-center">
+                                                    <p className="text-3xl font-serif text-white italic mb-1">{photographyInsight.creativityScore}%</p>
+                                                    <p className="text-[8px] text-tech-600 uppercase font-bold tracking-widest">Creatividad</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="space-y-4">
+                                                <div className="flex items-center gap-2">
+                                                    <Brain className="w-4 h-4 text-curiol-500" />
+                                                    <span className="text-[10px] text-white font-bold uppercase tracking-widest">Patrones Detectados:</span>
+                                                </div>
+                                                <div className="flex flex-wrap gap-2">
+                                                    {photographyInsight.detectedPatterns.map(p => (
+                                                        <span key={p} className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-[9px] text-tech-400 font-bold">{p}</span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="bg-tech-950/50 rounded-2xl p-6 border border-white/5">
+                                            <div className="flex items-center gap-3 mb-4">
+                                                <Sparkles className="w-4 h-4 text-amber-500" />
+                                                <p className="text-[10px] text-white font-bold uppercase tracking-widest">Consejo del Maestro</p>
+                                            </div>
+                                            <p className="text-sm text-tech-400 italic leading-relaxed mb-6 font-serif">
+                                                "{photographyInsight.maestroAdvice}"
+                                            </p>
+
+                                            <div className="space-y-3">
+                                                {photographyInsight.positives.slice(0, 2).map(p => (
+                                                    <div key={p} className="flex items-start gap-2 text-[10px] text-green-500">
+                                                        <CheckCircle2 className="w-3 h-3 mt-0.5" />
+                                                        <span>{p}</span>
+                                                    </div>
+                                                ))}
+                                                {photographyInsight.negatives.slice(0, 1).map(n => (
+                                                    <div key={n} className="flex items-start gap-2 text-[10px] text-red-400">
+                                                        <AlertCircle className="w-3 h-3 mt-0.5" />
+                                                        <span>{n}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-8 pt-6 border-t border-white/5 flex justify-between items-center text-[9px]">
+                                        <p className="text-tech-600">Álbum Analizado: <span className="text-white italic">{photographyInsight.albumName}</span></p>
+                                        <button
+                                            onClick={async () => {
+                                                if (!albums[0]?.id) return;
+                                                setIsAnalyzing(true);
+                                                await analyzeAlbumComposition(albums[0].id);
+                                                const data = await getPhotographyDashboardData(1);
+                                                if (data.length > 0) setPhotographyInsight(data[0]);
+                                                setIsAnalyzing(false);
+                                            }}
+                                            disabled={isAnalyzing}
+                                            className="text-curiol-500 hover:text-white uppercase font-bold tracking-widest transition-all flex items-center gap-2"
+                                        >
+                                            {isAnalyzing ? "Analizando..." : "Re-analizar Último Álbum"} <ArrowRight className="w-3 h-3" />
+                                        </button>
+                                    </div>
+                                </GlassCard>
+                            ) : (
+                                <GlassCard className="p-12 text-center border-dashed border-white/10">
+                                    <Brain className="w-12 h-12 text-tech-800 mx-auto mb-4" />
+                                    <p className="text-tech-500 text-sm italic">No hay análisis de inteligencia todavía.</p>
+                                    <button
+                                        onClick={async () => {
+                                            if (!albums[0]?.id) return alert("No hay álbumes para analizar");
+                                            setIsAnalyzing(true);
+                                            await analyzeAlbumComposition(albums[0].id);
+                                            const data = await getPhotographyDashboardData(1);
+                                            if (data.length > 0) setPhotographyInsight(data[0]);
+                                            setIsAnalyzing(false);
+                                        }}
+                                        disabled={isAnalyzing}
+                                        className="mt-6 px-6 py-3 bg-tech-900 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl hover:bg-tech-800 transition-all"
+                                    >
+                                        Iniciar Inteligencia Colectiva
+                                    </button>
+                                </GlassCard>
+                            )}
                         </div>
                     </div>
 

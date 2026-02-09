@@ -47,7 +47,7 @@ export async function sendNotification({ to, message, type, subject }: Notificat
 
 export async function notifyNewBooking(booking: any) {
     const adminNumber = "60602617";
-    const adminEmail = process.env.ADMIN_EMAIL || "info@curiol.studio"; // Default or placeholder
+    const adminEmail = process.env.ADMIN_EMAIL || "contacto@curiol.studio";
 
     const adminMessage = `Nueva reserva agendada por ${booking.name}. Fecha: ${booking.date instanceof Date ? booking.date.toLocaleDateString() : booking.date}. Hora: ${booking.time}. Comprobante adjunto en el dashboard.`;
     const clientMessage = `Hola ${booking.name}, gracias por agendar con Curiol Studio. Hemos recibido tu comprobante del 20%. Tu sesión para el ${booking.date instanceof Date ? booking.date.toLocaleDateString() : booking.date} a las ${booking.time} está en proceso de aprobación final.`;
@@ -58,7 +58,7 @@ export async function notifyNewBooking(booking: any) {
 
     // Notify Client
     await sendNotification({ to: booking.whatsapp, message: clientMessage, type: "whatsapp" });
-    await sendNotification({ to: booking.email, message: clientMessage, type: "email", subject: "Tu Reserva en Curiol Studio" });
+    await sendNotification({ to: booking.email, message: clientMessage, type: "email", subject: "Detalles de tu Reserva - Curiol Studio" });
 }
 
 export async function processReminders() {
