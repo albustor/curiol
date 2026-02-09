@@ -58,6 +58,8 @@ export default function AdminPresupuestosPage() {
         return matchesSearch && matchesFilter;
     });
 
+    const latestQuoteId = quotes.length > 0 ? quotes[0].id : null;
+
     if (loading) return (
         <div className="min-h-screen bg-tech-950 flex items-center justify-center">
             <Loader2 className="w-12 h-12 text-curiol-500 animate-spin" />
@@ -153,9 +155,16 @@ export default function AdminPresupuestosPage() {
                                             {/* Main Info */}
                                             <div className="flex-grow grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
                                                 <div className="space-y-1">
-                                                    <div className="flex items-center gap-2">
-                                                        <Tag className="w-3 h-3 text-tech-700" />
-                                                        <p className="text-[10px] text-tech-500 font-bold uppercase tracking-widest">{quote.quoteId}</p>
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="flex items-center gap-2">
+                                                            <Tag className="w-3 h-3 text-tech-700" />
+                                                            <p className="text-[10px] text-tech-500 font-bold uppercase tracking-widest">{quote.quoteId}</p>
+                                                        </div>
+                                                        {latestQuoteId === quote.id && (
+                                                            <span className="flex items-center gap-1.5 px-2 py-0.5 bg-curiol-500/20 text-curiol-400 text-[8px] font-bold uppercase tracking-tighter rounded-full border border-curiol-500/30">
+                                                                <Sparkles className="w-2.5 h-2.5" /> Última Solicitud
+                                                            </span>
+                                                        )}
                                                     </div>
                                                     <h3 className="text-xl font-serif text-white italic">{quote.package}</h3>
                                                     <div className="flex items-center gap-2 text-tech-600 text-[10px]">

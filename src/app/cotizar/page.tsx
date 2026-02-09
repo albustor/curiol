@@ -7,6 +7,7 @@ import { AiAssistant } from "@/components/AiAssistant";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Camera, Code, ArrowRight, CheckCircle2, ShoppingCart, Sparkles, CreditCard, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
@@ -425,10 +426,19 @@ export default function CotizadorPage() {
 
                                                 <div className="space-y-4 my-6">
                                                     <div>
-                                                        <p className="text-curiol-500/80 text-[10px] font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
-                                                            <span className="w-1 h-1 bg-curiol-500 rounded-full"></span>
-                                                            EL PROBLEMA
-                                                        </p>
+                                                        <div className="flex justify-between items-center mb-2">
+                                                            <p className="text-curiol-500/80 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+                                                                <span className="w-1 h-1 bg-curiol-500 rounded-full"></span>
+                                                                TU DESAFÍO
+                                                            </p>
+                                                            <Link
+                                                                href={`/portafolio?category=${category}`}
+                                                                className="text-[9px] text-tech-500 hover:text-curiol-500 transition-colors flex items-center gap-1"
+                                                                onClick={(e) => e.stopPropagation()}
+                                                            >
+                                                                Ver Ejemplos <ArrowRight className="w-2.5 h-2.5" />
+                                                            </Link>
+                                                        </div>
                                                         <p className="text-tech-400 text-[11px] font-light italic leading-relaxed pl-3 border-l border-tech-800">
                                                             {pkg.problem}
                                                         </p>

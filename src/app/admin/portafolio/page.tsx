@@ -23,7 +23,7 @@ interface Album {
     id: string;
     title: string;
     description: string;
-    category: "Legado Familiar" | "Soluciones Comerciales" | "Arte Fine Art";
+    category: string;
     coverUrl?: string;
     photos: { url: string; id: string }[];
     createdAt: any;
@@ -244,10 +244,14 @@ export default function PortfolioAdminPage() {
                                                         </div>
                                                         <div>
                                                             <label className="text-[10px] text-tech-500 font-bold uppercase tracking-widest block mb-2">Categoría del Proyecto</label>
-                                                            <select value={isEditing.category || "Legado Familiar"} onChange={(e) => setIsEditing({ ...isEditing, category: e.target.value as any })} className="w-full bg-tech-950 border border-tech-800 rounded-xl p-4 text-white text-sm outline-none focus:border-curiol-500 transition-all">
+                                                            <select value={isEditing.category || "Legado Familiar"} onChange={(e) => setIsEditing({ ...isEditing, category: e.target.value })} className="w-full bg-tech-950 border border-tech-800 rounded-xl p-4 text-white text-sm outline-none focus:border-curiol-500 transition-all">
                                                                 <option value="Legado Familiar">Legado Familiar</option>
                                                                 <option value="Soluciones Comerciales">Soluciones Comerciales</option>
                                                                 <option value="Arte Fine Art">Arte Fine Art</option>
+                                                                <option value="Estudio">Estudio</option>
+                                                                <option value="Embarazo">Embarazo</option>
+                                                                <option value="Parejas">Parejas</option>
+                                                                <option value="Llegada bebé">Llegada bebé</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -429,9 +433,10 @@ export default function PortfolioAdminPage() {
                                 <button type="button" onClick={() => setIsEditing(null)} className="px-10 py-5 bg-tech-800 text-tech-400 text-[10px] font-bold uppercase tracking-widest rounded-2xl hover:bg-tech-700 transition-all">Descartar</button>
                             </div>
                         </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
+                    </div >
+                )
+                }
+            </AnimatePresence >
 
             <AnimatePresence>
                 {aiEditingPhoto && (
@@ -443,6 +448,6 @@ export default function PortfolioAdminPage() {
             </AnimatePresence>
 
             <Footer />
-        </div>
+        </div >
     );
 }

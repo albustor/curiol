@@ -122,44 +122,73 @@ export async function migrateCsvToFirestore(): Promise<{ success: boolean; count
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR4OuEDRXmfwRB51PGyTyz2D9cxb5IwXnvDrSiHtzh37iGZY1to7EB0O1rPyKcVVcSHqeHFb1I4glNZ/pub?output=csv";
 
     try {
-        const response = await fetch(CSV_URL);
-        if (!response.ok) throw new Error("Error fetching CSV");
+        console.log("Iniciando migración desde:", CSV_URL);
+        const response = await fetch(CSV_URL, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
 
         const csvText = await response.text();
-        const lines = csvText.split(/\r?\n/).filter(line => line.trim() !== "");
-        const [_header, ...rows] = lines;
+        const lines = csvText.split(/\r?\n/).filter(line => line.trim().length > 0);
 
+        if (lines.length < 2) {
+            console.warn("CSV está vacío o solo contiene cabecera");
+            return { success: true, count: 0 };
+        }
+
+        const [_header, ...rows] = lines;
         const albumsMap: Record<string, any> = {};
 
-        rows.forEach(row => {
+        rows.forEach((row, index) => {
+            // Regex para manejar comas y comillas correctamente
             const matches = row.match(/(".*?"|[^",\s][^",]*|(?<=,)(?=,)|(?<=^)(?=,))/g);
             if (!matches) return;
 
             const [categoria, subcategoria, url, titulo] = matches.map(val =>
-                val.replace(/^"|"$/g, "").trim()
+                val ? val.replace(/^"|"$/g, "").trim() : ""
             );
 
-            const albumKey = `${categoria}-${subcategoria}`;
-            if (!albumsMap[albumKey]) {
-                albumsMap[albumKey] = {
-                    title: subcategoria || titulo || "Sin título",
+            if (!url || !url.startsWith("http")) return;
+
+            const albumName = subcategoria || categoria || "Sin Categoría";
+            // Limpiar ID de caracteres raros
+            const albumId = albumName.toLowerCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // quitar tildes
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-+|-+$/g, "");
+
+            if (!albumsMap[albumId]) {
+                albumsMap[albumId] = {
+                    title: albumName,
                     category: categoria || "General",
+                    coverUrl: url,
+                    photos: [],
                     createdAt: serverTimestamp(),
-                    photos: []
+                    slug: albumId,
+                    description: `Galería de ${albumName}`,
+                    settings: {
+                        allowLikes: true,
+                        allowDownloads: true,
+                        allowSharing: true
+                    }
                 };
             }
-            albumsMap[albumKey].photos.push({ url });
+
+            albumsMap[albumId].photos.push({
+                id: `p-${index}-${Math.random().toString(36).substr(2, 5)}`,
+                url: url,
+                title: titulo || albumName
+            });
         });
 
-        let count = 0;
-        for (const key in albumsMap) {
+        const albumKeys = Object.keys(albumsMap);
+        console.log(`Se detectaron ${albumKeys.length} álbumes para migrar.`);
+
+        for (const key of albumKeys) {
             await addDoc(collection(db, "portfolio_albums"), albumsMap[key]);
-            count++;
         }
 
-        return { success: true, count };
+        return { success: true, count: albumKeys.length };
     } catch (error) {
-        console.error("Migration Error:", error);
+        console.error("Critical Migration Error:", error);
         return { success: false, count: 0 };
     }
 }
