@@ -15,14 +15,15 @@ import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, orderBy, onSnapshot, limit, where } from "firebase/firestore";
 import { cn } from "@/lib/utils";
 import { sendProfessionalEmail, EmailTask } from "@/actions/email";
+import { useRole } from "@/hooks/useRole";
 
 export default function EmailManagerPage() {
+    const { role, user, isMaster, isTeam } = useRole();
+    const router = useRouter();
+
     const [activeTab, setActiveTab] = useState<"inbox" | "compose" | "history">("inbox");
-    const [user, setUser] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
     const [emails, setEmails] = useState<any[]>([]);
     const [isSending, setIsSending] = useState(false);
-    const router = useRouter();
 
     // Form State
     const [to, setTo] = useState("");
@@ -30,32 +31,14 @@ export default function EmailManagerPage() {
     const [body, setBody] = useState("");
     const [task, setTask] = useState<EmailTask>("produccion");
 
-    const authorizedEmails = ["admin@curiol.studio", "kevin@curiol.studio", "cristina@curiol.studio", "info@curiol.studio"];
+    useEffect(() => {
+        if (role === "UNAUTHORIZED") {
+            router.push("/admin/login");
+        }
+    }, [role, router]);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            // Check for Master Admin session first (PIN based)
-            const isMaster = localStorage.getItem("master_admin") === "true";
-
-            if (isMaster) {
-                setUser({ email: "admin@curiol.studio", displayName: "Master Alberto" });
-                setLoading(false);
-                return;
-            }
-
-            if (!currentUser || !authorizedEmails.includes(currentUser.email || "")) {
-                router.push("/admin/login");
-                return;
-            }
-            setUser(currentUser);
-            setLoading(false);
-        });
-
-        return () => unsubscribe();
-    }, [router]);
-
-    useEffect(() => {
-        if (!user) return;
+        if (!user || role === "LOADING") return;
 
         const q = query(
             collection(db, "corporate_emails"),
@@ -67,13 +50,14 @@ export default function EmailManagerPage() {
             const data = snapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data(),
-                date: doc.data().createdAt?.toDate() || new Date()
+                date: doc.data().createdAt?.toDate() || new Date(),
+                email: doc.data().email || undefined
             }));
             setEmails(data);
         });
 
         return () => unsub();
-    }, [user]);
+    }, [user, role]);
 
     const handleSend = async () => {
         if (!to || !subject || !body) return alert("Por favor completa los campos obligatorios.");
@@ -93,13 +77,15 @@ export default function EmailManagerPage() {
         }
     };
 
-    if (loading) {
+    if (role === "LOADING") {
         return (
             <div className="min-h-screen bg-tech-950 flex items-center justify-center">
                 <Loader2 className="w-12 h-12 text-curiol-500 animate-spin" />
             </div>
         );
     }
+
+    if (role === "UNAUTHORIZED") return null;
 
     const taskColors = {
         produccion: "text-blue-500 bg-blue-500/10 border-blue-500/20",

@@ -42,10 +42,10 @@ export default function EquilibrioPage() {
     const [recentExpenses, setRecentExpenses] = useState<any[]>([]);
 
     useEffect(() => {
-        if (role !== "LOADING" && !isMaster) {
-            router.push("/admin/dashboard");
+        if (role === "UNAUTHORIZED") {
+            router.push("/admin/login");
         }
-    }, [role, isMaster, router]);
+    }, [role, router]);
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();

@@ -79,13 +79,35 @@ export default function GoogleDriveExplorer() {
                     {/* Main Explorer Viewport */}
                     <div className="lg:col-span-3">
                         <GlassCard className="w-full h-[700px] overflow-hidden border-white/5 bg-tech-900/50 relative">
-                            {/* Embedded Google Drive - View changes based on selected folder */}
-                            <iframe
-                                src={`https://drive.google.com/embeddedfolderview?id=${activeFolder.id}#grid`}
-                                className="w-full h-full border-none grayscale-[0.5] invert-[0.9] hue-rotate-180 contrast-125"
-                                title="Google Drive Explorer"
-                                allow="autoplay"
-                            />
+                            {activeFolder.id.includes("PLACEHOLDER") ? (
+                                <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-center">
+                                    <div className="w-20 h-20 bg-curiol-500/10 rounded-3xl flex items-center justify-center mb-8 border border-curiol-500/20">
+                                        <HardDrive className="w-10 h-10 text-curiol-500" />
+                                    </div>
+                                    <h2 className="text-3xl font-serif text-white italic mb-4">Configuración Requerida</h2>
+                                    <p className="text-tech-500 text-sm font-light max-w-md mb-8">
+                                        Para activar este visor, necesitas reemplazar los IDs de las carpetas en el archivo: <br />
+                                        <code className="bg-tech-950 px-2 py-1 rounded text-curiol-200 text-[10px] mt-2 inline-block">src/app/admin/workspace/drive/page.tsx</code>
+                                    </p>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left w-full max-w-2xl">
+                                        <div className="p-4 bg-tech-950/50 rounded-xl border border-white/5">
+                                            <p className="text-[10px] text-curiol-500 font-bold uppercase mb-2">1. Obtener ID</p>
+                                            <p className="text-[10px] text-tech-400">Abre tu carpeta en Google Drive y copia el código que aparece al final de la URL.</p>
+                                        </div>
+                                        <div className="p-4 bg-tech-950/50 rounded-xl border border-white/5">
+                                            <p className="text-[10px] text-curiol-500 font-bold uppercase mb-2">2. Compartir</p>
+                                            <p className="text-[10px] text-tech-400">Asegúrate de que la carpeta esté compartida como "Cualquier persona con el enlace puede ver".</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <iframe
+                                    src={`https://drive.google.com/embeddedfolderview?id=${activeFolder.id}#grid`}
+                                    className="w-full h-full border-none grayscale-[0.5] invert-[0.9] hue-rotate-180 contrast-125"
+                                    title="Google Drive Explorer"
+                                    allow="autoplay"
+                                />
+                            )}
 
                             {/* Branding Overlay */}
                             <div className="absolute top-4 right-4 px-3 py-1 bg-tech-950/80 backdrop-blur-md rounded-full border border-curiol-500/30">

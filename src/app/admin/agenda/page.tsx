@@ -8,13 +8,15 @@ import {
     Calendar as CalendarIcon, Clock, CheckCircle2,
     XCircle, ChevronLeft, ChevronRight, Filter,
     Camera, Code, AlertCircle, Sparkles, User,
-    Mail, Smartphone, ShieldCheck, Heart
+    Mail, Smartphone, ShieldCheck, Heart, Loader2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { db } from "@/lib/firebase";
 import { collection, query, orderBy, onSnapshot, doc, updateDoc, Timestamp, where, getDoc } from "firebase/firestore";
 import { recordTaxTransaction } from "@/actions/accounting";
+import { useRole } from "@/hooks/useRole";
+import { useRouter } from "next/navigation";
 
 interface Booking {
     id: string;
@@ -30,12 +32,22 @@ interface Booking {
 }
 
 export default function AdminAgendaPage() {
+    const { role } = useRole();
+    const router = useRouter();
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 
+    useEffect(() => {
+        if (role === "UNAUTHORIZED") {
+            router.push("/admin/login");
+        }
+    }, [role, router]);
+
     // Fetch Bookings
     useEffect(() => {
+        if (role !== "MASTER" && role !== "TEAM") return;
+
         const q = query(collection(db, "bookings"), orderBy("date", "asc"));
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const data = snapshot.docs.map(doc => ({
@@ -45,7 +57,7 @@ export default function AdminAgendaPage() {
             setBookings(data);
         });
         return () => unsubscribe();
-    }, []);
+    }, [role]);
 
     const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
     const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
@@ -73,6 +85,16 @@ export default function AdminAgendaPage() {
             console.error("Error updating booking status:", error);
         }
     };
+
+    if (role === "LOADING") {
+        return (
+            <div className="min-h-screen bg-tech-950 flex items-center justify-center">
+                <Loader2 className="w-12 h-12 text-curiol-500 animate-spin" />
+            </div>
+        );
+    }
+
+    if (role === "UNAUTHORIZED") return null;
 
     return (
         <div className="min-h-screen bg-tech-950 flex flex-col pt-32 pb-24 bg-grain">

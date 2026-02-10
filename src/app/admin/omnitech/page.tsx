@@ -7,19 +7,40 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
     Bot, MessageSquare, Zap, Users,
     Clock, Instagram, Facebook, ChevronRight,
-    TrendingUp, Activity, BarChart3, Megaphone, Send, Calendar, ListChecks
+    TrendingUp, Activity, BarChart3, Megaphone, Send, Calendar, ListChecks,
+    Loader2
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRole } from "@/hooks/useRole";
+import { useRouter } from "next/navigation";
 
 export default function OmnitechDashboard() {
+    const { role } = useRole();
+    const router = useRouter();
     const [activeTab, setActiveTab] = useState<"dashboard" | "campanas">("dashboard");
+
+    useEffect(() => {
+        if (role === "UNAUTHORIZED") {
+            router.push("/admin/login");
+        }
+    }, [role, router]);
 
     const channels = [
         { name: "WhatsApp", status: "Conectado", icon: MessageSquare, color: "text-green-500" },
         { name: "Instagram DMs", status: "Conectado", icon: Instagram, color: "text-pink-500" },
         { name: "Facebook Messenger", status: "Inactivo", icon: Facebook, color: "text-blue-500" }
     ];
+
+    if (role === "LOADING") {
+        return (
+            <div className="min-h-screen bg-tech-950 flex items-center justify-center">
+                <Loader2 className="w-12 h-12 text-curiol-500 animate-spin" />
+            </div>
+        );
+    }
+
+    if (role === "UNAUTHORIZED") return null;
 
     return (
         <div className="min-h-screen bg-tech-950 pt-32 pb-24">

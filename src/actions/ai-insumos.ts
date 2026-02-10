@@ -14,7 +14,7 @@ export interface InsumoData {
     type: InsumoType;
     content?: string; // For text
     url?: string;     // For files
-    author: "Alberto" | "Kevin" | "System";
+    author: string;
     metadata?: {
         emotion?: string;
         patterns?: string[];
@@ -30,7 +30,7 @@ export interface InsumoData {
 export async function processAndSaveInsumo(
     type: InsumoType,
     data: { text?: string; file?: File },
-    author: "Alberto" | "Kevin"
+    author: string
 ) {
     if (!process.env.GEMINI_API_KEY) throw new Error("API Key missing");
 

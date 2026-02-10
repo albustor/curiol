@@ -11,24 +11,27 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { processAndSaveInsumo, getRecentInsumos, InsumoData, InsumoType } from "@/actions/ai-insumos";
-import { useRouter } from "next/navigation"; // Assuming useRouter is from next/navigation
+import { useRouter } from "next/navigation";
+import { useRole } from "@/hooks/useRole";
 
 export default function AIInsumosPage() {
+    const { role, user } = useRole();
+    const router = useRouter();
+
     const [insumos, setInsumos] = useState<InsumoData[]>([]);
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(true);
     const [textInput, setTextInput] = useState("");
     const [selectedType, setSelectedType] = useState<InsumoType>("text");
     const [success, setSuccess] = useState(false);
-    const router = useRouter();
 
     useEffect(() => {
-        const isMaster = localStorage.getItem("master_admin") === "true";
-        if (!isMaster) {
-            router.push("/admin/dashboard");
+        if (role === "UNAUTHORIZED") {
+            router.push("/admin/login");
+        } else if (role !== "LOADING") {
+            loadInsumos();
         }
-        loadInsumos();
-    }, [router]);
+    }, [role, router]);
 
     const loadInsumos = async () => {
         setFetching(true);
@@ -41,7 +44,7 @@ export default function AIInsumosPage() {
         if (!textInput.trim()) return;
 
         setLoading(true);
-        const result = await processAndSaveInsumo("text", { text: textInput }, "Alberto");
+        const result = await processAndSaveInsumo("text", { text: textInput }, user?.displayName || user?.email || "Alberto");
 
         if (result.success) {
             setTextInput("");
@@ -58,6 +61,16 @@ export default function AIInsumosPage() {
         audio: <Mic className="w-4 h-4" />,
         video: <Video className="w-4 h-4" />
     };
+
+    if (role === "LOADING") {
+        return (
+            <div className="min-h-screen bg-tech-950 flex items-center justify-center">
+                <Loader2 className="w-12 h-12 text-curiol-500 animate-spin" />
+            </div>
+        );
+    }
+
+    if (role === "UNAUTHORIZED") return null;
 
     return (
         <div className="min-h-screen bg-tech-950 pt-32 pb-24">
