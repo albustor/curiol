@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { HardDrive, ExternalLink, Info, ArrowLeft } from "lucide-react";
+import { HardDrive, ExternalLink, Info, ArrowLeft, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useRole } from "@/hooks/useRole";
 
 export default function GoogleDriveExplorer() {
-    const { role } = useRole();
+    const { role, user } = useRole();
     const router = useRouter();
 
     // Folder IDs for Curiol Studio Workspace (Placeholders - Alberto can update these)
@@ -19,8 +19,15 @@ export default function GoogleDriveExplorer() {
     ];
 
     const [activeFolder, setActiveFolder] = useState(folders[0]);
+    const isWorkspaceAccount = user?.email?.endsWith("@curiol.studio");
 
-    if (role === "LOADING") return null;
+    if (role === "LOADING") return (
+        <div className="min-h-screen bg-tech-950 flex items-center justify-center">
+            <Loader2 className="w-12 h-12 text-curiol-500 animate-spin" />
+        </div>
+    );
+
+    if (role === "UNAUTHORIZED") return null;
 
     return (
         <div className="min-h-screen bg-tech-950 pt-32 pb-24 relative overflow-hidden">
@@ -36,11 +43,24 @@ export default function GoogleDriveExplorer() {
                         <h1 className="text-5xl font-serif text-white italic">Drive Explorer</h1>
                         <p className="text-tech-500 mt-4 max-w-2xl">Gestiona archivos, producciones y media directamente desde el almacenamiento centralizado de Curiol Studio.</p>
 
-                        {/* INSTRUCTIONS FOR ALBERTO */}
-                        <div className="mt-4 p-3 bg-curiol-500/10 border border-curiol-500/20 rounded-xl max-w-2xl">
-                            <p className="text-[10px] text-curiol-500 font-bold uppercase tracking-wider mb-1">Nota para Alberto:</p>
-                            <p className="text-[10px] text-tech-400">Para ver tus carpetas reales, asegúrate de que estén compartidas como "Cualquier persona con el enlace puede ver" y reemplaza los <b>folders IDs</b> en el código de este componente.</p>
-                        </div>
+                        {!isWorkspaceAccount && (
+                            <div className="mt-6 p-4 bg-orange-500/10 border border-orange-500/20 rounded-2xl max-w-2xl flex items-start gap-4">
+                                <Info className="text-orange-500 w-5 h-5 shrink-0 mt-1" />
+                                <div>
+                                    <p className="text-[10px] text-orange-500 font-bold uppercase tracking-wider mb-1">¡Posible Conflicto de Cuenta!</p>
+                                    <p className="text-[10px] text-tech-400 leading-relaxed">
+                                        Parece que no estás usando una cuenta <b>@curiol.studio</b>. Si ves un error de Google abajo, es porque Drive detecta tu sesión personal activa en el navegador.
+                                    </p>
+                                    <a
+                                        href="https://accounts.google.com/AccountChooser"
+                                        target="_blank"
+                                        className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-orange-500/20 text-orange-500 border border-orange-500/20 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-orange-500/30 transition-all"
+                                    >
+                                        Validar Sesión de Workspace <ExternalLink className="w-3 h-3" />
+                                    </a>
+                                </div>
+                            </div>
+                        )}
                     </div>
                     <button
                         onClick={() => router.push("/admin/dashboard")}
