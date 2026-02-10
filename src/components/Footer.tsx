@@ -17,12 +17,17 @@ export function Footer() {
                                 <span className="h-[1px] w-8 bg-curiol-500"></span>
                                 <span className="text-curiol-500 text-[10px] font-bold tracking-[0.4em] uppercase">Digitalización Humana</span>
                             </div>
-                            <span className="font-serif text-4xl tracking-widest text-white leading-none italic">
-                                CURIOL<span className="text-curiol-500 ml-2">STUDIO</span>
-                            </span>
-                            <span className="text-tech-500 text-[10px] font-bold tracking-[0.4em] uppercase mt-1">
-                                Fotografía • Tecnología • Legado
-                            </span>
+                            <div className="flex items-center gap-6 mb-2">
+                                <img src="/Logo_Principal.png" alt="Curiol Studio Logo" className="h-16 w-16 object-contain" />
+                                <div className="flex flex-col">
+                                    <span className="font-serif text-4xl tracking-widest text-white leading-none italic">
+                                        CURIOL<span className="text-curiol-500 ml-2">STUDIO</span>
+                                    </span>
+                                    <span className="text-tech-500 text-[10px] font-bold tracking-[0.4em] uppercase mt-1">
+                                        Fotografía • Tecnología • Legado
+                                    </span>
+                                </div>
+                            </div>
                             <p className="text-tech-400 text-sm font-light leading-relaxed max-w-md mt-6">
                                 Construimos ecosistemas de legado digital donde la sensibilidad artística se encuentra con la ingeniería de alta conversión. "Digitalización Humana" para familias y negocios locales.
                             </p>
@@ -60,9 +65,11 @@ export function Footer() {
 
                 <div className="pt-12 border-t border-tech-800 flex flex-col md:flex-row justify-between items-center gap-12">
                     <div className="flex flex-col items-center md:items-start gap-2">
-                        <span className="font-cursive text-3xl text-curiol-500 italic lowercase tracking-tight">
-                            Alberto Bustos
-                        </span>
+                        <img
+                            src="/Firma_Blanco_Transparente.png"
+                            alt="Firma Alberto Bustos"
+                            className="h-12 w-auto object-contain brightness-0 invert opacity-80 hover:opacity-100 transition-all"
+                        />
                         <p className="text-[9px] text-tech-600 font-bold uppercase tracking-[0.3em]">
                             &copy; 2026 Curiol Studio. Todos los derechos reservados.
                         </p>
