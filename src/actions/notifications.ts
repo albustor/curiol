@@ -28,26 +28,35 @@ export async function sendNotification({ to, message, type, subject }: Notificat
     }
     */
 
-    // Example Resend Implementation (Commented out):
-    /*
+    // Resend Implementation:
     if (type === "email") {
-        const { Resend } = require('resend');
-        const resend = new Resend(process.env.RESEND_API_KEY);
-        await resend.emails.send({
-            from: 'Curiol Studio <hello@curiol.studio>',
-            to: [to],
-            subject: subject || "Notificación de Curiol Studio",
-            text: message
-        });
+        try {
+            const { Resend } = require('resend');
+            const resend = new Resend(process.env.RESEND_API_KEY);
+
+            if (!process.env.RESEND_API_KEY) {
+                console.warn("[NOTIFICATION SERVICE] Missing RESEND_API_KEY. Email logged to console.");
+                return { success: true, logged: true };
+            }
+
+            await resend.emails.send({
+                from: 'Curiol Studio <info@curiol.studio>',
+                to: [to],
+                subject: subject || "Notificación de Curiol Studio",
+                text: message
+            });
+        } catch (error) {
+            console.error("[NOTIFICATION SERVICE] Error sending email via Resend:", error);
+            return { success: false, error };
+        }
     }
-    */
 
     return { success: true };
 }
 
 export async function notifyNewBooking(booking: any) {
     const adminNumber = "60602617";
-    const adminEmail = process.env.ADMIN_EMAIL || "contacto@curiol.studio";
+    const adminEmail = process.env.ADMIN_EMAIL || "info@curiol.studio";
 
     const adminMessage = `Nueva reserva agendada por ${booking.name}. Fecha: ${booking.date instanceof Date ? booking.date.toLocaleDateString() : booking.date}. Hora: ${booking.time}. Comprobante adjunto en el dashboard.\n\nAtentamente,\nCuriol Studio • Legado`;
     const clientMessage = `Hola ${booking.name}, gracias por agendar con Curiol Studio. Hemos recibido tu comprobante del 20%. Tu sesión para el ${booking.date instanceof Date ? booking.date.toLocaleDateString() : booking.date} a las ${booking.time} está en proceso de aprobación final.\n\nAtentamente,\nCuriol Studio • Legado`;

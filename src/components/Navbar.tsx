@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { ShieldCheck, Menu, X, Gift } from "lucide-react";
+import { ShieldCheck, Menu, X, Gift, Mail } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -72,11 +72,19 @@ export function Navbar() {
                         </Link>
                     ))}
                     <Link
+                        href="/admin/email-manager"
+                        className="flex items-center gap-2 text-tech-500 hover:text-curiol-500 transition-colors ml-4 pl-4 border-l border-tech-800 group/mail"
+                        title="Coordinación de Calidad Excepcional"
+                    >
+                        <Mail className="w-4 h-4" />
+                        <span className="text-[9px] font-bold uppercase tracking-[0.2em] opacity-0 group-hover/mail:opacity-100 transition-opacity">Calidad</span>
+                    </Link>
+                    <Link
                         href="/admin"
                         className="flex items-center gap-2 text-tech-500 hover:text-curiol-500 transition-colors ml-4 pl-4 border-l border-tech-800 group/admin"
                     >
                         <ShieldCheck className="w-4 h-4" />
-                        <span className="text-[9px] font-bold uppercase tracking-[0.2em] opacity-0 group-hover/admin:opacity-100 transition-opacity">Panel Admin</span>
+                        <span className="text-[9px] font-bold uppercase tracking-[0.2em] opacity-0 group-hover/admin:opacity-100 transition-opacity">Admin</span>
                     </Link>
                 </div>
 
@@ -141,13 +149,13 @@ export function Navbar() {
                         <div className="mt-auto pt-10 border-t border-white/10 space-y-6">
                             <p className="text-tech-500 text-[8px] uppercase tracking-[0.4em] font-bold">Curiol Studio • Legado</p>
                             <div className="grid grid-cols-2 gap-4">
+                                <Link href="/admin/email-manager" onClick={() => setIsOpen(false)} className="flex items-center justify-center gap-2 p-4 bg-tech-900/50 rounded-xl border border-tech-800 text-tech-400">
+                                    <Mail className="w-4 h-4" />
+                                    <span className="text-[10px] font-bold uppercase tracking-widest">Coordinación</span>
+                                </Link>
                                 <Link href="/admin" onClick={() => setIsOpen(false)} className="flex items-center justify-center gap-2 p-4 bg-tech-900/50 rounded-xl border border-tech-800 text-tech-400">
                                     <ShieldCheck className="w-4 h-4" />
                                     <span className="text-[10px] font-bold uppercase tracking-widest">Admin</span>
-                                </Link>
-                                <Link href="/regalo" onClick={() => setIsOpen(false)} className="flex items-center justify-center gap-2 p-4 bg-curiol-500/10 rounded-xl border border-curiol-500/20 text-curiol-500">
-                                    <Gift className="w-4 h-4" />
-                                    <span className="text-[10px] font-bold uppercase tracking-widest">Regalo</span>
                                 </Link>
                             </div>
                         </div>

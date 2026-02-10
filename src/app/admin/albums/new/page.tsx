@@ -6,13 +6,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
     X, Layout, Palette, Share2, Crop,
     Save, Eye, Trash2, Plus, Image as ImageIcon,
-    Settings, Zap, CheckCircle2, ChevronRight, Loader2
+    Settings, Zap, CheckCircle2, ChevronRight, Loader2, Music
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { storage } from "@/lib/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { generateSocialCrop } from "@/actions/image-ai";
+import { generateSocialCrop, detectMood, generateImageTags } from "@/actions/image-ai";
 import { createAlbum } from "@/actions/albums";
 import { generateDeliveryCopy } from "@/lib/gemini";
 
@@ -26,6 +26,8 @@ interface UploadedImage {
         post?: string;
         portrait?: string;
     };
+    tags?: string[];
+    category?: "highlight" | "social" | "bw" | "general";
 }
 
 export default function NewAlbumStudio() {
@@ -37,6 +39,12 @@ export default function NewAlbumStudio() {
     const [images, setImages] = useState<UploadedImage[]>([]);
     const [clientEmail, setClientEmail] = useState("");
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    // AI Music Integration
+    const [songTitle, setSongTitle] = useState("");
+    const [songUrl, setSongUrl] = useState("");
+    const [songPrice, setSongPrice] = useState(25000); // Precio default sugerido
+    const [songDescriptionUrl, setSongDescriptionUrl] = useState("https://curiol.studio/musica-ia");
 
     const themes = [
         { id: "dark-canvas", name: "Dark Canvas", primary: "bg-tech-950", accent: "border-curiol-500" },
@@ -75,17 +83,18 @@ export default function NewAlbumStudio() {
     };
 
     const processAI = async (index: number) => {
-        // Fetch current state
         setImages(prev => {
             const currentImg = prev[index];
             if (!currentImg) return prev;
 
-            // Trigger AI bits
             (async () => {
-                const caption = await generateDeliveryCopy(albumName || "Cliente", "Sesión", "story");
-                const story = await generateSocialCrop(currentImg.originalUrl, "story");
-                const post = await generateSocialCrop(currentImg.originalUrl, "post");
-                const portrait = await generateSocialCrop(currentImg.originalUrl, "portrait");
+                const [caption, story, post, portrait, tags] = await Promise.all([
+                    generateDeliveryCopy(albumName || "Cliente", "Sesión", "story"),
+                    generateSocialCrop(currentImg.originalUrl, "story"),
+                    generateSocialCrop(currentImg.originalUrl, "post"),
+                    generateSocialCrop(currentImg.originalUrl, "portrait"),
+                    generateImageTags(currentImg.originalUrl)
+                ]);
 
                 setImages(current => {
                     const updated = [...current];
@@ -93,7 +102,9 @@ export default function NewAlbumStudio() {
                         ...updated[index],
                         caption: caption || "Momento capturado",
                         processing: false,
-                        social: { story, post, portrait }
+                        social: { story, post, portrait },
+                        tags,
+                        category: index < 3 ? "highlight" : "general"
                     };
                     return updated;
                 });
@@ -103,18 +114,34 @@ export default function NewAlbumStudio() {
         });
     };
 
+    const handleMagicMood = async () => {
+        if (images.length === 0) return;
+        setUploading(true);
+        const suggestedMood = await detectMood(images.map(img => img.originalUrl));
+        setTheme(suggestedMood);
+        setUploading(false);
+    };
+
     const handleFinalize = async () => {
         setUploading(true);
         const result = await createAlbum({
             name: albumName,
             theme,
             clientName: "Cliente",
-            clientPhone: "", // In real app, get from lead
+            clientPhone: "",
             images: images.map(img => ({
                 original: img.originalUrl,
                 captions: img.caption,
+                tags: img.tags,
+                category: img.category,
                 social: img.social
-            }))
+            })),
+            originalSong: {
+                title: songTitle || undefined,
+                url: songUrl || undefined,
+                price: songPrice,
+                descriptionUrl: songDescriptionUrl
+            }
         });
 
         if (result.success) {
@@ -214,6 +241,52 @@ export default function NewAlbumStudio() {
                                                         <ChevronRight className={cn("w-4 h-4 transition-transform", theme === t.id ? "text-white" : "text-tech-700 group-hover:translate-x-1")} />
                                                     </button>
                                                 ))}
+                                            </div>
+                                        </div>
+                                        <button
+                                            onClick={handleMagicMood}
+                                            disabled={images.length === 0 || uploading}
+                                            className="w-full py-3 bg-curiol-500/10 border border-curiol-500/30 text-curiol-500 text-[10px] font-bold uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 hover:bg-curiol-500/20 transition-all disabled:opacity-50"
+                                        >
+                                            <Zap className="w-4 h-4" /> Sugerir Tema con IA
+                                        </button>
+                                    </div>
+                                </section>
+
+                                <section className="space-y-4">
+                                    <h3 className="text-xl font-serif italic flex items-center gap-3">
+                                        <Music className="w-5 h-5 text-curiol-500" /> Servicio de Música IA
+                                    </h3>
+                                    <div className="p-6 bg-curiol-500/5 border border-curiol-500/20 rounded-2xl space-y-4">
+                                        <p className="text-[10px] text-tech-500 leading-relaxed font-light uppercase tracking-widest">
+                                            Si no incluyes una canción, se activará el mensaje de venta cruzada en el álbum del cliente.
+                                        </p>
+                                        <div>
+                                            <label className="text-[10px] text-tech-500 font-bold uppercase tracking-widest block mb-1">URL de la Canción (Opcional)</label>
+                                            <input
+                                                value={songUrl}
+                                                onChange={(e) => setSongUrl(e.target.value)}
+                                                placeholder="Link de MP3 o Spotify"
+                                                className="w-full bg-tech-950 border border-white/5 rounded-lg p-3 text-white text-xs outline-none focus:border-curiol-500"
+                                            />
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="text-[10px] text-tech-500 font-bold uppercase tracking-widest block mb-1">Precio Sugerido (€/$)</label>
+                                                <input
+                                                    type="number"
+                                                    value={songPrice}
+                                                    onChange={(e) => setSongPrice(Number(e.target.value))}
+                                                    className="w-full bg-tech-950 border border-white/5 rounded-lg p-3 text-white text-xs outline-none focus:border-curiol-500"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="text-[10px] text-tech-500 font-bold uppercase tracking-widest block mb-1">Link de Info/Compra</label>
+                                                <input
+                                                    value={songDescriptionUrl}
+                                                    onChange={(e) => setSongDescriptionUrl(e.target.value)}
+                                                    className="w-full bg-tech-950 border border-white/5 rounded-lg p-3 text-white text-xs outline-none focus:border-curiol-500"
+                                                />
                                             </div>
                                         </div>
                                     </div>
@@ -326,10 +399,15 @@ export default function NewAlbumStudio() {
                                                     <span className="text-[8px] font-bold uppercase tracking-widest text-curiol-500">Analizando con IA...</span>
                                                 </div>
                                             ) : (
-                                                <div className="absolute top-4 left-4 z-20">
+                                                <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
                                                     <span className="px-2 py-1 bg-green-500 text-white text-[8px] font-bold uppercase rounded flex items-center gap-1">
                                                         <CheckCircle2 className="w-3 h-3" /> IA Optimized
                                                     </span>
+                                                    {img.category === "highlight" && (
+                                                        <span className="px-2 py-1 bg-curiol-500 text-white text-[8px] font-bold uppercase rounded flex items-center gap-1">
+                                                            <ImageIcon className="w-3 h-3" /> Highlight
+                                                        </span>
+                                                    )}
                                                 </div>
                                             )}
                                         </div>

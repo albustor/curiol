@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { processAndSaveInsumo, getRecentInsumos, InsumoData, InsumoType } from "@/actions/ai-insumos";
+import { useRouter } from "next/navigation"; // Assuming useRouter is from next/navigation
 
 export default function AIInsumosPage() {
     const [insumos, setInsumos] = useState<InsumoData[]>([]);
@@ -19,10 +20,15 @@ export default function AIInsumosPage() {
     const [textInput, setTextInput] = useState("");
     const [selectedType, setSelectedType] = useState<InsumoType>("text");
     const [success, setSuccess] = useState(false);
+    const router = useRouter();
 
     useEffect(() => {
+        const isMaster = localStorage.getItem("master_admin") === "true";
+        if (!isMaster) {
+            router.push("/admin/dashboard");
+        }
         loadInsumos();
-    }, []);
+    }, [router]);
 
     const loadInsumos = async () => {
         setFetching(true);

@@ -13,12 +13,23 @@ export interface AlbumMetadata {
     images: {
         original: string;
         captions?: string;
+        tags?: string[];
+        category?: "highlight" | "social" | "bw" | "general";
         social?: {
             story?: string;
             post?: string;
             portrait?: string;
         }
     }[];
+    favorites?: string[]; // Array of image URLs or indices
+    clientComments?: { imageUrl: string; text: string; createdAt: any }[];
+    mood?: string;
+    originalSong?: {
+        url?: string;
+        title?: string;
+        price?: number;
+        descriptionUrl?: string;
+    };
     status: "active" | "expired";
     warningSent: boolean;
     expiresAt: any;
@@ -59,5 +70,31 @@ export async function getAlbum(id: string) {
     } catch (error) {
         console.error("Error fetching album:", error);
         return null;
+    }
+}
+/**
+ * Toggles a favorite image for an album
+ */
+export async function toggleFavorite(albumId: string, imageUrl: string) {
+    try {
+        const docRef = doc(db, "albums", albumId);
+        const snap = await getDoc(docRef);
+        if (!snap.exists()) return { success: false };
+
+        const data = snap.data() as AlbumMetadata;
+        const favorites = data.favorites || [];
+
+        let newFavorites;
+        if (favorites.includes(imageUrl)) {
+            newFavorites = favorites.filter(url => url !== imageUrl);
+        } else {
+            newFavorites = [...favorites, imageUrl];
+        }
+
+        await updateDoc(docRef, { favorites: newFavorites });
+        return { success: true, favorites: newFavorites };
+    } catch (error) {
+        console.error("Error toggling favorite:", error);
+        return { success: false };
     }
 }

@@ -9,7 +9,7 @@ import { Footer } from "@/components/Footer";
 import { GlassCard } from "@/components/ui/GlassCard";
 import Link from "next/link";
 import {
-    LayoutDashboard, Users, Image as ImageIcon, MessageSquare,
+    LayoutDashboard, Users, Image as ImageIcon, MessageSquare, Mail,
     Plus, ExternalLink, Settings, BarChart3, LogOut, ArrowRight, Loader2, Sparkles,
     Calendar as CalendarIcon, Video, FileText, Brain, Aperture, CheckCircle2, AlertCircle, PieChart
 } from "lucide-react";
@@ -384,6 +384,19 @@ export default function AdminDashboard() {
                                     </div>
                                 </div>
                                 <ArrowRight className="w-4 h-4 text-tech-800 group-hover:text-white transition-all" />
+                            </button>
+                            <button
+                                onClick={() => router.push("/admin/email-manager")}
+                                className="w-full text-left p-6 bg-curiol-gradient/10 border border-curiol-500/30 rounded-2xl hover:bg-curiol-500/20 transition-all flex items-center justify-between group shadow-lg shadow-curiol-500/5"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <Mail className="w-6 h-6 text-curiol-500" />
+                                    <div>
+                                        <p className="text-white font-bold text-sm">Email Manager</p>
+                                        <p className="text-curiol-500 text-[10px] uppercase tracking-widest font-bold">Comunicaciones info@curiol.studio</p>
+                                    </div>
+                                </div>
+                                <ArrowRight className="w-4 h-4 text-curiol-500 group-hover:text-white transition-all" />
                             </button>
                             <button className="w-full text-left p-6 bg-tech-950/50 border border-white/5 rounded-2xl opacity-40 flex items-center justify-between cursor-not-allowed">
                                 <div className="flex items-center gap-4">

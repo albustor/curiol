@@ -97,3 +97,62 @@ export async function generateSocialCrop(imageUrl: string, format: SocialFormat)
         return imageUrl; // Fallback to original
     }
 }
+
+/**
+ * Detects the overall mood of a collection of images to suggest a theme
+ */
+export async function detectMood(imageUrls: string[]) {
+    if (!process.env.GEMINI_API_KEY) return "dark-canvas";
+
+    try {
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const prompt = `Analiza este set de imágenes (URLs: ${imageUrls.slice(0, 3).join(", ")}) y determina el "mood" predominante para un álbum fotográfico.
+        Elige entre: "dark-canvas" (elegante, serio, nocturno), "minimal-white" (limpio, luminoso, moderno), "sepia-legacy" (nostálgico, clásico, cálido).
+        Responde SOLO con el ID del tema.`;
+
+        const result = await model.generateContent(prompt);
+        const mood = result.response.text().trim().toLowerCase();
+
+        return ["dark-canvas", "minimal-white", "sepia-legacy"].includes(mood) ? mood : "dark-canvas";
+    } catch (error) {
+        return "dark-canvas";
+    }
+}
+
+/**
+ * Generates searchable tags for an image using Gemini
+ */
+export async function generateImageTags(imageUrl: string) {
+    if (!process.env.GEMINI_API_KEY) return [];
+
+    try {
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const prompt = `Analiza esta imagen (${imageUrl}) y genera 5 etiquetas descriptivas en español que ayuden a un cliente a buscarla en su álbum digital (ej: sonrisa, abrazo, blanco y negro, naturaleza, primer plano). 
+        Devuelve SOLO las etiquetas separadas por comas.`;
+
+        const result = await model.generateContent(prompt);
+        return result.response.text().split(",").map(t => t.trim().toLowerCase());
+    } catch (error) {
+        return [];
+    }
+}
+/**
+ * Generates a creative social media caption for a specific photo
+ */
+export async function generateSocialCaption(imageUrl: string, tags: string[], mood: string) {
+    if (!process.env.GEMINI_API_KEY) return "";
+
+    try {
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const prompt = `Actúa como un experto en Social Media y Storytelling.
+        Genera una descripción creativa, emocional y breve para Instagram para una fotografía que tiene estos elementos: ${tags.join(", ")}.
+        El tono debe ser coherente con un mood de tipo "${mood}".
+        Incluye 3 hashtags relevantes.
+        Devuelve SOLO el texto de la descripción.`;
+
+        const result = await model.generateContent(prompt);
+        return result.response.text().trim();
+    } catch (error) {
+        return "Una memoria capturada para siempre. #CuriolStudio #MemoriasVivas";
+    }
+}
