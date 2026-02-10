@@ -118,7 +118,7 @@ export default function GiftCardPage() {
         if (aiSong) params.set('ai', '1');
         if (senderPhone) params.set('ph', senderPhone);
 
-        const baseUrl = window.location.origin + window.location.pathname;
+        const baseUrl = "https://curiol.studio/regalo";
         return `${baseUrl}#${params.toString()}`;
     };
 

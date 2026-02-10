@@ -49,8 +49,8 @@ export async function notifyNewBooking(booking: any) {
     const adminNumber = "60602617";
     const adminEmail = process.env.ADMIN_EMAIL || "contacto@curiol.studio";
 
-    const adminMessage = `Nueva reserva agendada por ${booking.name}. Fecha: ${booking.date instanceof Date ? booking.date.toLocaleDateString() : booking.date}. Hora: ${booking.time}. Comprobante adjunto en el dashboard.`;
-    const clientMessage = `Hola ${booking.name}, gracias por agendar con Curiol Studio. Hemos recibido tu comprobante del 20%. Tu sesión para el ${booking.date instanceof Date ? booking.date.toLocaleDateString() : booking.date} a las ${booking.time} está en proceso de aprobación final.`;
+    const adminMessage = `Nueva reserva agendada por ${booking.name}. Fecha: ${booking.date instanceof Date ? booking.date.toLocaleDateString() : booking.date}. Hora: ${booking.time}. Comprobante adjunto en el dashboard.\n\nAtentamente,\nCuriol Studio • Legado`;
+    const clientMessage = `Hola ${booking.name}, gracias por agendar con Curiol Studio. Hemos recibido tu comprobante del 20%. Tu sesión para el ${booking.date instanceof Date ? booking.date.toLocaleDateString() : booking.date} a las ${booking.time} está en proceso de aprobación final.\n\nAtentamente,\nCuriol Studio • Legado`;
 
     // Notify Alberto (Admin)
     await sendNotification({ to: adminNumber, message: adminMessage, type: "whatsapp" });

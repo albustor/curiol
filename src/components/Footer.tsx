@@ -50,8 +50,8 @@ export function Footer() {
                             </div>
                             <div>
                                 <p className="text-tech-500 text-[10px] font-bold uppercase tracking-widest mb-2">Canal Oficial</p>
-                                <a href="mailto:contacto@curiol.studio" className="text-curiol-500 text-sm font-bold hover:underline">
-                                    contacto@curiol.studio
+                                <a href="mailto:info@curiol.studio" className="text-curiol-500 text-sm font-bold hover:underline">
+                                    info@curiol.studio
                                 </a>
                             </div>
                         </div>
@@ -59,12 +59,10 @@ export function Footer() {
                 </div>
 
                 <div className="pt-12 border-t border-tech-800 flex flex-col md:flex-row justify-between items-center gap-12">
-                    <div className="flex flex-col items-center md:items-start gap-4">
-                        <img
-                            src="https://drive.google.com/uc?export=download&id=1jHgxpjK4Vjo8t0UGsZfIyFbyS8TrGtoG"
-                            alt="Firma Curiol Studio"
-                            className="h-16 object-contain opacity-50 hover:opacity-100 transition-all filter brightness-0 invert"
-                        />
+                    <div className="flex flex-col items-center md:items-start gap-2">
+                        <span className="font-cursive text-3xl text-curiol-500 italic lowercase tracking-tight">
+                            Alberto Bustos
+                        </span>
                         <p className="text-[9px] text-tech-600 font-bold uppercase tracking-[0.3em]">
                             &copy; 2026 Curiol Studio. Todos los derechos reservados.
                         </p>
