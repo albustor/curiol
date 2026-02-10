@@ -51,7 +51,7 @@ export default function EmailManagerPage() {
                 id: doc.id,
                 ...doc.data(),
                 date: doc.data().createdAt?.toDate() || new Date(),
-                email: doc.data().email || undefined
+                email: doc.data().email ?? undefined
             }));
             setEmails(data);
         });

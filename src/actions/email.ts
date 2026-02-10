@@ -11,8 +11,9 @@ export async function sendProfessionalEmail(
     subject: string,
     body: string,
     task: EmailTask = "otros",
-    sender: string = "info@curiol.studio"
+    sender: string | null | undefined = "info@curiol.studio"
 ) {
+    const finalSender = sender || "info@curiol.studio";
     if (!to || !subject || !body) {
         throw new Error("Missing required fields: to, subject, or body");
     }
@@ -32,7 +33,7 @@ export async function sendProfessionalEmail(
     try {
         await addDoc(collection(db, "corporate_emails"), {
             to,
-            from: sender,
+            from: finalSender,
             subject,
             body,
             task,
