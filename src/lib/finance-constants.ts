@@ -86,20 +86,34 @@ export const FINANCE_CONFIG = {
     }
 };
 
+interface RetabloItem {
+    base: number;
+    pie?: number;
+}
+
+interface CanvaItem {
+    white: number;
+    color: number;
+}
+
 /**
  * Calculates the final cost of a production item including the 40% studio overhead/additional price.
  */
-export function calculateProductionCost(type: 'retablo' | 'canva', size: string, options: any = {}) {
+export function calculateProductionCost(
+    type: 'retablo' | 'canva',
+    size: string,
+    options: { conPie?: boolean; fullColor?: boolean } = {}
+) {
     const margin = FINANCE_CONFIG.PRODUCTION.MARGIN_MULTIPLIER;
     let base = 0;
 
     if (type === 'retablo') {
-        const item = (FINANCE_CONFIG.PRODUCTION.RETABLO_BORDE_15MM as any)[size];
+        const item = (FINANCE_CONFIG.PRODUCTION.RETABLO_BORDE_15MM as Record<string, RetabloItem>)[size];
         if (!item) return 0;
         base = item.base;
         if (options.conPie && item.pie) base += item.pie;
     } else {
-        const item = (FINANCE_CONFIG.PRODUCTION.CANVA_TENSADA as any)[size];
+        const item = (FINANCE_CONFIG.PRODUCTION.CANVA_TENSADA as Record<string, CanvaItem>)[size];
         if (!item) return 0;
         base = options.fullColor ? item.color : item.white;
     }

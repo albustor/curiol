@@ -18,8 +18,12 @@ import {
 import { db } from "@/lib/firebase";
 import { collection, query, orderBy, limit, getDocs, where, Timestamp } from "firebase/firestore";
 import { generateAiChatResponse } from "@/lib/gemini"; // We'll use this for strategic insights
+import { useRole } from "@/hooks/useRole";
+import { useRouter } from "next/navigation";
 
 export default function AnalyticsDashboard() {
+    const { role, isMaster } = useRole();
+    const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [interactions, setInteractions] = useState<any[]>([]);
     const [quotes, setQuotes] = useState<any[]>([]);
@@ -27,8 +31,18 @@ export default function AnalyticsDashboard() {
     const [analyzing, setAnalyzing] = useState(false);
 
     useEffect(() => {
-        loadData();
-    }, []);
+        if (role === "UNAUTHORIZED") {
+            router.push("/admin/login");
+        } else if (role !== "LOADING" && !isMaster) {
+            router.push("/admin/dashboard");
+        }
+    }, [role, isMaster, router]);
+
+    useEffect(() => {
+        if (isMaster) {
+            loadData();
+        }
+    }, [isMaster]);
 
     const loadData = async () => {
         try {

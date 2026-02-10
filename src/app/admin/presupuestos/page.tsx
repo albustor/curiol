@@ -15,6 +15,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { db } from "@/lib/firebase";
 import { collection, query, orderBy, onSnapshot, updateDoc, doc, Timestamp, getDoc } from "firebase/firestore";
 import { recordTaxTransaction } from "@/actions/accounting";
+import { useRole } from "@/hooks/useRole";
+import { useRouter } from "next/navigation";
 
 interface Quote {
     id: string;
@@ -29,12 +31,24 @@ interface Quote {
 }
 
 export default function AdminPresupuestosPage() {
+    const { role, isMaster } = useRole();
+    const router = useRouter();
     const [quotes, setQuotes] = useState<Quote[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [filterStatus, setFilterStatus] = useState<string>("all");
 
     useEffect(() => {
+        if (role === "UNAUTHORIZED") {
+            router.push("/admin/login");
+        } else if (role !== "LOADING" && !isMaster) {
+            router.push("/admin/dashboard");
+        }
+    }, [role, isMaster, router]);
+
+    useEffect(() => {
+        if (!isMaster) return;
+
         const q = query(collection(db, "quotes"), orderBy("createdAt", "desc"));
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Quote[];
@@ -42,7 +56,7 @@ export default function AdminPresupuestosPage() {
             setLoading(false);
         });
         return () => unsubscribe();
-    }, []);
+    }, [isMaster]);
 
     const updateStatus = async (id: string, newStatus: string) => {
         try {

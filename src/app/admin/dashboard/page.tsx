@@ -11,15 +11,17 @@ import Link from "next/link";
 import {
     LayoutDashboard, Users, Image as ImageIcon, MessageSquare, Mail,
     Plus, ExternalLink, Settings, BarChart3, LogOut, ArrowRight, Loader2, Sparkles,
-    Calendar as CalendarIcon, Video, FileText, Brain, Aperture, CheckCircle2, AlertCircle, PieChart, ClipboardCheck
+    Calendar as CalendarIcon, Video, FileText, Brain, Aperture, CheckCircle2, AlertCircle, PieChart, ClipboardCheck,
+    HardDrive, ArrowUpRight
 } from "lucide-react";
 import { getPhotographyDashboardData, PhotographyInsight, analyzeAlbumComposition } from "@/actions/photography-ai";
 
 import { collection, query, orderBy, limit, onSnapshot, where, getDocs, Timestamp } from "firebase/firestore";
+import { useRole } from "@/hooks/useRole";
+import { cn } from "@/lib/utils";
 
 export default function AdminDashboard() {
-    const [loading, setLoading] = useState(true);
-    const [user, setUser] = useState<any>(null);
+    const { role, user, isMaster, isTeam } = useRole();
     const [recentDeliveries, setRecentDeliveries] = useState<any[]>([]);
     const [leads, setLeads] = useState<any[]>([]);
     const [bookings, setBookings] = useState<any[]>([]);
@@ -31,24 +33,10 @@ export default function AdminDashboard() {
     const router = useRouter();
 
     useEffect(() => {
-        // Check for Master PIN session first
-        const isMaster = localStorage.getItem("master_admin") === "true";
-        if (isMaster) {
-            setUser({ email: "admin@curiol.studio", displayName: "Master Alberto" });
-            setLoading(false);
-            return;
+        if (role === "UNAUTHORIZED") {
+            router.push("/admin/login");
         }
-
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            if (!currentUser) {
-                router.push("/admin/login");
-                return;
-            }
-            setUser(currentUser);
-            setLoading(false);
-        });
-        return () => unsubscribe();
-    }, [router]);
+    }, [role, router]);
 
     useEffect(() => {
         if (!user) return;
@@ -128,12 +116,12 @@ export default function AdminDashboard() {
     };
 
     const stats = [
-        { label: "Galerías Activas", value: albums.length.toString(), icon: ImageIcon, color: "text-curiol-500" },
-        { label: "Interacciones", value: interactionCount.toString(), icon: BarChart3, color: "text-tech-500" },
-        { label: "Presupuestos", value: quotes.length.toString(), icon: FileText, color: "text-amber-500" }
+        { label: "Galerías Activas", value: albums.length.toString(), icon: ImageIcon, color: "text-curiol-500", visible: true },
+        { label: "Interacciones", value: interactionCount.toString(), icon: BarChart3, color: "text-tech-500", visible: true },
+        { label: "Presupuestos", value: quotes.length.toString(), icon: FileText, color: "text-amber-500", visible: isMaster }
     ];
 
-    if (loading) return (
+    if (role === "LOADING") return (
         <div className="min-h-screen bg-tech-950 flex items-center justify-center">
             <Loader2 className="w-12 h-12 text-curiol-500 animate-spin" />
         </div>
@@ -146,10 +134,12 @@ export default function AdminDashboard() {
                 <header className="flex justify-between items-center mb-12">
                     <div>
                         <h1 className="text-4xl font-serif text-white italic mb-2">Gestión de Legado</h1>
-                        <p className="text-tech-500 text-sm">Bienvenido, Maestro de Estrategia.</p>
+                        <p className="text-tech-500 text-sm">
+                            {isMaster ? "Bienvenido, Maestro de Estrategia." : `Bienvenido, Coordinador de Calidad (${user?.displayName || "Curiol Team"}).`}
+                        </p>
                     </div>
                     <div className="flex items-center gap-4">
-                        {user?.displayName === "Master Alberto" && (
+                        {isMaster && (
                             <Link
                                 href="/admin/equilibrio"
                                 className="flex items-center gap-2 p-3 bg-curiol-500/10 border border-curiol-500/20 text-curiol-500 hover:bg-curiol-500 hover:text-white rounded-xl transition-all text-[10px] font-bold uppercase tracking-widest"
@@ -171,7 +161,7 @@ export default function AdminDashboard() {
                 </header>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                    {stats.map((s) => (
+                    {stats.filter(s => s.visible).map((s) => (
                         <GlassCard key={s.label} className="p-8">
                             <div className="flex justify-between items-start mb-4">
                                 <s.icon className={`w-8 h-8 ${s.color}`} />
@@ -359,49 +349,86 @@ export default function AdminDashboard() {
                             </div>
                         </div>
 
-                        {/* Gestión Comercial */}
+                        {/* Gestión Comercial - ONLY FOR MASTER */}
+                        {isMaster && (
+                            <div className="space-y-4">
+                                <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] text-tech-500 px-2 flex items-center gap-2">
+                                    <BarChart3 className="w-3 h-3" /> Gestión Comercial
+                                </h4>
+                                <div className="grid grid-cols-1 gap-3">
+                                    <button
+                                        onClick={() => router.push("/admin/analytics")}
+                                        className="w-full text-left p-4 bg-tech-900 border border-white/5 rounded-xl hover:border-curiol-500/30 transition-all flex items-center justify-between group"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <BarChart3 className="w-5 h-5 text-curiol-500" />
+                                            <span className="text-xs font-bold text-white">Analítica</span>
+                                        </div>
+                                        <ArrowRight className="w-3 h-3 text-tech-800 group-hover:text-white transition-all" />
+                                    </button>
+                                    <button
+                                        onClick={() => router.push("/admin/presupuestos")}
+                                        className="w-full text-left p-4 bg-tech-900 border border-white/5 rounded-xl hover:border-amber-500/30 transition-all flex items-center justify-between group"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <FileText className="w-5 h-5 text-amber-500" />
+                                            <span className="text-xs font-bold text-white">Presupuestos</span>
+                                        </div>
+                                        <ArrowRight className="w-3 h-3 text-tech-800 group-hover:text-white transition-all" />
+                                    </button>
+                                    <button
+                                        onClick={() => router.push("/admin/cotizador")}
+                                        className="w-full text-left p-4 bg-tech-900 border border-white/5 rounded-xl hover:border-curiol-500/30 transition-all flex items-center justify-between group"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <FileText className="w-5 h-5 text-curiol-500" />
+                                            <span className="text-xs font-bold text-white">Cotizador</span>
+                                        </div>
+                                        <ArrowRight className="w-3 h-3 text-tech-800 group-hover:text-white transition-all" />
+                                    </button>
+                                    <button
+                                        onClick={exportLeads}
+                                        className="w-full text-left p-4 bg-tech-900 border border-white/5 rounded-xl hover:border-tech-500 transition-all flex items-center justify-between group"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <Users className="w-5 h-5 text-tech-500" />
+                                            <span className="text-xs font-bold text-white">Exportar Leads</span>
+                                        </div>
+                                        <ArrowRight className="w-3 h-3 text-tech-800 group-hover:text-white transition-all" />
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Ecosistema Workspace - NEW */}
                         <div className="space-y-4">
                             <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] text-tech-500 px-2 flex items-center gap-2">
-                                <BarChart3 className="w-3 h-3" /> Gestión Comercial
+                                <HardDrive className="w-3 h-3" /> Ecosistema Workspace
                             </h4>
                             <div className="grid grid-cols-1 gap-3">
                                 <button
-                                    onClick={() => router.push("/admin/analytics")}
+                                    onClick={() => router.push("/admin/workspace/drive")}
                                     className="w-full text-left p-4 bg-tech-900 border border-white/5 rounded-xl hover:border-curiol-500/30 transition-all flex items-center justify-between group"
                                 >
                                     <div className="flex items-center gap-3">
-                                        <BarChart3 className="w-5 h-5 text-curiol-500" />
-                                        <span className="text-xs font-bold text-white">Analítica</span>
+                                        <HardDrive className="w-5 h-5 text-blue-500" />
+                                        <div className="flex flex-col">
+                                            <span className="text-xs font-bold text-white">Google Drive</span>
+                                            <span className="text-[10px] text-tech-600">Producciones & Media</span>
+                                        </div>
                                     </div>
-                                    <ArrowRight className="w-3 h-3 text-tech-800 group-hover:text-white transition-all" />
+                                    <ArrowUpRight className="w-3 h-3 text-tech-800 group-hover:text-white transition-all" />
                                 </button>
                                 <button
-                                    onClick={() => router.push("/admin/presupuestos")}
-                                    className="w-full text-left p-4 bg-tech-900 border border-white/5 rounded-xl hover:border-amber-500/30 transition-all flex items-center justify-between group"
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <FileText className="w-5 h-5 text-amber-500" />
-                                        <span className="text-xs font-bold text-white">Presupuestos</span>
-                                    </div>
-                                    <ArrowRight className="w-3 h-3 text-tech-800 group-hover:text-white transition-all" />
-                                </button>
-                                <button
-                                    onClick={() => router.push("/admin/cotizador")}
+                                    onClick={() => router.push("/admin/videollamadas")}
                                     className="w-full text-left p-4 bg-tech-900 border border-white/5 rounded-xl hover:border-curiol-500/30 transition-all flex items-center justify-between group"
                                 >
                                     <div className="flex items-center gap-3">
-                                        <FileText className="w-5 h-5 text-curiol-500" />
-                                        <span className="text-xs font-bold text-white">Cotizador</span>
-                                    </div>
-                                    <ArrowRight className="w-3 h-3 text-tech-800 group-hover:text-white transition-all" />
-                                </button>
-                                <button
-                                    onClick={exportLeads}
-                                    className="w-full text-left p-4 bg-tech-900 border border-white/5 rounded-xl hover:border-tech-500 transition-all flex items-center justify-between group"
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <Users className="w-5 h-5 text-tech-500" />
-                                        <span className="text-xs font-bold text-white">Exportar Leads</span>
+                                        <Video className="w-5 h-5 text-green-500" />
+                                        <div className="flex flex-col">
+                                            <span className="text-xs font-bold text-white">Curiol Meet</span>
+                                            <span className="text-[10px] text-tech-600">Videollamadas Clientes</span>
+                                        </div>
                                     </div>
                                     <ArrowRight className="w-3 h-3 text-tech-800 group-hover:text-white transition-all" />
                                 </button>
@@ -431,16 +458,6 @@ export default function AdminDashboard() {
                                     <div className="flex items-center gap-3">
                                         <ClipboardCheck className="w-5 h-5 text-curiol-500" />
                                         <span className="text-xs font-bold text-white">QA Logs</span>
-                                    </div>
-                                    <ArrowRight className="w-3 h-3 text-tech-800 group-hover:text-white transition-all" />
-                                </button>
-                                <button
-                                    onClick={() => router.push("/admin/videollamadas")}
-                                    className="w-full text-left p-4 bg-tech-900 border border-white/5 rounded-xl hover:border-rose-500/30 transition-all flex items-center justify-between group"
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <Video className="w-5 h-5 text-rose-500" />
-                                        <span className="text-xs font-bold text-white">Meet Admin</span>
                                     </div>
                                     <ArrowRight className="w-3 h-3 text-tech-800 group-hover:text-white transition-all" />
                                 </button>

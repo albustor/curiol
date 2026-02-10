@@ -7,20 +7,21 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import {
     TrendingUp, TrendingDown, DollarSign, Users,
     Calculator, Settings, Lock, ShieldCheck,
-    Briefcase, Image as ImageIcon, Zap, PieChart, Aperture,
+    Briefcase, ImageIcon, Zap, PieChart, Aperture,
     ChevronDown, ChevronUp, Info, AlertCircle,
     ArrowUpRight, ArrowDownRight, Activity,
     FileText as FileIcon, UploadCloud, Bot, Send, History,
-    CheckCircle2, FileCheck
+    CheckCircle2, FileCheck, Loader2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { FINANCE_CONFIG, calculateProductionCost } from "@/lib/finance-constants";
 import { analyzeTaxDeduction, recordTaxTransaction, generateHaciendaReport } from "@/actions/accounting";
+import { useRole } from "@/hooks/useRole";
 
 export default function EquilibrioPage() {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const { role, isMaster } = useRole();
     const [pin, setPin] = useState("");
     const [error, setError] = useState("");
     const router = useRouter();
@@ -41,25 +42,30 @@ export default function EquilibrioPage() {
     const [recentExpenses, setRecentExpenses] = useState<any[]>([]);
 
     useEffect(() => {
-        const isMaster = localStorage.getItem("master_admin") === "true";
-        if (isMaster) {
-            setIsAuthenticated(true);
+        if (role !== "LOADING" && !isMaster) {
+            router.push("/admin/dashboard");
         }
-    }, []);
+    }, [role, isMaster, router]);
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
         // Master PIN check (hashed/encoded like in regalo page)
         if (btoa(pin) === "MjYxNzI5MTg=") {
-            setIsAuthenticated(true);
             localStorage.setItem("master_admin", "true");
+            window.location.reload();
             setError("");
         } else {
             setError("Acceso Denegado. Solo para el Maestro.");
         }
     };
 
-    if (!isAuthenticated) {
+    if (role === "LOADING") return (
+        <div className="min-h-screen bg-tech-950 flex items-center justify-center">
+            <Loader2 className="w-12 h-12 text-curiol-500 animate-spin" />
+        </div>
+    );
+
+    if (!isMaster) {
         return (
             <div className="min-h-screen bg-tech-950 flex flex-col items-center justify-center p-4">
                 <motion.div

@@ -6,7 +6,7 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import {
     Video, VideoOff, Mic, MicOff, PhoneOff,
     Share2, Copy, MessageSquare, Plus,
-    History, Users, Sparkles, Monitor, Info
+    History, Users, Sparkles, Monitor, Info, ExternalLink
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -44,11 +44,16 @@ export default function VideoCallCenter() {
     };
 
     useEffect(() => {
+        let api: any = null;
+        let script: HTMLScriptElement | null = null;
+
         if (isInCall && jitsiContainerRef.current) {
-            const script = document.createElement("script");
+            script = document.createElement("script");
             script.src = "https://meet.jit.si/external_api.js";
             script.async = true;
             script.onload = () => {
+                if (!window.JitsiMeetExternalAPI) return;
+
                 const domain = "meet.jit.si";
                 const options = {
                     roomName: roomName,
@@ -73,20 +78,23 @@ export default function VideoCallCenter() {
                         ],
                     }
                 };
-                apiRef.current = new window.JitsiMeetExternalAPI(domain, options);
+                api = new window.JitsiMeetExternalAPI(domain, options);
+                apiRef.current = api;
             };
             document.body.appendChild(script);
-
-            return () => {
-                if (apiRef.current) {
-                    apiRef.current.dispose();
-                }
-                document.body.removeChild(script);
-            };
         }
+
+        return () => {
+            if (api) {
+                api.dispose();
+            }
+            if (script && document.body.contains(script)) {
+                document.body.removeChild(script);
+            }
+        };
     }, [isInCall, roomName]);
 
-    const meetingUrl = `https://meet.jit.si/${roomName}`;
+    const meetingUrl = typeof window !== "undefined" ? `${window.location.origin}/reunion/${roomName}` : `/reunion/${roomName}`;
 
     const handleCopy = () => {
         navigator.clipboard.writeText(meetingUrl);
@@ -95,7 +103,7 @@ export default function VideoCallCenter() {
     };
 
     const handleWhatsAppShare = () => {
-        const text = encodeURIComponent(`Hola, te invito a una videollamada de Curiol Studio. Únete aquí: ${meetingUrl}`);
+        const text = encodeURIComponent(`Hola, te invito a una videollamada de Curiol Studio. Únete a nuestro entorno seguro aquí: ${meetingUrl}`);
         window.open(`https://wa.me/?text=${text}`, '_blank');
     };
 
@@ -145,6 +153,19 @@ export default function VideoCallCenter() {
                                             <Sparkles className="w-5 h-5" />
                                         </button>
                                     </div>
+                                </div>
+
+                                <div className="p-4 bg-tech-950 border border-curiol-500/20 rounded-2xl flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                                        <span className="text-[10px] text-white font-bold uppercase tracking-widest">Google Workspace Ready</span>
+                                    </div>
+                                    <button
+                                        onClick={() => window.open("https://meet.google.com/new", "_blank")}
+                                        className="text-[10px] text-curiol-500 hover:text-white transition-all font-bold uppercase tracking-widest flex items-center gap-1"
+                                    >
+                                        Alternar a Meet <ExternalLink className="w-3 h-3" />
+                                    </button>
                                 </div>
 
                                 {roomName && !isInCall && (

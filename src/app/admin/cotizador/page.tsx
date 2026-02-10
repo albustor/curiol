@@ -8,12 +8,14 @@ import {
     FileText, Download, Briefcase, Heart,
     ArrowRight, CheckCircle2, User,
     Sparkles, Trash2, Plus,
-    ShieldCheck, Clock, FileCheck, X, Camera
+    ShieldCheck, Clock, FileCheck, X, Camera, Loader2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { useRole } from "@/hooks/useRole";
+import { useRouter } from "next/navigation";
 
 interface Package {
     id: string;
@@ -119,6 +121,8 @@ const PACKAGES = {
 };
 
 export default function AdminCotizadorPage() {
+    const { role, isMaster } = useRole();
+    const router = useRouter();
     const [tab, setTab] = useState<"legado" | "infra" | "sociales" | "deportes">("legado");
     const [clientName, setClientName] = useState("");
     const [currency, setCurrency] = useState<"CRC" | "USD">("CRC");
@@ -134,8 +138,22 @@ export default function AdminCotizadorPage() {
     const pdfRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        if (role === "UNAUTHORIZED") {
+            router.push("/admin/login");
+        } else if (role !== "LOADING" && !isMaster) {
+            router.push("/admin/dashboard");
+        }
+    }, [role, isMaster, router]);
+
+    useEffect(() => {
         setQuoteId(`Q-${Math.floor(Math.random() * 9000) + 1000}`);
     }, []);
+
+    if (role === "LOADING") return (
+        <div className="min-h-screen bg-tech-950 flex items-center justify-center">
+            <Loader2 className="w-12 h-12 text-curiol-500 animate-spin" />
+        </div>
+    );
 
     const togglePackage = (pkg: Package) => {
         if (selectedPackages.find(p => p.id === pkg.id)) {
