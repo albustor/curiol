@@ -45,17 +45,8 @@ export function Navbar() {
 
             <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 flex justify-between items-center">
                 {/* Logo */}
-                <Link href="/" className="group flex items-center gap-4">
-                    <img src="/Logo_Principal.png" alt="Logo" className="h-10 w-10 object-contain" />
-                    <div className="flex flex-col items-start">
-                        <span className="font-serif text-xl md:text-2xl tracking-[0.2em] text-white leading-none drop-shadow-lg">
-                            CURIOL<span className="text-curiol-500 font-light ml-2">STUDIO</span>
-                        </span>
-                        <p className="text-[0.5rem] md:text-[0.6rem] uppercase tracking-[0.4em] text-tech-400 mt-1 transition-colors drop-shadow-md">
-                            Fotografía • Tecnología • Legado
-                        </p>
-                    </div>
-                </Link>
+                {/* Empty spacer to keep menu aligned or just a simple Link text if preferred, but user said "no se vea" */}
+                <div></div>
 
                 {/* Desktop Menu */}
                 <div className="hidden lg:flex lg:space-x-8 items-center">
@@ -111,11 +102,7 @@ export function Navbar() {
                     >
                         {/* Mobile Header in Overlay */}
                         <div className="flex justify-between items-center mb-12">
-                            <div className="group flex flex-col items-center">
-                                <span className="font-serif text-xl tracking-[0.2em] text-white leading-none">
-                                    CURIOL<span className="text-curiol-500 font-light ml-2">STUDIO</span>
-                                </span>
-                            </div>
+                            <div></div>
                             <button
                                 onClick={() => setIsOpen(false)}
                                 className="text-curiol-500 p-2 bg-tech-900/50 rounded-full"

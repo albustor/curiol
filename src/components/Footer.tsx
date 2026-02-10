@@ -17,17 +17,6 @@ export function Footer() {
                                 <span className="h-[1px] w-8 bg-curiol-500"></span>
                                 <span className="text-curiol-500 text-[10px] font-bold tracking-[0.4em] uppercase">Digitalización Humana</span>
                             </div>
-                            <div className="flex items-center gap-6 mb-2">
-                                <img src="/Logo_Principal.png" alt="Curiol Studio Logo" className="h-16 w-16 object-contain" />
-                                <div className="flex flex-col">
-                                    <span className="font-serif text-4xl tracking-widest text-white leading-none italic">
-                                        CURIOL<span className="text-curiol-500 ml-2">STUDIO</span>
-                                    </span>
-                                    <span className="text-tech-500 text-[10px] font-bold tracking-[0.4em] uppercase mt-1">
-                                        Fotografía • Tecnología • Legado
-                                    </span>
-                                </div>
-                            </div>
                             <p className="text-tech-400 text-sm font-light leading-relaxed max-w-md mt-6">
                                 Construimos ecosistemas de legado digital donde la sensibilidad artística se encuentra con la ingeniería de alta conversión. "Digitalización Humana" para familias y negocios locales.
                             </p>
