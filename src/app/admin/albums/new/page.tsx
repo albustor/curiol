@@ -58,60 +58,89 @@ export default function NewAlbumStudio() {
 
         setUploading(true);
 
-        const newImages: UploadedImage[] = await Promise.all(
-            files.map(async (file) => {
+        // Process files one by one to avoid blocking and show incremental progress
+        for (const file of files) {
+            try {
                 const storageRef = ref(storage, `albums/temp/${Date.now()}_${file.name}`);
                 await uploadBytes(storageRef, file);
                 const url = await getDownloadURL(storageRef);
 
-                return {
+                const newImg: UploadedImage = {
                     file,
                     originalUrl: url,
                     caption: "Generando leyenda...",
                     processing: true
                 };
-            })
-        );
 
-        setImages(prev => [...prev, ...newImages]);
+                setImages(prev => {
+                    const nextList = [...prev, newImg];
+                    const newIndex = nextList.length - 1;
+                    // Trigger AI processing for this specific image
+                    processAI(newIndex);
+                    return nextList;
+                });
+            } catch (error) {
+                console.error(`Error uploading ${file.name}:`, error);
+            }
+        }
+
         setUploading(false);
-
-        // Process AI in background for each
-        newImages.forEach((img, idx) => {
-            processAI(images.length + idx);
-        });
     };
 
     const processAI = async (index: number) => {
-        setImages(prev => {
-            const currentImg = prev[index];
-            if (!currentImg) return prev;
+        try {
+            // We need to work with the latest state reference inside the async loop
+            // But for simplicity in this React version, we'll fetch the image from the current state
+            // and perform the AI calls.
 
-            (async () => {
-                const [caption, story, post, portrait, tags] = await Promise.all([
-                    generateDeliveryCopy(albumName || "Cliente", "Sesión", "story"),
-                    generateSocialCrop(currentImg.originalUrl, "story"),
-                    generateSocialCrop(currentImg.originalUrl, "post"),
-                    generateSocialCrop(currentImg.originalUrl, "portrait"),
-                    generateImageTags(currentImg.originalUrl)
-                ]);
+            // Wait a small bit to ensure state has settled (optional but helps with rapid succession)
+            await new Promise(r => setTimeout(r, 100));
 
-                setImages(current => {
-                    const updated = [...current];
-                    updated[index] = {
-                        ...updated[index],
-                        caption: caption || "Momento capturado",
-                        processing: false,
-                        social: { story, post, portrait },
-                        tags,
-                        category: index < 3 ? "highlight" : "general"
-                    };
-                    return updated;
-                });
-            })();
+            setImages(prev => {
+                const currentImg = prev[index];
+                if (!currentImg) return prev;
 
-            return prev;
-        });
+                (async () => {
+                    try {
+                        const [caption, story, post, portrait, tags] = await Promise.all([
+                            generateDeliveryCopy(albumName || "Cliente", "Sesión", "story"),
+                            generateSocialCrop(currentImg.originalUrl, "story"),
+                            generateSocialCrop(currentImg.originalUrl, "post"),
+                            generateSocialCrop(currentImg.originalUrl, "portrait"),
+                            generateImageTags(currentImg.originalUrl)
+                        ]);
+
+                        setImages(current => {
+                            if (!current[index]) return current;
+                            const updated = [...current];
+                            updated[index] = {
+                                ...updated[index],
+                                caption: caption || "Momento capturado",
+                                processing: false,
+                                social: { story, post, portrait },
+                                tags: tags || [],
+                                category: index < 3 ? "highlight" : "general"
+                            };
+                            return updated;
+                        });
+                    } catch (aiError) {
+                        console.error("AI Processing Error:", aiError);
+                        setImages(current => {
+                            const updated = [...current];
+                            if (updated[index]) {
+                                updated[index].processing = false;
+                                updated[index].caption = "Procesamiento IA omitido";
+                            }
+                            return updated;
+                        });
+                    }
+                })();
+
+                return prev;
+            });
+        } catch (error) {
+            console.error("Critical error in processAI logic:", error);
+        }
     };
 
     const handleMagicMood = async () => {
@@ -328,10 +357,15 @@ export default function NewAlbumStudio() {
                                     <p className="text-tech-500 text-sm font-light mb-8">Arrastra archivos o haz clic para seleccionar.</p>
 
                                     {/* Upload Progress Preview */}
-                                    <div className="grid grid-cols-4 gap-4 mt-8 w-full">
-                                        {images.slice(-4).map((img, i) => (
-                                            <div key={i} className="aspect-square bg-tech-950 rounded-lg overflow-hidden border border-white/5">
-                                                <img src={img.originalUrl} className="w-full h-full object-cover opacity-50" alt="Preview" />
+                                    <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 mt-8 w-full">
+                                        {images.map((img, i) => (
+                                            <div key={i} className="aspect-square bg-tech-950 rounded-lg overflow-hidden border border-white/5 relative group/thumb">
+                                                <img src={img.originalUrl} className={cn("w-full h-full object-cover transition-opacity", img.processing ? "opacity-30" : "opacity-60")} alt="Preview" />
+                                                {img.processing && (
+                                                    <div className="absolute inset-0 flex items-center justify-center">
+                                                        <Loader2 className="w-4 h-4 text-curiol-500 animate-spin" />
+                                                    </div>
+                                                )}
                                             </div>
                                         ))}
                                     </div>

@@ -11,7 +11,7 @@ import Link from "next/link";
 import {
     LayoutDashboard, Users, Image as ImageIcon, MessageSquare, Mail,
     Plus, ExternalLink, Settings, BarChart3, LogOut, ArrowRight, Loader2, Sparkles,
-    Calendar as CalendarIcon, Video, FileText, Brain, Aperture, CheckCircle2, AlertCircle, PieChart
+    Calendar as CalendarIcon, Video, FileText, Brain, Aperture, CheckCircle2, AlertCircle, PieChart, ClipboardCheck
 } from "lucide-react";
 import { getPhotographyDashboardData, PhotographyInsight, analyzeAlbumComposition } from "@/actions/photography-ai";
 
@@ -183,71 +183,58 @@ export default function AdminDashboard() {
                     ))}
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Deliveries Management */}
-                    <div className="lg:col-span-2 space-y-6">
-                        <div className="flex justify-between items-center">
-                            <h3 className="text-2xl font-serif text-white italic flex items-center gap-3">
-                                <Sparkles className="w-6 h-6 text-curiol-500" /> Galerías Premium V2
-                            </h3>
-                            <Link
-                                href="/admin/albums/new"
-                                target="_blank"
-                                className="flex items-center gap-2 px-4 py-2 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest hover:brightness-110 transition-all rounded-lg shadow-lg shadow-curiol-500/20"
-                            >
-                                <Plus className="w-4 h-4" /> Nuevo Pro Studio
-                            </Link>
-                        </div>
-                        <div className="space-y-4">
-                            {albums.map((album) => (
-                                <div key={album.id} className="p-6 bg-tech-900 border border-white/5 rounded-2xl flex items-center justify-between hover:border-curiol-500/30 transition-all group">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 bg-tech-950 rounded-lg overflow-hidden border border-white/5">
-                                            {album.images?.[0]?.original && <img src={album.images[0].original} className="w-full h-full object-cover opacity-60" />}
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                    {/* Left Column: Recent Production & Intelligence */}
+                    <div className="lg:col-span-3 space-y-12">
+                        {/* Producción Actual Section */}
+                        <section className="space-y-6">
+                            <div className="flex justify-between items-center bg-tech-900/30 p-4 rounded-2xl border border-white/5">
+                                <h3 className="text-xl font-serif text-white italic flex items-center gap-3">
+                                    <Sparkles className="w-5 h-5 text-curiol-500" /> Producción: Galerías Premium V2
+                                </h3>
+                                <Link
+                                    href="/admin/albums/new"
+                                    target="_blank"
+                                    className="flex items-center gap-2 px-4 py-2 bg-curiol-gradient text-white text-[9px] font-bold uppercase tracking-widest hover:brightness-110 transition-all rounded-lg"
+                                >
+                                    <Plus className="w-3 h-3" /> Nuevo Pro Studio
+                                </Link>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {albums.map((album) => (
+                                    <div key={album.id} className="p-4 bg-tech-900 border border-white/5 rounded-2xl flex items-center justify-between hover:border-curiol-500/30 transition-all group">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 bg-tech-950 rounded-lg overflow-hidden border border-white/5 shrink-0">
+                                                {album.images?.[0]?.original && <img src={album.images[0].original} className="w-full h-full object-cover opacity-60" />}
+                                            </div>
+                                            <div className="overflow-hidden">
+                                                <p className="text-white font-serif text-base italic truncate">{album.name}</p>
+                                                <p className="text-tech-600 text-[9px] uppercase font-bold tracking-widest">{album.clientName}</p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <p className="text-white font-serif text-lg italic">{album.name}</p>
-                                            <p className="text-tech-600 text-[10px] uppercase font-bold tracking-widest">{album.clientName} • {album.images?.length || 0} fotos</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-4">
-                                        <button
-                                            onClick={() => router.push("/admin/albums")} // Link to new Albums List
-                                            className="p-2 text-tech-500 hover:text-white transition-all"
-                                        >
-                                            <Settings className="w-5 h-5" />
-                                        </button>
-                                        <a href={`/album/${album.id}`} target="_blank" className="p-3 bg-curiol-500/10 text-curiol-500 rounded-xl hover:bg-curiol-500 hover:text-white transition-all">
-                                            <ExternalLink className="w-5 h-5" />
-                                        </a>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* Traditional Deliveries (Legacy/Simple) */}
-                        <div className="pt-12">
-                            <h3 className="text-xl font-serif text-white/40 italic flex items-center gap-3 mb-6">
-                                <ImageIcon className="w-5 h-5" /> Entregas Simples (Legado)
-                            </h3>
-                            <div className="space-y-3">
-                                {recentDeliveries.slice(0, 3).map((delivery) => (
-                                    <div key={delivery.id} className="p-4 bg-tech-950 border border-white/5 rounded-xl flex items-center justify-between opacity-60">
-                                        <p className="text-white text-sm">{delivery.name}</p>
-                                        <div className="flex items-center gap-3">
-                                            <span className="text-[8px] font-bold uppercase tracking-widest px-2 py-1 rounded bg-white/5">{delivery.status}</span>
-                                            <a href={`/app/${delivery.id}`} target="_blank" className="text-tech-700 hover:text-white"><ExternalLink className="w-4 h-4" /></a>
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                onClick={() => router.push("/admin/albums")}
+                                                className="p-2 text-tech-500 hover:text-white transition-all"
+                                            >
+                                                <Settings className="w-4 h-4" />
+                                            </button>
+                                            <a href={`/album/${album.id}`} target="_blank" className="p-2 bg-curiol-500/10 text-curiol-500 rounded-lg hover:bg-curiol-500 hover:text-white transition-all">
+                                                <ExternalLink className="w-4 h-4" />
+                                            </a>
                                         </div>
                                     </div>
                                 ))}
                             </div>
-                        </div>
+                        </section>
 
-                        {/* Photography Intelligence Section */}
-                        <div className="pt-12">
-                            <h3 className="text-2xl font-serif text-white italic flex items-center gap-3 mb-8">
-                                <Aperture className="w-6 h-6 text-curiol-500" /> Inteligencia Fotográfica (IA)
-                            </h3>
+                        {/* Intelligence Section (Photography AI) */}
+                        <section className="space-y-6">
+                            <div className="bg-tech-900/30 p-4 rounded-2xl border border-white/5">
+                                <h3 className="text-xl font-serif text-white italic flex items-center gap-3">
+                                    <Aperture className="w-5 h-5 text-curiol-500" /> Inteligencia del Legado (IA)
+                                </h3>
+                            </div>
 
                             {photographyInsight ? (
                                 <GlassCard className="p-8 border-curiol-500/20 bg-tech-900/50">
@@ -284,19 +271,19 @@ export default function AdminDashboard() {
                                                 <Sparkles className="w-4 h-4 text-amber-500" />
                                                 <p className="text-[10px] text-white font-bold uppercase tracking-widest">Consejo del Maestro</p>
                                             </div>
-                                            <p className="text-sm text-tech-400 italic leading-relaxed mb-6 font-serif">
+                                            <p className="text-xs text-tech-400 italic leading-relaxed mb-6 font-serif">
                                                 "{photographyInsight.maestroAdvice}"
                                             </p>
 
                                             <div className="space-y-3">
                                                 {photographyInsight.positives.slice(0, 2).map(p => (
-                                                    <div key={p} className="flex items-start gap-2 text-[10px] text-green-500">
+                                                    <div key={p} className="flex items-start gap-2 text-[9px] text-green-500">
                                                         <CheckCircle2 className="w-3 h-3 mt-0.5" />
                                                         <span>{p}</span>
                                                     </div>
                                                 ))}
                                                 {photographyInsight.negatives.slice(0, 1).map(n => (
-                                                    <div key={n} className="flex items-start gap-2 text-[10px] text-red-400">
+                                                    <div key={n} className="flex items-start gap-2 text-[9px] text-red-400">
                                                         <AlertCircle className="w-3 h-3 mt-0.5" />
                                                         <span>{n}</span>
                                                     </div>
@@ -319,173 +306,155 @@ export default function AdminDashboard() {
                                             disabled={isAnalyzing}
                                             className="text-curiol-500 hover:text-white uppercase font-bold tracking-widest transition-all flex items-center gap-2"
                                         >
-                                            {isAnalyzing ? "Analizando..." : "Re-analizar Último Álbum"} <ArrowRight className="w-3 h-3" />
+                                            {isAnalyzing ? "Analizando..." : "Re-analizar"} <ArrowRight className="w-3 h-3" />
                                         </button>
                                     </div>
                                 </GlassCard>
                             ) : (
                                 <GlassCard className="p-12 text-center border-dashed border-white/10">
                                     <Brain className="w-12 h-12 text-tech-800 mx-auto mb-4" />
-                                    <p className="text-tech-500 text-sm italic">No hay análisis de inteligencia todavía.</p>
-                                    <button
-                                        onClick={async () => {
-                                            if (!albums[0]?.id) return alert("No hay álbumes para analizar");
-                                            setIsAnalyzing(true);
-                                            await analyzeAlbumComposition(albums[0].id);
-                                            const data = await getPhotographyDashboardData(1);
-                                            if (data.length > 0) setPhotographyInsight(data[0]);
-                                            setIsAnalyzing(false);
-                                        }}
-                                        disabled={isAnalyzing}
-                                        className="mt-6 px-6 py-3 bg-tech-900 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl hover:bg-tech-800 transition-all"
-                                    >
-                                        Iniciar Inteligencia Colectiva
-                                    </button>
+                                    <p className="text-tech-500 text-sm italic">Sin análisis previo.</p>
                                 </GlassCard>
                             )}
-                        </div>
+                        </section>
                     </div>
 
-                    {/* Quick Tools */}
-                    <div className="space-y-6">
-                        <h3 className="text-2xl font-serif text-white italic flex items-center gap-3">
-                            <LayoutDashboard className="w-6 h-6 text-tech-500" /> Herramientas Rápidas
-                        </h3>
-
-                        <GlassCard className="p-8 border-curiol-500/30 bg-curiol-500/10 relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                <Video className="w-16 h-16 text-curiol-500" />
-                            </div>
-                            <div className="relative z-10">
-                                <span className="text-curiol-500 text-[10px] font-bold uppercase tracking-widest mb-2 block">Acceso Prioritario</span>
-                                <h4 className="text-2xl font-serif text-white italic mb-4">Meet Admin Center</h4>
-                                <p className="text-tech-500 text-xs font-light mb-8 leading-relaxed">
-                                    Inicia o únete a videollamadas de pre-producción al instante con cifrado de grado militar.
-                                </p>
+                    {/* Right Column: Ecosistemas / Tools Categories */}
+                    <div className="lg:col-span-1 space-y-10">
+                        {/* Ecosistema Creativo */}
+                        <div className="space-y-4">
+                            <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] text-tech-500 px-2 flex items-center gap-2">
+                                <Aperture className="w-3 h-3" /> Ecosistema Creativo
+                            </h4>
+                            <div className="grid grid-cols-1 gap-3">
                                 <button
-                                    onClick={() => router.push("/admin/videollamadas")}
-                                    className="w-full py-4 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest rounded-xl shadow-lg shadow-curiol-500/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
+                                    onClick={() => router.push("/admin/portafolio")}
+                                    className="w-full text-left p-4 bg-tech-900 border border-white/5 rounded-xl hover:border-purple-500/30 transition-all flex items-center justify-between group"
                                 >
-                                    <Video className="w-4 h-4" /> Entrar al Centro de Control
+                                    <div className="flex items-center gap-3">
+                                        <ImageIcon className="w-5 h-5 text-purple-500" />
+                                        <span className="text-xs font-bold text-white">Portafolio</span>
+                                    </div>
+                                    <ArrowRight className="w-3 h-3 text-tech-800 group-hover:text-white transition-all" />
+                                </button>
+                                <button
+                                    onClick={() => router.push("/admin/insumos")}
+                                    className="w-full text-left p-4 bg-tech-900 border border-white/5 rounded-xl hover:border-curiol-500/30 transition-all flex items-center justify-between group"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <Brain className="w-5 h-5 text-curiol-500" />
+                                        <span className="text-xs font-bold text-white">Insumos IA</span>
+                                    </div>
+                                    <ArrowRight className="w-3 h-3 text-tech-800 group-hover:text-white transition-all" />
+                                </button>
+                                <button
+                                    className="w-full text-left p-4 bg-tech-900/50 border border-white/5 rounded-xl opacity-40 flex items-center justify-between cursor-not-allowed grayscale"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <MessageSquare className="w-5 h-5 text-tech-500" />
+                                        <span className="text-xs font-bold text-white">Blog</span>
+                                    </div>
+                                    <ArrowRight className="w-3 h-3 text-tech-800" />
                                 </button>
                             </div>
-                        </GlassCard>
+                        </div>
 
-                        <div className="grid grid-cols-1 gap-4">
-                            <button
-                                onClick={() => router.push("/admin/analytics")}
-                                className="w-full text-left p-6 bg-tech-900 border border-tech-800 rounded-2xl hover:bg-tech-800 transition-all flex items-center justify-between group"
-                            >
-                                <div className="flex items-center gap-4">
-                                    <BarChart3 className="w-6 h-6 text-curiol-500" />
-                                    <div>
-                                        <p className="text-white font-bold text-sm">Analítica Estratégica</p>
-                                        <p className="text-tech-500 text-[10px] uppercase tracking-widest">Insights y Tendencias IA</p>
+                        {/* Gestión Comercial */}
+                        <div className="space-y-4">
+                            <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] text-tech-500 px-2 flex items-center gap-2">
+                                <BarChart3 className="w-3 h-3" /> Gestión Comercial
+                            </h4>
+                            <div className="grid grid-cols-1 gap-3">
+                                <button
+                                    onClick={() => router.push("/admin/analytics")}
+                                    className="w-full text-left p-4 bg-tech-900 border border-white/5 rounded-xl hover:border-curiol-500/30 transition-all flex items-center justify-between group"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <BarChart3 className="w-5 h-5 text-curiol-500" />
+                                        <span className="text-xs font-bold text-white">Analítica</span>
                                     </div>
-                                </div>
-                                <ArrowRight className="w-4 h-4 text-tech-800 group-hover:text-white transition-all" />
-                            </button>
-                            <button
-                                onClick={() => router.push("/admin/email-manager")}
-                                className="w-full text-left p-6 bg-curiol-gradient/10 border border-curiol-500/30 rounded-2xl hover:bg-curiol-500/20 transition-all flex items-center justify-between group shadow-lg shadow-curiol-500/5"
-                            >
-                                <div className="flex items-center gap-4">
-                                    <Mail className="w-6 h-6 text-curiol-500" />
-                                    <div>
-                                        <p className="text-white font-bold text-sm">Email Manager</p>
-                                        <p className="text-curiol-500 text-[10px] uppercase tracking-widest font-bold">Comunicaciones info@curiol.studio</p>
+                                    <ArrowRight className="w-3 h-3 text-tech-800 group-hover:text-white transition-all" />
+                                </button>
+                                <button
+                                    onClick={() => router.push("/admin/presupuestos")}
+                                    className="w-full text-left p-4 bg-tech-900 border border-white/5 rounded-xl hover:border-amber-500/30 transition-all flex items-center justify-between group"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <FileText className="w-5 h-5 text-amber-500" />
+                                        <span className="text-xs font-bold text-white">Presupuestos</span>
                                     </div>
-                                </div>
-                                <ArrowRight className="w-4 h-4 text-curiol-500 group-hover:text-white transition-all" />
-                            </button>
-                            <button className="w-full text-left p-6 bg-tech-950/50 border border-white/5 rounded-2xl opacity-40 flex items-center justify-between cursor-not-allowed">
-                                <div className="flex items-center gap-4">
-                                    <MessageSquare className="w-6 h-6 text-tech-500" />
-                                    <div>
-                                        <p className="text-white font-bold text-sm">Gestionar Blog</p>
-                                        <p className="text-tech-500 text-[10px] uppercase tracking-widest">3 posts pendientes</p>
+                                    <ArrowRight className="w-3 h-3 text-tech-800 group-hover:text-white transition-all" />
+                                </button>
+                                <button
+                                    onClick={() => router.push("/admin/cotizador")}
+                                    className="w-full text-left p-4 bg-tech-900 border border-white/5 rounded-xl hover:border-curiol-500/30 transition-all flex items-center justify-between group"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <FileText className="w-5 h-5 text-curiol-500" />
+                                        <span className="text-xs font-bold text-white">Cotizador</span>
                                     </div>
-                                </div>
-                                <ArrowRight className="w-4 h-4 text-tech-800 transition-all" />
-                            </button>
-                            <button
-                                onClick={() => router.push("/admin/cotizador")}
-                                className="w-full text-left p-6 bg-tech-900 border border-tech-800 rounded-2xl hover:bg-tech-800 transition-all flex items-center justify-between group"
-                            >
-                                <div className="flex items-center gap-4">
-                                    <BarChart3 className="w-6 h-6 text-curiol-500" />
-                                    <div>
-                                        <p className="text-white font-bold text-sm">Cotizador Formal</p>
-                                        <p className="text-tech-500 text-[10px] uppercase tracking-widest">Generar Contratos PDF</p>
+                                    <ArrowRight className="w-3 h-3 text-tech-800 group-hover:text-white transition-all" />
+                                </button>
+                                <button
+                                    onClick={exportLeads}
+                                    className="w-full text-left p-4 bg-tech-900 border border-white/5 rounded-xl hover:border-tech-500 transition-all flex items-center justify-between group"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <Users className="w-5 h-5 text-tech-500" />
+                                        <span className="text-xs font-bold text-white">Exportar Leads</span>
                                     </div>
-                                </div>
-                                <ArrowRight className="w-4 h-4 text-tech-800 group-hover:text-white transition-all" />
-                            </button>
-                            <button
-                                onClick={() => router.push("/admin/academy")}
-                                className="w-full text-left p-6 bg-tech-900 border border-tech-800 rounded-2xl hover:bg-tech-800 transition-all flex items-center justify-between group"
-                            >
-                                <div className="flex items-center gap-4">
-                                    <Sparkles className="w-6 h-6 text-curiol-500" />
-                                    <div>
-                                        <p className="text-white font-bold text-sm">Gestionar Academy</p>
-                                        <p className="text-tech-500 text-[10px] uppercase tracking-widest">Lecciones y Videos Veo</p>
+                                    <ArrowRight className="w-3 h-3 text-tech-800 group-hover:text-white transition-all" />
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Operaciones & Calidad */}
+                        <div className="space-y-4">
+                            <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] text-tech-500 px-2 flex items-center gap-2">
+                                <Settings className="w-3 h-3" /> Operaciones & Calidad
+                            </h4>
+                            <div className="grid grid-cols-1 gap-3">
+                                <button
+                                    onClick={() => router.push("/admin/email-manager")}
+                                    className="w-full text-left p-4 bg-curiol-500/5 border border-curiol-500/20 rounded-xl hover:bg-curiol-500/10 transition-all flex items-center justify-between group"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <Mail className="w-5 h-5 text-curiol-500" />
+                                        <span className="text-xs font-bold text-white">Email Manager</span>
                                     </div>
-                                </div>
-                                <ArrowRight className="w-4 h-4 text-tech-800 group-hover:text-white transition-all" />
-                            </button>
-                            <button
-                                onClick={() => router.push("/admin/portafolio")}
-                                className="w-full text-left p-6 bg-tech-900 border border-tech-800 rounded-2xl hover:bg-tech-800 transition-all flex items-center justify-between group"
-                            >
-                                <div className="flex items-center gap-4">
-                                    <ImageIcon className="w-6 h-6 text-purple-500" />
-                                    <div>
-                                        <p className="text-white font-bold text-sm">Gestionar Portafolio</p>
-                                        <p className="text-tech-500 text-[10px] uppercase tracking-widest">Álbumnes y Fotos IA</p>
+                                    <ArrowRight className="w-3 h-3 text-curiol-500 group-hover:text-white transition-all" />
+                                </button>
+                                <button
+                                    onClick={() => router.push("/admin/qa-logs")}
+                                    className="w-full text-left p-4 bg-tech-900 border border-white/5 rounded-xl hover:border-curiol-500/30 transition-all flex items-center justify-between group"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <ClipboardCheck className="w-5 h-5 text-curiol-500" />
+                                        <span className="text-xs font-bold text-white">QA Logs</span>
                                     </div>
-                                </div>
-                                <ArrowRight className="w-4 h-4 text-tech-800 group-hover:text-white transition-all" />
-                            </button>
-                            <button
-                                onClick={() => router.push("/admin/presupuestos")}
-                                className="w-full text-left p-6 bg-tech-900 border border-tech-800 rounded-2xl hover:bg-tech-800 transition-all flex items-center justify-between group"
-                            >
-                                <div className="flex items-center gap-4">
-                                    <FileText className="w-6 h-6 text-amber-500" />
-                                    <div>
-                                        <p className="text-white font-bold text-sm">Gestionar Presupuestos</p>
-                                        <p className="text-tech-500 text-[10px] uppercase tracking-widest">{quotes.filter((q: any) => q.status === 'pending_link').length} pendientes de link</p>
+                                    <ArrowRight className="w-3 h-3 text-tech-800 group-hover:text-white transition-all" />
+                                </button>
+                                <button
+                                    onClick={() => router.push("/admin/videollamadas")}
+                                    className="w-full text-left p-4 bg-tech-900 border border-white/5 rounded-xl hover:border-rose-500/30 transition-all flex items-center justify-between group"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <Video className="w-5 h-5 text-rose-500" />
+                                        <span className="text-xs font-bold text-white">Meet Admin</span>
                                     </div>
-                                </div>
-                                <ArrowRight className="w-4 h-4 text-tech-800 group-hover:text-white transition-all" />
-                            </button>
-                            <button
-                                onClick={exportLeads}
-                                className="w-full text-left p-6 bg-tech-900 border border-tech-800 rounded-2xl hover:bg-tech-800 transition-all flex items-center justify-between group"
-                            >
-                                <div className="flex items-center gap-4">
-                                    <Users className="w-6 h-6 text-tech-500" />
-                                    <div>
-                                        <p className="text-white font-bold text-sm">Exportar Leads</p>
-                                        <p className="text-tech-500 text-[10px] uppercase tracking-widest">CSV / Google Sheets</p>
+                                    <ArrowRight className="w-3 h-3 text-tech-800 group-hover:text-white transition-all" />
+                                </button>
+                                <button
+                                    onClick={() => router.push("/admin/academy")}
+                                    className="w-full text-left p-4 bg-tech-900 border border-white/5 rounded-xl hover:border-curiol-500/30 transition-all flex items-center justify-between group"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <Sparkles className="w-5 h-5 text-curiol-500" />
+                                        <span className="text-xs font-bold text-white">Academy</span>
                                     </div>
-                                </div>
-                                <ArrowRight className="w-4 h-4 text-tech-800 group-hover:text-white transition-all" />
-                            </button>
-                            <button
-                                onClick={() => router.push("/admin/insumos")}
-                                className="w-full text-left p-6 bg-curiol-500/5 border border-curiol-500/20 rounded-2xl hover:bg-curiol-500/10 transition-all flex items-center justify-between group"
-                            >
-                                <div className="flex items-center gap-4">
-                                    <Brain className="w-6 h-6 text-curiol-500" />
-                                    <div>
-                                        <p className="text-white font-bold text-sm">Insumos para IA</p>
-                                        <p className="text-curiol-500/60 text-[10px] uppercase tracking-widest">Alimentación de Cerebro Estratégico</p>
-                                    </div>
-                                </div>
-                                <ArrowRight className="w-4 h-4 text-curiol-500 group-hover:text-white transition-all" />
-                            </button>
+                                    <ArrowRight className="w-3 h-3 text-tech-800 group-hover:text-white transition-all" />
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
