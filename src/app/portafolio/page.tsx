@@ -18,9 +18,10 @@ export default function PortfolioPage() {
     useEffect(() => {
         async function load() {
             const data = await getAlbums();
-            setAlbums(data);
+            const validData = data || [];
+            setAlbums(validData);
 
-            const cats = ["Todos", ...new Set(data.map(album => album.category))];
+            const cats = ["Todos", ...new Set(validData.map(album => album.category).filter(Boolean))];
             setCategories(cats);
             setLoading(false);
         }
@@ -122,7 +123,7 @@ export default function PortfolioPage() {
                                         className="group relative aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-tech-900 border border-white/5 shadow-2xl"
                                     >
                                         <img
-                                            src={album.coverUrl || (album.photos.length > 0 ? album.photos[0].url : "")}
+                                            src={album.coverUrl || (album.photos && album.photos.length > 0 ? album.photos[0].url : "/placeholder-image.jpg")}
                                             alt={album.title}
                                             className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60 group-hover:opacity-80"
                                         />
@@ -145,7 +146,7 @@ export default function PortfolioPage() {
                                             </h3>
 
                                             <div className="flex items-center justify-between pt-6 border-t border-white/5 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
-                                                <span className="text-tech-500 text-[10px] font-bold uppercase tracking-widest">{album.photos.length} Fotografías</span>
+                                                <span className="text-tech-500 text-[10px] font-bold uppercase tracking-widest">{(album.photos || []).length} Fotografías</span>
                                                 <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-tech-950 group-hover:scale-110 transition-transform">
                                                     <ChevronRight className="w-5 h-5" />
                                                 </div>

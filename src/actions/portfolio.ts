@@ -64,7 +64,26 @@ export async function getAlbums(): Promise<PortfolioAlbum[]> {
     try {
         const q = query(collection(db, "portfolio_albums"), orderBy("createdAt", "desc"));
         const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as PortfolioAlbum[];
+        return snapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                title: data.title || "Sin título",
+                description: data.description || "",
+                category: data.category || "General",
+                coverUrl: data.coverUrl || "",
+                photos: data.photos || [],
+                createdAt: data.createdAt,
+                eventDate: data.eventDate || "",
+                slug: data.slug || doc.id,
+                password: data.password || "",
+                settings: data.settings || {
+                    allowLikes: true,
+                    allowDownloads: true,
+                    allowSharing: true
+                }
+            };
+        }) as PortfolioAlbum[];
     } catch (error) {
         console.error("Firestore Albums Fetch Error:", error);
         return [];
@@ -76,11 +95,27 @@ export async function getAlbumBySlug(slug: string): Promise<PortfolioAlbum | nul
         const q = query(collection(db, "portfolio_albums"));
         const snapshot = await getDocs(q);
 
-        // Find by slug or ID
         const doc = snapshot.docs.find(d => d.data().slug === slug || d.id === slug);
 
         if (!doc) return null;
-        return { id: doc.id, ...doc.data() } as PortfolioAlbum;
+        const data = doc.data();
+        return {
+            id: doc.id,
+            title: data.title || "Sin título",
+            description: data.description || "",
+            category: data.category || "General",
+            coverUrl: data.coverUrl || "",
+            photos: data.photos || [],
+            createdAt: data.createdAt,
+            eventDate: data.eventDate || "",
+            slug: data.slug || doc.id,
+            password: data.password || "",
+            settings: data.settings || {
+                allowLikes: true,
+                allowDownloads: true,
+                allowSharing: true
+            }
+        } as PortfolioAlbum;
     } catch (error) {
         console.error("Firestore Album Fetch Error:", error);
         return null;

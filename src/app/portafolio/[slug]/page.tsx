@@ -144,7 +144,7 @@ export default function AlbumViewPage() {
 
                     <div className="flex items-center justify-center gap-8">
                         <div className="text-center">
-                            <p className="text-white text-2xl font-serif italic">{album.photos.length}</p>
+                            <p className="text-white text-2xl font-serif italic">{(album.photos || []).length}</p>
                             <p className="text-tech-600 text-[8px] font-bold uppercase tracking-wider">Fotografías</p>
                         </div>
                         <div className="w-[1px] h-8 bg-white/5" />
@@ -158,7 +158,7 @@ export default function AlbumViewPage() {
 
             <section className="px-4 pb-32">
                 <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 auto-rows-min">
-                    {album.photos.map((p, idx) => (
+                    {(album.photos || []).map((p, idx) => (
                         <motion.div
                             key={p.id}
                             initial={{ opacity: 0, y: 20 }}
@@ -199,12 +199,12 @@ export default function AlbumViewPage() {
                         {/* Lightbox Header */}
                         <div className="p-8 flex items-center justify-between z-10">
                             <div className="text-white">
-                                <p className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-40">Imagen {selectedIndex + 1} de {album.photos.length}</p>
+                                <p className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-40">Imagen {selectedIndex + 1} de {(album.photos || []).length}</p>
                             </div>
                             <div className="flex items-center gap-6">
-                                {album.settings?.allowLikes && (
+                                {album.settings?.allowLikes && album.photos && album.photos[selectedIndex] && (
                                     <button
-                                        onClick={() => toggleLike(album.photos[selectedIndex].id)}
+                                        onClick={() => toggleLike(album.photos![selectedIndex].id)}
                                         className={cn(
                                             "flex items-center gap-3 px-6 py-3 rounded-xl transition-all font-serif italic text-sm border border-white/5",
                                             likedPhotos.includes(album.photos[selectedIndex].id) ? "bg-curiol-gradient text-white" : "bg-tech-900 text-tech-400"
@@ -215,19 +215,19 @@ export default function AlbumViewPage() {
                                     </button>
                                 )}
 
-                                {album.settings?.allowSharing && (
+                                {album.settings?.allowSharing && album.photos && album.photos[selectedIndex] && (
                                     <button
-                                        onClick={() => handleShare(album.photos[selectedIndex].url)}
+                                        onClick={() => handleShare(album.photos![selectedIndex].url)}
                                         className="p-3 bg-tech-900 rounded-xl text-tech-400 hover:text-white transition-all border border-white/5"
                                     >
                                         <Share2 className="w-5 h-5" />
                                     </button>
                                 )}
 
-                                {album.settings?.allowDownloads && (
+                                {album.settings?.allowDownloads && album.photos && album.photos[selectedIndex] && (
                                     <div className="flex items-center gap-2 bg-tech-950 p-1 rounded-xl border border-white/5">
                                         <button
-                                            onClick={() => handleDownload(album.photos[selectedIndex].url, `photo-${selectedIndex + 1}.jpg`)}
+                                            onClick={() => handleDownload(album.photos![selectedIndex].url, `photo-${selectedIndex + 1}.jpg`)}
                                             className="p-3 bg-tech-900 rounded-xl text-tech-400 hover:text-white transition-all border border-white/5"
                                             title="Original Resolution"
                                         >
@@ -262,7 +262,7 @@ export default function AlbumViewPage() {
                         {/* Lightbox Main Content */}
                         <div className="flex-grow flex items-center justify-between px-8 pb-8 relative overflow-hidden">
                             <button
-                                onClick={() => setSelectedIndex((prev) => (prev! - 1 + album.photos.length) % album.photos.length)}
+                                onClick={() => setSelectedIndex((prev) => (prev! - 1 + (album.photos?.length || 0)) % (album.photos?.length || 1))}
                                 className="z-10 p-4 bg-tech-900/50 backdrop-blur-xl rounded-2xl text-white hover:bg-curiol-gradient transition-all border border-white/5 group"
                             >
                                 <ChevronLeft className="w-8 h-8 group-hover:scale-110 transition-transform" />
@@ -277,14 +277,14 @@ export default function AlbumViewPage() {
                                 className="w-full h-full flex items-center justify-center p-4 md:p-12"
                             >
                                 <img
-                                    src={album.photos[selectedIndex].url}
+                                    src={album.photos?.[selectedIndex!]?.url || ""}
                                     className="max-w-full max-h-full object-contain rounded-xl shadow-2xl"
                                     alt=""
                                 />
                             </motion.div>
 
                             <button
-                                onClick={() => setSelectedIndex((prev) => (prev! + 1) % album.photos.length)}
+                                onClick={() => setSelectedIndex((prev) => (prev! + 1) % (album.photos?.length || 1))}
                                 className="z-10 p-4 bg-tech-900/50 backdrop-blur-xl rounded-2xl text-white hover:bg-curiol-gradient transition-all border border-white/5 group"
                             >
                                 <ChevronRight className="w-8 h-8 group-hover:scale-110 transition-transform" />
@@ -295,7 +295,7 @@ export default function AlbumViewPage() {
             </AnimatePresence>
 
             <AnimatePresence>
-                {aiSocialFormat && selectedIndex !== null && (
+                {aiSocialFormat && selectedIndex !== null && album.photos?.[selectedIndex] && (
                     <AiCompositionEditor
                         imageUrl={album.photos[selectedIndex].url}
                         initialFormat={aiSocialFormat}
