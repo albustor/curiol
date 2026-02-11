@@ -21,7 +21,7 @@ export async function GET(req: Request) {
 
     if (mode === "subscribe" && token === VERIFY_TOKEN) {
         console.log("Verification successful, returning challenge:", challenge);
-        return new Response(challenge, {
+        return new Response(challenge || "", {
             status: 200,
             headers: { 'Content-Type': 'text/plain' }
         });
