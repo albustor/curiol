@@ -55,28 +55,28 @@ const PACKAGES = {
             name: "Aventura Mágica",
             price: 80900,
             usd: 165,
-            desc: "15 Fotos Fine Art + IA. Realidad Aumentada y música personalizada."
+            desc: "Donde la imaginación cobra vida. Transformamos a los más pequeños en héroes de su propia historia, creando mundos de alegría y seguridad que se convierten en un legado visual eterno."
         },
         {
             id: "recuerdos",
             name: "Recuerdos Eternos",
             price: 77000,
             usd: 149,
-            desc: "15 Fotos High-End. Cuadros Vivos AR e Impresión Fine Art."
+            desc: "Un tributo a la esencia del ayer y el hoy. Conectamos quiénes fuimos con quienes somos, valorando el presente a través de un arte fotográfico que trasciende el tiempo."
         },
         {
             id: "marca",
             name: "Marca Personal",
             price: 89000,
             usd: 179,
-            desc: "15 Fotos de impacto. Estrategia visual y galería digital pro."
+            desc: "Presencia que abre puertas. Diseñamos una identidad visual estratégica para profesionales que buscan posicionamiento, coherencia y nuevas oportunidades en su mercado."
         },
         {
             id: "legado",
             name: "Membresía Legado",
             price: 25000,
             usd: 59,
-            desc: "Acompañamiento anual. 3 sesiones programadas y custodia digital."
+            desc: "Tu patrimonio emocional protegido. Un acompañamiento anual con sesiones programadas diseñadas para documentar tu evolución mientras optimizamos tu inversión."
         }
     ],
     infra: [

@@ -164,22 +164,22 @@ export default function Home() {
                   "Tu historia merece más que un marco; merece existencia propia. El nuevo concepto de Legado vivo fusiona la calidez artesanal con la magia de la realidad aumentada para que tu historia respire por siempre."
                 </p>
                 <div className="space-y-6 mb-12">
-                  <div>
-                    <h4 className="text-curiol-500 text-[10px] font-bold uppercase tracking-widest mb-3">1. Aventuras Mágicas:</h4>
-                    <div className="space-y-2">
-                      {[
-                        "Aventura Mágica",
-                        "Recuerdos Eternos",
-                        "Marca Personal",
-                        "Membresía Legado (Ahorro Anual)"
-                      ].map(item => (
-                        <div key={item} className="flex items-center gap-4 text-[10px] text-tech-400">
-                          <div className="w-1 h-1 rounded-full bg-curiol-500" />
-                          {item}
-                        </div>
-                      ))}
+                  {[
+                    { title: "Aventura Mágica", desc: "Donde la imaginación cobra vida. Transformamos a los más pequeños en héroes de su propia historia, creando mundos de alegría y seguridad que se convierten en un legado visual eterno." },
+                    { title: "Recuerdos Eternos", desc: "Un tributo a la esencia del ayer y el hoy. Conectamos quiénes fuimos con quienes somos, valorando el presente a través de un arte fotográfico que trasciende el tiempo." },
+                    { title: "Marca Personal", desc: "Presencia que abre puertas. Diseñamos una identidad visual estratégica para profesionales que buscan posicionamiento, coherencia y nuevas oportunidades en su mercado." },
+                    { title: "Membresía Legado", desc: "Tu patrimonio emocional protegido. Un acompañamiento anual con sesiones programadas diseñadas para documentar tu evolución mientras optimizamos tu inversión." }
+                  ].map(item => (
+                    <div key={item.title} className="group/item">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-1 h-1 rounded-full bg-curiol-500" />
+                        <h4 className="text-white text-[10px] font-bold uppercase tracking-widest">{item.title}:</h4>
+                      </div>
+                      <p className="text-tech-400 text-[10px] font-light leading-relaxed pl-4">
+                        {item.desc}
+                      </p>
                     </div>
-                  </div>
+                  ))}
                 </div>
                 <Link href="/cotizar" className="flex items-center justify-between p-6 bg-tech-800/50 rounded-2xl hover:bg-curiol-500 group/btn transition-all">
                   <span className="text-white text-[10px] font-bold uppercase tracking-widest">Explorar Legado</span>

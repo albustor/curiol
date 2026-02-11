@@ -13,10 +13,10 @@ import {
 import Link from "next/link";
 
 const modalities = [
-    { id: "aventura", title: "Aventura Mágica", icon: Sparkles, desc: "Donde la imaginación cobra vida. 15 Fotos + Realidad Aumentada + Música IA. (₡80.900 / $165)." },
-    { id: "recuerdos", title: "Recuerdos Eternos", icon: Camera, desc: "Tributo a la esencia: 15 Fotos + Impresión Fine Art + Cuadros Vivos AR. (₡77.000 / $149)." },
-    { id: "marca", title: "Marca Personal", icon: UserCheck, desc: "Impacto Profesional: 15 Fotos + Identidad Visual + Tarjeta NFC. (₡89.000 / $179)." },
-    { id: "legado", title: "Membresía Legado", icon: Users, desc: "Patrimonio Emocional: 3 sesiones anuales y custodia digital. (₡25.000 / $59 mes)." },
+    { id: "aventura", title: "Aventura Mágica", icon: Sparkles, desc: "Donde la imaginación cobra vida. Transformamos a los más pequeños en héroes de su propia historia, creando mundos de alegría y seguridad que se convierten en un legado visual eterno. (₡80.900 / $165)." },
+    { id: "recuerdos", title: "Recuerdos Eternos", icon: Camera, desc: "Un tributo a la esencia del ayer y el hoy. Conectamos quiénes fuimos con quienes somos, valorando el presente a través de un arte fotográfico que trasciende el tiempo. (₡77.000 / $149)." },
+    { id: "marca", title: "Marca Personal", icon: UserCheck, desc: "Presencia que abre puertas. Diseñamos una identidad visual estratégica para profesionales que buscan posicionamiento, coherencia y nuevas oportunidades en su mercado. (₡89.000 / $179)." },
+    { id: "legado", title: "Membresía Legado", icon: Users, desc: "Tu patrimonio emocional protegido. Un acompañamiento anual con sesiones programadas diseñadas para documentar tu evolución mientras optimizamos tu inversión. (₡25.000 / $59 mes)." },
     { id: "express", title: "Omni Local", icon: Smartphone, desc: "Imán de Clientes: Landing + Cotizador Básico + Tarjeta NFC. (₡250.000 / $500).", highlight: true },
     { id: "negocio", title: "Omni Pro", icon: Code, desc: "Motor de Ventas: Web-App completa + Agenda + Filtro IA Gemini. (₡750.000 / $1500).", highlight: true },
     { id: "ultra", title: "Omni Ultra", icon: Binary, desc: "Ecosistema Total: Curiol OS + Album Studio + Analytics IA. (₡1.500.000 / $3000)." },
