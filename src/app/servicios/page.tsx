@@ -17,10 +17,10 @@ const modalities = [
     { id: "recuerdos", title: "Recuerdos Eternos", icon: Camera, desc: "Un tributo a la esencia del ayer y el hoy. Conectamos quiénes fuimos con quienes somos, valorando el presente a través de un arte fotográfico que trasciende el tiempo. (₡77.000 / $149)." },
     { id: "marca", title: "Marca Personal", icon: UserCheck, desc: "Presencia que abre puertas. Diseñamos una identidad visual estratégica para profesionales que buscan posicionamiento, coherencia y nuevas oportunidades en su mercado. (₡89.000 / $179)." },
     { id: "legado", title: "Membresía Legado", icon: Users, desc: "Tu patrimonio emocional protegido. Un acompañamiento anual con sesiones programadas diseñadas para documentar tu evolución mientras optimizamos tu inversión. (₡25.000 / $59 mes)." },
-    { id: "express", title: "Omni Local", icon: Smartphone, desc: "Imán de Clientes: Landing + Cotizador Básico + Tarjeta NFC. (₡250.000 / $500).", highlight: true },
-    { id: "negocio", title: "Omni Pro", icon: Code, desc: "Motor de Ventas: Web-App completa + Agenda + Filtro IA Gemini. (₡750.000 / $1500).", highlight: true },
-    { id: "ultra", title: "Omni Ultra", icon: Binary, desc: "Ecosistema Total: Curiol OS + Album Studio + Analytics IA. (₡1.500.000 / $3000)." },
-    { id: "mantenimiento", title: "Omni Sincro", icon: Sparkles, desc: "Evolución IA: Actualización trimestral de innovaciones y seguridad. (₡15.000 / $39 mes)." }
+    { id: "express", title: "Web-Apps Progresivas (PWA)", icon: Smartphone, desc: "Experiencia nativa sin fricción. Aplicaciones web de alto rendimiento que funcionan sin conexión y se instalan en cualquier dispositivo para maximizar la retención del cliente. (₡250.000 / $500).", highlight: true },
+    { id: "negocio", title: "Metodologías No-Code/IA Eficientes", icon: Code, desc: "Agilidad sin límites. Desarrollamos soluciones complejas a la velocidad del pensamiento, optimizando tiempos y costos mediante ingeniería de vanguardia asistida por IA. (₡750.000 / $1500).", highlight: true },
+    { id: "ultra", title: "Módulos de IA para Comercio Local", icon: Binary, desc: "Cerebro digital para tu negocio. Implementamos motores de inteligencia artificial que automatizan ventas y atención, adaptados específicamente a la realidad de tu comunidad. (₡1.500.000 / $3000)." },
+    { id: "mantenimiento", title: "Mantenimiento Evolutivo Trimestral", icon: Sparkles, desc: "Tu tecnología nunca duerme. Transformamos lo que la IA aprende de la interacción diaria de tu negocio en actualizaciones constantes, asegurando una ventaja competitiva perpetua. (₡15.000 / $39 mes)." }
 ];
 
 const generateServicesSummary = () => {

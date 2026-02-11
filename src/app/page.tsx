@@ -168,7 +168,8 @@ export default function Home() {
                     { title: "Aventura Mágica", desc: "Donde la imaginación cobra vida. Transformamos a los más pequeños en héroes de su propia historia, creando mundos de alegría y seguridad que se convierten en un legado visual eterno." },
                     { title: "Recuerdos Eternos", desc: "Un tributo a la esencia del ayer y el hoy. Conectamos quiénes fuimos con quienes somos, valorando el presente a través de un arte fotográfico que trasciende el tiempo." },
                     { title: "Marca Personal", desc: "Presencia que abre puertas. Diseñamos una identidad visual estratégica para profesionales que buscan posicionamiento, coherencia y nuevas oportunidades en su mercado." },
-                    { title: "Membresía Legado", desc: "Tu patrimonio emocional protegido. Un acompañamiento anual con sesiones programadas diseñadas para documentar tu evolución mientras optimizamos tu inversión." }
+                    { title: "Membresía Legado", desc: "Tu patrimonio emocional protegido. Un acompañamiento anual con sesiones programadas diseñadas para documentar tu evolución mientras optimizamos tu inversión." },
+                    { title: "Mini-relatos", desc: "La esencia de una vida no requiere de horas para manifestarse, sino de una mirada experta y un propósito claro. Encuentros fotográficos de alta intensidad artística diseñados para capturar una faceta específica de tu legado en un formato ágil, pero con la profundidad del Fine-Art." }
                   ].map(item => (
                     <div key={item.title} className="group/item">
                       <div className="flex items-center gap-3 mb-2">
@@ -194,7 +195,6 @@ export default function Home() {
                   <div className="w-16 h-16 rounded-2xl bg-tech-500/10 flex items-center justify-center text-tech-500 group-hover:bg-tech-500 group-hover:text-white transition-all">
                     <Code className="w-8 h-8" />
                   </div>
-                  <span className="text-tech-500 text-[10px] font-bold tracking-widest uppercase py-2 px-4 bg-tech-500/5 rounded-full">Motor de Crecimiento</span>
                 </div>
                 <h3 className="text-3xl font-serif text-white mb-6 italic">Soluciones Comerciales con IA</h3>
                 <p className="text-tech-400 font-light mb-10 leading-relaxed italic">"Atraemos miradas, cerramos ventas. Presencia 24/7."</p>
@@ -203,14 +203,19 @@ export default function Home() {
                 </p>
                 <div className="space-y-4 mb-12">
                   {[
-                    "Web-Apps Progresivas (PWA)",
-                    "Metodologías No-Code/IA Eficientes",
-                    "Módulos de IA para Contexto PYME",
-                    "Mantenimiento Evolutivo Trimestral"
+                    { title: "Web-Apps Progresivas (PWA)", desc: "Experiencia nativa sin fricción. Aplicaciones web de alto rendimiento que funcionan sin conexión y se instalan en cualquier dispositivo para maximizar la retención del cliente." },
+                    { title: "Metodologías No-Code/IA Eficientes", desc: "Agilidad sin límites. Desarrollamos soluciones complejas a la velocidad del pensamiento, optimizando tiempos y costos mediante ingeniería de vanguardia asistida por IA." },
+                    { title: "Módulos de IA para Comercio Local", desc: "Cerebro digital para tu negocio. Implementamos motores de inteligencia artificial que automatizan ventas y atención, adaptados específicamente a la realidad de tu comunidad." },
+                    { title: "Mantenimiento Evolutivo Trimestral", desc: "Tu tecnología nunca duerme. Transformamos lo que la IA aprende de la interacción diaria de tu negocio en actualizaciones constantes, asegurando una ventaja competitiva perpetua." }
                   ].map(item => (
-                    <div key={item} className="flex items-center gap-4 text-xs text-tech-400">
-                      <div className="w-1.5 h-1.5 rounded-full bg-tech-500" />
-                      {item}
+                    <div key={item.title} className="group/item">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-1 h-1 rounded-full bg-tech-500" />
+                        <h4 className="text-white text-[10px] font-bold uppercase tracking-widest">{item.title}:</h4>
+                      </div>
+                      <p className="text-tech-400 text-[10px] font-light leading-relaxed pl-4">
+                        {item.desc}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -224,46 +229,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Portfolio Teaser Section */}
-        <section className="py-32 px-4 md:px-8 lg:px-16 bg-tech-950">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
-              <div className="max-w-xl">
-                <div className="flex items-center gap-3 mb-6">
-                  <span className="h-[1px] w-8 bg-curiol-500"></span>
-                  <span className="text-curiol-500 text-[10px] font-bold tracking-[0.4em] uppercase">Galería Curada</span>
-                </div>
-                <h2 className="text-4xl md:text-5xl font-serif text-white mb-6 italic">Portafolio <span className="text-curiol-gradient">Visual.</span></h2>
-              </div>
-              <Link href="/portafolio" className="text-curiol-500 text-xs font-bold uppercase tracking-widest hover:underline flex items-center gap-2 mb-2">
-                Ver Galería Completa <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {portfolioTeaser.map((item, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.1 }}
-                  viewport={{ once: true }}
-                  className="aspect-[4/5] rounded-2xl overflow-hidden border border-white/5 relative group cursor-pointer"
-                >
-                  <img
-                    src={item.url}
-                    alt={item.titulo}
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-tech-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex flex-col justify-end">
-                    <p className="text-[8px] text-curiol-500 uppercase font-bold tracking-widest mb-1">{item.categoria}</p>
-                    <p className="text-white font-serif italic text-sm">{item.titulo}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {/* Digitalización Humana Section (Legacy & Future) */}
         <section className="bg-tech-950 py-32 border-b border-tech-800 relative overflow-hidden">
@@ -282,7 +247,7 @@ export default function Home() {
                 </div>
                 <h2 className="text-5xl md:text-7xl font-serif text-white mb-8 italic">El Legado de la <br /> <span className="text-curiol-gradient">Zona Azul.</span></h2>
                 <p className="text-tech-400 text-lg font-light leading-relaxed mb-10">
-                  Homenaje a los "personajes azules" de Nicoya —una de las zonas más longevas del mundo. Transformamos historias de vida en activos interactivos que las próximas generaciones podrán consultar y sentir. Un tributo gratuito a nuestra comunidad.
+                  En el corazón de Guanacaste los héroes no solo cumplen años, cumplen propósitos. Homenajeamos desde el niño que inspira hasta el abuelo que custodia la tierra. Transformamos sus historias en activos Phygital interactivos, permitiendo que las próximas generaciones no solo lean sobre sus raíces, sino que las sientan y consulten en tiempo real. Estamos capturando el presente para diseñar el pasado del futuro. Postule a ese personaje que hace de Guanacaste un lugar eterno y ayúdenos a tejer una memoria comunitaria que respire a través de la tecnología.
                 </p>
                 <Link href="/comunidad#legado-azul" className="inline-flex items-center gap-4 px-10 py-5 border border-curiol-500/30 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-curiol-500 transition-all rounded-full group">
                   Explorar Archivo Vivo <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

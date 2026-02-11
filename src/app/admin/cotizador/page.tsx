@@ -77,6 +77,13 @@ const PACKAGES = {
             price: 25000,
             usd: 59,
             desc: "Tu patrimonio emocional protegido. Un acompañamiento anual con sesiones programadas diseñadas para documentar tu evolución mientras optimizamos tu inversión."
+        },
+        {
+            id: "minirelatos",
+            name: "Mini-relatos",
+            price: 49000,
+            usd: 99,
+            desc: "Encuentros fotográficos de alta intensidad artística. Formato ágil con la profundidad del Fine-Art."
         }
     ],
     infra: [
