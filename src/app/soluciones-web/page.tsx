@@ -12,6 +12,7 @@ import {
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { PerspectiveCard } from "@/components/ui/PerspectiveCard";
 
 export default function SolucionesWebPage() {
     const plans = [
@@ -119,7 +120,7 @@ export default function SolucionesWebPage() {
                                     </div>
                                 </div>
                             </div>
-                            <GlassCard className="p-12 border-tech-800">
+                            <PerspectiveCard className="p-12 border-tech-800 rounded-[2.5rem] bg-tech-900/40 backdrop-blur-md border border-white/5">
                                 <div className="space-y-8">
                                     <h4 className="text-xl font-serif text-white italic mb-6">Metodología Curiol Studio</h4>
                                     <div className="flex gap-6 items-start">
@@ -151,7 +152,7 @@ export default function SolucionesWebPage() {
                                         </div>
                                     </div>
                                 </div>
-                            </GlassCard>
+                            </PerspectiveCard>
                         </div>
                     </div>
                 </section>
@@ -256,10 +257,10 @@ export default function SolucionesWebPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
                         {plans.map((plan) => (
-                            <GlassCard
+                            <PerspectiveCard
                                 key={plan.name}
                                 className={cn(
-                                    "p-10 relative overflow-hidden flex flex-col justify-between transition-all hover:scale-[1.02] border-2 shadow-2xl",
+                                    "p-10 relative overflow-hidden flex flex-col justify-between transition-all border-2 shadow-2xl rounded-[3rem] bg-tech-950/20 backdrop-blur-md",
                                     plan.primary ? "border-curiol-500 bg-curiol-900/10 shadow-curiol-500/10" : "border-tech-800"
                                 )}
                             >
@@ -301,7 +302,7 @@ export default function SolucionesWebPage() {
                                 >
                                     Iniciar Implementación
                                 </Link>
-                            </GlassCard>
+                            </PerspectiveCard>
                         ))}
                     </div>
 

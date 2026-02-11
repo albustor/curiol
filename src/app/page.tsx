@@ -11,7 +11,8 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { AgendaWidget } from "@/components/AgendaWidget";
 
-import { getHeroImages, getPortfolioData, PortfolioItem } from "@/actions/portfolio";
+import { getHeroImages, getPortfolioData, PortfolioItem, getDirectImageUrl } from "@/actions/portfolio";
+import { PerspectiveCard } from "@/components/ui/PerspectiveCard";
 
 const DEFAULT_BACKGROUNDS = [
   "https://images.unsplash.com/photo-1472393365320-dc77242e672c?q=80&w=2070",
@@ -77,7 +78,7 @@ export default function Home() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 2.5, ease: "easeInOut" }}
                 style={{
-                  backgroundImage: `url(${heroImages[currentImage]})`,
+                  backgroundImage: `url(${getDirectImageUrl(heroImages[currentImage])})`,
                   backgroundPosition: "center center"
                 }}
                 className="absolute inset-0 bg-cover img-premium image-overlay"
@@ -153,7 +154,7 @@ export default function Home() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* Left: Family (B2C) */}
-              <GlassCard className="group border-curiol-500/10 hover:border-curiol-500/30 transition-all">
+              <PerspectiveCard className="group border-curiol-500/10 hover:border-curiol-500/30 transition-all rounded-[2rem] bg-tech-800/10 backdrop-blur-md p-10 border border-white/5">
                 <div className="flex justify-between items-start mb-12">
                   <div className="w-16 h-16 rounded-2xl bg-curiol-500/10 flex items-center justify-center text-curiol-500 group-hover:bg-curiol-500 group-hover:text-white transition-all">
                     <Users className="w-8 h-8" />
@@ -186,11 +187,10 @@ export default function Home() {
                   <span className="text-white text-[10px] font-bold uppercase tracking-widest">Explorar Legado</span>
                   <ArrowRight className="w-4 h-4 text-curiol-500 group-hover/btn:text-white group-hover/btn:translate-x-1 transition-all" />
                 </Link>
-              </GlassCard>
-
+              </PerspectiveCard>
 
               {/* Right: Business (B2B) */}
-              <GlassCard className="group border-tech-500/10 hover:border-tech-500/30 transition-all">
+              <PerspectiveCard className="group border-tech-500/10 hover:border-tech-500/30 transition-all rounded-[2rem] bg-tech-800/10 backdrop-blur-md p-10 border border-white/5">
                 <div className="flex justify-between items-start mb-12">
                   <div className="w-16 h-16 rounded-2xl bg-tech-500/10 flex items-center justify-center text-tech-500 group-hover:bg-tech-500 group-hover:text-white transition-all">
                     <Code className="w-8 h-8" />
@@ -225,7 +225,7 @@ export default function Home() {
                   <span className="text-white text-[10px] font-bold uppercase tracking-widest">Acelerar Negocio</span>
                   <ArrowRight className="w-4 h-4 text-tech-500 group-hover/btn:text-white group-hover/btn:translate-x-1 transition-all" />
                 </Link>
-              </GlassCard>
+              </PerspectiveCard>
 
             </div>
           </div>

@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { getAlbums, PortfolioAlbum } from "@/actions/portfolio";
+import { getAlbums, PortfolioAlbum, getDirectImageUrl } from "@/actions/portfolio";
 import { cn } from "@/lib/utils";
-import { Camera, Image as ImageIcon, Filter, Sparkles, ChevronRight, Calendar } from "lucide-react";
+import { Camera, Image as ImageIcon, Filter, Sparkles, ChevronRight, Calendar, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import { PerspectiveCard } from "@/components/ui/PerspectiveCard";
 
 export default function PortfolioPage() {
     const [albums, setAlbums] = useState<PortfolioAlbum[]>([]);
@@ -114,21 +115,14 @@ export default function PortfolioPage() {
                                     key={album.id}
                                     href={`/portafolio/${album.slug || album.id}`}
                                 >
-                                    <motion.div
-                                        layout
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, scale: 0.9 }}
-                                        transition={{ duration: 0.4, delay: idx * 0.05 }}
-                                        className="group relative aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-tech-900 border border-white/5 shadow-2xl"
-                                    >
+                                    <PerspectiveCard index={idx}>
                                         <img
-                                            src={album.coverUrl || (album.photos && album.photos.length > 0 ? album.photos[0].url : "/placeholder-image.jpg")}
+                                            src={getDirectImageUrl(album.coverUrl || (album.photos && album.photos.length > 0 ? album.photos[0].url : "/placeholder-image.jpg"))}
                                             alt={album.title}
                                             className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60 group-hover:opacity-80"
                                         />
 
-                                        <div className="absolute inset-0 bg-gradient-to-t from-tech-950 via-tech-950/20 to-transparent p-10 flex flex-col justify-end">
+                                        <div className="absolute inset-0 bg-gradient-to-t from-tech-950 via-tech-950/40 to-transparent p-10 flex flex-col justify-end">
                                             <div className="flex items-center gap-3 mb-4">
                                                 <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-curiol-500 bg-curiol-500/10 px-3 py-1 rounded-full border border-curiol-500/20">
                                                     {album.category}
@@ -147,8 +141,8 @@ export default function PortfolioPage() {
 
                                             <div className="flex items-center justify-between pt-6 border-t border-white/5 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
                                                 <span className="text-tech-500 text-[10px] font-bold uppercase tracking-widest">{(album.photos || []).length} Fotografías</span>
-                                                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-tech-950 group-hover:scale-110 transition-transform">
-                                                    <ChevronRight className="w-5 h-5" />
+                                                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-tech-950 group-hover:scale-110 transition-transform shadow-xl">
+                                                    <ArrowUpRight className="w-5 h-5" />
                                                 </div>
                                             </div>
                                         </div>
@@ -160,7 +154,7 @@ export default function PortfolioPage() {
                                                 </div>
                                             </div>
                                         )}
-                                    </motion.div>
+                                    </PerspectiveCard>
                                 </Link>
                             ))}
                         </AnimatePresence>

@@ -5,8 +5,10 @@ import { useParams } from "next/navigation";
 import { getAlbum, AlbumMetadata, toggleFavorite } from "@/actions/albums";
 import { generateSocialCaption } from "@/actions/image-ai";
 import { motion, AnimatePresence } from "framer-motion";
-import { Download, Share2, Heart, MessageCircle, Clock, Info, Search, Grid, MousePointer2, Eye, X, Play, Pause, Copy, Check, Music } from "lucide-react";
+import { Download, Share2, Heart, MessageCircle, Clock, Info, Search, Grid, MousePointer2, Eye, X, Play, Pause, Copy, Check, Music, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getDirectImageUrl, getPortfolioAiInsight } from "@/actions/portfolio";
+import { PerspectiveCard } from "@/components/ui/PerspectiveCard";
 
 export default function ClientAlbumPage() {
     const { id } = useParams();
@@ -20,6 +22,25 @@ export default function ClientAlbumPage() {
     const [socialCaption, setSocialCaption] = useState("");
     const [isGeneratingCaption, setIsGeneratingCaption] = useState(false);
     const [copied, setCopied] = useState(false);
+
+    // AI Curator State
+    const [aiInsight, setAiInsight] = useState<string | null>(null);
+    const [aiLoading, setAiLoading] = useState(false);
+    const [showAiPanel, setShowAiPanel] = useState(false);
+
+    const handleGenerateAiInsight = async () => {
+        if (!album) return;
+        setAiLoading(true);
+        setShowAiPanel(true);
+        try {
+            const insight = await getPortfolioAiInsight(album.name, "Sesión de Cliente", album.images.length);
+            setAiInsight(insight);
+        } catch (error) {
+            console.error("AI Curator error:", error);
+        } finally {
+            setAiLoading(false);
+        }
+    };
 
     useEffect(() => {
         if (id) loadAlbum();
@@ -164,36 +185,37 @@ export default function ClientAlbumPage() {
             <main className="max-w-7xl mx-auto px-4 py-12 space-y-24">
                 <div className="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
                     {filteredImages.map((img, i) => (
-                        <motion.div
+                        <PerspectiveCard
                             key={img.original}
-                            layout
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="relative group cursor-zoom-in"
+                            index={i}
+                            onClick={() => setSelectedImage(i)}
+                            className="rounded-lg shadow-2xl"
                         >
                             <img
-                                src={img.original}
+                                src={getDirectImageUrl(img.original)}
                                 alt={`Memory ${i}`}
-                                onClick={() => setSelectedImage(i)}
                                 className={cn(
-                                    "w-full h-auto rounded-lg shadow-2xl transition-all duration-700",
-                                    favorites.includes(img.original) ? "ring-2 ring-curiol-500 ring-offset-4 ring-offset-transparent" : "group-hover:scale-[1.02]"
+                                    "w-full h-auto transition-all duration-700",
+                                    favorites.includes(img.original) ? "ring-2 ring-curiol-500" : ""
                                 )}
                             />
 
                             {/* Tags Bubble (AI) */}
-                            <div className="absolute top-4 left-4 flex gap-2">
+                            <div className="absolute top-4 left-4 flex gap-2 z-20">
                                 {img.category === "highlight" && (
                                     <span className="bg-curiol-500 text-white text-[8px] font-bold uppercase px-2 py-1 rounded">Highlight</span>
                                 )}
                             </div>
 
                             {/* Overlay Controls */}
-                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all rounded-lg flex flex-col justify-end p-6">
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all flex flex-col justify-end p-6 z-20">
                                 <div className="flex justify-between items-center text-white">
                                     <div className="flex gap-4">
                                         <Heart
-                                            onClick={() => handleToggleFavorite(img.original)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleToggleFavorite(img.original);
+                                            }}
                                             className={cn(
                                                 "w-5 h-5 transition-colors cursor-pointer",
                                                 favorites.includes(img.original) ? "text-red-500 fill-red-500" : "hover:text-red-500"
@@ -204,13 +226,14 @@ export default function ClientAlbumPage() {
                                     <a
                                         href={img.original}
                                         download
-                                        className="flex items-center gap-2 bg-white text-black px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-curiol-500 hover:text-white transition-all"
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="flex items-center gap-2 bg-white text-black px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-curiol-500 hover:text-white transition-all pointer-events-auto"
                                     >
                                         <Download className="w-4 h-4" /> Bajar HD
                                     </a>
                                 </div>
                             </div>
-                        </motion.div>
+                        </PerspectiveCard>
                     ))}
                 </div>
 
@@ -288,7 +311,7 @@ export default function ClientAlbumPage() {
                             <div className="lg:col-span-2 relative">
                                 <motion.img
                                     layoutId={`img-${selectedImage}`}
-                                    src={filteredImages[selectedImage].original}
+                                    src={getDirectImageUrl(filteredImages[selectedImage].original)}
                                     className="w-full h-auto max-h-[80vh] object-contain rounded-xl shadow-2xl"
                                 />
                             </div>
@@ -352,6 +375,89 @@ export default function ClientAlbumPage() {
                                     )}
                                 </AnimatePresence>
                             </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* AI Curator Trigger */}
+            <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={handleGenerateAiInsight}
+                className="fixed bottom-24 right-8 z-50 w-16 h-16 bg-curiol-gradient rounded-full flex items-center justify-center shadow-3xl text-white group"
+            >
+                <Sparkles className="w-6 h-6 group-hover:rotate-12 transition-transform" />
+                <div className="absolute -top-12 right-0 bg-tech-950/80 backdrop-blur-md px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest text-white opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-white/5">
+                    Curador de Legados AI
+                </div>
+            </motion.button>
+
+            {/* AI Curator Panel */}
+            <AnimatePresence>
+                {showAiPanel && (
+                    <motion.div
+                        initial={{ opacity: 0, x: 400 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 400 }}
+                        className="fixed right-0 top-0 h-full w-full max-w-md z-[110] bg-tech-950/40 backdrop-blur-3xl border-l border-white/5 p-12 flex flex-col"
+                    >
+                        <button
+                            onClick={() => setShowAiPanel(false)}
+                            className="absolute top-8 left-8 text-white/40 hover:text-white transition-colors"
+                        >
+                            <X className="w-8 h-8" />
+                        </button>
+
+                        <div className="mt-20 space-y-12">
+                            <div>
+                                <div className="flex items-center gap-3 mb-6">
+                                    <span className="h-[1px] w-8 bg-curiol-500"></span>
+                                    <span className="text-curiol-500 text-[10px] font-bold tracking-[0.4em] uppercase">IA Curator</span>
+                                </div>
+                                <h2 className="text-5xl font-serif text-white italic">Nota del <br /> <span className="text-curiol-gradient">Curador.</span></h2>
+                            </div>
+
+                            <div className="relative">
+                                {aiLoading ? (
+                                    <div className="space-y-4">
+                                        <div className="h-4 w-full bg-white/5 rounded-full animate-pulse" />
+                                        <div className="h-4 w-[90%] bg-white/5 rounded-full animate-pulse delay-75" />
+                                        <div className="h-4 w-[95%] bg-white/5 rounded-full animate-pulse delay-150" />
+                                    </div>
+                                ) : (
+                                    <motion.p
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        className="text-tech-300 text-xl font-light leading-relaxed italic"
+                                    >
+                                        "{aiInsight}"
+                                    </motion.p>
+                                )}
+                            </div>
+
+                            <div className="pt-12 border-t border-white/5">
+                                <p className="text-[10px] text-tech-500 uppercase tracking-widest font-bold mb-4">Análisis de la Obra</p>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="p-4 bg-white/5 rounded-2xl">
+                                        <p className="text-[8px] text-white/40 uppercase tracking-widest mb-1">Concepto</p>
+                                        <p className="text-[10px] text-white font-medium italic">Eternidad Phygital</p>
+                                    </div>
+                                    <div className="p-4 bg-white/5 rounded-2xl">
+                                        <p className="text-[8px] text-white/40 uppercase tracking-widest mb-1">Valor</p>
+                                        <p className="text-[10px] text-white font-medium italic">Preservación de Legado</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="mt-auto">
+                            <button
+                                onClick={() => setShowAiPanel(false)}
+                                className="w-full py-5 bg-white text-black text-[10px] font-bold uppercase tracking-widest rounded-full hover:bg-curiol-500 hover:text-white transition-all"
+                            >
+                                Entendido
+                            </button>
                         </div>
                     </motion.div>
                 )}

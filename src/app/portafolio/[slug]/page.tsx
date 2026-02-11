@@ -4,15 +4,18 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { getAlbumBySlug, PortfolioAlbum } from "@/actions/portfolio";
-import { motion, AnimatePresence } from "framer-motion";
+import { getAlbumBySlug, PortfolioAlbum, getDirectImageUrl } from "@/actions/portfolio";
+import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from "framer-motion";
 import {
     Heart, Share2, Download, X,
     ChevronLeft, ChevronRight, Maximize2,
-    Calendar, Lock, ShieldCheck, Instagram, Facebook
+    Calendar, Lock, ShieldCheck, Instagram, Facebook,
+    Sparkles, MessageSquare, Quote
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AiCompositionEditor } from "@/components/admin/AiCompositionEditor";
+import { getPortfolioAiInsight } from "@/actions/portfolio";
+import { PerspectiveCard } from "@/components/ui/PerspectiveCard";
 
 export default function AlbumViewPage() {
     const { slug } = useParams();
@@ -24,6 +27,9 @@ export default function AlbumViewPage() {
     const [isLocked, setIsLocked] = useState(false);
     const [likedPhotos, setLikedPhotos] = useState<string[]>([]);
     const [aiSocialFormat, setAiSocialFormat] = useState<"ig-post" | "ig-story" | "fb-post" | null>(null);
+    const [aiInsight, setAiInsight] = useState<string | null>(null);
+    const [aiLoading, setAiLoading] = useState(false);
+    const [showAiPanel, setShowAiPanel] = useState(false);
 
     useEffect(() => {
         async function load() {
@@ -74,6 +80,18 @@ export default function AlbumViewPage() {
     const handleShare = (photoUrl: string) => {
         navigator.clipboard.writeText(photoUrl);
         alert("Enlace de la foto copiado al portapapeles");
+    };
+
+    const handleGenerateAiInsight = async () => {
+        if (aiInsight) {
+            setShowAiPanel(true);
+            return;
+        }
+        setAiLoading(true);
+        setShowAiPanel(true);
+        const insight = await getPortfolioAiInsight(album?.title || "", album?.category || "", album?.photos?.length || 0);
+        setAiInsight(insight);
+        setAiLoading(false);
     };
 
     if (loading) return (
@@ -157,35 +175,116 @@ export default function AlbumViewPage() {
             </header>
 
             <section className="px-4 pb-32">
-                <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 auto-rows-min">
+                <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 auto-rows-min">
                     {(album.photos || []).map((p, idx) => (
-                        <motion.div
-                            key={p.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: (idx % 8) * 0.05 }}
-                            onClick={() => setSelectedIndex(idx)}
-                            className="group relative aspect-square bg-tech-900 rounded-2xl overflow-hidden cursor-pointer shadow-xl border border-white/5"
-                        >
+                        <PerspectiveCard key={p.id} onClick={() => setSelectedIndex(idx)} index={idx}>
                             <img
-                                src={p.url}
+                                src={getDirectImageUrl(p.url)}
                                 alt=""
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
                                 loading="lazy"
                             />
-                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <div className="absolute inset-0 bg-gradient-to-t from-tech-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 scale-90 group-hover:scale-100">
                                 <Maximize2 className="w-10 h-10 text-white/50" />
                             </div>
                             {likedPhotos.includes(p.id) && (
-                                <div className="absolute top-4 left-4 bg-curiol-gradient p-2 rounded-full shadow-lg">
+                                <div className="absolute top-4 left-4 bg-curiol-gradient p-2 rounded-full shadow-lg z-10">
                                     <Heart className="w-3 h-3 text-white fill-current" />
                                 </div>
                             )}
-                        </motion.div>
+                        </PerspectiveCard>
                     ))}
                 </div>
             </section>
+
+            {/* AI Curator Trigger */}
+            <motion.button
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleGenerateAiInsight}
+                className="fixed bottom-8 right-8 z-[100] bg-curiol-gradient p-1 rounded-2xl shadow-2xl shadow-curiol-600/40 border border-white/20 group overflow-hidden"
+            >
+                <div className="bg-tech-950/40 backdrop-blur-xl px-6 py-4 rounded-[calc(1rem-2px)] flex items-center gap-3">
+                    <Sparkles className="w-5 h-5 text-curiol-300 animate-pulse" />
+                    <span className="text-white text-[10px] font-bold uppercase tracking-widest">Curador de Legados AI</span>
+                </div>
+                <div className="absolute -inset-1 bg-white/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+            </motion.button>
+
+            {/* AI Curator Panel */}
+            <AnimatePresence>
+                {showAiPanel && (
+                    <motion.div
+                        initial={{ opacity: 0, x: 400 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 400 }}
+                        className="fixed top-0 right-0 h-full w-full max-w-sm z-[150] bg-tech-950/95 backdrop-blur-3xl border-l border-white/10 shadow-2xl p-10 flex flex-col pt-32"
+                    >
+                        <button
+                            onClick={() => setShowAiPanel(false)}
+                            className="absolute top-10 right-10 p-2 text-tech-500 hover:text-white"
+                        >
+                            <X className="w-6 h-6" />
+                        </button>
+
+                        <div className="mb-12">
+                            <div className="w-16 h-16 bg-curiol-500/10 rounded-2xl flex items-center justify-center mb-6 border border-curiol-500/20">
+                                <Quote className="w-8 h-8 text-curiol-500" />
+                            </div>
+                            <h3 className="text-3xl font-serif text-white italic mb-2">Nota del Curador</h3>
+                            <p className="text-curiol-500 text-[10px] font-bold uppercase tracking-widest">Análisis por Curiol Legacy AI</p>
+                        </div>
+
+                        <div className="flex-grow">
+                            {aiLoading ? (
+                                <div className="space-y-4">
+                                    <div className="h-4 w-full bg-tech-900 animate-pulse rounded-full" />
+                                    <div className="h-4 w-5/6 bg-tech-900 animate-pulse rounded-full" />
+                                    <div className="h-4 w-4/6 bg-tech-900 animate-pulse rounded-full" />
+                                    <p className="text-tech-600 text-[10px] font-bold uppercase tracking-widest mt-8 animate-pulse text-center">Invocando al Curador...</p>
+                                </div>
+                            ) : (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="relative"
+                                >
+                                    <p className="text-white text-lg font-light leading-relaxed italic border-l-2 border-curiol-500 pl-6">
+                                        "{aiInsight}"
+                                    </p>
+                                    <div className="mt-12 p-6 bg-tech-900 rounded-2xl border border-white/5">
+                                        <p className="text-tech-500 text-[10px] font-bold uppercase tracking-widest mb-4">Esta obra destaca por:</p>
+                                        <ul className="space-y-3">
+                                            {[
+                                                "Arquitectura de luz y sombras",
+                                                "Preservación de identidad",
+                                                "Estética Fine Art trascedente"
+                                            ].map((item, i) => (
+                                                <li key={i} className="flex items-center gap-3 text-white text-xs">
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-curiol-500" />
+                                                    {item}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </div>
+
+                        <div className="pt-8 border-t border-white/5">
+                            <button
+                                onClick={() => setShowAiPanel(false)}
+                                className="w-full py-4 bg-tech-900 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl hover:bg-tech-800 transition-all"
+                            >
+                                Continuar Explorando
+                            </button>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Lightbox / Premium Viewer */}
             <AnimatePresence>
@@ -277,7 +376,7 @@ export default function AlbumViewPage() {
                                 className="w-full h-full flex items-center justify-center p-4 md:p-12"
                             >
                                 <img
-                                    src={album.photos?.[selectedIndex!]?.url || ""}
+                                    src={getDirectImageUrl(album.photos?.[selectedIndex!]?.url || "")}
                                     className="max-w-full max-h-full object-contain rounded-xl shadow-2xl"
                                     alt=""
                                 />
@@ -308,4 +407,3 @@ export default function AlbumViewPage() {
         </main>
     );
 }
-

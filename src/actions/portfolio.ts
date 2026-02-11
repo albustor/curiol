@@ -153,6 +153,20 @@ export async function getHeroImages(): Promise<string[]> {
         return [];
     }
 }
+
+/**
+ * Converts a Google Drive sharing link to a direct download link
+ */
+export async function getDirectImageUrl(url: string): Promise<string> {
+    if (!url) return "";
+    if (url.includes("drive.google.com")) {
+        const idMatch = url.match(/\/d\/(.+?)\//) || url.match(/id=(.+?)(&|$)/);
+        if (idMatch) {
+            return `https://lh3.googleusercontent.com/u/0/d/${idMatch[1]}=w1000`;
+        }
+    }
+    return url;
+}
 export async function migrateCsvToFirestore(): Promise<{ success: boolean; count: number }> {
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR4OuEDRXmfwRB51PGyTyz2D9cxb5IwXnvDrSiHtzh37iGZY1to7EB0O1rPyKcVVcSHqeHFb1I4glNZ/pub?output=csv";
 
@@ -172,17 +186,18 @@ export async function migrateCsvToFirestore(): Promise<{ success: boolean; count
         const [_header, ...rows] = lines;
         const albumsMap: Record<string, any> = {};
 
-        rows.forEach((row, index) => {
+        for (const [index, row] of rows.entries()) {
             // Regex para manejar comas y comillas correctamente
             const matches = row.match(/(".*?"|[^",\s][^",]*|(?<=,)(?=,)|(?<=^)(?=,))/g);
-            if (!matches) return;
+            if (!matches) continue;
 
             const [categoria, subcategoria, url, titulo] = matches.map(val =>
                 val ? val.replace(/^"|"$/g, "").trim() : ""
             );
 
-            if (!url || !url.startsWith("http")) return;
+            if (!url || !url.startsWith("http")) continue;
 
+            const directUrl = await getDirectImageUrl(url);
             const albumName = subcategoria || categoria || "Sin Categoría";
             // Limpiar ID de caracteres raros
             const albumId = albumName.toLowerCase()
@@ -194,7 +209,7 @@ export async function migrateCsvToFirestore(): Promise<{ success: boolean; count
                 albumsMap[albumId] = {
                     title: albumName,
                     category: categoria || "General",
-                    coverUrl: url,
+                    coverUrl: directUrl,
                     photos: [],
                     createdAt: serverTimestamp(),
                     slug: albumId,
@@ -209,10 +224,10 @@ export async function migrateCsvToFirestore(): Promise<{ success: boolean; count
 
             albumsMap[albumId].photos.push({
                 id: `p-${index}-${Math.random().toString(36).substr(2, 5)}`,
-                url: url,
+                url: directUrl,
                 title: titulo || albumName
             });
-        });
+        }
 
         const albumKeys = Object.keys(albumsMap);
         console.log(`Se detectaron ${albumKeys.length} álbumes para migrar.`);
@@ -225,5 +240,33 @@ export async function migrateCsvToFirestore(): Promise<{ success: boolean; count
     } catch (error) {
         console.error("Critical Migration Error:", error);
         return { success: false, count: 0 };
+    }
+}
+
+/**
+ * Generates an AI curator's insight for a specific album
+ */
+export async function getPortfolioAiInsight(albumTitle: string, category: string, totalPhotos: number) {
+    "use server";
+    try {
+        const { GoogleGenerativeAI } = await import("@google/generative-ai");
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+        const prompt = `Eres el "Curador de Legados AI" de Curiol Studio. 
+        Analiza este álbum fotográfico:
+        Título: ${albumTitle}
+        Categoría: ${category}
+        Cantidad de fotos: ${totalPhotos}
+
+        Escribe una nota del curador sumamente breve (máximo 40 palabras), disruptiva y poética sobre el valor artístico y el legado de este trabajo. 
+        Enfócate en por qué estas fotos trascienden el tiempo.
+        Usa un tono premium, sofisticado y emotivo.`;
+
+        const result = await model.generateContent(prompt);
+        return result.response.text();
+    } catch (error) {
+        console.error("AI Insight Error:", error);
+        return "Este álbum representa un hito en nuestra arquitectura de recuerdos, capturando la esencia pura del legado humano.";
     }
 }

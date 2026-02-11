@@ -11,6 +11,7 @@ import { collection, query, where, orderBy, onSnapshot, addDoc, Timestamp, incre
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { logInteraction } from "@/actions/analytics";
+import { PerspectiveCard } from "@/components/ui/PerspectiveCard";
 
 interface AcademyContent {
     id: string;
@@ -266,15 +267,15 @@ function AcademyCard({ item }: { item: AcademyContent }) {
 
     return (
         <>
-            <GlassCard
-                className="group cursor-pointer hover:border-curiol-500/50 transition-all flex flex-col h-full overflow-hidden"
+            <PerspectiveCard
+                className="group cursor-pointer hover:border-curiol-500/50 transition-all flex flex-col h-full overflow-hidden rounded-[2.5rem] bg-tech-900 border border-white/5"
                 onClick={() => !isActuallyLocked && setIsExpanded(true)}
             >
                 <div className="relative h-48 overflow-hidden">
                     <img
                         src={item.imageUrl}
                         alt={item.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        className="w-full h-full object-cover transition-transform duration-700"
                     />
                     <div className="absolute inset-0 bg-tech-950/20 group-hover:bg-tech-950/0 transition-colors" />
                     <div className="absolute top-4 left-4">
@@ -309,7 +310,7 @@ function AcademyCard({ item }: { item: AcademyContent }) {
                         )}
                     </div>
 
-                    <h3 className="text-xl font-serif text-white italic mb-3 group-hover:text-curiol-500 transition-colors">
+                    <h3 className="text-xl font-serif text-white italic mb-3 transition-colors">
                         {item.title}
                     </h3>
                     <p className="text-tech-400 text-xs font-light leading-relaxed line-clamp-3 mb-6">
@@ -328,7 +329,7 @@ function AcademyCard({ item }: { item: AcademyContent }) {
                         <ArrowRight className="w-4 h-4 text-tech-800 group-hover:text-white transition-all translate-x-0 group-hover:translate-x-1" />
                     </div>
                 </div>
-            </GlassCard>
+            </PerspectiveCard>
 
             {/* Unlock Modal */}
             <AnimatePresence>
