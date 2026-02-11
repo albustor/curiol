@@ -42,10 +42,10 @@ const modalities = [
         title: "Marca Personal",
         icon: UserCheck,
         items: [
-            "15 Fotos de impacto",
-            "Estrategia de identidad visual",
-            "Galería Digital Pro",
-            "Tarjeta NFC incluida",
+            "15 Fotos de impacto técnico/artístico",
+            "Tarjeta física con chip NFT",
+            "Enlace directo a LinkedIn",
+            "Video o contenido personalizado",
             "Inversión: ₡89.000 / $179"
         ]
     },
@@ -54,10 +54,10 @@ const modalities = [
         title: "Membresía Legado",
         icon: Users,
         items: [
-            "Patrimonio emocional protegido",
+            "Tu patrimonio emocional protegido",
             "3 Sesiones programadas anuales",
             "Custodia digital hereditaria",
-            "Optimización de inversión",
+            "Acompañamiento y seguimiento",
             "Suscripción: ₡25.000 / $59 mes"
         ]
     },

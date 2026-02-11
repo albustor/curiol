@@ -32,14 +32,14 @@ export function AiAssistant() {
     };
 
     return (
-        <div className="fixed bottom-10 right-10 z-[100]">
+        <div className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-[100]">
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="mb-6 w-[350px] bg-tech-950 border border-tech-800 rounded-2xl shadow-2xl overflow-hidden"
+                        className="mb-4 md:mb-6 w-[calc(100vw-3rem)] md:w-[380px] bg-tech-950 border border-tech-800 rounded-2xl shadow-2xl overflow-hidden"
                     >
                         <div className="bg-tech-900 p-4 border-b border-tech-800 flex justify-between items-center">
                             <div className="flex items-center gap-3">
@@ -47,20 +47,20 @@ export function AiAssistant() {
                                     <Binary className="w-4 h-4 text-curiol-500" />
                                 </div>
                                 <div>
-                                    <p className="text-white text-xs font-bold uppercase tracking-widest">Curiol Studio IA</p>
+                                    <p className="text-white text-xs font-bold uppercase tracking-widest">Asistente Curiol IA</p>
                                     <p className="text-[10px] text-green-500 flex items-center gap-1"><span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" /> Online</p>
                                 </div>
                             </div>
-                            <button onClick={() => setIsOpen(false)} className="text-tech-500 hover:text-white">
+                            <button onClick={() => setIsOpen(false)} className="text-tech-500 hover:text-white p-1">
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
 
-                        <div className="h-[400px] overflow-y-auto p-4 space-y-4 flex flex-col">
+                        <div className="h-[350px] md:h-[400px] overflow-y-auto p-4 space-y-4 flex flex-col scrollbar-thin scrollbar-thumb-tech-800 scrollbar-track-transparent">
                             {chat.map((m, i) => (
                                 <div key={i} className={cn(
-                                    "max-w-[80%] p-3 rounded-xl text-sm leading-relaxed",
-                                    m.role === 'user' ? "bg-curiol-700 text-white self-end" : "bg-tech-900 text-tech-300 self-start"
+                                    "max-w-[85%] p-3 rounded-xl text-[13px] md:text-sm leading-relaxed",
+                                    m.role === 'user' ? "bg-curiol-700 text-white self-end" : "bg-tech-900 text-tech-300 self-start border border-tech-800/50"
                                 )}>
                                     {m.text}
                                 </div>
@@ -99,7 +99,7 @@ export function AiAssistant() {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-14 h-14 bg-curiol-700 rounded-full shadow-2xl flex items-center justify-center text-white relative z-10"
+                className="w-14 h-14 bg-curiol-700 rounded-full shadow-2xl flex items-center justify-center text-white relative z-10 border border-white/10"
             >
                 <Sparkles className="w-6 h-6" />
             </motion.button>

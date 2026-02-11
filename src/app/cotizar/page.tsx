@@ -68,8 +68,8 @@ const PACKAGES: Record<string, Array<{
         {
             id: "recuerdos",
             name: "Recuerdos Eternos",
-            price: 77000,
-            usdPrice: 149,
+            price: 115000,
+            usdPrice: 225,
             desc: "Un tributo a la esencia del ayer y el hoy. Conectamos quiénes fuimos con quienes somos, valorando el presente a través de un arte fotográfico que trasciende el tiempo.",
             problem: "La fragilidad de los recuerdos digitales que se pierden. Resolvemos la necesidad de un legado tangible y eterno.",
             photoCount: 15,

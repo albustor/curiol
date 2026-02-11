@@ -45,18 +45,28 @@ export async function getAiAssistantResponse(message: string, context: any) {
     try {
         const model = getModel();
         const prompt = `
-        Eres el asistente virtual de Curiol Studio.
+        Eres el Asistente Curiol IA, un experto en Digitalización Humana y servicios phygital de Curiol Studio.
         Contexto actual del cliente: ${JSON.stringify(context)}.
         Mensaje del cliente: "${message}".
-        Responde de forma elegante, servicial y concisa.
-        Recuerda que:
-        - Curiol ofrece experiencias fotográficas y soluciones web (Landing ₡85k, Negocio ₡145k).
-        - La AGENDA funciona solo SÁBADOS y DOMINGOS.
+        
+        INSTRUCCIONES DE COMPORTAMIENTO:
+        1. Formato: Responde SIEMPRE en párrafos concisos y limpios. Evita listas infinitas.
+        2. Tono: Profesional, objetivo y elegante.
+        3. Estrategia: Enfócate en soluciones y beneficios bajo el concepto de "Legado Vivo".
+        
+        BASE DE CONOCIMIENTO (Servicios):
+        - RECUERDOS ETERNOS: ₡115.000 ($225). Incluye 15 fotos Fine Art, Trascendencia intergeneracional, Cuadros Vivos AR, Retablo 8x12" con NFC.
+        - AVENTURA MÁGICA: ₡80.900 ($165). Incluye 15 fotos High-End + IA, Realidad Aumentada, Canción IA personalizada, Retablo 5x7" con NFC.
+        - MARCA PERSONAL: ₡89.000 ($179). Incluye 15 fotos de impacto, Tarjeta física chip NFT, Link a LinkedIn, Video o contenido personalizado.
+        - MEMBRESÍA LEGADO: ₡25.000/mes ($59). Patrimonio protegido, 3 sesiones anuales, Custodia digital hereditaria.
+        - MINI-RELATOS: ₡49.000 ($99). Encuentro ágil, 5 fotos Fine-Art, Esencia pura, Retablo 5x7" con NFC.
+        - SOLUCIONES WEB: PWA (desde ₡250k/$500), No-Code/IA (desde ₡750k/$1500), Módulos IA (₡1.5M/$3000).
+        
+        LOGÍSTICA:
+        - AGENDA: SÁBADOS y DOMINGOS únicamente.
         - RESERVA: Requiere depósito del 20% para asegurar fecha y activar pre-producción.
-        - ESTÁNDAR DE FOTOGRAFÍA: Exportamos a 1350px (Lado Largo) para máxima calidad en IG/FB.
-        - COMPOSICIÓN: Usamos IA para alinear fotos según la Regla de los Tercios y Proporción Áurea.
-        - RECORDATORIOS: El sistema envía avisos automáticos 4 días, 2 días y 8 horas antes.
-        Utiliza el concepto de "Digitalización Humana" en tus respuestas.
+        - CALIDAD: Exportación a 1350px (Lado Largo) + IA para composición perfecta (Regla de Tercios/Áurea).
+        - RECORDATORIOS: Notificaciones automáticas 4d, 2d y 8h antes.
       `;
 
         const result = await model.generateContent(prompt);
@@ -99,16 +109,16 @@ export async function generateAcademyBatch(track: "legacy" | "tech" = "tech") {
 
         Devuelve un JSON array con 4 objetos exactamente así:
         [
-          {
-            "title": "Título sugerente y profesional",
-            "description": "Resumen que genere curiosidad",
-            "type": "video" | "lesson" | "podcast",
-            "category": "${track === 'legacy' ? 'Legado' : 'Tecnología'}",
-            "body": "Artículo extenso (4+ párrafos) que explique el concepto a fondo",
-            "infographicHighlight": "Dato o frase impactante para diseño visual",
-            "mediaScript": "Guion narrativo completo (300+ palabras) si es video/podcast, de lo contrario vacío",
-            "visualConcept": "Descripción detallada del contenido visual atractivo (colores, composición, miniaturas premium)"
-          }
+            {
+                "title": "Título sugerente y profesional",
+                "description": "Resumen que genere curiosidad",
+                "type": "video" | "lesson" | "podcast",
+                "category": "${track === 'legacy' ? 'Legado' : 'Tecnología'}",
+                "body": "Artículo extenso (4+ párrafos) que explique el concepto a fondo",
+                "infographicHighlight": "Dato o frase impactante para diseño visual",
+                "mediaScript": "Guion narrativo completo (300+ palabras) si es video/podcast, de lo contrario vacío",
+                "visualConcept": "Descripción detallada del contenido visual atractivo (colores, composition, miniaturas premium)"
+            }
         ]
         
         Tono: Maestro Alberto (Elegante, trascendental, culto). Devuelve SOLAMENTE el JSON array.

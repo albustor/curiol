@@ -102,7 +102,7 @@ export const FINANCE_CONFIG = {
         },
         "recuerdos": {
             name: "Recuerdos Eternos (Estándar 8x12)",
-            totalPrice: 77000,
+            totalPrice: 115000,
             breakdown: [
                 { item: "Retablo (8x12) + 40%", cost: 25989, note: "₡18,564 base + margen" },
                 { item: "Staff Técnico (Cristina)", cost: 8000, note: "Tarifa por sesión" },
@@ -111,11 +111,11 @@ export const FINANCE_CONFIG = {
                 { item: "Infraestructura Digital", cost: 5000, note: "Hosting, AI, Firebase" },
                 { item: "Sticker NFC", cost: 800, note: "1 unidad" }
             ],
-            margin: -0.13 // -13% (Requiere ajuste)
+            margin: 0.11 // ~11% profit margin
         },
         "recuerdos_pro": {
             name: "Recuerdos Eternos (Pro 12x16)",
-            totalPrice: 115000, // Precio sugerido basado en costes
+            totalPrice: 115000, // Coincide con el nuevo precio base pro
             breakdown: [
                 { item: "Retablo (12x16) + 40%", cost: 44800, note: "₡32,000 base + margen" },
                 { item: "Staff Técnico (Cristina)", cost: 8000, note: "Tarifa por sesión" },

@@ -60,8 +60,8 @@ const PACKAGES = {
         {
             id: "recuerdos",
             name: "Recuerdos Eternos",
-            price: 77000,
-            usd: 149,
+            price: 115000,
+            usd: 225,
             desc: "Un tributo a la esencia del ayer y el hoy. Conectamos quiénes fuimos con quienes somos, valorando el presente a través de un arte fotográfico que trasciende el tiempo."
         },
         {

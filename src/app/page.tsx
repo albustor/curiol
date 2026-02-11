@@ -165,11 +165,11 @@ export default function Home() {
                 </p>
                 <div className="space-y-6 mb-12">
                   {[
-                    { title: "Aventura Mágica", desc: "Donde la imaginación cobra vida. Transformamos a los más pequeños en héroes de su propia historia, creando mundos de alegría y seguridad que se convierten en un legado visual eterno." },
-                    { title: "Recuerdos Eternos", desc: "Un tributo a la esencia del ayer y el hoy. Conectamos quiénes fuimos con quienes somos, valorando el presente a través de un arte fotográfico que trasciende el tiempo." },
-                    { title: "Marca Personal", desc: "Presencia que abre puertas. Diseñamos una identidad visual estratégica para profesionales que buscan posicionamiento, coherencia y nuevas oportunidades en su mercado." },
-                    { title: "Membresía Legado", desc: "Tu patrimonio emocional protegido. Un acompañamiento anual con sesiones programadas diseñadas para documentar tu evolución mientras optimizamos tu inversión." },
-                    { title: "Mini-relatos", desc: "La esencia de una vida no requiere de horas para manifestarse, sino de una mirada experta y un propósito claro. Encuentros fotográficos de alta intensidad artística diseñados para capturar una faceta específica de tu legado en un formato ágil, pero con la profundidad del Fine-Art." }
+                    { title: "Aventura Mágica", desc: "Patrimonio visual para la posteridad. Transformamos la imaginación infantil en realidades phygital eternas mediante captura artística y tecnología de punta." },
+                    { title: "Recuerdos Eternos", desc: "Conexión intergeneracional. Un tributo Fine Art que fusiona la calidez artesanal con la magia de la realidad aumentada para trascender el tiempo." },
+                    { title: "Marca Personal", desc: "Identidad visual táctica. Diseñamos una presencia estratégica de alto impacto técnico para profesionales que buscan un legado coherente y proactivo." },
+                    { title: "Membresía Legado", desc: "Tu patrimonio emocional protegido. Un acompañamiento anual diseñado para documentar tu evolución mientras custodiamos tu herencia digital." },
+                    { title: "Mini-relatos", desc: "La esencia en formato ágil. Encuentros fotográficos de alta intensidad artística diseñados para capturar facetas específicas con la profundidad del Fine-Art." }
                   ].map(item => (
                     <div key={item.title} className="group/item">
                       <div className="flex items-center gap-3 mb-2">
