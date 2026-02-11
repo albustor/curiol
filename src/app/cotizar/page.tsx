@@ -110,6 +110,21 @@ const PACKAGES: Record<string, Array<{
                 title: "La Herencia Continua",
                 story: "Sofía captura cada cambio de su familia asegurando que su voz nunca se apague, con la tranquilidad de una inversión planificada."
             }
+        },
+        {
+            id: "minirelatos",
+            name: "Mini-relatos",
+            price: 49000,
+            usdPrice: 99,
+            desc: "La esencia de una vida no requiere de horas para manifestarse, sino de una mirada experta y un propósito claro. Encuentros fotográficos de alta intensidad artística diseñados para capturar una faceta específica de tu legado en un formato ágil.",
+            problem: "La falta de tiempo para sesiones largas. Resolvemos la necesidad de capturar momentos clave con la profundidad del Fine-Art en un formato dinámico.",
+            photoCount: 5,
+            physicalProduct: "Retablo 5x7\" Fine Art.",
+            techIntegrated: "Revelado de Autor, Puente Digital NFC.",
+            caseStudy: {
+                title: "El Instante Preciso",
+                story: "Una sesión de solo 30 minutos capturó la conexión eterna entre un abuelo y su nieto, creando una pieza de museo que hoy preside su hogar."
+            }
         }
     ],
     seasonal: [
