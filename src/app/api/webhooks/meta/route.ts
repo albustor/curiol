@@ -147,7 +147,7 @@ export async function POST(req: Request) {
                     message: aiResponse,
                     channel: channel,
                     direction: "outbound",
-                    type: "ai_fallback",
+                    type: "ai_assistant", // Improved label
                     timestamp: Timestamp.now()
                 });
             }
