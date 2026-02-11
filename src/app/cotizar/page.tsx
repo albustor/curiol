@@ -52,110 +52,72 @@ const PACKAGES: Record<string, Array<{
     family: [
         {
             id: "aventura",
-            name: "Aventura Mágica (Phygital)",
-            price: 99000,
-            usdPrice: 199,
-            desc: "La experiencia fotográfica más avanzada para niños.",
+            name: "Aventura Mágica",
+            price: 80900,
+            usdPrice: 165,
+            desc: "Donde la imaginación cobra vida. Transformamos a los más pequeños en héroes de su propia historia, creando mundos de alegría y seguridad.",
             problem: "¿Cómo capturar la imaginación sin límites de un niño antes de que crezca? Resolvemos la pérdida de la magia infantil creando mundos donde ellos son los protagonistas.",
             photoCount: 15,
             physicalProduct: "Retablo 5x7\" con integración NFC/QR para lanzamiento instantáneo.",
-            techIntegrated: "IA Generativa (Fondos personalizados), Memoria Viva (Slideshow + Canción IA original), NFC Digital Bridge.",
+            techIntegrated: "IA Generativa (Fondos personalizados), Legado vivo (Slideshow + Canción IA original), NFC Digital Bridge.",
             caseStudy: {
                 title: "El Bloom de la Confianza",
-                story: "Santi se sentía pequeño e invisible en la escuela. Al verte como el 'Guardián del Espacio' en su obra física, algo cambió. Sus padres usan el NFC para recordarle cada mañana: 'Tú eres capaz de conquistar cualquier mundo'."
+                story: "Santi se sentía pequeño e invisible. Al verse como el 'Guardián del Espacio' en su obra física, algo cambió. Sus padres usan el NFC para recordarle cada mañana su valor."
             }
         },
         {
-            id: "esencia_familiar",
-            name: "Esencia Familiar",
-            price: 32500,
-            usdPrice: 65,
-            desc: "Preserva tu legado con arte tangible. Fotografía profesional con narrativa emocional y revelado Fine Art.",
-            problem: "La fragilidad de los recuerdos digitales que se pierden en el celular. Resolvemos la necesidad de un legado tangible y eterno para todos.",
+            id: "recuerdos",
+            name: "Recuerdos Eternos",
+            price: 77000,
+            usdPrice: 149,
+            desc: "Un tributo a la esencia del ayer y el hoy. Conectamos quiénes fuimos con quienes somos, valorando el presente.",
+            problem: "La fragilidad de los recuerdos digitales que se pierden. Resolvemos la necesidad de un legado tangible y eterno.",
             photoCount: 15,
-            physicalProduct: "Retablos artesanales o Canvas de alta gama.",
+            physicalProduct: "Retablo 8x10\" (Borde 15mm) + Impresión Fine Art.",
             techIntegrated: "Revelado Fine Art, Narrativa IA, Soporte Digital.",
-            variants: [
-                {
-                    id: "esencia_semilla",
-                    name: "Esencia Semilla",
-                    price: 32500,
-                    usdPrice: 65,
-                    desc: "La primera semilla de tu historia familiar.",
-                    problem: "El deseo de conservar un momento especial con calidad profesional de forma sencilla.",
-                    photoCount: 10,
-                    physicalProduct: "Retablo 6x8\" (Borde 12mm) + Impresión.",
-                    techIntegrated: "Video Detrás de Cámaras (NFC/QR a YouTube).",
-                    caseStudy: {
-                        title: "La Primera Semilla",
-                        story: "Doña Marta nunca pudo tener fotos profesionales de sus nietos. Con Semilla, ahora tiene ese retablo en su repisa. El QR le permite ver las risas del día de la sesión cada vez que extraña a los pequeños."
-                    }
-                },
-                {
-                    id: "esencia_base",
-                    name: "Esencia Base",
-                    price: 77000,
-                    usdPrice: 149,
-                    desc: "La solución perfecta para capturar el crecimiento rápido de tus hijos.",
-                    problem: "El tiempo vuela y los detalles se olvidan. Capturamos la esencia antes de que cambie.",
-                    physicalProduct: "Retablo 5x7\" (Borde 15mm) + Impresión.",
-                    techIntegrated: "Revelado Fine Art + IA Narrativa.",
-                    caseStudy: {
-                        title: "El Ancla de la Mañana",
-                        story: "Elena sentía que solo tenía fotos borrosas en su nube. Este retablo en su mesa de noche es lo primero que ve al despertar, recordándole que su amor es la base de todo lo que construye."
-                    }
-                },
-                {
-                    id: "esencia_hogar",
-                    name: "Esencia Hogar",
-                    price: 89000,
-                    usdPrice: 179,
-                    desc: "Resuelve el vacío de tus paredes con significado.",
-                    problem: "Paredes vacías o con fotos sin alma. Transformamos tu hogar en un altar de memorias vivas.",
-                    physicalProduct: "Retablo 11x14\" (Borde 15mm) + Impresión.",
-                    techIntegrated: "Revelado Fine Art + IA Narrativa.",
-                    caseStudy: {
-                        title: "De Casa a Hogar",
-                        story: "La familia Ruiz se mudó a un lugar nuevo y frío. Fue colocar su retablo artesanal en la sala lo que finalmente les dio esa sensación de 'pertenencia'. Ahora, el eco de su risa vive en la pared."
-                    }
-                },
-                {
-                    id: "esencia_galeria",
-                    name: "Esencia Galería",
-                    price: 225000,
-                    usdPrice: 450,
-                    desc: "Para familias que ven su historia como una obra maestra.",
-                    problem: "La falta de una pieza central que cuente la historia de éxito y amor de la familia.",
-                    physicalProduct: "Canvas 20x30\" Full Color Calidad Museo.",
-                    techIntegrated: "Revelado Fine Art + IA Narrativa.",
-                    caseStudy: {
-                        title: "El Altar del Éxito Familiar",
-                        story: "Don Carlos quería dejar algo que sus nietos vieran y respetaran. Este Canvas domina su salón, no solo como decoración, sino como la evidencia visual de una generación que supo amar y prosperar."
-                    }
-                }
-            ]
+            caseStudy: {
+                title: "El Ancla de la Mañana",
+                story: "Elena sentía que solo tenía fotos borrosas en su nube. Este retablo en su mesa de noche es lo primero que ve al despertar, recordándole su base."
+            }
+        },
+        {
+            id: "marca",
+            name: "Marca Personal",
+            price: 89000,
+            usdPrice: 179,
+            desc: "Presencia que abre puertas. Diseñamos una identidad visual estratégica para profesionales que buscan posicionamiento.",
+            problem: "Incoherencia visual o falta de imagen profesional que resta oportunidades. Resolvemos el posicionamiento de tu presencia digital.",
+            photoCount: 15,
+            physicalProduct: "Retablo 11x14\" (Borde 15mm) + Galería Digital Pro.",
+            techIntegrated: "Retoque Pro, IA Search Optimization, Ecosistema NFC.",
+            caseStudy: {
+                title: "El Salto Profesional",
+                story: "Un consultor local cambió su imagen y duplicó sus consultas orgánicas en LinkedIn en solo un mes gracias a su nueva coherencia visual."
+            }
         },
         {
             id: "legado",
             name: "Membresía Legado",
             price: 25000,
             usdPrice: 59,
-            desc: "Tu biógrafo familiar permanente.",
-            problem: "La historia familiar se dispersa. Resolvemos la desconexión con 3 sesiones 'Hogar' al año + Custodia Digital.",
-            photoCount: 45, // 15 per session
-            physicalProduct: "Ahorro garantizado frente a 3 sesiones Hogar individuales (₡267k).",
+            desc: "Tu patrimonio emocional protegido. Un acompañamiento anual con sesiones programadas que apoyan tu economía.",
+            problem: "La historia familiar se dispersa. Resolvemos la desconexión con 3 sesiones programadas al año + Custodia Digital.",
+            photoCount: 45,
+            physicalProduct: "Ahorro garantizado frente a sesiones individuales.",
             techIntegrated: "Custodia de Herencia Digital, 3 Sesiones anuales, App de Legado.",
             isMonthly: true,
             caseStudy: {
-                title: "La Herencia Viva",
-                story: "Los abuelos de Sofía fallecieron sin dejar sus historias grabadas. Ella juró que no pasaría lo mismo. Con la Membresía, su biógrafo captura cada cambio, asegurando que su voz nunca se apague."
+                title: "La Herencia Continua",
+                story: "Sofía captura cada cambio de su familia asegurando que su voz nunca se apague, con la tranquilidad de una inversión planificada."
             }
-        },
+        }
+    ],
+    seasonal: [
         {
             id: "navidad",
             name: "Instantes de Luz",
-            price: 45000,
-            usdPrice: 99,
+            price: 77000,
+            usdPrice: 149,
             desc: "Momentos mágicos de temporada.",
             problem: "La prisa de fin de año impide conectar. Creamos una pausa mágica para celebrar la unión.",
             photoCount: 15,
@@ -163,7 +125,7 @@ const PACKAGES: Record<string, Array<{
             techIntegrated: "Realidad Aumentada (Mensaje de Video), Fondos Temáticos IA.",
             caseStudy: {
                 title: "El Abrazo Digital",
-                story: "Su hijo estaba fuera del país. Al abrir la tarjeta física y ver su video cobrar vida en AR, sintieron que Navidad finalmente había llegado a casa. La distancia se rompió por un instante."
+                story: "Su hijo estaba fuera del país. Al abrir la tarjeta física y ver su video cobrar vida en AR, sintieron que Navidad finalmente había llegado a casa."
             }
         },
         {
@@ -178,7 +140,7 @@ const PACKAGES: Record<string, Array<{
             techIntegrated: "Realidad Aumentada básica, Smart Delivery.",
             caseStudy: {
                 title: "Actualización de Amor",
-                story: "Entre el trabajo y la escuela, los Brown solo tenían 30 min. Esa mini-sesión les dio la foto perfecta de perfil y un detalle AR que los hizo reír toda la cena."
+                story: "Entre el trabajo y la escuela, esta mini-sesión dio la foto perfecta de perfil y un detalle AR para recordar."
             }
         }
     ],
@@ -376,7 +338,7 @@ export default function CotizadorPage() {
                                 >
                                     <Camera className="w-12 h-12 text-curiol-500 mb-6" />
                                     <h3 className="text-2xl font-serif text-white mb-2 italic">Legado Familiar</h3>
-                                    <p className="text-tech-400 text-sm font-light leading-relaxed">Memorias Vivas & Personal. Fotografía Fine Art y legados digitales que perduran.</p>
+                                    <p className="text-tech-400 text-sm font-light leading-relaxed">Aventura Mágica, Recuerdos Eternos, Marca Personal y Membresía.</p>
                                 </GlassCard>
                                 <GlassCard
                                     className={cn("cursor-pointer border-2 transition-all", category === 'business' ? "border-tech-500 shadow-2xl shadow-tech-500/20" : "border-transparent")}

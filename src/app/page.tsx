@@ -27,7 +27,7 @@ export default function Home() {
   const [portfolioTeaser, setPortfolioTeaser] = useState<PortfolioItem[]>([]);
 
   const heroTexts = [
-    { main: "Memorias que", highlight: "cobran vida." },
+    { main: "Legado", highlight: "vivo." },
     { main: "Crecimiento comercial con", highlight: "nuestros servicios en tecnología" }
   ];
 
@@ -108,27 +108,28 @@ export default function Home() {
               </AnimatePresence>
             </h1>
 
-            <p className="text-tech-400 text-lg md:text-xl font-light max-w-2xl mx-auto mb-12 leading-relaxed">
-              Donde el legado se encuentra con la tecnología del futuro. Fusionamos la sensibilidad artística con la ingeniería digital avanzada para construir un ecosistema perdurable, a la escala e innovador.
+            <p className="text-white/90 text-sm md:text-base font-light max-w-3xl mx-auto mb-6 leading-relaxed">
+              El curiol es el pigmento que da color, esencia y vida a la cerámica chorotega; adoptamos este nombre como un reconocimiento a la comunidad de Guaitil, un pueblo que sigue cultivando en sus manos un legado ancestral.
             </p>
+            <p className="text-tech-500 text-[10px] font-bold uppercase tracking-[0.3em] mb-12 italic">
+              Santa Cruz de Guanacaste, Costa Rica
+            </p>
+
 
             <div className="flex flex-wrap justify-center gap-6 mb-12">
               <Link href="/cotizar" className="px-10 py-5 bg-curiol-700 text-white text-xs font-bold uppercase tracking-widest hover:bg-curiol-500 transition-all transform hover:-translate-y-1 shadow-2xl">
                 Personalizar mi Legado
               </Link>
               <Link href="/soluciones-web" className="px-10 py-5 border border-tech-700 text-white text-xs font-bold uppercase tracking-widest hover:bg-tech-800 transition-all">
-                Aceleradora Digital
+                Aceleradora Comercial
               </Link>
+
             </div>
 
             <p className="text-white/80 text-sm italic font-light leading-relaxed max-w-3xl mx-auto animate-fade-in delay-500 mt-8 border-t border-white/10 pt-8">
-              "No vendemos solo código ni solo fotos; vendemos Presencia y Legado." <br />
-              <span className="block mt-4 text-tech-400 not-italic">
-                Emanado del corazón de Guaitil, el curiol es el alma mineral que ha dado color a nuestra historia Chorotega,
-                es la materia prima con que pintan las vasijas de barro. Hoy, esa esencia trasciende fronteras,
-                transformando la tierra en arte eterno con visión global.
-              </span>
+              "No vendemos fotografías y código; aseguramos legado y presencia." <br />
             </p>
+
           </div>
 
           <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
@@ -144,12 +145,11 @@ export default function Home() {
               <div className="max-w-xl">
                 <div className="flex items-center gap-3 mb-6">
                   <span className="h-[1px] w-8 bg-curiol-500"></span>
-                  <span className="text-curiol-500 text-[10px] font-bold tracking-[0.4em] uppercase">El Triángulo Mágico Expandido</span>
                 </div>
-                <h2 className="text-4xl md:text-6xl font-serif text-white mb-6 italic">Arquitectura & <span className="text-curiol-500">Aceleración.</span></h2>
-                <p className="text-tech-400 font-light leading-relaxed">Operamos bajo eficiencia tecnológica y rentabilidad circular. Nuestras soluciones están diseñadas para maximizar el impacto inmediato y la sostenibilidad a largo plazo.</p>
+                <h2 className="text-4xl md:text-6xl font-serif text-white mb-6 italic">Legado & <span className="text-curiol-500">Crecimiento comercial</span></h2>
               </div>
             </div>
+
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* Left: Family (B2C) */}
@@ -158,31 +158,35 @@ export default function Home() {
                   <div className="w-16 h-16 rounded-2xl bg-curiol-500/10 flex items-center justify-center text-curiol-500 group-hover:bg-curiol-500 group-hover:text-white transition-all">
                     <Users className="w-8 h-8" />
                   </div>
-                  <span className="text-curiol-500 text-[10px] font-bold tracking-widest uppercase py-2 px-4 bg-curiol-500/5 rounded-full">Legado Familiar</span>
                 </div>
-                <h3 className="text-3xl font-serif text-white mb-6 italic">Memorias Vivas</h3>
-                <p className="text-tech-400 font-light mb-10 leading-relaxed italic">"Tus recuerdos convertidosen activos físicos con alma tecnológica."</p>
-                <p className="text-tech-300 text-sm font-light mb-10 leading-relaxed">
-                  Digitalización avanzada y preservación de historias. Creamos activos Phygital (Físicos-Digitales) mediante Realidad Aumentada para asegurar que tu historia perdure con vida propia.
+                <h3 className="text-3xl font-serif text-white mb-6 italic">Legado Familiar</h3>
+                <p className="text-tech-400 font-light mb-10 leading-relaxed italic text-sm">
+                  "Tu historia merece más que un marco; merece existencia propia. El nuevo concepto de Legado vivo fusiona la calidez artesanal con la magia de la realidad aumentada para que tu historia respire por siempre."
                 </p>
-                <div className="space-y-4 mb-12">
-                  {[
-                    "Visuales de Autor (Fine Art + IA)",
-                    "Realidad Aumentada & Música Personalizada",
-                    "Cápsulas de Tiempo Digitales Interactivas",
-                    "Membresía Legado (Tu Biógrafo Privado)"
-                  ].map(item => (
-                    <div key={item} className="flex items-center gap-4 text-xs text-tech-400">
-                      <div className="w-1.5 h-1.5 rounded-full bg-curiol-500" />
-                      {item}
+                <div className="space-y-6 mb-12">
+                  <div>
+                    <h4 className="text-curiol-500 text-[10px] font-bold uppercase tracking-widest mb-3">1. Aventuras Mágicas:</h4>
+                    <div className="space-y-2">
+                      {[
+                        "Aventura Mágica",
+                        "Recuerdos Eternos",
+                        "Marca Personal",
+                        "Membresía Legado (Ahorro Anual)"
+                      ].map(item => (
+                        <div key={item} className="flex items-center gap-4 text-[10px] text-tech-400">
+                          <div className="w-1 h-1 rounded-full bg-curiol-500" />
+                          {item}
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
                 </div>
                 <Link href="/cotizar" className="flex items-center justify-between p-6 bg-tech-800/50 rounded-2xl hover:bg-curiol-500 group/btn transition-all">
                   <span className="text-white text-[10px] font-bold uppercase tracking-widest">Explorar Legado</span>
                   <ArrowRight className="w-4 h-4 text-curiol-500 group-hover/btn:text-white group-hover/btn:translate-x-1 transition-all" />
                 </Link>
               </GlassCard>
+
 
               {/* Right: Business (B2B) */}
               <GlassCard className="group border-tech-500/10 hover:border-tech-500/30 transition-all">
@@ -192,7 +196,7 @@ export default function Home() {
                   </div>
                   <span className="text-tech-500 text-[10px] font-bold tracking-widest uppercase py-2 px-4 bg-tech-500/5 rounded-full">Motor de Crecimiento</span>
                 </div>
-                <h3 className="text-3xl font-serif text-white mb-6 italic">Aceleradora Soluciones Comerciales</h3>
+                <h3 className="text-3xl font-serif text-white mb-6 italic">Soluciones Comerciales con IA</h3>
                 <p className="text-tech-400 font-light mb-10 leading-relaxed italic">"Atraemos miradas, cerramos ventas. Presencia 24/7."</p>
                 <p className="text-tech-300 text-sm font-light mb-10 leading-relaxed">
                   Infraestructura inteligente diseñada para que el comercio local destaque. Landing pages de alta conversión, asistentes digitales personalizados y optimización asistida por IA para un impacto real en tus ventas.
@@ -215,6 +219,7 @@ export default function Home() {
                   <ArrowRight className="w-4 h-4 text-tech-500 group-hover/btn:text-white group-hover/btn:translate-x-1 transition-all" />
                 </Link>
               </GlassCard>
+
             </div>
           </div>
         </section>

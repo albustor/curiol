@@ -40,7 +40,7 @@ const PROCESS_STEPS = [
 
 const INFOGRAPHIC = [
     {
-        title: "Memorias Vivas",
+        title: "Legado vivo",
         target: "Para Familias & Individuos",
         color: "text-curiol-500",
         items: [

@@ -18,6 +18,9 @@ import { AiCompositionEditor } from "@/components/admin/AiCompositionEditor";
 import { db, storage } from "@/lib/firebase";
 import { collection, addDoc, query, onSnapshot, doc, updateDoc, deleteDoc, Timestamp, orderBy } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
+import { useRole } from "@/hooks/useRole";
+import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 interface Album {
     id: string;
@@ -38,9 +41,17 @@ interface Album {
 }
 
 export default function PortfolioAdminPage() {
+    const { role } = useRole();
+    const router = useRouter();
     const [albums, setAlbums] = useState<Album[]>([]);
     const [isEditing, setIsEditing] = useState<Partial<Album> | null>(null);
     const [uploading, setUploading] = useState(false);
+
+    useEffect(() => {
+        if (role === "UNAUTHORIZED") {
+            router.push("/admin/login");
+        }
+    }, [role, router]);
     const [uploadProgress, setUploadProgress] = useState(0);
     const [loading, setLoading] = useState(false);
     const [aiEditingPhoto, setAiEditingPhoto] = useState<string | null>(null);
@@ -125,6 +136,14 @@ export default function PortfolioAdminPage() {
             console.error("Error deleting album:", error);
         }
     };
+
+    if (role === "LOADING") return (
+        <div className="min-h-screen bg-tech-950 flex items-center justify-center">
+            <Loader2 className="w-12 h-12 text-curiol-500 animate-spin" />
+        </div>
+    );
+
+    if (role === "UNAUTHORIZED") return null;
 
     return (
         <div className="min-h-screen bg-tech-950 pt-32 pb-24">

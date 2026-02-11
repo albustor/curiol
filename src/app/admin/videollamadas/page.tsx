@@ -9,6 +9,9 @@ import {
     History, Users, Sparkles, Monitor, Info, ExternalLink
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRole } from "@/hooks/useRole";
+import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 declare global {
     interface Window {
@@ -17,6 +20,15 @@ declare global {
 }
 
 export default function VideoCallCenter() {
+    const { role } = useRole();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (role === "UNAUTHORIZED") {
+            router.push("/admin/login");
+        }
+    }, [role, router]);
+
     const [roomName, setRoomName] = useState("");
     const [isInCall, setIsInCall] = useState(false);
     const [isSharing, setIsSharing] = useState(false);
@@ -106,6 +118,14 @@ export default function VideoCallCenter() {
         const text = encodeURIComponent(`Hola, te invito a una videollamada de Curiol Studio. Únete a nuestro entorno seguro aquí: ${meetingUrl}`);
         window.open(`https://wa.me/?text=${text}`, '_blank');
     };
+
+    if (role === "LOADING") return (
+        <div className="min-h-screen bg-tech-950 flex items-center justify-center">
+            <Loader2 className="w-12 h-12 text-curiol-500 animate-spin" />
+        </div>
+    );
+
+    if (role === "UNAUTHORIZED") return null;
 
     return (
         <div className="min-h-screen bg-tech-950 pt-32 pb-24 relative overflow-hidden">

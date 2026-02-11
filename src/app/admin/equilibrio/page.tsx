@@ -624,6 +624,59 @@ export default function EquilibrioPage() {
                         </GlassCard>
                     </div>
                 </div>
+                {/* Package Analysis Section (Internal review for master) */}
+                <div className="mt-16 pb-16">
+                    <header className="mb-12">
+                        <div className="flex items-center gap-3 mb-4">
+                            <span className="h-[1px] w-12 bg-curiol-gradient"></span>
+                            <span className="text-curiol-500 text-[10px] font-bold uppercase tracking-[0.4em]">Análisis de Rentabilidad</span>
+                        </div>
+                        <h2 className="text-3xl md:text-5xl font-serif text-white italic">Desglose por <span className="text-curiol-gradient">Inversión de Paquetes.</span></h2>
+                    </header>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        {Object.entries((FINANCE_CONFIG as any).PACKAGE_ANALYSIS).map(([key, data]: [string, any]) => (
+                            <GlassCard key={key} className="lg:col-span-12 p-1 overflow-hidden border-curiol-500/10">
+                                <div className="bg-tech-950/80 p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-8 border-b border-white/5">
+                                    <div>
+                                        <h3 className="text-white text-2xl font-serif italic mb-2">{data.name}</h3>
+                                        <p className="text-tech-500 text-[10px] font-bold uppercase tracking-widest">Inversión estimada por unidad ejecutada</p>
+                                    </div>
+                                    <div className="flex items-end gap-12">
+                                        <div className="text-right">
+                                            <p className="text-[10px] text-tech-600 font-bold uppercase mb-2">Precio sugerido cliente</p>
+                                            <p className="text-4xl font-serif text-white italic">₡{data.totalPrice.toLocaleString()}</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-[10px] text-curiol-500 font-bold uppercase mb-2">Margen Estimado</p>
+                                            <p className="text-4xl font-serif text-curiol-gradient italic">{(data.margin * 100).toFixed(1)}%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="p-8 bg-tech-900/10">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {data.breakdown.map((item: any, idx: number) => (
+                                            <div key={idx} className="bg-black/20 p-6 rounded-2xl border border-white/5 group hover:border-curiol-500/30 transition-all">
+                                                <div className="flex justify-between items-start mb-4">
+                                                    <span className="text-tech-500 text-[8px] font-bold uppercase tracking-widest">{item.note}</span>
+                                                    <span className="text-white text-sm font-bold font-mono">₡{item.cost.toLocaleString()}</span>
+                                                </div>
+                                                <p className="text-white text-xs font-light italic">{item.item}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="mt-8 p-6 bg-curiol-500/5 rounded-2xl border border-curiol-500/10 flex items-start gap-4">
+                                        <Info className="w-5 h-5 text-curiol-500 flex-shrink-0 mt-1" />
+                                        <p className="text-[11px] text-tech-400 leading-relaxed font-light italic">
+                                            Este análisis asume la labor de fotografía bajo el modelo de "Sweat Equity" del autor (Alberto).
+                                            En caso de contratación externa, el valor de ₡45,000 debe prerratearse entre la utilidad bruta y los gastos operativos del proyecto.
+                                        </p>
+                                    </div>
+                                </div>
+                            </GlassCard>
+                        ))}
+                    </div>
+                </div>
             </main>
 
             <Footer />

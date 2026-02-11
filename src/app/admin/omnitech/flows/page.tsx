@@ -14,6 +14,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, query, onSnapshot, doc, updateDoc, deleteDoc, Timestamp, orderBy } from "firebase/firestore";
+import { useRole } from "@/hooks/useRole";
+import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 interface FlowStep {
     id: string;
@@ -39,6 +42,15 @@ interface Flow {
 }
 
 export default function FlowBuilderPage() {
+    const { role } = useRole();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (role === "UNAUTHORIZED") {
+            router.push("/admin/login");
+        }
+    }, [role, router]);
+
     const [flows, setFlows] = useState<Flow[]>([]);
     const [selectedFlow, setSelectedFlow] = useState<Flow | null>(null);
     const [isSaving, setIsSaving] = useState(false);
@@ -109,6 +121,14 @@ export default function FlowBuilderPage() {
             steps: selectedFlow.steps.map(s => s.id === id ? { ...s, content, config: config || s.config } : s)
         });
     };
+
+    if (role === "LOADING") return (
+        <div className="min-h-screen bg-tech-950 flex items-center justify-center">
+            <Loader2 className="w-12 h-12 text-curiol-500 animate-spin" />
+        </div>
+    );
+
+    if (role === "UNAUTHORIZED") return null;
 
     return (
         <div className="min-h-screen bg-tech-950 flex flex-col pt-32 pb-24 bg-grain">

@@ -83,6 +83,23 @@ export const FINANCE_CONFIG = {
             "20x24": { white: 68208, color: 72531 },
             "20x30": { white: 80794, color: 85681 },
         }
+    },
+
+    // Package Analysis (Internal Review for Alberto)
+    PACKAGE_ANALYSIS: {
+        "aventura": {
+            name: "Aventura Mágica (Phygital)",
+            totalPrice: 80900,
+            breakdown: [
+                { item: "Retablo (8x11) + 40%", cost: 19600, note: "₡14,000 base + margen" },
+                { item: "Staff Técnico (Cristina)", cost: 8000, note: "Tarifa por sesión" },
+                { item: "Sticker NFC", cost: 800, note: "1 unidad" },
+                { item: "Logística / Insumos", cost: 2500, note: "Equipo, agua, etc." },
+                { item: "Valor Fotografía (Mano de Obra)", cost: 45000, note: "Asignación interna" },
+                { item: "Infraestructura (Hosting/IA)", cost: 5000, note: "Prerrateo" }
+            ],
+            margin: 0.625 // 62.5%
+        }
     }
 };
 

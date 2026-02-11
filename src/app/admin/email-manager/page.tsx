@@ -110,7 +110,7 @@ export default function EmailManagerPage() {
                         <div className="flex items-center gap-4 text-tech-500 text-[10px] font-bold uppercase tracking-widest">
                             <span className="flex items-center gap-2"><User className="w-3 h-3" /> {user?.displayName || user?.email}</span>
                             <span className="w-1 h-1 bg-tech-800 rounded-full"></span>
-                            <span className="text-white">Memorias Vivas</span>
+                            <span className="text-white">Legado vivo</span>
                         </div>
                     </div>
 
@@ -331,7 +331,7 @@ export default function EmailManagerPage() {
                                                     <BadgeCheck className="w-5 h-5" />
                                                 </div>
                                                 <p className="text-[9px] text-tech-500 uppercase tracking-widest leading-tight max-w-[200px]">
-                                                    Esta comunicación será auditada por el sistema de calidad Memorias Vivas.
+                                                    Esta comunicación será auditada por el sistema de calidad Legado vivo.
                                                 </p>
                                             </div>
                                             <button

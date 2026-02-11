@@ -11,12 +11,21 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useRole } from "@/hooks/useRole";
+import { Loader2 } from "lucide-react";
 
 export default function AlbumsList() {
+    const { role } = useRole();
     const router = useRouter();
     const [albums, setAlbums] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
+
+    useEffect(() => {
+        if (role === "UNAUTHORIZED") {
+            router.push("/admin/login");
+        }
+    }, [role, router]);
 
     useEffect(() => {
         loadAlbums();
@@ -44,6 +53,14 @@ export default function AlbumsList() {
         a.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         a.clientName?.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    if (role === "LOADING") return (
+        <div className="min-h-screen bg-tech-950 flex items-center justify-center">
+            <Loader2 className="w-12 h-12 text-curiol-500 animate-spin" />
+        </div>
+    );
+
+    if (role === "UNAUTHORIZED") return null;
 
     return (
         <div className="min-h-screen bg-tech-950 text-white p-8">

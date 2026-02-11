@@ -15,6 +15,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { generateSocialCrop, detectMood, generateImageTags } from "@/actions/image-ai";
 import { createAlbum } from "@/actions/albums";
 import { generateDeliveryCopy } from "@/lib/gemini";
+import { useRole } from "@/hooks/useRole";
 
 interface UploadedImage {
     file: File;
@@ -31,6 +32,7 @@ interface UploadedImage {
 }
 
 export default function NewAlbumStudio() {
+    const { role } = useRole();
     const router = useRouter();
     const [step, setStep] = useState(1);
     const [albumName, setAlbumName] = useState("");
@@ -180,6 +182,14 @@ export default function NewAlbumStudio() {
         }
         setUploading(false);
     };
+
+    if (role === "LOADING") return (
+        <div className="min-h-screen bg-tech-950 flex items-center justify-center">
+            <Loader2 className="w-12 h-12 text-curiol-500 animate-spin" />
+        </div>
+    );
+
+    if (role === "UNAUTHORIZED") return null;
 
     return (
         <div className="min-h-screen bg-tech-950 text-white selection:bg-curiol-500/30">

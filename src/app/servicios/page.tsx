@@ -13,25 +13,27 @@ import {
 import Link from "next/link";
 
 const modalities = [
-    { id: "aventura", title: "Aventura Mágica", icon: Sparkles, desc: "Phygital Premium: 15 Fotos + Realidad Aumentada + Música IA. (₡95.000 / $199)." },
-    { id: "esencia", title: "Esencia Familiar", icon: Camera, desc: "El Corazón del Hogar: 20 Fotos + Cuadros Vivos con Realidad Aumentada. (₡110.000 / $249)." },
-    { id: "marca", title: "Marca Personal", icon: UserCheck, desc: "Impacto Profesional: 15 Fotos + Tarjeta Inteligente NFC. (₡65.000 / $149)." },
-    { id: "legado", title: "Membresía Legado", icon: Users, desc: "Tu Biógrafo: 3 sesiones anuales y custodia de herencia digital. (₡25.000 / $59 mes)." },
-    { id: "express", title: "Omni Core", icon: Smartphone, desc: "Imán de Clientes: Landing + Chatbot IA entrenado con tu negocio. (₡85.000 / $199).", highlight: true },
-    { id: "negocio", title: "Omni Pro", icon: Code, desc: "Motor de Ventas: Web-App completa + Asistente Inteligente 24/7. (₡145.000 / $349).", highlight: true },
-    { id: "phygital", title: "Ecosistema Phygital", icon: Binary, desc: "Fusión Física-Digital: Catálogos con Realidad Aumentada y activos interactivos." },
+    { id: "aventura", title: "Aventura Mágica", icon: Sparkles, desc: "Donde la imaginación cobra vida. 15 Fotos + Realidad Aumentada + Música IA. (₡80.900 / $165)." },
+    { id: "recuerdos", title: "Recuerdos Eternos", icon: Camera, desc: "Tributo a la esencia: 15 Fotos + Impresión Fine Art + Cuadros Vivos AR. (₡77.000 / $149)." },
+    { id: "marca", title: "Marca Personal", icon: UserCheck, desc: "Impacto Profesional: 15 Fotos + Identidad Visual + Tarjeta NFC. (₡89.000 / $179)." },
+    { id: "legado", title: "Membresía Legado", icon: Users, desc: "Patrimonio Emocional: 3 sesiones anuales y custodia digital. (₡25.000 / $59 mes)." },
+    { id: "express", title: "Omni Local", icon: Smartphone, desc: "Imán de Clientes: Landing + Cotizador Básico + Tarjeta NFC. (₡250.000 / $500).", highlight: true },
+    { id: "negocio", title: "Omni Pro", icon: Code, desc: "Motor de Ventas: Web-App completa + Agenda + Filtro IA Gemini. (₡750.000 / $1500).", highlight: true },
+    { id: "ultra", title: "Omni Ultra", icon: Binary, desc: "Ecosistema Total: Curiol OS + Album Studio + Analytics IA. (₡1.500.000 / $3000)." },
     { id: "mantenimiento", title: "Omni Sincro", icon: Sparkles, desc: "Evolución IA: Actualización trimestral de innovaciones y seguridad. (₡15.000 / $39 mes)." }
 ];
 
 const generateServicesSummary = () => {
-    const summary = `*Curiol Studio 2026 - Legado Familiar & Soluciones Comerciales*\n\n` +
+    const summary = `*Curiol Studio 2026 - Legado vivo & Soluciones Comerciales*\n\n` +
         `*LEGADO FAMILIAR (B2C)*\n` +
-        `• *Aventura Mágica*: ₡95k / $199\n` +
-        `• *Esencia Familiar*: ₡110k / $249\n` +
+        `• *Aventura Mágica*: ₡80.9k / $165\n` +
+        `• *Recuerdos Eternos*: ₡77k / $149\n` +
+        `• *Marca Personal*: ₡89k / $179\n` +
         `• *Membresía Legado*: ₡25k / $59 mes\n\n` +
         `*SOLUCIONES COMERCIALES (B2B)*\n` +
-        `• *Omni Core*: ₡85k / $199\n` +
-        `• *Omni Pro*: ₡145k / $349\n\n` +
+        `• *Omni Local*: ₡250k / $500\n` +
+        `• *Omni Pro*: ₡750k / $1500\n` +
+        `• *Omni Ultra*: ₡1.5M / $3000\n\n` +
         `_Ingeniería digital con sensibilidad artística._`;
     return `https://wa.me/50660602617?text=${encodeURIComponent(summary)}`;
 };

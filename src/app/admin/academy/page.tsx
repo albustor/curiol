@@ -11,6 +11,9 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, query, onSnapshot, doc, updateDoc, deleteDoc, Timestamp, orderBy } from "firebase/firestore";
+import { useRole } from "@/hooks/useRole";
+import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 interface AcademyContent {
     id: string;
@@ -32,10 +35,18 @@ interface AcademyContent {
 }
 
 export default function AcademyManagerPage() {
+    const { role } = useRole();
+    const router = useRouter();
     const [contents, setContents] = useState<AcademyContent[]>([]);
     const [isEditing, setIsEditing] = useState<AcademyContent | null>(null);
     const [loading, setLoading] = useState(false);
     const [activeTab, setActiveTab] = useState<"content" | "planner">("content");
+
+    useEffect(() => {
+        if (role === "UNAUTHORIZED") {
+            router.push("/admin/login");
+        }
+    }, [role, router]);
 
     useEffect(() => {
         const q = query(collection(db, "academy_content"), orderBy("createdAt", "desc"));
@@ -45,6 +56,14 @@ export default function AcademyManagerPage() {
         });
         return () => unsubscribe();
     }, []);
+
+    if (role === "LOADING") return (
+        <div className="min-h-screen bg-tech-950 flex items-center justify-center">
+            <Loader2 className="w-12 h-12 text-curiol-500 animate-spin" />
+        </div>
+    );
+
+    if (role === "UNAUTHORIZED") return null;
 
     const lastContentDate = contents.length > 0
         ? new Date(Math.max(...contents.map(c => c.createdAt?.toDate().getTime() || 0)))

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Navbar } from "@/components/Navbar";
@@ -11,9 +11,18 @@ import {
 } from "lucide-react";
 import { saveQALog, QALog } from "@/actions/qa";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRole } from "@/hooks/useRole";
 
 export default function QALogsPage() {
+    const { role } = useRole();
     const router = useRouter();
+
+    useEffect(() => {
+        if (role === "UNAUTHORIZED") {
+            router.push("/admin/login");
+        }
+    }, [role, router]);
+
     const [submitting, setSubmitting] = useState(false);
     const [success, setSuccess] = useState(false);
 
@@ -57,6 +66,14 @@ export default function QALogsPage() {
             setSubmitting(false);
         }
     };
+
+    if (role === "LOADING") return (
+        <div className="min-h-screen bg-tech-950 flex items-center justify-center">
+            <Loader2 className="w-12 h-12 text-curiol-500 animate-spin" />
+        </div>
+    );
+
+    if (role === "UNAUTHORIZED") return null;
 
     return (
         <div className="min-h-screen bg-tech-950 text-white flex flex-col pt-32 pb-24">
@@ -128,8 +145,8 @@ export default function QALogsPage() {
                                                         type="button"
                                                         onClick={() => setForm({ ...form, [cat.key]: val })}
                                                         className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${(form as any)[cat.key] === val
-                                                                ? "bg-curiol-500 text-white"
-                                                                : "hover:bg-white/5 text-tech-600"
+                                                            ? "bg-curiol-500 text-white"
+                                                            : "hover:bg-white/5 text-tech-600"
                                                             }`}
                                                     >
                                                         {val}

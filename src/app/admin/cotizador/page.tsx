@@ -52,61 +52,54 @@ const PACKAGES = {
     legado: [
         {
             id: "aventura",
-            name: "Aventura Mágica (Phygital)",
-            price: 95000,
-            usd: 199,
+            name: "Aventura Mágica",
+            price: 80900,
+            usd: 165,
             desc: "15 Fotos Fine Art + IA. Realidad Aumentada y música personalizada."
         },
         {
-            id: "esencia",
-            name: "Esencia Familiar",
-            price: 110000,
-            usd: 249,
-            desc: "20 Fotos High-End. Cuadros Vivos AR y App de legado Hogar."
+            id: "recuerdos",
+            name: "Recuerdos Eternos",
+            price: 77000,
+            usd: 149,
+            desc: "15 Fotos High-End. Cuadros Vivos AR e Impresión Fine Art."
         },
         {
-            id: "navidad",
-            name: "Instantes de Luz",
-            price: 40000,
-            usd: 99,
-            desc: "15 Fotos temáticas + Tarjeta física con mensaje de video en RA."
+            id: "marca",
+            name: "Marca Personal",
+            price: 89000,
+            usd: 179,
+            desc: "15 Fotos de impacto. Estrategia visual y galería digital pro."
         },
         {
-            id: "mini",
-            name: "Minisesiones Phygital",
+            id: "legado",
+            name: "Membresía Legado",
             price: 25000,
-            usd: 49,
-            desc: "8 Fotos ágiles. Incluye detalle interactivo de Realidad Aumentada."
-        },
-        {
-            id: "membresia",
-            name: "Membresía Legado Anual",
-            price: 150000,
-            usd: 299,
-            desc: "Biógrafo Familiar. 3 sesiones anuales y custodia de herencia digital."
+            usd: 59,
+            desc: "Acompañamiento anual. 3 sesiones programadas y custodia digital."
         }
     ],
     infra: [
         {
-            id: "marca",
-            name: "Marca Personal",
-            price: 65000,
-            usd: 149,
-            desc: "15 Fotos de impacto. Incluye asesoría visual y tarjeta NFC inteligente."
+            id: "omni_local",
+            name: "Omni Local",
+            price: 250000,
+            usd: 500,
+            desc: "Landing Page + Cotizador Básico + NFC."
         },
         {
-            id: "core",
-            name: "Omni Core (Ventas)",
-            price: 85000,
-            usd: 199,
-            desc: "Landing de alto impacto + Chatbot IA con contexto de negocio."
+            id: "omni_pro",
+            name: "Omni Pro",
+            price: 750000,
+            usd: 1500,
+            desc: "Web-App + Agenda + Filtro IA Gemini."
         },
         {
-            id: "pro",
-            name: "Omni Pro (Crecimiento)",
-            price: 145000,
-            usd: 349,
-            desc: "Web-App completa, Catálogo interactivo y Chatbot avanzado."
+            id: "omni_ultra",
+            name: "Omni Ultra (Curiol OS)",
+            price: 1500000,
+            usd: 3000,
+            desc: "Ecosistema Total + Album Studio + Analytics IA."
         }
     ],
     sociales: [

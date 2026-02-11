@@ -13,6 +13,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { db } from "@/lib/firebase";
 import { collection, query, orderBy, limit, onSnapshot, addDoc, Timestamp, where } from "firebase/firestore";
 import { sendWhatsAppMessage, sendSocialMessage } from "@/lib/meta";
+import { useRole } from "@/hooks/useRole";
+import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 interface ChatMessage {
     id: string;
@@ -32,6 +35,15 @@ interface Contact {
 }
 
 export default function LiveChatPage() {
+    const { role } = useRole();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (role === "UNAUTHORIZED") {
+            router.push("/admin/login");
+        }
+    }, [role, router]);
+
     const [contacts, setContacts] = useState<Contact[]>([]);
     const [selectedContact, setSelectedContact] = useState<string | null>(null);
     const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -112,6 +124,14 @@ export default function LiveChatPage() {
         setLoading(false);
     };
 
+    if (role === "LOADING") return (
+        <div className="min-h-screen bg-tech-950 flex items-center justify-center">
+            <Loader2 className="w-12 h-12 text-curiol-500 animate-spin" />
+        </div>
+    );
+
+    if (role === "UNAUTHORIZED") return null;
+
     return (
         <div className="min-h-screen bg-tech-950 flex flex-col pt-32 h-screen overflow-hidden">
             <Navbar />
@@ -187,8 +207,8 @@ export default function LiveChatPage() {
                                         >
                                             <div className={`max-w-[70%] group`}>
                                                 <div className={`p-4 rounded-2xl text-sm leading-relaxed ${msg.direction === 'inbound'
-                                                        ? "bg-tech-900 text-white border border-white/5 rounded-tl-none"
-                                                        : "bg-curiol-gradient text-white rounded-tr-none shadow-xl shadow-curiol-500/10"
+                                                    ? "bg-tech-900 text-white border border-white/5 rounded-tl-none"
+                                                    : "bg-curiol-gradient text-white rounded-tr-none shadow-xl shadow-curiol-500/10"
                                                     }`}>
                                                     {msg.message}
                                                 </div>

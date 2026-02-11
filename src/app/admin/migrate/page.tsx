@@ -6,8 +6,20 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import { migrateCsvToFirestore } from "@/actions/portfolio";
 import { Database, Loader2, CheckCircle2, AlertCircle, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useRole } from "@/hooks/useRole";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function MigratePage() {
+    const { role } = useRole();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (role === "UNAUTHORIZED") {
+            router.push("/admin/login");
+        }
+    }, [role, router]);
+
     const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
     const [count, setCount] = useState(0);
 
@@ -25,6 +37,14 @@ export default function MigratePage() {
             setStatus("error");
         }
     };
+
+    if (role === "LOADING") return (
+        <div className="min-h-screen bg-tech-950 flex items-center justify-center">
+            <Loader2 className="w-12 h-12 text-curiol-500 animate-spin" />
+        </div>
+    );
+
+    if (role === "UNAUTHORIZED") return null;
 
     return (
         <div className="min-h-screen bg-tech-950 pt-32 pb-24 flex items-center justify-center">
