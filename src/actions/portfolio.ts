@@ -2,6 +2,7 @@
 
 import { db } from "@/lib/firebase";
 import { collection, getDocs, orderBy, query, addDoc, serverTimestamp } from "firebase/firestore";
+import { getDirectImageUrl } from "@/lib/utils";
 
 export interface PortfolioItem {
     id?: string;
@@ -154,19 +155,6 @@ export async function getHeroImages(): Promise<string[]> {
     }
 }
 
-/**
- * Converts a Google Drive sharing link to a direct download link
- */
-export async function getDirectImageUrl(url: string): Promise<string> {
-    if (!url) return "";
-    if (url.includes("drive.google.com")) {
-        const idMatch = url.match(/\/d\/(.+?)\//) || url.match(/id=(.+?)(&|$)/);
-        if (idMatch) {
-            return `https://lh3.googleusercontent.com/u/0/d/${idMatch[1]}=w1000`;
-        }
-    }
-    return url;
-}
 export async function migrateCsvToFirestore(): Promise<{ success: boolean; count: number }> {
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR4OuEDRXmfwRB51PGyTyz2D9cxb5IwXnvDrSiHtzh37iGZY1to7EB0O1rPyKcVVcSHqeHFb1I4glNZ/pub?output=csv";
 
@@ -197,7 +185,7 @@ export async function migrateCsvToFirestore(): Promise<{ success: boolean; count
 
             if (!url || !url.startsWith("http")) continue;
 
-            const directUrl = await getDirectImageUrl(url);
+            const directUrl = getDirectImageUrl(url);
             const albumName = subcategoria || categoria || "Sin Categoría";
             // Limpiar ID de caracteres raros
             const albumId = albumName.toLowerCase()

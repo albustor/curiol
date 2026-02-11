@@ -11,7 +11,8 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { AgendaWidget } from "@/components/AgendaWidget";
 
-import { getHeroImages, getPortfolioData, PortfolioItem, getDirectImageUrl } from "@/actions/portfolio";
+import { getHeroImages, getPortfolioData, PortfolioItem } from "@/actions/portfolio";
+import { getDirectImageUrl } from "@/lib/utils";
 import { PerspectiveCard } from "@/components/ui/PerspectiveCard";
 
 const DEFAULT_BACKGROUNDS = [

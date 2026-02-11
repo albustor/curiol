@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { getAlbumBySlug, PortfolioAlbum, getDirectImageUrl } from "@/actions/portfolio";
+import { getAlbumBySlug, PortfolioAlbum } from "@/actions/portfolio";
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from "framer-motion";
 import {
     Heart, Share2, Download, X,
@@ -12,7 +12,7 @@ import {
     Calendar, Lock, ShieldCheck, Instagram, Facebook,
     Sparkles, MessageSquare, Quote
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getDirectImageUrl } from "@/lib/utils";
 import { AiCompositionEditor } from "@/components/admin/AiCompositionEditor";
 import { getPortfolioAiInsight } from "@/actions/portfolio";
 import { PerspectiveCard } from "@/components/ui/PerspectiveCard";

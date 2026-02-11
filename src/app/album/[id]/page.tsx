@@ -7,7 +7,8 @@ import { generateSocialCaption } from "@/actions/image-ai";
 import { motion, AnimatePresence } from "framer-motion";
 import { Download, Share2, Heart, MessageCircle, Clock, Info, Search, Grid, MousePointer2, Eye, X, Play, Pause, Copy, Check, Music, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { getDirectImageUrl, getPortfolioAiInsight } from "@/actions/portfolio";
+import { getPortfolioAiInsight } from "@/actions/portfolio";
+import { getDirectImageUrl } from "@/lib/utils";
 import { PerspectiveCard } from "@/components/ui/PerspectiveCard";
 
 export default function ClientAlbumPage() {
