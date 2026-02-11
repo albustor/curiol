@@ -22,7 +22,8 @@ const modalities = [
             "Realidad Aumentada interactiva",
             "Canción IA personalizada",
             "Retablo 5x7\" con NFC",
-            "Inversión: ₡80.900 / $165"
+            "Inversión: ₡80.900 / $165",
+            "(Pago seccionado: ₡16.180 x 5 meses)"
         ]
     },
     {
@@ -34,7 +35,8 @@ const modalities = [
             "Cuadros Vivos AR",
             "Impresión de alta gama",
             "Retablo 8x12\" con NFC",
-            "Inversión: ₡77.000 / $149"
+            "Inversión: ₡115.000 / $225",
+            "(Pago seccionado: ₡23.000 x 5 meses)"
         ]
     },
     {
@@ -128,8 +130,8 @@ const modalities = [
 const generateServicesSummary = () => {
     const summary = `*Curiol Studio 2026 - Legado vivo & Soluciones Comerciales*\n\n` +
         `*LEGADO FAMILIAR (B2C)*\n` +
-        `• *Aventura Mágica*: ₡80.9k / $165\n` +
-        `• *Recuerdos Eternos*: ₡77k / $149\n` +
+        `• *Aventura Mágica*: ₡80.9k / $165 (o 5 cuotas de ₡16,180)\n` +
+        `• *Recuerdos Eternos*: ₡115k / $225 (o 5 cuotas de ₡23,000)\n` +
         `• *Marca Personal*: ₡89k / $179\n` +
         `• *Membresía Legado*: ₡25k / $59 mes\n\n` +
         `*SOLUCIONES COMERCIALES (B2B)*\n` +

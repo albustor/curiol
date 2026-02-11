@@ -65,6 +65,7 @@ export async function getAiAssistantResponse(message: string, context: any) {
         LOGÍSTICA:
         - AGENDA: SÁBADOS y DOMINGOS únicamente.
         - RESERVA: Requiere depósito del 20% para asegurar fecha y activar pre-producción.
+        - PAGOS SECCIONADOS: Disponibles para Recuerdos Eternos y Aventura Mágica si se reserva con 5+ meses de anticipación. (5 cuotas mensuales: RE ₡23k, AM ₡16.180).
         - CALIDAD: Exportación a 1350px (Lado Largo) + IA para composición perfecta (Regla de Tercios/Áurea).
         - RECORDATORIOS: Notificaciones automáticas 4d, 2d y 8h antes.
       `;

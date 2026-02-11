@@ -264,6 +264,8 @@ export default function CotizadorPage() {
     const [showSizes, setShowSizes] = useState(false);
     const [hours, setHours] = useState(2);
     const [isCoastal, setIsCoastal] = useState(false);
+    const [isAdvanceBooking, setIsAdvanceBooking] = useState(false);
+    const [useInstallments, setUseInstallments] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState<"sinpe" | "transfer" | "card" | null>(null);
     const [quoteId, setQuoteId] = useState("");
 
@@ -793,15 +795,75 @@ export default function CotizadorPage() {
                                                 ))}
                                             </div>
                                         )}
+
+                                        {/* Advance Booking & Installments */}
+                                        <div className="pt-6 border-t border-tech-800 space-y-6">
+                                            <label className="flex items-center gap-3 cursor-pointer group">
+                                                <div className={cn(
+                                                    "w-5 h-5 rounded border-2 flex items-center justify-center transition-all",
+                                                    isAdvanceBooking ? "bg-curiol-500 border-curiol-500" : "border-tech-700 bg-tech-950 group-hover:border-curiol-500/50"
+                                                )} onClick={() => {
+                                                    setIsAdvanceBooking(!isAdvanceBooking);
+                                                    if (isAdvanceBooking) setUseInstallments(false);
+                                                }}>
+                                                    {isAdvanceBooking && <CheckCircle2 className="w-3 h-3 text-white" />}
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    <span className="text-[11px] font-bold uppercase tracking-widest text-tech-400 group-hover:text-white transition-colors">
+                                                        Sesión planeada con 5+ meses de anticipación
+                                                    </span>
+                                                    <span className="text-[9px] text-curiol-500 italic mt-0.5">¡Habilita planes de pago seccionados!</span>
+                                                </div>
+                                            </label>
+
+                                            <AnimatePresence>
+                                                {isAdvanceBooking && (selectedPackage?.id === "recuerdos" || selectedPackage?.id === "aventura") && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, height: 0 }}
+                                                        animate={{ opacity: 1, height: "auto" }}
+                                                        exit={{ opacity: 0, height: 0 }}
+                                                        className="overflow-hidden"
+                                                    >
+                                                        <div
+                                                            onClick={() => setUseInstallments(!useInstallments)}
+                                                            className={cn(
+                                                                "p-4 rounded-xl border transition-all cursor-pointer flex justify-between items-center group",
+                                                                useInstallments
+                                                                    ? "border-curiol-500 bg-curiol-500/10"
+                                                                    : "border-tech-800 bg-tech-950/30 hover:border-tech-700"
+                                                            )}
+                                                        >
+                                                            <div className="flex-grow">
+                                                                <p className="text-white text-xs font-bold group-hover:text-curiol-400 transition-colors uppercase tracking-widest">Pago Seccionado (5 Meses)</p>
+                                                                <p className="text-tech-500 text-[9px] mt-1">Organiza tu inversión en 5 cuotas mensuales vía enlace de cobro.</p>
+                                                            </div>
+                                                            <div className="text-right">
+                                                                <p className="text-curiol-500 font-bold text-sm">
+                                                                    5 x ₡{selectedPackage?.id === "recuerdos" ? "23.000" : "16.180"}
+                                                                </p>
+                                                                <p className="text-[8px] text-tech-600 uppercase font-black tracking-widest mt-1">Sugerido por Alberto</p>
+                                                            </div>
+                                                        </div>
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
                                     </div>
 
                                     <div className="pt-8 border-t border-tech-800 flex justify-between items-end mb-12">
                                         <div>
-                                            <p className="text-tech-500 text-[9px] font-bold uppercase tracking-widest mb-1">Inversión Estimada</p>
-                                            <p className="text-tech-400 text-[10px] italic">Sujeto a confirmación técnica</p>
+                                            <p className="text-tech-500 text-[9px] font-bold uppercase tracking-widest mb-1">
+                                                {useInstallments ? "Cuota Mensual (1/5)" : "Inversión Estimada"}
+                                            </p>
+                                            <p className="text-tech-400 text-[10px] italic">
+                                                {useInstallments ? "Inversión seccionada" : "Sujeto a confirmación técnica"}
+                                            </p>
                                         </div>
                                         <span className="text-5xl font-serif text-white italic">
-                                            {currency === "USD" ? "$" : "₡"}{total.toLocaleString()}
+                                            {currency === "USD" ? "$" : "₡"}
+                                            {useInstallments
+                                                ? (selectedPackage?.id === "recuerdos" ? "23.000" : "16.180")
+                                                : total.toLocaleString()}
                                         </span>
                                     </div>
 
@@ -973,12 +1035,16 @@ export default function CotizadorPage() {
                                                 console.error("Error saving quote:", e);
                                             }
 
+                                            const installmentText = useInstallments
+                                                ? `\nPlan de Pagos: 5 cuotas de ₡${selectedPackage?.id === "recuerdos" ? "23.000" : "16.180"} (Seccionado)`
+                                                : '';
+
                                             const message = encodeURIComponent(`Hola Alberto, he generado una propuesta en Curiol Studio.
 Ref: ${quoteId}
 
 Paquete: ${selectedPackage?.name} ${upgradeSize ? `(Upgrade a ${upgradeSize.label})` : ''}
 ${selectedComplementIds.length > 0 ? `Complementos: ${COMPLEMENTS.filter(c => selectedComplementIds.includes(c.id)).map(c => c.name).join(', ')}\n` : ''}
-Inversión total: ${currency === "USD" ? "$" : "₡"}${total.toLocaleString()}
+Inversión total: ${currency === "USD" ? "$" : "₡"}${total.toLocaleString()}${installmentText}
 Método de pago preferido: ${methodText}${cardNote}
 
 Quedo a la espera de los siguientes pasos para confirmar mi sesión.`);

@@ -17,6 +17,17 @@ export const FINANCE_CONFIG = {
         EQUIPMENT_DEPRECIATION: 25000, // Saved for replacement
     },
 
+    // Installment Plans (Pago Seccionado)
+    INSTALLMENT_PLANS: {
+        MONTHS: 5,
+        ELIGIBLE_PACKAGES: ["recuerdos", "aventura"],
+        MIN_ADVANCE_MONTHS: 5,
+        CALCULATION: {
+            "recuerdos": { installments: 5, amount: 23000 },
+            "aventura": { installments: 5, amount: 16180 }
+        }
+    },
+
     // Costa Rica Tax Compliance (Ministerio de Hacienda)
     TAX: {
         IVA_RATE: 0.13,
