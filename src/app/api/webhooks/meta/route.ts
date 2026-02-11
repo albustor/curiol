@@ -17,9 +17,17 @@ export async function GET(req: Request) {
     const token = searchParams.get("hub.verify_token");
     const challenge = searchParams.get("hub.challenge");
 
+    console.log("META WEBHOOK VERIFICATION ATTEMPT:", { mode, token });
+
     if (mode === "subscribe" && token === VERIFY_TOKEN) {
-        return new Response(challenge, { status: 200 });
+        console.log("Verification successful, returning challenge:", challenge);
+        return new Response(challenge, {
+            status: 200,
+            headers: { 'Content-Type': 'text/plain' }
+        });
     }
+
+    console.warn("Verification failed. Expected token:", VERIFY_TOKEN, "Received:", token);
     return new Response("Forbidden", { status: 403 });
 }
 
