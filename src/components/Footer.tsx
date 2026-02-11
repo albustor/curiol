@@ -43,6 +43,15 @@ export function Footer() {
                                 <p className="text-tech-400 text-sm font-light italic">Nicoya, Zona Azul, Costa Rica</p>
                             </div>
                             <div>
+                                <p className="text-tech-500 text-[10px] font-bold uppercase tracking-widest mb-2">WhatsApp Oficial</p>
+                                <a href="https://wa.me/50662856669" target="_blank" className="text-curiol-500 text-sm font-bold hover:underline block">
+                                    +506 6285-6669
+                                </a>
+                                <p className="text-[9px] text-tech-600 font-bold uppercase tracking-[0.2em] mt-2 italic">
+                                    Contacto inicial únicamente vía WhatsApp
+                                </p>
+                            </div>
+                            <div>
                                 <p className="text-tech-500 text-[10px] font-bold uppercase tracking-widest mb-2">Canal Oficial</p>
                                 <a href="mailto:info@curiol.studio" className="text-curiol-500 text-sm font-bold hover:underline">
                                     info@curiol.studio

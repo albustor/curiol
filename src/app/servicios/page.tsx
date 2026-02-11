@@ -214,9 +214,12 @@ export default function ServiciosPage() {
                             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-curiol-700/10 via-transparent to-transparent opacity-50" />
                             <div className="relative z-10">
                                 <h2 className="text-3xl font-serif text-white mb-8 italic">¿Listo para empezar?</h2>
-                                <Link href="/cotizar" className="inline-flex items-center gap-4 px-10 py-5 bg-curiol-700 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-curiol-500 transition-all rounded-full">
+                                <Link href="https://wa.me/50662856669" className="px-10 py-4 bg-curiol-600 text-white text-[10px] font-bold uppercase tracking-[0.2em] rounded-full hover:bg-curiol-500 transition-all shadow-xl shadow-curiol-500/10">
                                     Personalizar mi Legado <ArrowRight className="w-4 h-4" />
                                 </Link>
+                                <p className="text-[9px] text-tech-500 font-bold uppercase tracking-[0.2em] mt-6 italic opacity-60">
+                                    Comunicación inicial únicamente vía WhatsApp
+                                </p>
                             </div>
                         </div>
                     </div>

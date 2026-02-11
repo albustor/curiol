@@ -13,8 +13,9 @@ import {
 import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import confetti from "canvas-confetti";
+import Link from "next/link";
 
-const MI_WHATSAPP = "50660602617";
+const MI_WHATSAPP = "50662856669";
 
 const THEMES = [
     { id: "theme-red", name: "Rojo Pasión", color: "#a4161a", gradient: "linear-gradient(135deg, #4b0d0e 0%, #a4161a 100%)" },
@@ -363,6 +364,9 @@ export default function GiftCardPage() {
                                 >
                                     <Send className="w-4 h-4" /> Solicitar este Diseño
                                 </button>
+                                <p className="text-[10px] text-tech-500 text-center font-bold uppercase tracking-widest mt-2 block italic">
+                                    Comunicación inicial únicamente vía WhatsApp
+                                </p>
                             </div>
 
                             <button

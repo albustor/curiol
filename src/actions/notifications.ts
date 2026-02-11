@@ -16,18 +16,6 @@ export async function sendNotification({ to, message, type, subject }: Notificat
 
     console.log(`[NOTIFICATION SERVICE] Sending ${type} to ${to}: ${message}`);
 
-    // Example Twilio Implementation (Commented out):
-    /*
-    if (type === "whatsapp") {
-        const client = require('twilio')(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
-        await client.messages.create({
-            from: 'whatsapp:+14155238886', // Twilio Sandbox
-            body: message,
-            to: `whatsapp:${to}`
-        });
-    }
-    */
-
     // Resend Implementation:
     if (type === "email") {
         try {
@@ -55,11 +43,11 @@ export async function sendNotification({ to, message, type, subject }: Notificat
 }
 
 export async function notifyNewBooking(booking: any) {
-    const adminNumber = "60602617";
+    const adminNumber = "62856669";
     const adminEmail = process.env.ADMIN_EMAIL || "info@curiol.studio";
 
-    const adminMessage = `Nueva reserva agendada por ${booking.name}. Fecha: ${booking.date instanceof Date ? booking.date.toLocaleDateString() : booking.date}. Hora: ${booking.time}. Comprobante adjunto en el dashboard.\n\nAtentamente,\nCuriol Studio • Legado`;
-    const clientMessage = `Hola ${booking.name}, gracias por agendar con Curiol Studio. Hemos recibido tu comprobante del 20%. Tu sesión para el ${booking.date instanceof Date ? booking.date.toLocaleDateString() : booking.date} a las ${booking.time} está en proceso de aprobación final.\n\nAtentamente,\nCuriol Studio • Legado`;
+    const adminMessage = `Nueva reserva agendada por ${booking.name}. Fecha: ${booking.date instanceof Date ? booking.date.toLocaleDateString() : (booking.date.toDate ? booking.date.toDate().toLocaleDateString() : booking.date)}. Hora: ${booking.time}. Comprobante adjunto en el dashboard.\n\nAtentamente,\nCuriol Studio • Legado`;
+    const clientMessage = `Hola ${booking.name}, gracias por agendar con Curiol Studio. Hemos recibido tu comprobante del 20%. Tu sesión para el ${booking.date instanceof Date ? booking.date.toLocaleDateString() : (booking.date.toDate ? booking.date.toDate().toLocaleDateString() : booking.date)} a las ${booking.time} está en proceso de aprobación final.\n\nAtentamente,\nCuriol Studio • Legado`;
 
     // Notify Alberto (Admin)
     await sendNotification({ to: adminNumber, message: adminMessage, type: "whatsapp" });
@@ -81,7 +69,7 @@ export async function processReminders() {
     for (const docSnapshot of querySnapshot.docs) {
         const booking = docSnapshot.data();
         const bookingId = docSnapshot.id;
-        const sessionDate = booking.date.toDate();
+        const sessionDate = booking.date.toDate ? booking.date.toDate() : new Date(booking.date);
         const timeDiffHours = (sessionDate.getTime() - now.getTime()) / (1000 * 60 * 60);
         const timeDiffDays = timeDiffHours / 24;
 
@@ -112,7 +100,7 @@ export async function processReminders() {
 }
 
 async function sendBookingReminder(booking: any, timeFrame: string) {
-    const clientMessage = `Hola ${booking.name}, Curiol Studio te recuerda tu sesión agendada para el ${booking.date.toDate().toLocaleDateString()} a las ${booking.time}. Falta(n) ${timeFrame}. ¡Te esperamos!`;
+    const clientMessage = `Hola ${booking.name}, Curiol Studio te recuerda tu sesión agendada para el ${booking.date.toDate ? booking.date.toDate().toLocaleDateString() : booking.date} a las ${booking.time}. Falta(n) ${timeFrame}. ¡Te esperamos!`;
 
     await sendNotification({
         to: booking.whatsapp,

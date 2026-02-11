@@ -158,9 +158,12 @@ export default function ComunidadPage() {
                             <p className="text-tech-400 text-lg font-light leading-relaxed mb-10 italic">
                                 "Honramos a los personajes azules que han dejado huella en nuestras comunidades."
                             </p>
-                            <Link href="/cotizar" className="flex items-center gap-2 text-curiol-500 text-xs font-bold uppercase tracking-widest hover:underline">
-                                Postular una Historia <ArrowRight className="w-4 h-4" />
+                            <Link href="/cotizar" className="px-12 py-6 bg-curiol-gradient text-white text-xs font-bold uppercase tracking-widest hover:scale-105 transition-all rounded-full flex items-center gap-4 mx-auto shadow-2xl">
+                                Crear Historia <ArrowRight className="w-4 h-4" />
                             </Link>
+                            <p className="text-[10px] text-tech-600 font-bold uppercase tracking-[0.3em] mt-8 italic text-center">
+                                Comunicación inicial únicamente vía WhatsApp
+                            </p>
                         </div>
                     </div>
                 </section>

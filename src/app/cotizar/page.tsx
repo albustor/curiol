@@ -1048,11 +1048,14 @@ Inversión total: ${currency === "USD" ? "$" : "₡"}${total.toLocaleString()}${
 Método de pago preferido: ${methodText}${cardNote}
 
 Quedo a la espera de los siguientes pasos para confirmar mi sesión.`);
-                                            window.open(`https://wa.me/50660602617?text=${message}`, '_blank');
+                                            window.open(`https://wa.me/50662856669?text=${message}`, '_blank');
                                         }}
                                     >
                                         Finalizar & Enviar WhatsApp
                                     </button>
+                                    <p className="text-[10px] text-tech-600 font-bold uppercase tracking-[0.2em] mt-6 italic text-center">
+                                        Comunicación inicial únicamente vía WhatsApp
+                                    </p>
                                     <button onClick={handleBack} className="text-tech-500 hover:text-white transition-all text-[10px] uppercase tracking-[0.2em] font-bold">Volver al Resumen</button>
                                 </div>
                             </motion.div>

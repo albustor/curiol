@@ -441,10 +441,13 @@ export default function SolucionesWebPage() {
                             <Link href="/cotizar" className="px-12 py-6 bg-curiol-700 text-white text-xs font-bold uppercase tracking-widest hover:bg-curiol-500 transition-all rounded-full flex items-center justify-center gap-3">
                                 Analizar Propuesta Inteligente <ArrowRight className="w-4 h-4" />
                             </Link>
-                            <Link href="https://wa.me/50660602617" className="px-12 py-6 border border-tech-700 text-white text-xs font-bold uppercase tracking-widest hover:bg-tech-800 transition-all rounded-full flex items-center justify-center gap-3">
+                            <Link href="https://wa.me/50662856669" className="px-12 py-6 border border-tech-700 text-white text-xs font-bold uppercase tracking-widest hover:bg-tech-800 transition-all rounded-full flex items-center justify-center gap-3">
                                 Chat Directo <Sparkles className="w-4 h-4" />
                             </Link>
                         </div>
+                        <p className="text-[10px] text-tech-600 font-bold uppercase tracking-[0.3em] mt-8 italic text-center">
+                            Comunicación inicial únicamente vía WhatsApp
+                        </p>
                     </div>
                 </section>
             </main>
