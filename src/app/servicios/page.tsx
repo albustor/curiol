@@ -13,14 +13,116 @@ import {
 import Link from "next/link";
 
 const modalities = [
-    { id: "aventura", title: "Aventura Mágica", icon: Sparkles, desc: "Donde la imaginación cobra vida. Transformamos a los más pequeños en héroes de su propia historia, creando mundos de alegría y seguridad que se convierten en un legado visual eterno. (₡80.900 / $165)." },
-    { id: "recuerdos", title: "Recuerdos Eternos", icon: Camera, desc: "Un tributo a la esencia del ayer y el hoy. Conectamos quiénes fuimos con quienes somos, valorando el presente a través de un arte fotográfico que trasciende el tiempo. (₡77.000 / $149)." },
-    { id: "marca", title: "Marca Personal", icon: UserCheck, desc: "Presencia que abre puertas. Diseñamos una identidad visual estratégica para profesionales que buscan posicionamiento, coherencia y nuevas oportunidades en su mercado. (₡89.000 / $179)." },
-    { id: "legado", title: "Membresía Legado", icon: Users, desc: "Tu patrimonio emocional protegido. Un acompañamiento anual con sesiones programadas diseñadas para documentar tu evolución mientras optimizamos tu inversión. (₡25.000 / $59 mes)." },
-    { id: "express", title: "Web-Apps Progresivas (PWA)", icon: Smartphone, desc: "Experiencia nativa sin fricción. Aplicaciones web de alto rendimiento que funcionan sin conexión y se instalan en cualquier dispositivo para maximizar la retención del cliente. (₡250.000 / $500).", highlight: true },
-    { id: "negocio", title: "Metodologías No-Code/IA Eficientes", icon: Code, desc: "Agilidad sin límites. Desarrollamos soluciones complejas a la velocidad del pensamiento, optimizando tiempos y costos mediante ingeniería de vanguardia asistida por IA. (₡750.000 / $1500).", highlight: true },
-    { id: "ultra", title: "Módulos de IA para Comercio Local", icon: Binary, desc: "Cerebro digital para tu negocio. Implementamos motores de inteligencia artificial que automatizan ventas y atención, adaptados específicamente a la realidad de tu comunidad. (₡1.500.000 / $3000)." },
-    { id: "mantenimiento", title: "Mantenimiento Evolutivo Trimestral", icon: Sparkles, desc: "Tu tecnología nunca duerme. Transformamos lo que la IA aprende de la interacción diaria de tu negocio en actualizaciones constantes, asegurando una ventaja competitiva perpetua. (₡15.000 / $39 mes)." }
+    {
+        id: "aventura",
+        title: "Aventura Mágica",
+        icon: Sparkles,
+        items: [
+            "15 Fotos High-End + IA",
+            "Realidad Aumentada interactiva",
+            "Canción IA personalizada",
+            "Retablo 5x7\" con NFC",
+            "Inversión: ₡80.900 / $165"
+        ]
+    },
+    {
+        id: "recuerdos",
+        title: "Recuerdos Eternos",
+        icon: Camera,
+        items: [
+            "15 Fotos Fine Art",
+            "Cuadros Vivos AR",
+            "Impresión de alta gama",
+            "Retablo 8x12\" con NFC",
+            "Inversión: ₡77.000 / $149"
+        ]
+    },
+    {
+        id: "marca",
+        title: "Marca Personal",
+        icon: UserCheck,
+        items: [
+            "15 Fotos de impacto",
+            "Estrategia de identidad visual",
+            "Galería Digital Pro",
+            "Tarjeta NFC incluida",
+            "Inversión: ₡89.000 / $179"
+        ]
+    },
+    {
+        id: "legado",
+        title: "Membresía Legado",
+        icon: Users,
+        items: [
+            "Patrimonio emocional protegido",
+            "3 Sesiones programadas anuales",
+            "Custodia digital hereditaria",
+            "Optimización de inversión",
+            "Suscripción: ₡25.000 / $59 mes"
+        ]
+    },
+    {
+        id: "minirelatos",
+        title: "Mini-relatos",
+        icon: Sparkles,
+        items: [
+            "Encuentro ágil (30 min)",
+            "5 Fotos Fine-Art",
+            "Propósito claro y experto",
+            "Retablo 5x7\" incluido",
+            "Inversión: ₡49.000 / $99"
+        ]
+    },
+    {
+        id: "express",
+        title: "Web-Apps (PWA)",
+        icon: Smartphone,
+        items: [
+            "Experiencia nativa instalable",
+            "Funcionamiento sin conexión",
+            "Alta retención de clientes",
+            "Instalación instantánea",
+            "Desde: ₡250.000 / $500"
+        ],
+        highlight: true
+    },
+    {
+        id: "negocio",
+        title: "No-Code / IA Eficiente",
+        icon: Code,
+        items: [
+            "Desarrollo ágil de soluciones",
+            "Optimización de costos/tiempos",
+            "Ingeniería asistida por IA",
+            "Escalabilidad inmediata",
+            "Desde: ₡750.000 / $1500"
+        ],
+        highlight: true
+    },
+    {
+        id: "ultra",
+        title: "Módulos IA Local",
+        icon: Binary,
+        items: [
+            "Cerebro digital de negocio",
+            "Automatización de ventas/atención",
+            "Adaptado a contexto local",
+            "Integración total con PWA",
+            "Inversión: ₡1.5M / $3000"
+        ]
+    },
+    {
+        id: "mantenimiento",
+        title: "Sincro Evolutiva",
+        icon: Sparkles,
+        items: [
+            "Actualización por aprendizaje IA",
+            "Seguridad y optimización",
+            "Mejoras trimestrales",
+            "Crecimiento perpetuo",
+            "Suscripción: ₡15.000 / $39 mes"
+        ]
+    }
 ];
 
 const generateServicesSummary = () => {
@@ -66,8 +168,15 @@ export default function ServiciosPage() {
                                 <div className={cn("mb-8 p-4 rounded-full ring-1", item.highlight ? "text-tech-500 bg-tech-500/5 ring-tech-500/20" : "text-curiol-500 bg-curiol-500/5 ring-curiol-500/20")}>
                                     <item.icon className="w-8 h-8" />
                                 </div>
-                                <h3 className="font-serif text-2xl text-white mb-4 italic leading-tight">{item.title}</h3>
-                                <p className="text-tech-400 text-sm font-light leading-relaxed">{item.desc}</p>
+                                <h3 className="font-serif text-2xl text-white mb-6 italic leading-tight">{item.title}</h3>
+                                <div className="space-y-3 w-full">
+                                    {item.items.map((bullet, idx) => (
+                                        <div key={idx} className="flex items-start gap-3 text-left">
+                                            <div className={cn("w-1 h-1 rounded-full mt-2 shrink-0", item.highlight ? "bg-tech-500" : "bg-curiol-500")} />
+                                            <p className="text-tech-400 text-[11px] font-light leading-snug">{bullet}</p>
+                                        </div>
+                                    ))}
+                                </div>
                             </GlassCard>
                         ))}
                     </div>

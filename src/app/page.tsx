@@ -209,13 +209,15 @@ export default function Home() {
                     { title: "Mantenimiento Evolutivo Trimestral", desc: "Tu tecnología nunca duerme. Transformamos lo que la IA aprende de la interacción diaria de tu negocio en actualizaciones constantes, asegurando una ventaja competitiva perpetua." }
                   ].map(item => (
                     <div key={item.title} className="group/item">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="w-1 h-1 rounded-full bg-tech-500" />
-                        <h4 className="text-white text-[10px] font-bold uppercase tracking-widest">{item.title}:</h4>
+                      <div className="flex items-start gap-4 mb-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-curiol-500 mt-1 shrink-0" />
+                        <div>
+                          <h4 className="text-white text-[10px] font-bold uppercase tracking-widest mb-1">{item.title}:</h4>
+                          <p className="text-tech-400 text-[10px] font-light leading-relaxed">
+                            {item.desc}
+                          </p>
+                        </div>
                       </div>
-                      <p className="text-tech-400 text-[10px] font-light leading-relaxed pl-4">
-                        {item.desc}
-                      </p>
                     </div>
                   ))}
                 </div>

@@ -91,14 +91,27 @@ export const FINANCE_CONFIG = {
             name: "Aventura Mágica (Phygital)",
             totalPrice: 80900,
             breakdown: [
-                { item: "Retablo (8x11) + 40%", cost: 19600, note: "₡14,000 base + margen" },
+                { item: "Retablo (5x7 con pie) + 40%", cost: 16898, note: "₡12,070 base + margen" },
                 { item: "Staff Técnico (Cristina)", cost: 8000, note: "Tarifa por sesión" },
-                { item: "Sticker NFC", cost: 800, note: "1 unidad" },
-                { item: "Logística / Insumos", cost: 2500, note: "Equipo, agua, etc." },
-                { item: "Valor Fotografía (Mano de Obra)", cost: 45000, note: "Asignación interna" },
-                { item: "Infraestructura (Hosting/IA)", cost: 5000, note: "Prerrateo" }
+                { item: "Logística / Equipo / Agua", cost: 2500, note: "Valor prerrateado" },
+                { item: "Valor Fotografía (15 x ₡3,000)", cost: 45000, note: "Mano de obra artística" },
+                { item: "Infraestructura Digital", cost: 5000, note: "Hosting, AI, Firebase" },
+                { item: "Sticker NFC", cost: 800, note: "1 unidad" }
             ],
-            margin: 0.625 // 62.5%
+            margin: 0.03 // ~3%
+        },
+        "recuerdos": {
+            name: "Recuerdos Eternos",
+            totalPrice: 77000,
+            breakdown: [
+                { item: "Retablo (8x12) + 40%", cost: 25989, note: "₡18,564 base + margen" },
+                { item: "Staff Técnico (Cristina)", cost: 8000, note: "Tarifa por sesión" },
+                { item: "Logística / Equipo / Agua", cost: 2500, note: "Valor prerrateado" },
+                { item: "Valor Fotografía (15 x ₡3,000)", cost: 45000, note: "Mano de obra artística" },
+                { item: "Infraestructura Digital", cost: 5000, note: "Hosting, AI, Firebase" },
+                { item: "Sticker NFC", cost: 800, note: "1 unidad" }
+            ],
+            margin: -0.13 // -13% (Se requiere ajuste en Mano de Obra para rentabilidad)
         }
     }
 };
