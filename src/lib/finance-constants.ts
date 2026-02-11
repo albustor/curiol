@@ -101,7 +101,7 @@ export const FINANCE_CONFIG = {
             margin: 0.03 // ~3%
         },
         "recuerdos": {
-            name: "Recuerdos Eternos",
+            name: "Recuerdos Eternos (Estándar 8x12)",
             totalPrice: 77000,
             breakdown: [
                 { item: "Retablo (8x12) + 40%", cost: 25989, note: "₡18,564 base + margen" },
@@ -111,7 +111,56 @@ export const FINANCE_CONFIG = {
                 { item: "Infraestructura Digital", cost: 5000, note: "Hosting, AI, Firebase" },
                 { item: "Sticker NFC", cost: 800, note: "1 unidad" }
             ],
-            margin: -0.13 // -13% (Se requiere ajuste en Mano de Obra para rentabilidad)
+            margin: -0.13 // -13% (Requiere ajuste)
+        },
+        "recuerdos_pro": {
+            name: "Recuerdos Eternos (Pro 12x16)",
+            totalPrice: 115000, // Precio sugerido basado en costes
+            breakdown: [
+                { item: "Retablo (12x16) + 40%", cost: 44800, note: "₡32,000 base + margen" },
+                { item: "Staff Técnico (Cristina)", cost: 8000, note: "Tarifa por sesión" },
+                { item: "Logística / Equipo / Agua", cost: 2500, note: "Valor prerrateado" },
+                { item: "Valor Fotografía (15 x ₡3,000)", cost: 45000, note: "Mano de obra artística" },
+                { item: "Infraestructura Digital", cost: 5000, note: "Hosting, AI, Firebase" },
+                { item: "Sticker NFC", cost: 800, note: "1 unidad" }
+            ],
+            margin: 0.08 // ~8%
+        },
+        "marca": {
+            name: "Marca Personal (Digital Card)",
+            totalPrice: 89000,
+            breakdown: [
+                { item: "Tarjeta NFC Pro + 40%", cost: 7000, note: "₡5,000 base + margen" },
+                { item: "Staff Técnico (Cristina)", cost: 8000, note: "Tarifa por sesión" },
+                { item: "Logística / Equipo / Agua", cost: 2500, note: "Valor prerrateado" },
+                { item: "Valor Fotografía (15 x ₡3,000)", cost: 45000, note: "Mano de obra artística" },
+                { item: "Infraestructura Digital (LinkedIn)", cost: 5000, note: "Optimización de perfil" }
+            ],
+            margin: 0.24 // 24%
+        },
+        "legado_anual": {
+            name: "Membresía Legado (Anual)",
+            totalPrice: 300000,
+            breakdown: [
+                { item: "Productos Físicos (3x + 40%)", cost: 50000, note: "Prerrateado anual" },
+                { item: "Personal (Cristina x3)", cost: 24000, note: "3 Sesiones anuales" },
+                { item: "Logística / Insumos Anuales", cost: 7500, note: "₡2,500 x 3" },
+                { item: "Valor Fotografía (45 x ₡3,000)", cost: 135000, note: "Historial evolutivo" },
+                { item: "Custodia Digital / AI Cloud", cost: 15000, note: "Mantenimiento de archivo" }
+            ],
+            margin: 0.23 // 23%
+        },
+        "minirelatos": {
+            name: "Mini-relatos (Agile Art)",
+            totalPrice: 49000,
+            breakdown: [
+                { item: "Retablo (5x7) + 40%", cost: 13360, note: "₡9,543 base + margen" },
+                { item: "Staff Técnico (Prerrateado)", cost: 4000, note: "Media sesión" },
+                { item: "Logística / Equipo / Agua", cost: 1500, note: "Valor reducido" },
+                { item: "Valor Fotografía (5 x ₡3,000)", cost: 15000, note: "Selección curada" },
+                { item: "Infraestructura Digital / NFC", cost: 3300, note: "Hosting + Sticker" }
+            ],
+            margin: 0.24 // 24%
         }
     }
 };
