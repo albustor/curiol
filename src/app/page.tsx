@@ -16,23 +16,18 @@ import { getDirectImageUrl } from "@/lib/utils";
 import { PerspectiveCard } from "@/components/ui/PerspectiveCard";
 import { ArrowUpRight, Filter, Calendar as CalendarIcon } from "lucide-react";
 
-const DEFAULT_BACKGROUNDS = [
-  "https://images.unsplash.com/photo-1472393365320-dc77242e672c?q=80&w=2070",
-  "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=2070",
-  "https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=2070",
-  "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=2070"
+const POETIC_PHRASES = [
+  "Legado familiar",
+  "La imaginación de tu hijo tangible",
+  "Los años pasan las fotografías quedan",
+  "En 60 años su fotografía va a ser un obsequio para su familia"
 ];
 
 export default function Home() {
   const [currentImage, setCurrentImage] = useState(0);
-  const [currentText, setCurrentText] = useState(0);
+  const [currentPhrase, setCurrentPhrase] = useState("");
   const [heroImages, setHeroImages] = useState<{ url: string; title: string; category: string }[]>([]);
   const [portfolioTeaser, setPortfolioTeaser] = useState<any[]>([]);
-
-  const heroTexts = [
-    { main: "Legado", highlight: "vivo." },
-    { main: "Legado y", highlight: "Crecimiento Comercial" }
-  ];
 
   useEffect(() => {
     async function loadData() {
@@ -42,8 +37,14 @@ export default function Home() {
           getAlbums()
         ]);
 
-        if (pPhotos && pPhotos.length > 0) setHeroImages(pPhotos);
-        if (albums) setPortfolioTeaser(albums.slice(0, 8)); // Load more for sorting
+        if (pPhotos && pPhotos.length > 0) {
+          setHeroImages(pPhotos);
+          // Initial phrase setup
+          const photo = pPhotos[0];
+          const isProfessional = photo.title.toLowerCase().includes("perfil") || photo.category.toLowerCase().includes("perfil");
+          setCurrentPhrase(isProfessional ? "Su presencia de marca comercial" : POETIC_PHRASES[0]);
+        }
+        if (albums) setPortfolioTeaser(albums.slice(0, 8));
       } catch (error) {
         console.error("Home data load error:", error);
       }
@@ -53,17 +54,25 @@ export default function Home() {
 
   useEffect(() => {
     if (heroImages.length === 0) return;
-    const timer = setInterval(() => {
-      setCurrentImage(Math.floor(Math.random() * heroImages.length));
-    }, 6000);
-    const textTimer = setInterval(() => {
-      setCurrentText((prev) => (prev + 1) % heroTexts.length);
-    }, 12000);
-    return () => {
-      clearInterval(timer);
-      clearInterval(textTimer);
+
+    const updateHero = () => {
+      const nextIdx = Math.floor(Math.random() * heroImages.length);
+      setCurrentImage(nextIdx);
+
+      const photo = heroImages[nextIdx];
+      const isProfessional = photo.title.toLowerCase().includes("perfil") || photo.category.toLowerCase().includes("perfil");
+
+      if (isProfessional) {
+        setCurrentPhrase("Su presencia de marca comercial");
+      } else {
+        const randomPhrase = POETIC_PHRASES[Math.floor(Math.random() * POETIC_PHRASES.length)];
+        setCurrentPhrase(randomPhrase);
+      }
     };
-  }, [heroImages.length, heroTexts.length]);
+
+    const timer = setInterval(updateHero, 7000);
+    return () => clearInterval(timer);
+  }, [heroImages]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -72,22 +81,23 @@ export default function Home() {
       <main className="flex-grow">
         {/* Hero Section */}
         <section className="relative min-h-screen pt-32 md:pt-40 flex items-center justify-center overflow-hidden">
-          <div className="absolute inset-0 bg-tech-950 bg-grain">
-            <AnimatePresence>
+          <div className="absolute inset-0 bg-tech-950">
+            <AnimatePresence mode="popLayout">
               <motion.div
                 key={currentImage}
-                initial={{ opacity: 0, scale: 1.1 }}
-                animate={{ opacity: 0.6, scale: 1 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.5 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 2.5, ease: "easeInOut" }}
+                transition={{ duration: 2, ease: "linear" }}
                 style={{
                   backgroundImage: `url(${getDirectImageUrl(heroImages[currentImage]?.url || "")})`,
                   backgroundPosition: "center center"
                 }}
-                className="absolute inset-0 bg-cover img-premium image-overlay"
+                className="absolute inset-0 bg-cover img-premium grayscale scale-105"
               />
             </AnimatePresence>
-            <div className="absolute inset-0 bg-gradient-to-t from-tech-900 via-transparent to-tech-950" />
+            <div className="absolute inset-0 bg-gradient-to-t from-tech-950 via-tech-950/40 to-tech-950" />
+            <div className="absolute inset-0 bg-tech-950/20 backdrop-blur-[2px]" />
           </div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 lg:px-16 text-center">
@@ -97,17 +107,26 @@ export default function Home() {
               <span className="h-[1px] w-12 bg-curiol-500"></span>
             </div>
 
-            <h1 className="text-4xl md:text-6xl lg:text-8xl font-serif text-white mb-8 leading-[0.9] italic min-h-[2.5em] flex flex-col justify-center">
+            <h1 className="text-4xl md:text-5xl lg:text-7xl font-serif text-white mb-8 leading-tight italic min-h-[3em] flex flex-col justify-center px-4">
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={currentText}
-                  initial={{ opacity: 0, y: 20 }}
+                  key={currentPhrase}
+                  initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.8 }}
+                  exit={{ opacity: 0, y: -30 }}
+                  transition={{ duration: 1, ease: "easeOut" }}
+                  className="max-w-5xl mx-auto"
                 >
-                  {heroTexts[currentText].main} <br />
-                  <span className="text-curiol-gradient">{heroTexts[currentText].highlight}</span>
+                  {currentPhrase.split(" ").length <= 2 ? (
+                    <>
+                      {currentPhrase.split(" ")[0]} <br />
+                      <span className="text-curiol-gradient">{currentPhrase.split(" ").slice(1).join(" ")}</span>
+                    </>
+                  ) : (
+                    <span className="bg-gradient-to-r from-white via-white to-tech-400 bg-clip-text text-transparent">
+                      {currentPhrase}
+                    </span>
+                  )}
                 </motion.div>
               </AnimatePresence>
             </h1>
