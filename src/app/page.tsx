@@ -30,7 +30,7 @@ export default function Home() {
 
   const heroTexts = [
     { main: "Legado", highlight: "vivo." },
-    { main: "Legado y", highlight: "crecimiento comercial" }
+    { main: "Legado y", highlight: "Crecimiento Comercial" }
   ];
 
   useEffect(() => {
@@ -136,6 +136,51 @@ export default function Home() {
 
           <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
             <div className="w-[1px] h-16 bg-gradient-to-b from-curiol-500 to-transparent" />
+          </div>
+        </section>
+
+        {/* Portfolio Teaser Section */}
+        <section className="py-24 bg-tech-950 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(180,95,50,0.05),transparent_50%)]" />
+          <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 relative z-10">
+            <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
+              <div>
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="h-[1px] w-8 bg-curiol-500"></span>
+                  <span className="text-curiol-500 text-[10px] font-bold tracking-[0.4em] uppercase">Visualización de Activos</span>
+                </div>
+                <h2 className="text-4xl md:text-5xl font-serif text-white italic leading-tight">Últimos Proyectos <br /><span className="text-curiol-gradient">Memorias Vivas.</span></h2>
+              </div>
+              <Link href="/portafolio" className="px-8 py-3 border border-white/10 text-tech-500 hover:text-white transition-all text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 group rounded-full">
+                Ver Todo el Portafolio <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {portfolioTeaser.length > 0 ? portfolioTeaser.map((item, idx) => (
+                <Link key={idx} href={`/portafolio/${item.slug || item.id}`}>
+                  <PerspectiveCard index={idx} className="aspect-[3/4]">
+                    <img
+                      src={getDirectImageUrl(item.url)}
+                      alt={item.titulo}
+                      className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-tech-950 via-tech-950/20 to-transparent p-8 flex flex-col justify-end">
+                      <p className="text-curiol-500 text-[9px] font-bold uppercase tracking-[0.2em] mb-2">{item.categoria}</p>
+                      <h3 className="text-2xl font-serif text-white italic leading-none">{item.titulo}</h3>
+                    </div>
+                  </PerspectiveCard>
+                </Link>
+              )) : (
+                <div className="col-span-full py-24 text-center border-2 border-dashed border-tech-800 rounded-[3rem] bg-tech-900/50">
+                  <div className="w-16 h-16 bg-tech-800 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Camera className="w-8 h-8 text-tech-600 animate-pulse" />
+                  </div>
+                  <h3 className="text-white font-serif italic text-lg mb-2">Sincronizando Archivos...</h3>
+                  <p className="text-tech-500 text-sm font-light">Conectando con el núcleo de datos del 2026.</p>
+                </div>
+              )}
+            </div>
           </div>
         </section>
 
