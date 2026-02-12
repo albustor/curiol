@@ -115,41 +115,35 @@ export default function PortfolioPage() {
                                     key={album.id}
                                     href={`/portafolio/${album.slug || album.id}`}
                                 >
-                                    <PerspectiveCard index={idx} className="aspect-video">
+                                    <PerspectiveCard index={idx} className="aspect-video relative overflow-hidden group">
                                         <img
                                             src={getDirectImageUrl(album.coverUrl || (album.photos && album.photos.length > 0 ? album.photos[0].url : "/placeholder-image.jpg"))}
                                             alt={album.title}
                                             className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60 group-hover:opacity-80"
                                         />
 
-                                        <div className="absolute inset-0 bg-gradient-to-t from-tech-950 via-tech-950/40 to-transparent p-10 flex flex-col justify-end">
-                                            <div className="flex items-center gap-3 mb-4">
-                                                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-curiol-500 bg-curiol-500/10 px-3 py-1 rounded-full border border-curiol-500/20">
-                                                    {album.category}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-tech-950 via-tech-950/20 to-transparent p-8 flex flex-col justify-end">
+                                            <div className="flex items-center gap-3 mb-2">
+                                                <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-curiol-500 bg-curiol-500/10 px-3 py-1 rounded-full border border-curiol-500/10">
+                                                    {album.title.toLowerCase().includes("perfil") ? "Perfil Profesional" : "LEGADO"}
                                                 </span>
-                                                {album.eventDate && (
-                                                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-tech-500 flex items-center gap-2">
-                                                        <Calendar className="w-3 h-3" />
-                                                        {new Date(album.eventDate).getFullYear()}
-                                                    </span>
-                                                )}
                                             </div>
 
-                                            <h3 className="text-3xl font-serif text-white italic mb-4 leading-tight group-hover:text-curiol-200 transition-colors">
-                                                {album.title}
+                                            <h3 className="text-2xl font-serif text-white italic group-hover:text-curiol-200 transition-colors capitalize">
+                                                {album.title.replace(/_/g, " ")}
                                             </h3>
 
-                                            <div className="flex items-center justify-between pt-6 border-t border-white/5 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
-                                                <span className="text-tech-500 text-[10px] font-bold uppercase tracking-widest">{(album.photos || []).length} Fotografías</span>
-                                                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-tech-950 group-hover:scale-110 transition-transform shadow-xl">
-                                                    <ArrowUpRight className="w-5 h-5" />
+                                            <div className="flex items-center justify-between pt-4 border-t border-white/5 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500 mt-4">
+                                                <span className="text-tech-500 text-[10px] font-bold uppercase tracking-widest">{(album.photos || []).length} Archivos</span>
+                                                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-tech-950 group-hover:scale-110 transition-transform shadow-xl">
+                                                    <ArrowUpRight className="w-4 h-4" />
                                                 </div>
                                             </div>
                                         </div>
 
                                         {album.password && (
-                                            <div className="absolute top-6 right-6">
-                                                <div className="bg-tech-950/80 backdrop-blur-md p-2 rounded-full border border-tech-700">
+                                            <div className="absolute top-4 right-4">
+                                                <div className="bg-tech-950/80 backdrop-blur-md p-1.5 rounded-full border border-tech-700">
                                                     <Filter className="w-3 h-3 text-curiol-500" />
                                                 </div>
                                             </div>

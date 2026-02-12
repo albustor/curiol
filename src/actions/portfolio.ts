@@ -19,7 +19,7 @@ export interface PortfolioAlbum {
     description: string;
     category: string;
     coverUrl?: string;
-    photos: { url: string; id: string }[];
+    photos: { url: string; id: string; caption?: string }[];
     createdAt: any;
     eventDate?: string;
     slug?: string;
@@ -256,5 +256,34 @@ export async function getPortfolioAiInsight(albumTitle: string, category: string
     } catch (error) {
         console.error("AI Insight Error:", error);
         return "Este álbum representa un hito en nuestra visión de legado y crecimiento, capturando la esencia pura del éxito humano.";
+    }
+}
+/**
+ * Fetches every photo across all portfolio albums for the hero rotation pool
+ */
+export async function getPortfolioAllPhotos(): Promise<{ url: string; title: string; category: string }[]> {
+    try {
+        const q = query(collection(db, "portfolio_albums"));
+        const snapshot = await getDocs(q);
+        const allPhotos: { url: string; title: string; category: string }[] = [];
+
+        snapshot.docs.forEach(doc => {
+            const data = doc.data();
+            if (data.photos && Array.isArray(data.photos)) {
+                data.photos.forEach((photo: any) => {
+                    allPhotos.push({
+                        url: photo.url,
+                        title: data.title || "Sin título",
+                        category: data.category || "General"
+                    });
+                });
+            }
+        });
+
+        // Shuffle array for randomness
+        return allPhotos.sort(() => Math.random() - 0.5);
+    } catch (error) {
+        console.error("Error fetching all portfolio photos:", error);
+        return [];
     }
 }

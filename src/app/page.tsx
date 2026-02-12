@@ -11,9 +11,10 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { AgendaWidget } from "@/components/AgendaWidget";
 
-import { getHeroImages, getPortfolioData, PortfolioItem } from "@/actions/portfolio";
+import { getPortfolioAllPhotos, getAlbums } from "@/actions/portfolio";
 import { getDirectImageUrl } from "@/lib/utils";
 import { PerspectiveCard } from "@/components/ui/PerspectiveCard";
+import { ArrowUpRight, Filter, Calendar as CalendarIcon } from "lucide-react";
 
 const DEFAULT_BACKGROUNDS = [
   "https://images.unsplash.com/photo-1472393365320-dc77242e672c?q=80&w=2070",
@@ -25,8 +26,8 @@ const DEFAULT_BACKGROUNDS = [
 export default function Home() {
   const [currentImage, setCurrentImage] = useState(0);
   const [currentText, setCurrentText] = useState(0);
-  const [heroImages, setHeroImages] = useState<string[]>(DEFAULT_BACKGROUNDS);
-  const [portfolioTeaser, setPortfolioTeaser] = useState<PortfolioItem[]>([]);
+  const [heroImages, setHeroImages] = useState<{ url: string; title: string; category: string }[]>([]);
+  const [portfolioTeaser, setPortfolioTeaser] = useState<any[]>([]);
 
   const heroTexts = [
     { main: "Legado", highlight: "vivo." },
@@ -36,13 +37,13 @@ export default function Home() {
   useEffect(() => {
     async function loadData() {
       try {
-        const [hImages, pData] = await Promise.all([
-          getHeroImages(),
-          getPortfolioData()
+        const [pPhotos, albums] = await Promise.all([
+          getPortfolioAllPhotos(),
+          getAlbums()
         ]);
 
-        if (hImages && hImages.length > 0) setHeroImages(hImages);
-        if (pData) setPortfolioTeaser(pData.slice(0, 4)); // Show first 4 items as teaser
+        if (pPhotos && pPhotos.length > 0) setHeroImages(pPhotos);
+        if (albums) setPortfolioTeaser(albums.slice(0, 8)); // Load more for sorting
       } catch (error) {
         console.error("Home data load error:", error);
       }
@@ -51,12 +52,13 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    if (heroImages.length === 0) return;
     const timer = setInterval(() => {
-      setCurrentImage((prev) => (prev + 1) % heroImages.length);
-    }, 10000);
+      setCurrentImage(Math.floor(Math.random() * heroImages.length));
+    }, 6000);
     const textTimer = setInterval(() => {
       setCurrentText((prev) => (prev + 1) % heroTexts.length);
-    }, 15000);
+    }, 12000);
     return () => {
       clearInterval(timer);
       clearInterval(textTimer);
@@ -79,7 +81,7 @@ export default function Home() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 2.5, ease: "easeInOut" }}
                 style={{
-                  backgroundImage: `url(${getDirectImageUrl(heroImages[currentImage])})`,
+                  backgroundImage: `url(${getDirectImageUrl(heroImages[currentImage]?.url || "")})`,
                   backgroundPosition: "center center"
                 }}
                 className="absolute inset-0 bg-cover img-premium image-overlay"
@@ -149,7 +151,7 @@ export default function Home() {
                   <span className="h-[1px] w-8 bg-curiol-500"></span>
                   <span className="text-curiol-500 text-[10px] font-bold tracking-[0.4em] uppercase">Visualización de Activos</span>
                 </div>
-                <h2 className="text-4xl md:text-5xl font-serif text-white italic leading-tight">Últimos Proyectos <br /><span className="text-curiol-gradient">Memorias Vivas.</span></h2>
+                <h2 className="text-4xl md:text-5xl font-serif text-white italic leading-tight">Últimas <br /><span className="text-curiol-gradient">Producciones.</span></h2>
               </div>
               <Link href="/portafolio" className="px-8 py-3 border border-white/10 text-tech-500 hover:text-white transition-all text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 group rounded-full">
                 Ver Todo el Portafolio <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -157,21 +159,34 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {portfolioTeaser.length > 0 ? portfolioTeaser.map((item, idx) => (
-                <Link key={idx} href={`/portafolio/${item.slug || item.id}`}>
-                  <PerspectiveCard index={idx} className="aspect-[3/4]">
-                    <img
-                      src={getDirectImageUrl(item.url)}
-                      alt={item.titulo}
-                      className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-tech-950 via-tech-950/20 to-transparent p-8 flex flex-col justify-end">
-                      <p className="text-curiol-500 text-[9px] font-bold uppercase tracking-[0.2em] mb-2">{item.categoria}</p>
-                      <h3 className="text-2xl font-serif text-white italic leading-none">{item.titulo}</h3>
-                    </div>
-                  </PerspectiveCard>
-                </Link>
-              )) : (
+              {portfolioTeaser.length > 0 ? portfolioTeaser
+                .sort((a, b) => {
+                  const aTitle = a.titulo.toLowerCase();
+                  const bTitle = b.titulo.toLowerCase();
+                  const priorityKeywords = ["embarazo", "maternidad", "navidad"];
+                  const aIsPriority = priorityKeywords.some(kw => aTitle.includes(kw));
+                  const bIsPriority = priorityKeywords.some(kw => bTitle.includes(kw));
+                  if (aIsPriority && !bIsPriority) return -1;
+                  if (!aIsPriority && bIsPriority) return 1;
+                  return 0;
+                })
+                .map((item, idx) => (
+                  <Link key={idx} href={`/portafolio/${item.slug || item.id}`}>
+                    <PerspectiveCard index={idx} className="aspect-[3/4]">
+                      <img
+                        src={getDirectImageUrl(item.url)}
+                        alt={item.titulo}
+                        className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-tech-950 via-tech-950/20 to-transparent p-8 flex flex-col justify-end">
+                        <p className="text-curiol-500 text-[9px] font-bold uppercase tracking-[0.2em] mb-2">
+                          {item.titulo.toLowerCase().includes("perfil") ? "Perfil Profesional" : "LEGADO"}
+                        </p>
+                        <h3 className="text-2xl font-serif text-white italic leading-none capitalize">{item.titulo.replace(/_/g, " ")}</h3>
+                      </div>
+                    </PerspectiveCard>
+                  </Link>
+                )) : (
                 <div className="col-span-full py-24 text-center border-2 border-dashed border-tech-800 rounded-[3rem] bg-tech-900/50">
                   <div className="w-16 h-16 bg-tech-800 rounded-full flex items-center justify-center mx-auto mb-6">
                     <Camera className="w-8 h-8 text-tech-600 animate-pulse" />

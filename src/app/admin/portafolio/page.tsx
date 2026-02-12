@@ -28,7 +28,7 @@ interface Album {
     description: string;
     category: string;
     coverUrl?: string;
-    photos: { url: string; id: string }[];
+    photos: { url: string; id: string; caption?: string }[];
     createdAt: any;
     eventDate?: string;
     slug?: string;
@@ -72,7 +72,7 @@ export default function PortfolioAdminPage() {
         setUploading(true);
         setUploadProgress(0);
 
-        const newPhotos: { url: string; id: string }[] = [];
+        const newPhotos: { url: string; id: string; caption?: string }[] = [];
         let completed = 0;
 
         try {
@@ -80,7 +80,26 @@ export default function PortfolioAdminPage() {
                 const storageRef = ref(storage, `portfolio/${Date.now()}_${file.name}`);
                 const snapshot = await uploadBytes(storageRef, file);
                 const url = await getDownloadURL(snapshot.ref);
-                newPhotos.push({ url, id: Date.now().toString() + Math.random().toString(36).substr(2, 5) });
+
+                // NEW: Generate AI phrase for each photo
+                let caption = "";
+                try {
+                    const response = await fetch("/api/ai/generate-phrase", {
+                        method: "POST",
+                        body: JSON.stringify({ albumTitle: isEditing.title || "Sesión Fotográfica" }),
+                        headers: { "Content-Type": "application/json" }
+                    });
+                    const data = await response.json();
+                    caption = data.phrase || "";
+                } catch (e) {
+                    console.error("AI phrase generation failed:", e);
+                }
+
+                newPhotos.push({
+                    url,
+                    id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
+                    caption: caption
+                });
 
                 completed++;
                 setUploadProgress(Math.round((completed / files.length) * 100));

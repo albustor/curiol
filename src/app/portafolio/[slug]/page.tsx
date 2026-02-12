@@ -238,9 +238,20 @@ export default function AlbumViewPage() {
                             >
                                 <img
                                     src={getDirectImageUrl(album.photos?.[selectedIndex!]?.url || "")}
-                                    className="max-w-full max-h-full object-contain rounded-xl shadow-2xl"
+                                    className="max-w-full max-h-[80%] object-contain rounded-xl shadow-2xl"
                                     alt=""
                                 />
+                                {album.photos?.[selectedIndex!]?.caption && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        className="absolute bottom-12 text-center"
+                                    >
+                                        <p className="text-white text-3xl font-serif italic tracking-wider opacity-80 decoration-curiol-500/50 decoration-1">
+                                            {album.photos[selectedIndex!].caption}
+                                        </p>
+                                    </motion.div>
+                                )}
                             </motion.div>
 
                             <button
