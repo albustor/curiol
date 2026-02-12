@@ -255,6 +255,6 @@ export async function getPortfolioAiInsight(albumTitle: string, category: string
         return result.response.text();
     } catch (error) {
         console.error("AI Insight Error:", error);
-        return "Este álbum representa un hito en nuestra arquitectura de recuerdos, capturando la esencia pura del legado humano.";
+        return "Este álbum representa un hito en nuestra visión de legado y crecimiento, capturando la esencia pura del éxito humano.";
     }
 }

@@ -58,7 +58,7 @@ export default function PortfolioPage() {
                         transition={{ delay: 0.1 }}
                         className="text-5xl md:text-7xl font-serif text-white mb-8 italic"
                     >
-                        Arquitectura <br /> <span className="text-curiol-gradient">de Memorias.</span>
+                        Legado y <br /> <span className="text-curiol-gradient">Crecimiento Comercial.</span>
                     </motion.h1>
 
                     <motion.p
