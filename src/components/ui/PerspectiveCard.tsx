@@ -71,7 +71,7 @@ export function PerspectiveCard({
                     transform: `translateZ(${depth}px)`,
                     transformStyle: "preserve-3d",
                 }}
-                className="absolute inset-0"
+                className="relative w-full h-full"
             >
                 {children}
 

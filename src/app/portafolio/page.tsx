@@ -115,7 +115,7 @@ export default function PortfolioPage() {
                                     key={album.id}
                                     href={`/portafolio/${album.slug || album.id}`}
                                 >
-                                    <PerspectiveCard index={idx}>
+                                    <PerspectiveCard index={idx} className="aspect-video">
                                         <img
                                             src={getDirectImageUrl(album.coverUrl || (album.photos && album.photos.length > 0 ? album.photos[0].url : "/placeholder-image.jpg"))}
                                             alt={album.title}
