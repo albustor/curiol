@@ -55,7 +55,7 @@ export function GiftCard() {
                         </div>
                         <div className="absolute bottom-6 left-6">
                             <p className="text-white font-serif text-lg tracking-widest">CURIOL STUDIO</p>
-                            <p className="text-[6px] text-tech-500 uppercase tracking-widest mt-1">Guanacaste, CR</p>
+                            <p className="text-[6px] text-tech-500 uppercase tracking-widest mt-1">Santa Bárbara, Santa Cruz, CR</p>
                         </div>
                     </div>
                 </div>

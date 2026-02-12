@@ -165,7 +165,7 @@ const PACKAGES: Record<string, Array<{
             name: "Omni Local (Guanacaste)",
             price: 250000,
             usdPrice: 500,
-            desc: "Digitalización esencial para el comercio local de Santa Cruz.",
+            desc: "Digitalización esencial para el comercio local de Santa Bárbara de Santa Cruz.",
             problem: "Invisibilidad comercial y dependencia del local físico. Muchos negocios locales pierden clientes porque los turistas no encuentran información clara fuera de horas de oficina.",
             solution: "Creamos una base digital sólida. Una Micro-Landing Page auto-gestionable con un Cotizador Básico que atiende 24/7 e incluye una Tarjeta NFC personalizada para convertir cada encuentro físico en un lead digital.",
             promise: "Tu negocio dejará de ser invisible. Tendrás una presencia profesional que trabaja por ti mientras descansas.",

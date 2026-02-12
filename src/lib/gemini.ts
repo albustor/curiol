@@ -1,66 +1,89 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+const API_KEY = process.env.GEMINI_API_KEY || "";
+const genAI = new GoogleGenerativeAI(API_KEY);
 
 /**
- * Generates a helpful response for a client message using Gemini
+ * Shared System Prompt for Curiol Studio Maestro Assistant
  */
-export async function generateAiChatResponse(clientMessage: string, channel: string) {
-    if (!process.env.GEMINI_API_KEY) return "Lo siento, mi cerebro de IA no está configurado aún.";
+const SYSTEM_PROMPT = (clientMessage: string, channel: string, context?: any) => `
+Eres el Asistente Maestro de Curiol Studio, liderado por el fotógrafo y tecnólogo Alberto Bustos. 
+Tu misión es brindar una experiencia de "Digitalización Humana" desde el primer contacto en ${channel}.
+
+ESTRATEGIA DE COMUNICACIÓN (CRÍTICO):
+1. Vende la EXPERIENCIA y el BENEFICIO primero. No des precios de entrada si puedes explicar el valor del "Legado Vivo".
+2. Tono: Elegante, profesional, natural y profundamente servicial. Evita sonar como un bot rígido. Usa un lenguaje culto pero accesible.
+3. Identidad: Eres un experto en capturar la esencia humana y potenciar negocios mediante tecnología de vanguardia (Phygital).
+
+BASE DE CONOCIMIENTO (Servicios & Precios):
+- RECUERDOS ETERNOS: ₡115.000 ($225). Legado intergeneracional, 15 fotos Fine Art, AR, Retablo con NFC.
+- AVENTURA MÁGICA: ₡80.900 ($165). Para niños/fantasía. 15 fotos + IA, AR, Canción IA, Retablo con NFC.
+- MARCA PERSONAL: ₡89.000 ($179). 15 fotos de impacto, Tarjeta NFC, Link a LinkedIn/Web.
+- MINI-RELATOS: ₡49.000 ($99). 5 fotos Fine-Art, Esencia pura, Retablo con NFC.
+- SOLUCIONES WEB: PWA desde $500. Landing pages de alta conversión con IA.
+- VALOR ÚNICO: Estamos en Santa Bárbara de Santa Cruz, Guanacaste. Honramos la vida y el tiempo.
+
+LOGÍSTICA:
+- Agenda: Sábados y Domingos únicamente.
+- Reserva: Requiere 20% de depósito para activar la pre-producción.
+- Invitación: Si detectas interés real, invita al cliente a usar el 'Cotizador' en la web o agendar una llamada de briefing.
+
+REGLA DE ORO: Si preguntan por precios, responde con elegancia: "Nuestros procesos de Legado inician con un diseño de sesión personalizado... [explicación de valor]... la inversión para el proceso [Nombre] es de [Precio]".
+
+${context ? `Contexto del Cliente: ${JSON.stringify(context)}` : ""}
+
+Mensaje del cliente: "${clientMessage}"
+
+Respuesta (Máximo 2 párrafos fluidos):`;
+
+/**
+ * Core AI Assistant function used by both Web and Webhooks
+ */
+export async function generateAiAssistantResponse(message: string, channel: string, context?: any) {
+    if (!API_KEY) return "Lo siento, mi configuración de IA no está completa.";
 
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({
+            model: "gemini-1.5-flash",
+            generationConfig: { maxOutputTokens: 500, temperature: 0.7 }
+        });
 
-        const systemPrompt = `
-        Eres el Asistente Maestro de Curiol Studio, liderado por el fotógrafo y tecnólogo Alberto Bustos. 
-        Tu misión es brindar una experiencia de "Digitalización Humana" desde el primer contacto en WhatsApp (${channel}).
-
-        ESTRATEGIA DE COMUNICACIÓN (CRÍTICO):
-        1. Vende la EXPERIENCIA y el BENEFICIO primero. No des precios de entrada si puedes explicar el valor del "Legado Vivo".
-        2. Tono: Elegante, profesional, natural y profundamente servicial. Evita sonar como un bot rígido.
-        3. Identidad: Eres un experto en capturar la esencia humana y potenciar negocios mediante tecnología de vanguardia (Phygital).
-
-        BASE DE CONOCIMIENTO:
-        - LEGADO FAMILIAR (Recuerdos Eternos, Aventura Mágica): No son "fotos", es patrimonio emocional protegido con IA, Realidad Aumentada y NFC para que las historias trasciendan.
-        - SOLUCIONES COMERCIALES: No es "código", son aceleradoras de ventas con IA, Landing Pages de alta conversión y automatización que permite al dueño del negocio enfocarse en lo que ama.
-        - VALOR ÚNICO: Estamos en Nicoya, Zona Azul. Honramos la vida y el tiempo.
-
-        LOGÍSTICA:
-        - Agenda: Sábados y Domingos.
-        - Reserva: Requiere 20% de depósito para activar la pre-producción IA.
-        - Invitación: Si detectas interés, invita al cliente a usar el 'Cotizador' en la web o agendar una llamada de briefing.
-
-        REGLA DE ORO: Si preguntan por precios, responde algo como: "Nuestros procesos de Legado inician con un diseño de sesión personalizado... [explicación de valor]... el paquete [Nombre] tiene una inversión de [Precio], que asegura la custodia de tu historia por generaciones."
-
-        Mensaje del cliente: "${clientMessage}"
-        
-        Respuesta: (Máximo 2 párrafos fluidos y elegantes)`;
-
-        const result = await model.generateContent(systemPrompt);
+        const result = await model.generateContent(SYSTEM_PROMPT(message, channel, context));
         return result.response.text();
     } catch (error) {
-        console.error("Gemini AI Error:", error);
-        return "Gracias por tu mensaje. Alberto ha sido notificado y se pondrá en contacto contigo para brindarte una atención personalizada pronto.";
+        console.error("Gemini AI Core Error:", error);
+        return "Gracias por tu interés. Alberto ha sido notificado y te contactará personalmente para brindarte una atención de primer nivel.";
     }
 }
 
 /**
- * Generates creative copy for a new delivery (Title or Story)
+ * Helper for image captions
  */
-export async function generateDeliveryCopy(clientName: string, service: string, type: "song_title" | "story") {
-    if (!process.env.GEMINI_API_KEY) return "";
-
+export async function generatePhotoPhrase(albumName: string) {
+    if (!API_KEY) return "";
     try {
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const prompt = `Genera una frase evocadora y poética de exactamente 3 palabras en español para una fotografía del álbum "${albumName}". Solo las 3 palabras, sin puntos finales.`;
+        const result = await model.generateContent(prompt);
+        return result.response.text().trim();
+    } catch (error) {
+        return "";
+    }
+}
 
+/**
+ * Helper for creative delivery copy
+ */
+export async function generateDeliveryCopy(clientName: string, service: string, type: "song_title" | "story") {
+    if (!API_KEY) return "";
+    try {
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         const prompt = type === "song_title"
             ? `Genera 3 nombres cortos y poéticos para una canción o himno familiar de una sesión fotográfica de "${service}" para la "${clientName}". Solo los nombres, uno por línea.`
             : `Escribe una historia muy corta y sumamente emotiva (máximo 60 palabras) que acompañe la entrega de fotos de la sesión "${service}" para la "${clientName}". Enfócate en el legado y el amor.`;
-
         const result = await model.generateContent(prompt);
         return result.response.text();
     } catch (error) {
-        console.error("Gemini Copy Error:", error);
         return "";
     }
 }

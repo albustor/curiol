@@ -6,7 +6,7 @@ import {
     getDoc, updateDoc
 } from "firebase/firestore";
 import { sendWhatsAppMessage, sendSocialMessage } from "@/lib/meta";
-import { generateAiChatResponse } from "@/lib/gemini";
+import { generateAiAssistantResponse } from "@/lib/gemini";
 
 // Meta verification token (should be in .env)
 const VERIFY_TOKEN = process.env.META_VERIFY_TOKEN || "curiol_omnitech_2026";
@@ -138,7 +138,7 @@ export async function POST(req: Request) {
             } else {
                 // 4. Fallback to Gemini AI
                 console.log("No flow match. Falling back to Gemini...");
-                const aiResponse = await generateAiChatResponse(text || "", channel);
+                const aiResponse = await generateAiAssistantResponse(text || "", channel);
                 console.log("Gemini AI Response:", aiResponse);
 
                 if (channel === "whatsapp") {

@@ -40,7 +40,7 @@ export function Footer() {
                         <div className="space-y-6">
                             <div>
                                 <p className="text-tech-500 text-[10px] font-bold uppercase tracking-widest mb-2">Ubicación</p>
-                                <p className="text-tech-400 text-sm font-light italic">Nicoya, Zona Azul, Costa Rica</p>
+                                <p className="text-tech-400 text-sm font-light italic">Santa Bárbara de Santa Cruz, Guanacaste, CR</p>
                             </div>
                             <div>
                                 <p className="text-tech-500 text-[10px] font-bold uppercase tracking-widest mb-2">WhatsApp Oficial</p>

@@ -3,6 +3,8 @@
 import { db } from "@/lib/firebase";
 import { collection, query, where, getDocs, doc, updateDoc, Timestamp } from "firebase/firestore";
 
+import { sendWhatsAppMessage } from "@/lib/meta";
+
 interface NotificationParams {
     to: string;
     message: string;
@@ -11,10 +13,15 @@ interface NotificationParams {
 }
 
 export async function sendNotification({ to, message, type, subject }: NotificationParams) {
-    // In a real production environment, you would use Twilio for WhatsApp and Resend/SendGrid for Email.
-    // For now, we will log the notification and prepare the structure.
-
     console.log(`[NOTIFICATION SERVICE] Sending ${type} to ${to}: ${message}`);
+
+    if (type === "whatsapp") {
+        try {
+            await sendWhatsAppMessage(to, message);
+        } catch (error) {
+            console.error("[NOTIFICATION SERVICE] Error sending WhatsApp:", error);
+        }
+    }
 
     // Resend Implementation:
     if (type === "email") {

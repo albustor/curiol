@@ -135,7 +135,7 @@ export default function Home() {
               El curiol es el pigmento que da color, esencia y vida a la cerámica chorotega; adoptamos este nombre como un reconocimiento a la comunidad de Guaitil, un pueblo que sigue cultivando en sus manos un legado ancestral.
             </p>
             <p className="text-tech-500 text-[10px] font-bold uppercase tracking-[0.3em] mb-12 italic">
-              Santa Cruz de Guanacaste, Costa Rica
+              Santa Bárbara de Santa Cruz, Guanacaste, CR
             </p>
 
 
