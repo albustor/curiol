@@ -29,7 +29,7 @@ export function Footer() {
                         <ul className="text-tech-300 text-sm space-y-4 font-light">
                             <li><Link href="/" className="hover:text-curiol-500 transition-all hover:translate-x-1 inline-block">Inicio</Link></li>
                             <li><Link href="/servicios" className="hover:text-curiol-500 transition-all hover:translate-x-1 inline-block">Servicios 2026</Link></li>
-                            <li><Link href="/soluciones-web" className="hover:text-curiol-500 transition-all hover:translate-x-1 inline-block">Soluciones Comerciales</Link></li>
+                            <li><Link href="/soluciones-web" className="hover:text-curiol-500 transition-all hover:translate-x-1 inline-block">Legado y Crecimiento</Link></li>
                             <li><Link href="/cotizar" className="hover:text-curiol-500 transition-all hover:translate-x-1 inline-block">Cotizador Inteligente</Link></li>
                         </ul>
                     </div>

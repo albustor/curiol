@@ -10,6 +10,7 @@ import {
     UserCheck, ShoppingBag, UtensilsCrossed, Home,
     Briefcase, Camera, Smartphone, Binary, ArrowRight, Sparkles, Code, MessageCircle, Users
 } from "lucide-react";
+import { PerspectiveCard } from "@/components/ui/PerspectiveCard";
 import Link from "next/link";
 
 const modalities = [
@@ -128,13 +129,13 @@ const modalities = [
 ];
 
 const generateServicesSummary = () => {
-    const summary = `*Curiol Studio 2026 - Legado vivo & Soluciones Comerciales*\n\n` +
+    const summary = `*Curiol Studio 2026 - Legado vivo & Legado y Crecimiento Comercial*\n\n` +
         `*LEGADO FAMILIAR (B2C)*\n` +
         `• *Aventura Mágica*: ₡80.9k / $165 (o 5 cuotas de ₡16,180)\n` +
         `• *Recuerdos Eternos*: ₡115k / $225 (o 5 cuotas de ₡23,000)\n` +
         `• *Marca Personal*: ₡89k / $179\n` +
         `• *Membresía Legado*: ₡25k / $59 mes\n\n` +
-        `*SOLUCIONES COMERCIALES (B2B)*\n` +
+        `*LEGADO Y CRECIMIENTO COMERCIAL (B2B)*\n` +
         `• *Omni Local*: ₡250k / $500\n` +
         `• *Omni Pro*: ₡750k / $1500\n` +
         `• *Omni Ultra*: ₡1.5M / $3000\n\n` +
@@ -166,7 +167,7 @@ export default function ServiciosPage() {
                 <section className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 mb-40">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {modalities.map((item) => (
-                            <GlassCard key={item.id} className={cn("flex flex-col items-center text-center p-6 md:p-10", item.highlight && "border-tech-500 shadow-2xl shadow-tech-500/10")}>
+                            <PerspectiveCard key={item.id} className={cn("flex flex-col items-center text-center p-6 md:p-10 cursor-pointer", item.highlight && "border-tech-500 shadow-2xl shadow-tech-500/10")}>
                                 <div className={cn("mb-8 p-4 rounded-full ring-1", item.highlight ? "text-tech-500 bg-tech-500/5 ring-tech-500/20" : "text-curiol-500 bg-curiol-500/5 ring-curiol-500/20")}>
                                     <item.icon className="w-8 h-8" />
                                 </div>
@@ -179,7 +180,7 @@ export default function ServiciosPage() {
                                         </div>
                                     ))}
                                 </div>
-                            </GlassCard>
+                            </PerspectiveCard>
                         ))}
                     </div>
                 </section>
@@ -189,7 +190,7 @@ export default function ServiciosPage() {
 
                 {/* WhatsApp Share Section */}
                 <section className="max-w-4xl mx-auto px-4 md:px-8 lg:px-16 mb-40">
-                    <GlassCard className="p-8 md:p-12 text-center border-curiol-500/20">
+                    <PerspectiveCard className="p-8 md:p-12 text-center border-curiol-500/20 cursor-pointer">
                         <MessageCircle className="w-10 h-10 text-green-500 mx-auto mb-6" />
                         <h2 className="text-3xl font-serif text-white italic mb-4">Consulta Express por WhatsApp.</h2>
                         <p className="text-tech-400 font-light mb-10 max-w-lg mx-auto leading-relaxed">
@@ -203,7 +204,7 @@ export default function ServiciosPage() {
                         >
                             Solicitar Asesoría por WhatsApp <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </a>
-                    </GlassCard>
+                    </PerspectiveCard>
                 </section>
 
                 {/* CTA Hero */}

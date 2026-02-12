@@ -11,7 +11,7 @@ export async function sendWhatsAppMessage(to: string, text: string) {
     }
 
     try {
-        const response = await fetch(`https://graph.facebook.com/v22.0/${PHONE_NUMBER_ID}/messages`, {
+        const response = await fetch(`https://graph.facebook.com/v21.0/${PHONE_NUMBER_ID}/messages`, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${WHATSAPP_TOKEN}`,
@@ -24,9 +24,18 @@ export async function sendWhatsAppMessage(to: string, text: string) {
                 text: { body: text }
             })
         });
-        return await response.json();
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error("WhatsApp API ERROR:", JSON.stringify(data, null, 2));
+            return { error: true, details: data };
+        }
+
+        console.log("WhatsApp API Success:", data.messages?.[0]?.id);
+        return data;
     } catch (error) {
-        console.error("WhatsApp Send Error:", error);
+        console.error("WhatsApp Fetch Exception:", error);
+        return { error: true, message: "Network or Server Error" };
     }
 }
 

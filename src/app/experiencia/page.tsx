@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { PerspectiveCard } from "@/components/ui/PerspectiveCard";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -51,7 +52,7 @@ const INFOGRAPHIC = [
         cta: "Preservar mi Legado"
     },
     {
-        title: "Aceleradora Digital",
+        title: "Legado y Crecimiento",
         target: "Para Negocios & Marcas",
         color: "text-tech-500",
         items: [
@@ -59,7 +60,7 @@ const INFOGRAPHIC = [
             { icon: Search, label: "Optimización SEO con IA" },
             { icon: Smartphone, label: "Ecosistemas NFC" }
         ],
-        cta: "Acelerar mi Negocio"
+        cta: "Potenciar mi Crecimiento"
     }
 ];
 
@@ -122,21 +123,23 @@ export default function ExperienciaPage() {
                             animate={{ opacity: 1, scale: 1 }}
                             className="relative aspect-square"
                         >
-                            <div className="absolute inset-0 bg-curiol-500/10 blur-[120px] rounded-full animate-pulse" />
-                            <div className="relative z-10 w-full h-full rounded-[3rem] overflow-hidden border border-white/10">
-                                <img
-                                    src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80"
-                                    alt="Experiencia Artística"
-                                    className="w-full h-full object-cover opacity-60"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-tech-950 via-transparent to-transparent" />
-                                <div className="absolute bottom-10 left-10">
-                                    <div className="flex items-center gap-4 text-white">
-                                        <Users className="w-5 h-5 text-curiol-500" />
-                                        <span className="text-xs font-bold uppercase tracking-widest">+500 Memorias Creadas</span>
+                            <PerspectiveCard className="relative aspect-square cursor-pointer">
+                                <div className="absolute inset-0 bg-curiol-500/10 blur-[120px] rounded-full animate-pulse" />
+                                <div className="relative z-10 w-full h-full rounded-[3rem] overflow-hidden border border-white/10">
+                                    <img
+                                        src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80"
+                                        alt="Experiencia Artística"
+                                        className="w-full h-full object-cover opacity-60"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-tech-950 via-transparent to-transparent" />
+                                    <div className="absolute bottom-10 left-10">
+                                        <div className="flex items-center gap-4 text-white">
+                                            <Users className="w-5 h-5 text-curiol-500" />
+                                            <span className="text-xs font-bold uppercase tracking-widest">+500 Memorias Creadas</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </PerspectiveCard>
                         </motion.div>
                     </div>
                 </header>
@@ -150,7 +153,7 @@ export default function ExperienciaPage() {
 
                     <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 grid grid-cols-1 md:grid-cols-3 gap-8">
                         {PROCESS_STEPS.map((step, idx) => (
-                            <GlassCard key={idx} className="p-10 hover:border-curiol-500/40 transition-all group">
+                            <PerspectiveCard key={idx} className="p-10 hover:border-curiol-500/40 transition-all group cursor-pointer">
                                 <div className="flex items-center justify-between mb-8">
                                     <div className="w-14 h-14 bg-curiol-500/10 rounded-2xl flex items-center justify-center border border-curiol-500/20 group-hover:bg-curiol-500 group-hover:text-white transition-all text-curiol-500">
                                         <step.icon className="w-6 h-6" />
@@ -166,7 +169,7 @@ export default function ExperienciaPage() {
                                         </li>
                                     ))}
                                 </ul>
-                            </GlassCard>
+                            </PerspectiveCard>
                         ))}
                     </div>
                 </section>

@@ -30,7 +30,7 @@ export default function Home() {
 
   const heroTexts = [
     { main: "Legado", highlight: "vivo." },
-    { main: "Crecimiento comercial con", highlight: "nuestros servicios en tecnología" }
+    { main: "Legado y", highlight: "crecimiento comercial" }
   ];
 
   useEffect(() => {
@@ -123,7 +123,7 @@ export default function Home() {
                 Personalizar mi Legado
               </Link>
               <Link href="/soluciones-web" className="px-10 py-5 border border-tech-700 text-white text-xs font-bold uppercase tracking-widest hover:bg-tech-800 transition-all">
-                Aceleradora Comercial
+                Legado y Crecimiento
               </Link>
 
             </div>
@@ -148,7 +148,7 @@ export default function Home() {
                 <div className="flex items-center gap-3 mb-6">
                   <span className="h-[1px] w-8 bg-curiol-500"></span>
                 </div>
-                <h2 className="text-4xl md:text-6xl font-serif text-white mb-6 italic">Legado & <span className="text-curiol-500">Crecimiento comercial</span></h2>
+                <h2 className="text-4xl md:text-6xl font-serif text-white mb-6 italic">Legado y <span className="text-curiol-500">Crecimiento Comercial</span></h2>
               </div>
             </div>
 
@@ -197,7 +197,7 @@ export default function Home() {
                     <Code className="w-8 h-8" />
                   </div>
                 </div>
-                <h3 className="text-3xl font-serif text-white mb-6 italic">Soluciones Comerciales con IA</h3>
+                <h3 className="text-3xl font-serif text-white mb-6 italic">Legado y Crecimiento Comercial & IA</h3>
                 <p className="text-tech-400 font-light mb-10 leading-relaxed italic">"Atraemos miradas, cerramos ventas. Presencia 24/7."</p>
                 <p className="text-tech-300 text-sm font-light mb-10 leading-relaxed">
                   Infraestructura inteligente diseñada para que el comercio local destaque. Landing pages de alta conversión, asistentes digitales personalizados y optimización asistida por IA para un impacto real en tus ventas.

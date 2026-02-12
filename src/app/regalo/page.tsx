@@ -3,7 +3,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { AiAssistant } from "@/components/AiAssistant";
+import { PerspectiveCard } from "@/components/ui/PerspectiveCard";
 import {
     Gift, Sparkles, Camera, Send, Palette, User,
     MessageCircle, Smartphone, Music, Lock, Check,
@@ -225,7 +226,7 @@ export default function GiftCardPage() {
                         </div>
 
                         {/* Personalization Fields */}
-                        <div className="space-y-6 p-8 bg-tech-900/30 border border-white/5 rounded-[2rem]">
+                        <PerspectiveCard className="space-y-6 p-8 bg-tech-900/30 border border-white/5 rounded-[2rem] cursor-pointer">
                             <label className="text-tech-500 text-[10px] uppercase font-bold tracking-[0.3em] flex items-center gap-3 mb-2">
                                 <User className="w-4 h-4" /> Datos del Regalo
                             </label>
@@ -253,7 +254,7 @@ export default function GiftCardPage() {
                                     className="w-full bg-tech-950/50 border border-white/5 rounded-2xl px-6 py-5 text-white text-sm focus:border-curiol-500 transition-all outline-none resize-none"
                                 />
                             </div>
-                        </div>
+                        </PerspectiveCard>
 
                         {/* Experience Selector */}
                         <div className="space-y-6">
@@ -676,6 +677,7 @@ export default function GiftCardPage() {
             </main>
 
             <Footer />
+            <AiAssistant />
         </div>
     );
 }

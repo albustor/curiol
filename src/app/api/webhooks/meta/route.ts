@@ -43,18 +43,18 @@ export async function POST(req: Request) {
         const value = changes?.value;
         const messages = value?.messages;
 
-        console.log("Messages count:", messages?.length || 0);
-
         if (messages && messages.length > 0) {
             const message = messages[0];
             const from = message.from;
             const text = message.text?.body;
+
+            // Log raw message details for debugging
+            console.log(`MESSAGE RECEIVED | From: ${from} | Text: ${text || "[No Text]"}`);
+
             const textUpper = text?.toUpperCase();
             const channel = body.object === "whatsapp_business_account" ? "whatsapp" : "social";
 
-            console.log("Message from:", from, "Text:", text, "Channel:", channel);
-
-            // 1. Log the conversation
+            // 1. Log the conversation to Firestore
             await addDoc(collection(db, "omni_conversations"), {
                 contactId: from,
                 message: text || "",
@@ -139,15 +139,17 @@ export async function POST(req: Request) {
                 // 4. Fallback to Gemini AI
                 console.log("No flow match. Falling back to Gemini...");
                 const aiResponse = await generateAiChatResponse(text || "", channel);
-                console.log("AI Response generated:", aiResponse);
+                console.log("Gemini AI Response:", aiResponse);
 
                 if (channel === "whatsapp") {
-                    console.log("Sending AI Response via WhatsApp to:", from);
-                    await sendWhatsAppMessage(from, aiResponse);
+                    console.log("Attempting to send WhatsApp message to:", from);
+                    const waResult = await sendWhatsAppMessage(from, aiResponse);
+                    console.log("WhatsApp API Result:", waResult);
                 } else {
                     const platform = body.object === "instagram" ? "instagram" : "messenger";
-                    console.log("Sending AI Response via Social to:", from);
-                    await sendSocialMessage(from, aiResponse, platform);
+                    console.log("Attempting to send Social message to:", from, "Platform:", platform);
+                    const socialResult = await sendSocialMessage(from, aiResponse, platform);
+                    console.log("Social API Result:", socialResult);
                 }
 
                 await addDoc(collection(db, "omni_conversations"), {
@@ -160,7 +162,7 @@ export async function POST(req: Request) {
                 });
             }
         } else {
-            console.log("No messages in entry");
+            console.log("Webhook event received but no user messages found (likely a Status or Read Receipt update).");
         }
 
         return NextResponse.json({ status: "ok" });

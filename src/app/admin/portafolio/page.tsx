@@ -265,7 +265,7 @@ export default function PortfolioAdminPage() {
                                                             <label className="text-[10px] text-tech-500 font-bold uppercase tracking-widest block mb-2">Categoría del Proyecto</label>
                                                             <select value={isEditing.category || "Legado Familiar"} onChange={(e) => setIsEditing({ ...isEditing, category: e.target.value })} className="w-full bg-tech-950 border border-tech-800 rounded-xl p-4 text-white text-sm outline-none focus:border-curiol-500 transition-all">
                                                                 <option value="Legado Familiar">Legado Familiar</option>
-                                                                <option value="Soluciones Comerciales">Soluciones Comerciales</option>
+                                                                <option value="Legado y Crecimiento Comercial">Legado y Crecimiento Comercial</option>
                                                                 <option value="Arte Fine Art">Arte Fine Art</option>
                                                                 <option value="Estudio">Estudio</option>
                                                                 <option value="Embarazo">Embarazo</option>
