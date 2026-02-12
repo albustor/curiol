@@ -29,7 +29,7 @@ export default function DebugPage() {
             <p>Portfolio Albums Found: {albumsCount}</p>
             <hr />
             <h3>Branding Check:</h3>
-            <p>"Legado y Crecimiento Comercial" should be here -> <b>Legado y Crecimiento Comercial</b></p>
+            <p>"Legado y Crecimiento Comercial" should be here {"->"} <b>Legado y Crecimiento Comercial</b></p>
             <hr />
             <p>If you see "Arquitectura de Memorias" anywhere, the build is OLD.</p>
         </div>

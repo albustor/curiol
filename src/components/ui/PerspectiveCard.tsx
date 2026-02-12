@@ -80,8 +80,11 @@ export function PerspectiveCard({
                     style={{
                         background: useTransform(
                             [mouseXSpring, mouseYSpring],
-                            ([latestX, latestY]: any) =>
-                                `radial-gradient(circle at ${((latestX as number) + 0.5) * 100}% ${((latestY as number) + 0.5) * 100}%, rgba(255,255,255,0.15) 0%, transparent 60%)`
+                            ([latestX, latestY]: any) => {
+                                const xVal = typeof latestX === 'number' ? latestX : 0;
+                                const yVal = typeof latestY === 'number' ? latestY : 0;
+                                return `radial-gradient(circle at ${(xVal + 0.5) * 100}% ${(yVal + 0.5) * 100}%, rgba(255,255,255,0.15) 0%, transparent 60%)`;
+                            }
                         )
                     }}
                     className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"
