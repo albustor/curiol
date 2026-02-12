@@ -9,10 +9,7 @@ export async function generateAiChatResponse(clientMessage: string, channel: str
     if (!process.env.GEMINI_API_KEY) return "Lo siento, mi cerebro de IA no está configurado aún.";
 
     try {
-        const model = genAI.getGenerativeModel(
-            { model: "gemini-2.5-flash" },
-            { apiVersion: "v1" }
-        );
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const systemPrompt = `
         Eres el Asistente Maestro de Curiol Studio, liderado por el fotógrafo y tecnólogo Alberto Bustos. 
