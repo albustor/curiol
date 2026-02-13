@@ -62,8 +62,7 @@ const familyPackages = [
             "Portal de Entrega Privado (User/Pass)",
             "Gestión de Timeline Core (Archivo Vivo)",
             "Custodia digital hereditaria profesional",
-            "Plan Semestral: ₡59.490 mes (-10% desc)",
-            "Plan Anual: ₡29.414 mes (-11% desc)"
+            "Plan Semestral: ₡59.490 mes (-10% desc)"
         ],
         highlight: false
     },
@@ -73,9 +72,10 @@ const familyPackages = [
         icon: Sparkles,
         items: [
             "Esencia ágil: Phygital QR o Realidad Aumentada (AR)",
-            "5 Fotos Fine-Art de alta intensidad",
+            "6 Fotografías Fine-Art de alta intensidad",
             "Portal de Entrega: Acceso Privado (User/Pass)",
             "Álbum Digital de Descarga (LTD)",
+            "Retablo 5x7\" (13x18 cm) incluido",
             "Inversión Única (Contado): ₡56.000 / $112"
         ],
         highlight: false
@@ -148,8 +148,8 @@ const generateServicesSummary = () => {
         `*LEGADO FAMILIAR (B2C) - Tarifas 2026*\n` +
         `• *Aventura Mágica*: ₡112.7k / $225\n` +
         `• *Recuerdos Eternos*: ₡132.2k / $265\n` +
-        `• *Relatos*: ₡56k / $112 (Pago Único)\n` +
-        `• *Membresía*: Desde ₡29.4k/mes (Plan Anual)\n\n` +
+        `• *Relatos*: ₡56k / $112 (6 Fotos, Pago Único)\n` +
+        `• *Membresía*: ₡59.5k/mes (Plan Semestral)\n\n` +
         `*BENEFICIO PAGO DE CONTADO: -15% EN TODOS LOS PLANES*\n\n` +
         `*PORTAL DE ENTREGA: Acceso privado incluido*\n\n` +
         `*CRECIMIENTO COMERCIAL & IA (B2B)*\n` +
@@ -392,7 +392,7 @@ function ServiceCard({ item, activeTab }: { item: any, activeTab: string }) {
                             Reservar ahora <ArrowRight className="w-3 h-3" />
                         </Link>
 
-                        {(activeTab === "family" || item.id === "express") && (
+                        {(activeTab === "family" || item.id === "express") && item.id !== "relatos" && item.id !== "legado" && (
                             <Link
                                 href="/pago-cuotas"
                                 className="text-tech-500 hover:text-white text-[8px] font-bold uppercase tracking-[0.2em] transition-colors border-b border-white/5 pb-1 w-fit mx-auto"
