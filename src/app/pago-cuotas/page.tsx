@@ -35,18 +35,18 @@ export default function PagoCuotasPage() {
                             </div>
                             <h3 className="text-2xl font-serif text-white italic mb-4">Tasa 0 (3 o 6 Meses)</h3>
                             <p className="text-tech-400 text-sm font-light mb-8 leading-relaxed">
-                                Disponible para tarjetas de crédito de bancos emisores seleccionados (BCR, BAC, Scotiabank). 0% intereses, sin recargo adicional sobre el precio base.
+                                Convenio exclusivo para tarjetas de crédito del **Banco de Costa Rica (BCR)**. 0% intereses, pagando el precio estándar del catálogo.
                             </p>
                             <ul className="text-left w-full space-y-3 mb-10 text-[10px] uppercase tracking-widest font-bold text-tech-500">
-                                <li className="flex items-center gap-3"><ShieldCheck className="w-4 h-4 text-curiol-500" /> Sujeto a aprobación del banco</li>
+                                <li className="flex items-center gap-3"><ShieldCheck className="w-4 h-4 text-curiol-500" /> Exclusivo Banco de Costa Rica (BCR)</li>
                                 <li className="flex items-center gap-3"><ShieldCheck className="w-4 h-4 text-curiol-500" /> Disponible para compras mayores a ₡50k</li>
-                                <li className="flex items-center gap-3"><ShieldCheck className="w-4 h-4 text-curiol-500" /> Enlace de pago seguro incluido</li>
+                                <li className="flex items-center gap-3"><ShieldCheck className="w-4 h-4 text-curiol-500" /> Gestión ágil por enlace seguro</li>
                             </ul>
                             <button
-                                onClick={() => window.open('https://wa.me/50662856669?text=Hola Alberto, me gustaría pagar mi sesión con Tasa 0.', '_blank')}
+                                onClick={() => window.open('https://wa.me/50662856669?text=Hola Alberto, me gustaría pagar mi sesión con Tasa 0 del BCR.', '_blank')}
                                 className="w-full py-4 bg-white/5 border border-white/10 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-curiol-700 hover:border-curiol-500 transition-all rounded-full"
                             >
-                                Solicitar Link Tasa 0
+                                Solicitar Link BCR Tasa 0
                             </button>
                         </GlassCard>
 
@@ -55,20 +55,20 @@ export default function PagoCuotasPage() {
                             <div className="w-20 h-20 rounded-2xl bg-tech-500/10 flex items-center justify-center text-tech-500 mb-8 group-hover:bg-tech-500 group-hover:text-white transition-all shadow-xl shadow-tech-500/5">
                                 <Sparkles className="w-10 h-10" />
                             </div>
-                            <h3 className="text-2xl font-serif text-white italic mb-4">Multicuotas Curiol</h3>
+                            <h3 className="text-2xl font-serif text-white italic mb-4">Pago de Contado (-15%)</h3>
                             <p className="text-tech-400 text-sm font-light mb-8 leading-relaxed">
-                                Nuestro sistema de financiamiento interno. Diferencia tu inversión en hasta 5 pagos mensuales. Aplica un recargo del 15% sobre el valor total.
+                                El precio de catálogo incluye facilidades de pago. Si decides realizar un pago único (Contado), te obsequiamos un **15% de descuento directo**.
                             </p>
                             <ul className="text-left w-full space-y-3 mb-10 text-[10px] uppercase tracking-widest font-bold text-tech-500">
+                                <li className="flex items-center gap-3"><ShieldCheck className="w-4 h-4 text-tech-500" /> Beneficio inmediato (-15%)</li>
+                                <li className="flex items-center gap-3"><ShieldCheck className="w-4 h-4 text-tech-500" /> Válido vía SINPE o Transferencia</li>
                                 <li className="flex items-center gap-3"><ShieldCheck className="w-4 h-4 text-tech-500" /> Sin trámites bancarios</li>
-                                <li className="flex items-center gap-3"><ShieldCheck className="w-4 h-4 text-tech-500" /> Gestión vía SINPE o Transferencia</li>
-                                <li className="flex items-center gap-3"><ShieldCheck className="w-4 h-4 text-tech-500" /> Contrato de servicios incluido</li>
                             </ul>
                             <button
-                                onClick={() => window.open('https://wa.me/50662856669?text=Hola Alberto, me gustaría aplicar al plan de 5 cuotas para mi legado.', '_blank')}
+                                onClick={() => window.open('https://wa.me/50662856669?text=Hola Alberto, me gustaría aprovechar el -15% de descuento por pago de contado.', '_blank')}
                                 className="w-full py-4 bg-tech-800 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-tech-700 transition-all rounded-full flex items-center justify-center gap-3 shadow-2xl shadow-black/50"
                             >
-                                Aplicar Plan Cuotas <ArrowRight className="w-4 h-4" />
+                                Aplicar Descuento Contado <ArrowRight className="w-4 h-4" />
                             </button>
                         </GlassCard>
                     </div>

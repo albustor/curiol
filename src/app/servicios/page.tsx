@@ -28,8 +28,9 @@ const familyPackages = [
             "Línea de Tiempo Evolutiva (Legacy Sync)",
             "Álbum Digital de Descarga (LTD)",
             "Retablo 5x7\" con NFC incluido",
-            "Inversión: ₡98.000 / $195",
-            "(Opcional) Phygital AR: 15% OFF aplicado"
+            "Inversión Estándar: ₡112.700 / $225",
+            "Beneficio Pago de Contado: -15% (₡95.800)",
+            "(Opcional) Phygital AR: Beneficio especial aplicado"
         ],
         highlight: true
     },
@@ -147,10 +148,10 @@ const businessPackages = [
 const generateServicesSummary = () => {
     const summary = `*Curiol Studio 2026 - Legado vivo & Crecimiento Comercial & IA*\n\n` +
         `*LEGADO FAMILIAR (B2C) - Tarifas 2026*\n` +
-        `• *Aventura Mágica*: ₡98k / $195 (Imaginería High-end + AR + Viva Memory)\n` +
-        `• *Recuerdos Eternos*: ₡132.2k / $265 (Fine Art + Evolución)\n` +
-        `• *Relatos*: ₡56.3k / $115 (Esencia Fine Art)\n` +
-        `• *Membresía Legado*: ₡28.7k / $69 mes\n\n` +
+        `• *Aventura Mágica*: ₡112.7k / $225 (Financiamiento Incluido)\n` +
+        `• *Recuerdos Eternos*: ₡132.2k / $265 (Financiamiento Incluido)\n` +
+        `• *Relatos*: ₡56.3k / $115 (Financiamiento Incluido)\n\n` +
+        `*BENEFICIO PAGO DE CONTADO: -15% EN TODOS LOS PLANES*\n\n` +
         `*CRECIMIENTO COMERCIAL & IA (B2B)*\n` +
         `• *Omni Local*: ₡280k / $550\n` +
         `• *Omni Pro*: ₡780k / $1550\n` +
