@@ -270,9 +270,15 @@ export default function CotizadorPage() {
     const [clausesAccepted, setClausesAccepted] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [isGenerating, setIsGenerating] = useState(false);
+    const [clientIp, setClientIp] = useState("");
 
     useEffect(() => {
         setQuoteId(`CP-${Math.floor(Math.random() * 90000) + 10000}`);
+        // Capture IP
+        fetch('https://api.ipify.org?format=json')
+            .then(res => res.json())
+            .then(data => setClientIp(data.ip))
+            .catch(err => console.error("Error fetching IP:", err));
     }, []);
 
     const generateContractPDF = () => {
@@ -316,7 +322,7 @@ export default function CotizadorPage() {
             "2. FORMALIZACIÓN: Las fechas anuales deben quedar agendadas al momento de la firma (hoy).",
             "3. POLÍTICA DE CAMBIOS: Se permite UN solo cambio de fecha por sesión, solicitado con 15 días de preaviso.",
             "4. EL INCUMPLIMIENTO de los plazos de preaviso anula el derecho a reprogramación automática.",
-            "5. RESERVA: Este contrato se activa tras el pago del adelanto correspondiente."
+            "5. RESERVA & EJECUCIÓN: El pago del adelanto (20%) perfecciona este contrato y equivale a su firma legal."
         ];
         clauses.forEach((line, i) => {
             doc.text(line, 20, 140 + (i * 7));
@@ -327,6 +333,8 @@ export default function CotizadorPage() {
         doc.text("IV. ACEPTACIÓN Y FIRMA", 20, 185);
         doc.setFontSize(8);
         doc.text("Este documento ha sido generado automáticamente y aceptado digitalmente por el cliente.", 20, 195);
+        doc.text(`Audit Trail ID: ${now.getTime()}-${quoteId} | IP: ${clientIp || 'N/A'}`, 20, 200);
+        doc.text("CONFORMIDAD: Al realizar el pago, el cliente acepta irrevocablemente los términos aquí descritos.", 20, 205);
 
         doc.setLineWidth(0.5);
         doc.line(20, 215, 80, 215);
@@ -1184,6 +1192,12 @@ export default function CotizadorPage() {
                                                     paymentMethod,
                                                     status: 'awaiting_advance',
                                                     clausesAccepted: true,
+                                                    auditTrail: {
+                                                        ip: clientIp,
+                                                        userAgent: navigator.userAgent,
+                                                        timestamp: Timestamp.now(),
+                                                        acceptedByConduct: true
+                                                    },
                                                     createdAt: Timestamp.now(),
                                                     client: clientData,
                                                     metadata: { category, installments: useInstallments }
