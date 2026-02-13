@@ -208,15 +208,18 @@ export default function Home() {
                         alt={item.title || item.titulo}
                         className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-tech-950 via-tech-950/20 to-transparent p-8 flex flex-col justify-end">
-                        <div className="flex items-center gap-3 mb-2">
-                          <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-curiol-500 bg-curiol-500/10 px-3 py-1 rounded-full border border-curiol-500/10">
+                      <div className="absolute inset-0 bg-gradient-to-t from-tech-950/80 via-tech-950/20 to-transparent p-6 flex flex-col justify-end items-end text-right">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-[7px] font-bold uppercase tracking-[0.2em] text-curiol-500 bg-curiol-500/10 px-2 py-0.5 rounded-full border border-curiol-500/10">
                             PRODUCCIÓN
                           </span>
                         </div>
-                        <h3 className="text-xl font-serif text-white italic group-hover:text-curiol-200 transition-colors capitalize">
+                        <h3 className="text-sm md:text-base font-serif text-white italic group-hover:text-curiol-200 transition-colors capitalize">
                           {(item.title || item.titulo || "").replace(/_/g, " ")}
                         </h3>
+                        <p className="text-[8px] text-tech-500 font-light mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          {item.description?.slice(0, 30) || "Capturando Legados"}...
+                        </p>
                       </div>
                     </PerspectiveCard>
                   </Link>
@@ -242,15 +245,15 @@ export default function Home() {
                 <span className="h-[1px] w-8 bg-curiol-500"></span>
                 <span className="text-curiol-500 text-[10px] font-bold tracking-[0.4em] uppercase">Ecosistema Curiol OS</span>
               </div>
-              <h2 className="text-4xl md:text-6xl font-serif text-white mb-12 italic text-center">Uniendo dos mundos: <br /><span className="text-curiol-gradient">Arte & Tecnología</span></h2>
+              <h2 className="text-4xl md:text-6xl font-serif text-white mb-12 italic text-center">Uniendo dos mundos: <br /><span className="text-curiol-gradient">Fotografía & Tecnología</span></h2>
 
               {/* TABS SELECTOR */}
-              <div className="flex p-1.5 bg-tech-900/80 backdrop-blur-2xl border border-white/10 rounded-full mb-16 relative overflow-hidden shadow-2xl shadow-black/50">
+              <div className="flex p-1.5 bg-tech-900/80 backdrop-blur-2xl border border-white/10 rounded-full mb-16 relative overflow-hidden shadow-[0_0_30px_rgba(180,95,50,0.2)]">
                 <button
                   onClick={() => setActiveCategory("family")}
                   className={cn(
-                    "relative px-8 py-4 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all z-10",
-                    activeCategory === "family" ? "text-white" : "text-tech-500 hover:text-tech-300"
+                    "relative px-10 py-4 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all z-10",
+                    activeCategory === "family" ? "text-white" : "text-tech-500 hover:text-white"
                   )}
                 >
                   Legado Familiar
@@ -258,15 +261,15 @@ export default function Home() {
                 <button
                   onClick={() => setActiveCategory("business")}
                   className={cn(
-                    "relative px-8 py-4 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all z-10",
-                    activeCategory === "business" ? "text-white" : "text-tech-500 hover:text-tech-300"
+                    "relative px-10 py-4 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all z-10",
+                    activeCategory === "business" ? "text-white" : "text-tech-500 hover:text-white"
                   )}
                 >
                   Crecimiento Comercial
                 </button>
                 {/* Selector Slide Background */}
                 <motion.div
-                  className="absolute inset-y-1.5 bg-curiol-gradient rounded-full shadow-lg"
+                  className="absolute inset-y-1.5 bg-curiol-gradient rounded-full shadow-[0_0_20px_rgba(180,95,50,0.4)]"
                   initial={false}
                   animate={{
                     left: activeCategory === "family" ? "6px" : "calc(50% + 2px)",

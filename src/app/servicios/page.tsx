@@ -182,12 +182,12 @@ export default function ServiciosPage() {
                         </p>
 
                         {/* Tabs Selector */}
-                        <div className="flex p-1.5 bg-tech-900/80 backdrop-blur-2xl border border-white/10 rounded-full relative overflow-hidden w-fit shadow-2xl shadow-black/50">
+                        <div className="flex p-1.5 bg-tech-900/80 backdrop-blur-2xl border border-white/10 rounded-full relative overflow-hidden w-fit shadow-[0_0_30px_rgba(180,95,50,0.2)]">
                             <button
                                 onClick={() => setActiveTab("family")}
                                 className={cn(
                                     "relative px-10 py-4 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all z-10",
-                                    activeTab === "family" ? "text-white" : "text-tech-500 hover:text-tech-300"
+                                    activeTab === "family" ? "text-white" : "text-tech-500 hover:text-white"
                                 )}
                             >
                                 Legado Familiar
@@ -196,13 +196,13 @@ export default function ServiciosPage() {
                                 onClick={() => setActiveTab("business")}
                                 className={cn(
                                     "relative px-10 py-4 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all z-10",
-                                    activeTab === "business" ? "text-white" : "text-tech-500 hover:text-tech-300"
+                                    activeTab === "business" ? "text-white" : "text-tech-500 hover:text-white"
                                 )}
                             >
                                 Crecimiento Comercial
                             </button>
                             <motion.div
-                                className="absolute inset-y-1.5 bg-curiol-gradient rounded-full shadow-lg"
+                                className="absolute inset-y-1.5 bg-curiol-gradient rounded-full shadow-[0_0_20px_rgba(180,95,50,0.4)]"
                                 initial={false}
                                 animate={{
                                     left: activeTab === "family" ? "6px" : "calc(50% + 2px)",
@@ -229,34 +229,69 @@ export default function ServiciosPage() {
                                 </h2>
                                 <p className="text-tech-500 text-sm md:text-lg font-light italic">
                                     {activeTab === "family"
-                                        ? "Retratamos la esencia hoy para que sea eterna mañana, fusionando sensibilidad artesanal con custodia digital."
+                                        ? "Retratamos la esencia hoy para que sea eterna mañana, fusionando sensibilidad artesanal con fotografía de vanguardia."
                                         : "Ingeniería digital diseñada para escalar tu marca con inteligencia artificial y experiencias inmersivas."}
                                 </p>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
                                 {(activeTab === "family" ? familyPackages : businessPackages).map((item) => (
-                                    <PerspectiveCard key={item.id} className={cn("flex flex-col items-center text-center p-6 md:p-10 cursor-pointer", item.highlight && "border-tech-500 shadow-2xl shadow-tech-500/10")}>
-                                        <div className={cn("mb-8 p-4 rounded-full ring-1", (item.highlight || activeTab === "business") ? "text-tech-500 bg-tech-500/5 ring-tech-500/20" : "text-curiol-500 bg-curiol-500/5 ring-curiol-500/20")}>
-                                            <item.icon className="w-8 h-8" />
-                                        </div>
-                                        <h3 className="font-serif text-2xl text-white mb-6 italic leading-tight">{item.title}</h3>
-                                        <div className="space-y-3 w-full mt-auto">
-                                            {item.items.map((bullet, idx) => (
-                                                <div key={idx} className="flex items-start gap-3 text-left">
-                                                    <div className={cn("w-1 h-1 rounded-full mt-2 shrink-0", (item.highlight || activeTab === "business") ? "bg-tech-500" : "bg-curiol-500")} />
-                                                    <p className="text-tech-400 text-[11px] font-light leading-snug">{bullet}</p>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </PerspectiveCard>
+                                    <ServiceCard key={item.id} item={item} activeTab={activeTab} />
                                 ))}
                             </div>
                         </motion.div>
                     </AnimatePresence>
                 </section>
 
-                <PhygitalSimulation />
+                <section className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 mb-40">
+                    <div className="bg-tech-900/50 border border-tech-800 rounded-[3rem] p-8 md:p-16 overflow-hidden relative">
+                        <div className="absolute top-0 right-0 w-96 h-96 bg-curiol-500/10 blur-[100px] -mr-48 -mt-48" />
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                            <div>
+                                <span className="text-curiol-500 text-[10px] font-bold uppercase tracking-widest mb-4 block">Ecosistema Curiol & IA</span>
+                                <h2 className="text-4xl md:text-5xl font-serif text-white mb-8 italic">El Arte de lo <span className="text-curiol-gradient">Interactivo.</span></h2>
+                                <div className="space-y-8">
+                                    <div className="flex gap-6">
+                                        <div className="w-12 h-12 rounded-2xl bg-tech-800 flex items-center justify-center shrink-0 border border-tech-700">
+                                            <Smartphone className="text-curiol-500 w-6 h-6" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-white font-serif text-xl mb-2 italic">Descargas High-End (LTD)</h4>
+                                            <p className="text-tech-400 text-sm font-light leading-relaxed">Olvídate de versiones comprimidas por redes sociales. Recibes tus fotografías en resolución maestra directamente de nuestro servidor de activos, optimizadas para impresión Fine Art o pantallas 4K.</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-6">
+                                        <div className="w-12 h-12 rounded-2xl bg-tech-800 flex items-center justify-center shrink-0 border border-tech-700">
+                                            <Binary className="text-curiol-500 w-6 h-6" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-white font-serif text-xl mb-2 italic">Línea de Tiempo Familiar (Sync)</h4>
+                                            <p className="text-tech-400 text-sm font-light leading-relaxed">Tu legado es un organismo vivo. Cada sesión se sincroniza automáticamente con tu Línea de Tiempo Evolutiva, creando un archivo histórico dinámico que puedes consultar años después.</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-6">
+                                        <div className="w-12 h-12 rounded-2xl bg-tech-800 flex items-center justify-center shrink-0 border border-tech-700">
+                                            <Sparkles className="text-curiol-500 w-6 h-6" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-white font-serif text-xl mb-2 italic">Patrimonio Phygital 2026</h4>
+                                            <p className="text-tech-400 text-sm font-light leading-relaxed">Fusionamos lo físico (Retablos NFC) con lo digital (Realidad Aumentada). Tu casa no solo muestra arte, cuenta tu historia interactiva mediante IA.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="relative aspect-square bg-tech-800 rounded-3xl border border-tech-700 overflow-hidden flex items-center justify-center cursor-pointer group">
+                                <PhygitalSimulation />
+                                <div className="absolute inset-0 bg-tech-950/40 group-hover:bg-tech-950/20 transition-all flex items-center justify-center">
+                                    <div className="flex flex-col items-center">
+                                        <div className="w-24 h-24 border-2 border-curiol-500/50 rounded-full animate-[ping_3s_infinite] mb-4" />
+                                        <div className="text-white text-[8px] font-bold uppercase tracking-[0.5em] animate-pulse">Explorar Realidad Aumentada</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
                 <section className="max-w-4xl mx-auto px-4 md:px-8 lg:px-16 mb-40">
                     <PerspectiveCard className="p-8 md:p-12 text-center border-curiol-500/20 cursor-pointer">
@@ -298,5 +333,64 @@ export default function ServiciosPage() {
             <Footer />
             <AiAssistant />
         </div>
+    );
+}
+
+function ServiceCard({ item, activeTab }: { item: any, activeTab: string }) {
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    return (
+        <PerspectiveCard
+            className={cn(
+                "flex flex-col items-center text-center p-6 md:p-10 cursor-pointer transition-all duration-500",
+                item.highlight && "border-tech-500 shadow-2xl shadow-tech-500/10",
+                isExpanded ? "scale-[1.02] border-curiol-500/40" : ""
+            )}
+            onClick={() => setIsExpanded(!isExpanded)}
+        >
+            <div className={cn("mb-8 p-4 rounded-full ring-1 transition-colors", (item.highlight || activeTab === "business") ? "text-tech-500 bg-tech-500/5 ring-tech-500/20" : "text-curiol-500 bg-curiol-500/5 ring-curiol-500/20")}>
+                <item.icon className="w-8 h-8" />
+            </div>
+            <h3 className="font-serif text-2xl text-white mb-6 italic leading-tight">{item.title}</h3>
+
+            <motion.div
+                initial={false}
+                animate={{ height: isExpanded ? "auto" : "200px" }}
+                className="overflow-hidden relative w-full"
+            >
+                <div className="space-y-3 w-full">
+                    {item.items.map((bullet: string, idx: number) => (
+                        <div key={idx} className="flex items-start gap-3 text-left">
+                            <div className={cn("w-1 h-1 rounded-full mt-2 shrink-0", (item.highlight || activeTab === "business") ? "bg-tech-500" : "bg-curiol-500")} />
+                            <p className="text-tech-400 text-[11px] font-light leading-snug">{bullet}</p>
+                        </div>
+                    ))}
+                </div>
+
+                {!isExpanded && item.items.length > 5 && (
+                    <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-tech-900 to-transparent flex items-end justify-center pb-2">
+                        <span className="text-[8px] font-bold text-curiol-500 uppercase tracking-widest animate-bounce">Conoce más</span>
+                    </div>
+                )}
+            </motion.div>
+
+            {isExpanded && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="mt-8 pt-6 border-t border-white/5 w-full"
+                >
+                    <p className="text-[10px] text-tech-500 font-light italic mb-4">
+                        *Este paquete incluye acceso exclusivo al ecosistema digital de Curiol Studio para la gestión de su legado en resolución maestra.
+                    </p>
+                    <Link
+                        href="/cotizar"
+                        className="inline-flex items-center gap-2 text-curiol-500 text-[10px] font-bold uppercase tracking-widest hover:text-white transition-all"
+                    >
+                        Seleccionar este Plan <ArrowRight className="w-3 h-3" />
+                    </Link>
+                </motion.div>
+            )}
+        </PerspectiveCard>
     );
 }
