@@ -365,10 +365,11 @@ export default function CotizadorPage() {
     const baseTotal = packageTotal + coastalFee + complementTotal +
         extras.reduce((acc, curr) => acc + (currency === "CRC" ? curr.price : curr.usdPrice), 0);
 
-    // Recargo del 15% por cuotas en paquetes Familiares
+    // Estrategia 2026: El precio ya incluye financiamiento.
+    // Si NO se usan cuotas (Pago Contado), se aplica un 15% de descuento.
     const total = (useInstallments && category === 'family')
-        ? baseTotal * 1.15
-        : baseTotal;
+        ? baseTotal
+        : (category === 'family' ? baseTotal * 0.85 : baseTotal);
 
     return (
         <div className="min-h-screen flex flex-col pt-32 pb-24">
@@ -971,7 +972,7 @@ export default function CotizadorPage() {
                                         <span className="text-5xl font-serif text-white italic">
                                             {currency === "USD" ? "$" : "₡"}
                                             {useInstallments
-                                                ? (selectedPackage?.id === "recuerdos" ? "23.000" : "16.180")
+                                                ? (Math.round(total / 5)).toLocaleString()
                                                 : total.toLocaleString()}
                                         </span>
                                     </div>
