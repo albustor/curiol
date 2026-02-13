@@ -17,7 +17,7 @@ import { AiCompositionEditor } from "@/components/admin/AiCompositionEditor";
 import { getPortfolioAiInsight } from "@/actions/portfolio";
 import { PerspectiveCard } from "@/components/ui/PerspectiveCard";
 
-export default function AlbumViewPage() {
+export default function AlbumViewPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = useParams();
     const router = useRouter();
     const [album, setAlbum] = useState<PortfolioAlbum | null>(null);

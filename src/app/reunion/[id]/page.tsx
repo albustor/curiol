@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { use, useState, useEffect, useRef } from "react";
 import { Navbar } from "@/components/Navbar";
 import { GlassCard } from "@/components/ui/GlassCard";
 import {
@@ -15,7 +15,9 @@ declare global {
     }
 }
 
-export default function PublicMeetingRoom({ params }: { params: { id: string } }) {
+export default function PublicMeetingRoom({ params }: { params: Promise<{ id: string }> }) {
+    const resolvedParams = use(params);
+    const id = resolvedParams.id;
     const [isInCall, setIsInCall] = useState(false);
     const jitsiContainerRef = useRef<HTMLDivElement>(null);
     const apiRef = useRef<any>(null);
@@ -39,7 +41,7 @@ export default function PublicMeetingRoom({ params }: { params: { id: string } }
 
                 const domain = "meet.jit.si";
                 const options = {
-                    roomName: `Curiol_Studio_${params.id}`,
+                    roomName: `Curiol_Studio_${id}`,
                     width: "100%",
                     height: "100%",
                     parentNode: jitsiContainerRef.current,
@@ -76,7 +78,7 @@ export default function PublicMeetingRoom({ params }: { params: { id: string } }
                 document.body.removeChild(script);
             }
         };
-    }, [isInCall, params.id]);
+    }, [isInCall, id]);
 
     return (
         <div className="min-h-screen bg-tech-950 pt-24 pb-12 relative overflow-hidden">
@@ -106,7 +108,7 @@ export default function PublicMeetingRoom({ params }: { params: { id: string } }
                         <div className="flex items-center gap-3">
                             <div className="hidden md:flex flex-col items-end">
                                 <span className="text-[10px] text-tech-500 font-bold uppercase tracking-widest">Invitado de Honor</span>
-                                <span className="text-[10px] text-curiol-500 font-mono italic">ID: {params.id}</span>
+                                <span className="text-[10px] text-curiol-500 font-mono italic">ID: {id}</span>
                             </div>
                             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-glow shadow-green-500/50" />
                         </div>

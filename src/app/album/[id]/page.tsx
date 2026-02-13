@@ -11,7 +11,7 @@ import { getPortfolioAiInsight } from "@/actions/portfolio";
 import { getDirectImageUrl } from "@/lib/utils";
 import { PerspectiveCard } from "@/components/ui/PerspectiveCard";
 
-export default function ClientAlbumPage() {
+export default function ClientAlbumPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = useParams();
     const [album, setAlbum] = useState<AlbumMetadata | null>(null);
     const [loading, setLoading] = useState(true);
