@@ -3,7 +3,7 @@
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { CreditCard, ShieldCheck, Sparkles, ArrowRight } from "lucide-react";
+import { CreditCard, ShieldCheck, Sparkles, ArrowRight, FileCheck } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function PagoCuotasPage() {
@@ -94,10 +94,65 @@ export default function PagoCuotasPage() {
                         </GlassCard>
                     </div>
 
+                    <div className="mt-20 grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <GlassCard className="p-10 border-curiol-500/5 bg-tech-900/30">
+                            <h4 className="text-white font-serif text-xl italic mb-6 flex items-center gap-3">
+                                <FileCheck className="w-5 h-5 text-curiol-500" /> Proceso de Activación (B2C)
+                            </h4>
+                            <div className="space-y-6">
+                                <div className="flex gap-4">
+                                    <div className="w-8 h-8 rounded-full bg-curiol-500/10 flex items-center justify-center text-curiol-500 text-[10px] font-bold flex-shrink-0">01</div>
+                                    <div>
+                                        <p className="text-white text-xs font-bold uppercase tracking-widest mb-1">Reservación</p>
+                                        <p className="text-tech-500 text-[10px] font-light">Se coordina la fecha y se realiza el depósito inicial para asegurar el espacio en la agenda.</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4">
+                                    <div className="w-8 h-8 rounded-full bg-curiol-500/10 flex items-center justify-center text-curiol-500 text-[10px] font-bold flex-shrink-0">02</div>
+                                    <div>
+                                        <p className="text-white text-xs font-bold uppercase tracking-widest mb-1">Formalización</p>
+                                        <p className="text-tech-500 text-[10px] font-light">Una vez verificado el depósito, Curiol Studio genera el Contrato de Servicios Legales para firma mutua.</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4">
+                                    <div className="w-8 h-8 rounded-full bg-curiol-500/10 flex items-center justify-center text-curiol-500 text-[10px] font-bold flex-shrink-0">03</div>
+                                    <div>
+                                        <p className="text-white text-xs font-bold uppercase tracking-widest mb-1">Ejecución</p>
+                                        <p className="text-tech-500 text-[10px] font-light">Iniciamos la pre-producción artística y técnica para tu legado.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </GlassCard>
+
+                        <GlassCard className="p-10 border-tech-500/5 bg-tech-950/50">
+                            <h4 className="text-white font-serif text-xl italic mb-6 flex items-center gap-3">
+                                <ShieldCheck className="w-5 h-5 text-tech-500" /> Aspectos Generales Importantes
+                            </h4>
+                            <ul className="space-y-4 text-[10px] text-tech-400 font-light leading-relaxed">
+                                <li className="flex items-start gap-3">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-tech-500 mt-1 flex-shrink-0"></span>
+                                    <span>La **reservación no es reembolsable**, ya que asegura la exclusividad del tiempo del artista y el inicio de la logística digital.</span>
+                                </li>
+                                <li className="flex items-start gap-3">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-tech-500 mt-1 flex-shrink-0"></span>
+                                    <span>El **Contrato de Servicios** respalda tanto la inversión del cliente como el compromiso de entrega de Curiol Studio.</span>
+                                </li>
+                                <li className="flex items-start gap-3">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-tech-500 mt-1 flex-shrink-0"></span>
+                                    <span>En el plan de cuotas, la **entrega final** se libera únicamente al completar el pago total y dentro de un máximo de 2 meses.</span>
+                                </li>
+                                <li className="flex items-start gap-3">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-tech-500 mt-1 flex-shrink-0"></span>
+                                    <span>Este flujo aplica exclusivamente para el sector de **Legado Familiar (B2C)**.</span>
+                                </li>
+                            </ul>
+                        </GlassCard>
+                    </div>
+
                     <div className="mt-20 p-12 bg-tech-900/50 border border-white/5 rounded-[3rem] text-center">
-                        <h4 className="text-white font-serif text-xl italic mb-6">Seguridad Certificada</h4>
-                        <p className="text-tech-500 text-xs font-light max-w-xl mx-auto leading-relaxed">
-                            Todas nuestras transacciones digitales se procesan mediante túneles de encriptación de grado bancario. No almacenamos datos sensibles de tarjetas en nuestros servidores.
+                        <h4 className="text-white font-serif text-xl italic mb-6">Seguridad & Compromiso</h4>
+                        <p className="text-tech-500 text-[10px] font-light max-w-2xl mx-auto leading-relaxed uppercase tracking-wider">
+                            Todas las transacciones se gestionan mediante túneles de encriptación seguros. Curiol Studio se rige por un estricto código ético y legal para la protección de tu patrimonio emocional.
                         </p>
                     </div>
                 </div>
