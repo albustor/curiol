@@ -6,15 +6,21 @@ import { Footer } from "@/components/Footer";
 import { AiAssistant } from "@/components/AiAssistant";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { GiftCard } from "@/components/GiftCard";
-import { Camera, Binary, ArrowRight, Sparkles, Code, Users } from "lucide-react";
+import { Camera, Binary, ArrowRight, Sparkles, Code, Users, ArrowUpRight, Filter, Calendar as CalendarIcon } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { AgendaWidget } from "@/components/AgendaWidget";
 
 import { getPortfolioAllPhotos, getAlbums } from "@/actions/portfolio";
-import { getDirectImageUrl } from "@/lib/utils";
+import { getDirectImageUrl, cn } from "@/lib/utils";
 import { PerspectiveCard } from "@/components/ui/PerspectiveCard";
-import { ArrowUpRight, Filter, Calendar as CalendarIcon } from "lucide-react";
+import ComingSoon from "./coming-soon/page";
+
+// ==========================================
+// MAINTENANCE MODE TOGGLE
+// Set to true to hide the site from the public
+// ==========================================
+const MAINTENANCE_MODE = true;
 
 const POETIC_PHRASES = [
   "Legado familiar",
@@ -28,6 +34,8 @@ export default function Home() {
   const [currentPhrase, setCurrentPhrase] = useState("");
   const [heroImages, setHeroImages] = useState<{ url: string; title: string; category: string }[]>([]);
   const [portfolioTeaser, setPortfolioTeaser] = useState<any[]>([]);
+
+  const [activeCategory, setActiveCategory] = useState<"family" | "business">("family");
 
   useEffect(() => {
     async function loadData() {
@@ -74,6 +82,11 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [heroImages]);
 
+  // Render maintenance page if mode is active
+  if (MAINTENANCE_MODE) {
+    return <ComingSoon />;
+  }
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
@@ -85,15 +98,23 @@ export default function Home() {
             <AnimatePresence mode="popLayout">
               <motion.div
                 key={currentImage}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.5 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 2, ease: "linear" }}
-                style={{
-                  backgroundImage: `url(${getDirectImageUrl(heroImages[currentImage]?.url || "")})`,
-                  backgroundPosition: "center center"
+                initial={{ opacity: 0, scale: 1.1, x: 10 }}
+                animate={{
+                  opacity: 0.8,
+                  scale: 1,
+                  x: 0,
+                  transition: {
+                    opacity: { duration: 2.5, ease: "linear" },
+                    scale: { duration: 15, ease: "easeOut" },
+                    x: { duration: 15, ease: "easeOut" }
+                  }
                 }}
-                className="absolute inset-0 bg-cover img-premium grayscale scale-105"
+                exit={{ opacity: 0, transition: { duration: 2 } }}
+                style={{
+                  backgroundImage: `url(${getDirectImageUrl(heroImages[currentImage]?.url || "", true)})`,
+                  backgroundPosition: "center 20%"
+                }}
+                className="absolute inset-0 bg-cover img-premium"
               />
             </AnimatePresence>
             <div className="absolute inset-0 bg-gradient-to-t from-tech-950 via-tech-950/40 to-tech-950" />
@@ -144,7 +165,7 @@ export default function Home() {
                 Personalizar mi Legado
               </Link>
               <Link href="/soluciones-web" className="px-10 py-5 border border-tech-700 text-white text-xs font-bold uppercase tracking-widest hover:bg-tech-800 transition-all">
-                Legado y Crecimiento
+                Crecimiento Comercial & IA
               </Link>
 
             </div>
@@ -180,8 +201,8 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {portfolioTeaser.length > 0 ? portfolioTeaser
                 .sort((a, b) => {
-                  const aTitle = a.titulo.toLowerCase();
-                  const bTitle = b.titulo.toLowerCase();
+                  const aTitle = (a.title || a.titulo || "").toLowerCase();
+                  const bTitle = (b.title || b.titulo || "").toLowerCase();
                   const priorityKeywords = ["embarazo", "maternidad", "navidad"];
                   const aIsPriority = priorityKeywords.some(kw => aTitle.includes(kw));
                   const bIsPriority = priorityKeywords.some(kw => bTitle.includes(kw));
@@ -193,15 +214,19 @@ export default function Home() {
                   <Link key={idx} href={`/portafolio/${item.slug || item.id}`}>
                     <PerspectiveCard index={idx} className="aspect-[3/4]">
                       <img
-                        src={getDirectImageUrl(item.url)}
-                        alt={item.titulo}
+                        src={getDirectImageUrl(item.url || (item.photos && item.photos.length > 0 ? item.photos[0].url : ""))}
+                        alt={item.title || item.titulo}
                         className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-tech-950 via-tech-950/20 to-transparent p-8 flex flex-col justify-end">
-                        <p className="text-curiol-500 text-[9px] font-bold uppercase tracking-[0.2em] mb-2">
-                          {item.titulo.toLowerCase().includes("perfil") ? "Perfil Profesional" : "LEGADO"}
-                        </p>
-                        <h3 className="text-2xl font-serif text-white italic leading-none capitalize">{item.titulo.replace(/_/g, " ")}</h3>
+                        <div className="flex items-center gap-3 mb-2">
+                          <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-curiol-500 bg-curiol-500/10 px-3 py-1 rounded-full border border-curiol-500/10">
+                            PRODUCCIÓN
+                          </span>
+                        </div>
+                        <h3 className="text-xl font-serif text-white italic group-hover:text-curiol-200 transition-colors capitalize">
+                          {(item.title || item.titulo || "").replace(/_/g, " ")}
+                        </h3>
                       </div>
                     </PerspectiveCard>
                   </Link>
@@ -219,94 +244,114 @@ export default function Home() {
         </section>
 
         {/* Hybrid Grid Section */}
-        <section className="py-32 px-4 md:px-8 lg:px-16 bg-tech-900 overflow-hidden relative">
+        <section className="py-32 px-4 md:px-8 lg:px-16 bg-tech-950 overflow-hidden relative">
           <div className="absolute top-0 left-0 w-full h-full bg-[url('/grid-subtle.svg')] opacity-5" />
           <div className="max-w-7xl mx-auto relative z-10">
-            <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
-              <div className="max-w-xl">
-                <div className="flex items-center gap-3 mb-6">
-                  <span className="h-[1px] w-8 bg-curiol-500"></span>
-                </div>
-                <h2 className="text-4xl md:text-6xl font-serif text-white mb-6 italic">Legado y <span className="text-curiol-500">Crecimiento Comercial</span></h2>
+            <div className="flex flex-col items-center mb-16">
+              <div className="flex items-center gap-3 mb-8">
+                <span className="h-[1px] w-8 bg-curiol-500"></span>
+                <span className="text-curiol-500 text-[10px] font-bold tracking-[0.4em] uppercase">Ecosistema Curiol OS</span>
+              </div>
+              <h2 className="text-4xl md:text-6xl font-serif text-white mb-12 italic text-center">Uniendo dos mundos: <br /><span className="text-curiol-gradient">Arte & Tecnología</span></h2>
+
+              {/* TABS SELECTOR */}
+              <div className="flex p-1.5 bg-tech-900/50 backdrop-blur-xl border border-white/5 rounded-full mb-16 relative overflow-hidden">
+                <button
+                  onClick={() => setActiveCategory("family")}
+                  className={cn(
+                    "relative px-8 py-4 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all z-10",
+                    activeCategory === "family" ? "text-white" : "text-tech-500 hover:text-tech-300"
+                  )}
+                >
+                  Legado Familiar
+                </button>
+                <button
+                  onClick={() => setActiveCategory("business")}
+                  className={cn(
+                    "relative px-8 py-4 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all z-10",
+                    activeCategory === "business" ? "text-white" : "text-tech-500 hover:text-tech-300"
+                  )}
+                >
+                  Crecimiento Comercial
+                </button>
+                {/* Selector Slide Background */}
+                <motion.div
+                  className="absolute inset-y-1.5 bg-curiol-gradient rounded-full"
+                  initial={false}
+                  animate={{
+                    left: activeCategory === "family" ? "6px" : "51%",
+                    width: "48%"
+                  }}
+                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                />
               </div>
             </div>
 
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              {/* Left: Family (B2C) */}
-              <PerspectiveCard className="group border-curiol-500/10 hover:border-curiol-500/30 transition-all rounded-[2rem] bg-tech-800/10 backdrop-blur-md p-10 border border-white/5">
-                <div className="flex justify-between items-start mb-12">
-                  <div className="w-16 h-16 rounded-2xl bg-curiol-500/10 flex items-center justify-center text-curiol-500 group-hover:bg-curiol-500 group-hover:text-white transition-all">
-                    <Users className="w-8 h-8" />
-                  </div>
-                </div>
-                <h3 className="text-3xl font-serif text-white mb-6 italic">Legado Familiar</h3>
-                <p className="text-tech-400 font-light mb-10 leading-relaxed italic text-sm">
-                  "Tu historia merece más que un marco; merece existencia propia. El nuevo concepto de Legado vivo fusiona la calidez artesanal con la magia de la realidad aumentada para que tu historia respire por siempre."
-                </p>
-                <div className="space-y-6 mb-12">
-                  {[
-                    { title: "Aventura Mágica", desc: "Patrimonio visual para la posteridad. Transformamos la imaginación infantil en realidades phygital eternas mediante captura artística y tecnología de punta." },
-                    { title: "Recuerdos Eternos", desc: "Conexión intergeneracional. Un tributo Fine Art que fusiona la calidez artesanal con la magia de la realidad aumentada para trascender el tiempo." },
-                    { title: "Marca Personal", desc: "Identidad visual táctica. Diseñamos una presencia estratégica de alto impacto técnico para profesionales que buscan un legado coherente y proactivo." },
-                    { title: "Membresía Legado", desc: "Tu patrimonio emocional protegido. Un acompañamiento anual diseñado para documentar tu evolución mientras custodiamos tu herencia digital." },
-                    { title: "Mini-relatos", desc: "La esencia en formato ágil. Encuentros fotográficos de alta intensidad artística diseñados para capturar facetas específicas con la profundidad del Fine-Art." }
-                  ].map(item => (
-                    <div key={item.title} className="group/item">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="w-1 h-1 rounded-full bg-curiol-500" />
-                        <h4 className="text-white text-[10px] font-bold uppercase tracking-widest">{item.title}:</h4>
-                      </div>
-                      <p className="text-tech-400 text-[10px] font-light leading-relaxed pl-4">
-                        {item.desc}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-                <Link href="/cotizar" className="flex items-center justify-between p-6 bg-tech-800/50 rounded-2xl hover:bg-curiol-500 group/btn transition-all">
-                  <span className="text-white text-[10px] font-bold uppercase tracking-widest">Explorar Legado</span>
-                  <ArrowRight className="w-4 h-4 text-curiol-500 group-hover/btn:text-white group-hover/btn:translate-x-1 transition-all" />
-                </Link>
-              </PerspectiveCard>
-
-              {/* Right: Business (B2B) */}
-              <PerspectiveCard className="group border-tech-500/10 hover:border-tech-500/30 transition-all rounded-[2rem] bg-tech-800/10 backdrop-blur-md p-10 border border-white/5">
-                <div className="flex justify-between items-start mb-12">
-                  <div className="w-16 h-16 rounded-2xl bg-tech-500/10 flex items-center justify-center text-tech-500 group-hover:bg-tech-500 group-hover:text-white transition-all">
-                    <Code className="w-8 h-8" />
-                  </div>
-                </div>
-                <h3 className="text-3xl font-serif text-white mb-6 italic">Legado y Crecimiento Comercial & IA</h3>
-                <p className="text-tech-400 font-light mb-10 leading-relaxed italic">"Atraemos miradas, cerramos ventas. Presencia 24/7."</p>
-                <p className="text-tech-300 text-sm font-light mb-10 leading-relaxed">
-                  Infraestructura inteligente diseñada para que el comercio local destaque. Landing pages de alta conversión, asistentes digitales personalizados y optimización asistida por IA para un impacto real en tus ventas.
-                </p>
-                <div className="space-y-4 mb-12">
-                  {[
-                    { title: "Web-Apps Progresivas (PWA)", desc: "Experiencia nativa sin fricción. Aplicaciones web de alto rendimiento que funcionan sin conexión y se instalan en cualquier dispositivo para maximizar la retención del cliente." },
-                    { title: "Metodologías No-Code/IA Eficientes", desc: "Agilidad sin límites. Desarrollamos soluciones complejas a la velocidad del pensamiento, optimizando tiempos y costos mediante ingeniería de vanguardia asistida por IA." },
-                    { title: "Módulos de IA para Comercio Local", desc: "Cerebro digital para tu negocio. Implementamos motores de inteligencia artificial que automatizan ventas y atención, adaptados específicamente a la realidad de tu comunidad." },
-                    { title: "Mantenimiento Evolutivo Trimestral", desc: "Tu tecnología nunca duerme. Transformamos lo que la IA aprende de la interacción diaria de tu negocio en actualizaciones constantes, asegurando una ventaja competitiva perpetua." }
-                  ].map(item => (
-                    <div key={item.title} className="group/item">
-                      <div className="flex items-start gap-4 mb-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-curiol-500 mt-1 shrink-0" />
-                        <div>
-                          <h4 className="text-white text-[10px] font-bold uppercase tracking-widest mb-1">{item.title}:</h4>
-                          <p className="text-tech-400 text-[10px] font-light leading-relaxed">
-                            {item.desc}
-                          </p>
+            <div className="max-w-6xl mx-auto">
+              <AnimatePresence mode="wait">
+                {activeCategory === "family" ? (
+                  <motion.div
+                    key="family"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    <PerspectiveCard className="group border-curiol-500/20 hover:border-curiol-500/40 transition-all rounded-[3rem] bg-tech-900/40 backdrop-blur-2xl p-12 md:p-20 border border-white/5 min-h-[500px] flex flex-col justify-center">
+                      <div className="flex justify-between items-start mb-16">
+                        <div className="w-24 h-24 rounded-3xl bg-curiol-500/10 flex items-center justify-center text-curiol-500 group-hover:bg-curiol-500 group-hover:text-white transition-all shadow-2xl shadow-curiol-500/10">
+                          <Users className="w-12 h-12" />
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-                <Link href="/soluciones-web" className="flex items-center justify-between p-6 bg-tech-800/50 rounded-2xl hover:bg-tech-500 group/btn transition-all">
-                  <span className="text-white text-[10px] font-bold uppercase tracking-widest">Acelerar Negocio</span>
-                  <ArrowRight className="w-4 h-4 text-tech-500 group-hover/btn:text-white group-hover/btn:translate-x-1 transition-all" />
-                </Link>
-              </PerspectiveCard>
+                      <h3 className="text-4xl md:text-6xl font-serif text-white mb-10 italic">Legado Familiar <span className="text-curiol-500">Phygital</span></h3>
+                      <p className="text-tech-300 font-light mb-16 leading-relaxed italic text-lg md:text-2xl max-w-4xl">
+                        "Tu historia merece más que un marco; merece existencia propia. El nuevo concepto de Retrato Fine Art fusiona la sensibilidad artesanal con la infraestructura digital (Phygital) para que tu legado respire por siempre. Capturamos el alma para custodiarla con algoritmos; tu legado no solo es eterno, es dinámico y accesible en cada paso de tu evolution."
+                      </p>
 
+                      <div className="flex flex-wrap gap-6 mt-auto">
+                        <Link href="/servicios" className="inline-flex items-center gap-4 px-12 py-6 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest hover:scale-105 transition-all rounded-full shadow-2xl shadow-curiol-500/20">
+                          Explorar Legado <ArrowRight className="w-4 h-4" />
+                        </Link>
+                        <Link href="/cotizar" className="inline-flex items-center gap-4 px-12 py-6 border border-white/10 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-white/5 transition-all rounded-full">
+                          Cotizar Sesión
+                        </Link>
+                      </div>
+                    </PerspectiveCard>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="business"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    <PerspectiveCard className="group border-tech-500/20 hover:border-tech-500/40 transition-all rounded-[3rem] bg-tech-900/40 backdrop-blur-2xl p-12 md:p-20 border border-white/5 min-h-[500px] flex flex-col justify-center">
+                      <div className="flex justify-between items-start mb-16">
+                        <div className="w-24 h-24 rounded-3xl bg-tech-500/10 flex items-center justify-center text-tech-500 group-hover:bg-tech-500 group-hover:text-white transition-all shadow-2xl shadow-tech-500/10">
+                          <Code className="w-12 h-12" />
+                        </div>
+                      </div>
+                      <h3 className="text-4xl md:text-6xl font-serif text-white mb-10 italic">Crecimiento Comercial <span className="text-tech-500">& IA</span></h3>
+                      <p className="text-tech-300 font-light mb-16 leading-relaxed italic text-lg md:text-2xl max-w-4xl">
+                        "La ingeniería web reimaginada desde la lente de un artista. No solo construimos infraestructuras; diseñamos portales que capturan la esencia de tu negocio con la misma profundidad de un Retrato Fine Art. Web-Apps impulsadas por IA que no solo digitalizan tu negocio, sino que fidelizan a tus clientes mediante experiencias estéticas inmersivas que se traducen en resultados reales y permanentes."
+                      </p>
+
+                      <div className="flex flex-wrap gap-6 mt-auto">
+                        <Link href="/soluciones-web" className="inline-flex items-center gap-4 px-12 py-6 bg-tech-500 text-white text-[10px] font-bold uppercase tracking-widest hover:scale-105 transition-all rounded-full shadow-2xl shadow-tech-500/20">
+                          Acelerar Negocio <ArrowRight className="w-4 h-4" />
+                        </Link>
+                        <button
+                          onClick={() => window.dispatchEvent(new CustomEvent('open-ai-assistant'))}
+                          className="inline-flex items-center gap-4 px-12 py-6 border border-white/10 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-white/5 transition-all rounded-full"
+                        >
+                          Consultar con IA
+                        </button>
+                      </div>
+                    </PerspectiveCard>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </section>
@@ -370,13 +415,16 @@ export default function Home() {
             <p className="text-tech-400 text-xl font-light mb-12 leading-relaxed max-w-2xl mx-auto">
               Nuestro asistente inteligente te guía para elegir la mejor ruta: ya sea inmortalizar tu historia familiar o construir la base tecnológica de tu negocio.
             </p>
-            <button className="px-12 py-6 bg-tech-100 text-tech-950 text-xs font-bold uppercase tracking-widest hover:bg-white transition-all rounded-full flex items-center gap-4 mx-auto shadow-2xl shadow-curiol-500/10">
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent('open-ai-assistant'))}
+              className="px-12 py-6 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest hover:scale-105 transition-all rounded-full flex items-center gap-4 mx-auto shadow-2xl shadow-curiol-500/20"
+            >
               Conversar con Curiol IA <Sparkles className="w-4 h-4" />
             </button>
           </div>
 
           {/* Agenda Integration */}
-          <div className="lg:col-start-4 lg:col-span-6 mt-12">
+          <div className="lg:col-start-4 lg:col-span-6 mt-12 pb-32">
             <AgendaWidget />
           </div>
         </div>

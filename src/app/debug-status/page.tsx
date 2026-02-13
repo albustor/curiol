@@ -55,7 +55,7 @@ export default function DebugPage() {
 
             <hr />
             <h3>Branding Check:</h3>
-            <p>Target Branding: <b>Legado y Crecimiento Comercial</b></p>
+            <p>Target Branding: <b>Crecimiento Comercial & IA</b></p>
         </div>
     );
 }

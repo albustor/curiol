@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { FINANCE_CONFIG, calculateProductionCost } from "@/lib/finance-constants";
 import { analyzeTaxDeduction, recordTaxTransaction, generateHaciendaReport } from "@/actions/accounting";
 import { useRole } from "@/hooks/useRole";
+import { CommandK } from "@/components/admin/CommandK";
 
 export default function EquilibrioPage() {
     const { role, isMaster } = useRole();
@@ -115,12 +116,15 @@ export default function EquilibrioPage() {
                         <h1 className="text-5xl md:text-7xl font-serif text-white italic mb-6 leading-tight">Equilibrio & <br /><span className="text-curiol-gradient">Rentabilidad Ciruclar.</span></h1>
                         <p className="text-tech-400 text-lg font-light">Este panel consolida el flujo de ingresos y egresos estratégicos para mantener el punto sutil de ganancias en cada proyecto.</p>
                     </div>
-                    <div className="flex bg-tech-900/50 p-2 rounded-2xl border border-white/5">
-                        <div className="px-6 py-3 text-center">
-                            <p className="text-[8px] text-tech-600 font-bold uppercase mb-1">Status</p>
-                            <p className="text-green-500 text-xs font-bold flex items-center gap-2">
-                                <Activity className="w-3 h-3 animate-pulse" /> Sano
-                            </p>
+                    <div className="flex items-center gap-4">
+                        <CommandK isMaster={isMaster} />
+                        <div className="flex bg-tech-900/50 p-2 rounded-2xl border border-white/5">
+                            <div className="px-6 py-3 text-center">
+                                <p className="text-[8px] text-tech-600 font-bold uppercase mb-1">Status</p>
+                                <p className="text-green-500 text-xs font-bold flex items-center gap-2">
+                                    <Activity className="w-3 h-3 animate-pulse" /> Sano
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </header>
@@ -691,18 +695,41 @@ function MetricCard({ title, value, trend, icon: Icon, color }: any) {
         gold: "text-[#bf8b26] bg-[#bf8b26]/5 border-[#bf8b26]/10 hover:border-[#bf8b26]/30",
     } as any;
 
+    const isPositive = trend.includes('+');
+
     return (
-        <GlassCard className={cn("p-8 transition-all duration-500 group", colors[color])}>
-            <div className="flex justify-between items-start mb-6">
+        <GlassCard className={cn("p-8 transition-all duration-500 group relative overflow-hidden", colors[color])}>
+            <div className="flex justify-between items-start mb-6 relative z-10">
                 <div className="p-3 bg-black/20 rounded-2xl">
                     <Icon className="w-6 h-6" />
                 </div>
-                <div className={cn("text-[10px] font-bold px-2 py-1 rounded-full", trend.includes('+') ? "bg-green-500/10 text-green-500" : "bg-red-500/10 text-red-500")}>
+                <div className={cn("text-[10px] font-bold px-2 py-1 rounded-full", isPositive ? "bg-green-500/10 text-green-500" : "bg-red-500/10 text-red-500")}>
                     {trend}
                 </div>
             </div>
-            <h4 className="text-tech-600 text-[10px] font-bold uppercase tracking-widest mb-2 group-hover:text-white transition-colors">{title}</h4>
-            <p className="text-white text-3xl font-serif italic">{value}</p>
+
+            <div className="relative z-10">
+                <h4 className="text-tech-600 text-[10px] font-bold uppercase tracking-widest mb-2 group-hover:text-white transition-colors">{title}</h4>
+                <p className="text-white text-3xl font-serif italic">{value}</p>
+            </div>
+
+            {/* Mini Trend SVG */}
+            <div className="absolute bottom-0 left-0 w-full h-16 opacity-20 pointer-events-none group-hover:opacity-40 transition-opacity">
+                <svg viewBox="0 0 100 40" className="w-full h-full preserve-3d">
+                    <motion.path
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 2, ease: "easeInOut" }}
+                        d={isPositive
+                            ? "M0 35 Q 25 30, 50 15 T 100 5"
+                            : "M0 5 Q 25 10, 50 25 T 100 35"
+                        }
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                    />
+                </svg>
+            </div>
         </GlassCard>
     );
 }

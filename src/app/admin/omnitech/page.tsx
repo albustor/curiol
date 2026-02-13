@@ -53,7 +53,7 @@ export default function OmnitechDashboard() {
                             <Bot className="text-curiol-500 w-4 h-4" />
                             <span className="text-curiol-500 text-[10px] font-bold uppercase tracking-widest">Inteligencia Conversacional</span>
                         </div>
-                        <h1 className="text-5xl font-serif text-white italic">Legado y Crecimiento Comercial Center</h1>
+                        <h1 className="text-5xl font-serif text-white italic">Crecimiento Comercial & IA Center</h1>
                         <p className="text-tech-500 mt-4">Gestión de automatización y métricas de interacción en tiempo real.</p>
                     </div>
 

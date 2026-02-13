@@ -20,6 +20,7 @@ import { collection, query, orderBy, limit, getDocs, where, Timestamp } from "fi
 import { generateAiAssistantResponse } from "@/lib/gemini"; // We'll use this for strategic insights
 import { useRole } from "@/hooks/useRole";
 import { useRouter } from "next/navigation";
+import { CommandK } from "@/components/admin/CommandK";
 
 export default function AnalyticsDashboard() {
     const { role, isMaster } = useRole();
@@ -141,9 +142,12 @@ export default function AnalyticsDashboard() {
 
             <main className="flex-grow max-w-7xl mx-auto px-4 md:px-8 lg:px-16 w-full">
                 <header className="mb-16">
-                    <div className="flex items-center gap-3 mb-4">
-                        <BarChart3 className="text-curiol-500 w-6 h-6" />
-                        <span className="text-curiol-500 text-[10px] font-bold tracking-[0.4em] uppercase">Intelligence Hub</span>
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                            <BarChart3 className="text-curiol-500 w-6 h-6" />
+                            <span className="text-curiol-500 text-[10px] font-bold tracking-[0.4em] uppercase">Intelligence Hub</span>
+                        </div>
+                        <CommandK isMaster={isMaster} />
                     </div>
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
                         <div>

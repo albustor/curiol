@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useRole } from "@/hooks/useRole";
 import { Loader2 } from "lucide-react";
+import { CommandK } from "@/components/admin/CommandK";
 
 export default function AlbumsList() {
     const { role } = useRole();
@@ -69,12 +70,15 @@ export default function AlbumsList() {
                     <h1 className="text-4xl font-serif italic mb-2">Galerías Digitales</h1>
                     <p className="text-tech-500 text-sm">Entregas de alta gama con IA y ciclo de vida controlado.</p>
                 </div>
-                <button
-                    onClick={() => router.push("/admin/albums/new")}
-                    className="px-8 py-4 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest rounded-xl shadow-xl shadow-curiol-500/20 hover:scale-105 transition-all flex items-center gap-3"
-                >
-                    <Plus className="w-5 h-5" /> Nueva Entrega
-                </button>
+                <div className="flex items-center gap-4">
+                    <CommandK isMaster={role === "MASTER" || localStorage.getItem("master_admin") === "true"} />
+                    <button
+                        onClick={() => router.push("/admin/albums/new")}
+                        className="px-8 py-4 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest rounded-xl shadow-xl shadow-curiol-500/20 hover:scale-105 transition-all flex items-center gap-3"
+                    >
+                        <Plus className="w-5 h-5" /> Nueva Entrega
+                    </button>
+                </div>
             </header>
 
             {/* Search and Filters */}

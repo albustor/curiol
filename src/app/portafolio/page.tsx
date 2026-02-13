@@ -119,7 +119,7 @@ export default function PortfolioPage() {
                                         <img
                                             src={getDirectImageUrl(album.coverUrl || (album.photos && album.photos.length > 0 ? album.photos[0].url : "/placeholder-image.jpg"))}
                                             alt={album.title}
-                                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60 group-hover:opacity-80"
+                                            className="w-full h-full object-cover object-[center_20%] transition-transform duration-1000 group-hover:scale-110 opacity-60 group-hover:opacity-80"
                                         />
 
                                         <div className="absolute inset-0 bg-gradient-to-t from-tech-950 via-tech-950/20 to-transparent p-8 flex flex-col justify-end">

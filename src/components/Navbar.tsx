@@ -14,7 +14,7 @@ const navLinks = [
     { href: "/experiencia", label: "Experiencia" },
     { href: "/agenda", label: "Agenda" },
     { href: "/cotizar", label: "Cotizar" },
-    { href: "/soluciones-web", label: "Legado y Crecimiento" },
+    { href: "/soluciones-web", label: "Crecimiento Comercial & IA" },
     { href: "/comunidad", label: "Comunidad" },
 ];
 

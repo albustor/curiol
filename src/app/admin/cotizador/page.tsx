@@ -16,6 +16,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { useRole } from "@/hooks/useRole";
 import { useRouter } from "next/navigation";
+import { CommandK } from "@/components/admin/CommandK";
 
 interface Package {
     id: string;
@@ -55,14 +56,14 @@ const PACKAGES = {
             name: "Aventura Mágica",
             price: 80900,
             usd: 165,
-            desc: "Donde la imaginación cobra vida. Transformamos a los más pequeños en héroes de su propia historia, creando mundos de alegría y seguridad que se convierten en un legado visual eterno."
+            desc: "Patrimonio visual para la posteridad. Transformamos la imaginación infantil en realidades phygital eternas."
         },
         {
             id: "recuerdos",
             name: "Recuerdos Eternos",
             price: 115000,
             usd: 225,
-            desc: "Un tributo a la esencia del ayer y el hoy. Conectamos quiénes fuimos con quienes somos, valorando el presente a través de un arte fotográfico que trasciende el tiempo."
+            desc: "Conexión intergeneracional Fine Art. Un tributo que fusiona la calidez artesanal con la magia de la RA."
         },
         {
             id: "marca",
@@ -73,14 +74,14 @@ const PACKAGES = {
         },
         {
             id: "legado",
-            name: "Membresía Legado",
+            name: "Membresía Anual de Legado",
             price: 25000,
             usd: 59,
-            desc: "Tu patrimonio emocional protegido. Un acompañamiento anual con sesiones programadas diseñadas para documentar tu evolución mientras optimizamos tu inversión."
+            desc: "Tu patrimonio emocional protegido. Un acompañamiento anual diseñado para documentar tu evolución."
         },
         {
-            id: "minirelatos",
-            name: "Mini-relatos",
+            id: "relatos",
+            name: "Relatos",
             price: 49000,
             usd: 99,
             desc: "Encuentros fotográficos de alta intensidad artística. Formato ágil con la profundidad del Fine-Art."
@@ -89,24 +90,24 @@ const PACKAGES = {
     infra: [
         {
             id: "omni_local",
-            name: "Omni Local",
-            price: 250000,
-            usd: 500,
-            desc: "Landing Page + Cotizador Básico + NFC."
+            name: "Omni Local (+5 Retratos)",
+            price: 280000,
+            usd: 550,
+            desc: "Landing Page + Cotizador Básico + NFC + 5 Retratos Profesionales."
         },
         {
             id: "omni_pro",
-            name: "Omni Pro",
-            price: 750000,
-            usd: 1500,
-            desc: "Web-App + Agenda + Filtro IA Gemini."
+            name: "Omni Pro (+5 Retratos)",
+            price: 780000,
+            usd: 1550,
+            desc: "Web-App Pro + Agenda + IA Gemini + 5 Retratos Profesionales."
         },
         {
             id: "omni_ultra",
-            name: "Omni Ultra (Curiol OS)",
-            price: 1500000,
-            usd: 3000,
-            desc: "Ecosistema Total + Album Studio + Analytics IA."
+            name: "Omni Ultra (+5 Retratos)",
+            price: 1530000,
+            usd: 3050,
+            desc: "Curiol OS + AI Analytics + WhatsApp + 5 Retratos Profesionales."
         }
     ],
     sociales: [
@@ -212,12 +213,17 @@ export default function AdminCotizadorPage() {
             <Navbar />
 
             <main className="flex-grow max-w-7xl mx-auto px-4 w-full">
-                <header className="mb-12">
-                    <div className="flex items-center gap-3 mb-2">
-                        <span className="text-curiol-500 text-[10px] font-bold uppercase tracking-widest border border-curiol-500/30 px-3 py-1 rounded-full">Panel Administrativo</span>
+                <header className="mb-12 flex justify-between items-end">
+                    <div>
+                        <div className="flex items-center gap-3 mb-2">
+                            <span className="text-curiol-500 text-[10px] font-bold uppercase tracking-widest border border-curiol-500/30 px-3 py-1 rounded-full">Panel Administrativo</span>
+                        </div>
+                        <h1 className="text-5xl font-serif text-white italic mb-4">Cotizador & Contratos Maestro</h1>
+                        <p className="text-tech-500 max-w-2xl">Diseña propuestas formales para <span className="text-white">Legado e Interacción</span> o <span className="text-white">Infraestructura Digital Ágil</span> con generación automática de contrato.</p>
                     </div>
-                    <h1 className="text-5xl font-serif text-white italic mb-4">Cotizador & Contratos Maestro</h1>
-                    <p className="text-tech-500 max-w-2xl">Diseña propuestas formales para <span className="text-white">Legado e Interacción</span> o <span className="text-white">Infraestructura Digital Ágil</span> con generación automática de contrato.</p>
+                    <div className="pb-4">
+                        <CommandK isMaster={isMaster} />
+                    </div>
                 </header>
 
                 <div className="flex flex-col gap-8">

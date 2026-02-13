@@ -66,7 +66,15 @@ export async function getAlbum(id: string) {
     try {
         const albumDoc = await getDoc(doc(db, "albums", id));
         if (!albumDoc.exists()) return null;
-        return { id: albumDoc.id, ...albumDoc.data() } as AlbumMetadata;
+        const data = albumDoc.data();
+        if (!data) return null;
+
+        return {
+            ...data,
+            id: albumDoc.id,
+            createdAt: data.createdAt?.toDate?.() ? data.createdAt.toDate().toISOString() : new Date().toISOString(),
+            expiresAt: data.expiresAt?.toDate?.() ? data.expiresAt.toDate().toISOString() : null,
+        } as AlbumMetadata;
     } catch (error) {
         console.error("Error fetching album:", error);
         return null;

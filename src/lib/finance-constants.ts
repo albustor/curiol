@@ -150,7 +150,7 @@ export const FINANCE_CONFIG = {
             margin: 0.24 // 24%
         },
         "legado_anual": {
-            name: "Membresía Legado (Anual)",
+            name: "Membresía Anual de Legado",
             totalPrice: 300000,
             breakdown: [
                 { item: "Productos Físicos (3x + 40%)", cost: 50000, note: "Prerrateado anual" },
@@ -161,8 +161,8 @@ export const FINANCE_CONFIG = {
             ],
             margin: 0.23 // 23%
         },
-        "minirelatos": {
-            name: "Mini-relatos (Agile Art)",
+        "relatos": {
+            name: "Relatos (Fine Art Session)",
             totalPrice: 49000,
             breakdown: [
                 { item: "Retablo (5x7) + 40%", cost: 13360, note: "₡9,543 base + margen" },
@@ -172,6 +172,15 @@ export const FINANCE_CONFIG = {
                 { item: "Infraestructura Digital / NFC", cost: 3300, note: "Hosting + Sticker" }
             ],
             margin: 0.24 // 24%
+        },
+        "omni_local": {
+            name: "Omni Local (+5 Retratos)",
+            totalPrice: 280000,
+            breakdown: [
+                { item: "Infraestructura Digital Base", cost: 250000, note: "Omni Local original" },
+                { item: "5 Retratos Fine Art", cost: 30000, note: "Incluye sesión y edición" }
+            ],
+            margin: 0.45
         }
     }
 };

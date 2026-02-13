@@ -28,7 +28,7 @@ const STEPS = [
 
 const SERVICES = [
     { id: "legado", name: "Legado vivo", desc: "Sesión Fine Art / Personal", icon: Camera, color: "curiol-500" },
-    { id: "infra", name: "Aceleradora Digital", desc: "Negocio / Marca Personal", icon: Code, color: "tech-500" },
+    { id: "infra", name: "Crecimiento Comercial & IA", desc: "Negocio / Marca Personal", icon: Code, color: "tech-500" },
     { id: "meet", name: "Pre-producción Elite", desc: "Videollamada • 60-80 min", icon: Video, color: "curiol-500" }
 ];
 

@@ -55,7 +55,7 @@ const PACKAGES: Record<string, Array<{
             name: "Aventura Mágica",
             price: 80900,
             usdPrice: 165,
-            desc: "Donde la imaginación cobra vida. Transformamos a los más pequeños en héroes de su propia historia, creando mundos de alegría y seguridad que se convierten en un legado visual eterno.",
+            desc: "Patrimonio visual para la posteridad. Transformamos la imaginación infantil en realidades phygital eternas mediante captura artística y tecnología de punta.",
             problem: "¿Cómo capturar la imaginación sin límites de un niño antes de que crezca? Resolvemos la pérdida de la magia infantil creando mundos donde ellos son los protagonistas.",
             photoCount: 15,
             physicalProduct: "Retablo 5x7\" con integración NFC/QR para lanzamiento instantáneo.",
@@ -70,37 +70,22 @@ const PACKAGES: Record<string, Array<{
             name: "Recuerdos Eternos",
             price: 115000,
             usdPrice: 225,
-            desc: "Un tributo a la esencia del ayer y el hoy. Conectamos quiénes fuimos con quienes somos, valorando el presente a través de un arte fotográfico que trasciende el tiempo.",
+            desc: "Conexión intergeneracional Fine Art. Un tributo que fusiona la calidez artesanal con la magia de la realidad aumentada para trascender el tiempo.",
             problem: "La fragilidad de los recuerdos digitales que se pierden. Resolvemos la necesidad de un legado tangible y eterno.",
             photoCount: 15,
-            physicalProduct: "Retablo 8x10\" (Borde 15mm) + Impresión Fine Art.",
-            techIntegrated: "Revelado Fine Art, Narrativa IA, Soporte Digital.",
+            physicalProduct: "Retablo 8x12\" (Borde 15mm) + Impresión Fine Art.",
+            techIntegrated: "Revelado Fine Art, Narrativa IA, Soporte Digital AR.",
             caseStudy: {
                 title: "El Ancla de la Mañana",
                 story: "Elena sentía que solo tenía fotos borrosas en su nube. Este retablo en su mesa de noche es lo primero que ve al despertar, recordándole su base."
             }
         },
         {
-            id: "marca",
-            name: "Marca Personal",
-            price: 89000,
-            usdPrice: 179,
-            desc: "Presencia que abre puertas. Diseñamos una identidad visual estratégica para profesionales que buscan posicionamiento, coherencia y nuevas oportunidades en su mercado.",
-            problem: "Incoherencia visual o falta de imagen profesional que resta oportunidades. Resolvemos el posicionamiento de tu presencia digital.",
-            photoCount: 15,
-            physicalProduct: "Retablo 11x14\" (Borde 15mm) + Galería Digital Pro.",
-            techIntegrated: "Retoque Pro, IA Search Optimization, Ecosistema NFC.",
-            caseStudy: {
-                title: "El Salto Profesional",
-                story: "Un consultor local cambió su imagen y duplicó sus consultas orgánicas en LinkedIn en solo un mes gracias a su nueva coherencia visual."
-            }
-        },
-        {
             id: "legado",
-            name: "Membresía Legado",
+            name: "Membresía Anual de Legado",
             price: 25000,
             usdPrice: 59,
-            desc: "Tu patrimonio emocional protegido. Un acompañamiento anual con sesiones programadas diseñadas para documentar tu evolución mientras optimizamos tu inversión.",
+            desc: "Tu patrimonio emocional protegido. Un acompañamiento anual diseñado para documentar tu evolución mientras custodiamos tu herencia digital.",
             problem: "La historia familiar se dispersa. Resolvemos la desconexión con 3 sesiones programadas al año + Custodia Digital.",
             photoCount: 45,
             physicalProduct: "Ahorro garantizado frente a sesiones individuales.",
@@ -112,11 +97,11 @@ const PACKAGES: Record<string, Array<{
             }
         },
         {
-            id: "minirelatos",
-            name: "Mini-relatos",
+            id: "relatos",
+            name: "Relatos",
             price: 49000,
             usdPrice: 99,
-            desc: "La esencia de una vida no requiere de horas para manifestarse, sino de una mirada experta y un propósito claro. Encuentros fotográficos de alta intensidad artística diseñados para capturar una faceta específica de tu legado en un formato ágil.",
+            desc: "La esencia en formato ágil. Encuentros fotográficos de alta intensidad artística diseñados para capturar facetas específicas con la profundidad del Fine-Art.",
             problem: "La falta de tiempo para sesiones largas. Resolvemos la necesidad de capturar momentos clave con la profundidad del Fine-Art en un formato dinámico.",
             photoCount: 5,
             physicalProduct: "Retablo 5x7\" Fine Art.",
@@ -163,52 +148,52 @@ const PACKAGES: Record<string, Array<{
         {
             id: "omni_local",
             name: "Omni Local (Guanacaste)",
-            price: 250000,
-            usdPrice: 500,
-            desc: "Digitalización esencial para el comercio local de Santa Bárbara de Santa Cruz.",
-            problem: "Invisibilidad comercial y dependencia del local físico. Muchos negocios locales pierden clientes porque los turistas no encuentran información clara fuera de horas de oficina.",
-            solution: "Creamos una base digital sólida. Una Micro-Landing Page auto-gestionable con un Cotizador Básico que atiende 24/7 e incluye una Tarjeta NFC personalizada para convertir cada encuentro físico en un lead digital.",
-            promise: "Tu negocio dejará de ser invisible. Tendrás una presencia profesional que trabaja por ti mientras descansas.",
-            photoCount: 20,
+            price: 280000,
+            usdPrice: 550,
+            desc: "Digitalización esencial para el comercio local de Santa Bárbara. Incluye 5 fotos de perfil profesional.",
+            problem: "Invisibilidad comercial y dependencia del local físico. Muchos negocios locales pierden clientes porque los turistas no encuentran información clara.",
+            solution: "Creamos una base digital sólida + 5 Retratos Profesionales. Una Micro-Landing Page auto-gestionable con un Cotizador Básico y Tarjeta NFC.",
+            promise: "Tu negocio dejará de ser invisible y tu imagen será coherente con tu valor.",
+            photoCount: 5,
             physicalProduct: "Tarjeta NFC Curiol Business personalizada (Bambú/Aluminio).",
-            techIntegrated: "Micro-Landing, Cotizador Básico, NFC Smart Bridge.",
+            techIntegrated: "Micro-Landing, Cotizador Básico, NFC Smart Bridge, 5 Fotos Fine Art Pro.",
             caseStudy: {
                 title: "De la Calle al Smartphone",
-                story: "Un artesano local duplicó sus consultas al permitir que los turistas escanearan su tarjeta y vieran sus servicios y precios de inmediato sin barreras de idioma."
+                story: "Un artesano local duplicó sus consultas al permitir que los turistas escanearan su tarjeta y vieran sus servicios y precios de inmediato."
             }
         },
         {
             id: "omni_pro_resident",
             name: "Omni Pro (Resident/Expat)",
-            price: 750000,
-            usdPrice: 1500,
-            desc: "Automatización premium para marcas de servicios exclusivos.",
-            problem: "Caos en la gestión de citas y pérdida de tiempo con prospectos no calificados. Los clientes residentes esperan inmediatez y autogestión que un chat manual no puede dar.",
-            solution: "Infraestructura inteligente de ventas. Una Web-App con Agenda integrada y un filtro de IA (Gemini) que pre-califica a los interesados, junto a un Panel Admin para control total.",
-            promise: "Recupera tu tiempo. Tu negocio funcionará como una máquina bien engrasada que solo te entrega leads calificados y listos para el cierre.",
-            photoCount: 20,
+            price: 780000,
+            usdPrice: 1550,
+            desc: "Automatización premium para marcas exclusivas. Incluye 5 fotos de perfil profesional.",
+            problem: "Caos en la gestión de citas y pérdida de tiempo. Los clientes residentes esperan inmediatez y autogestión.",
+            solution: "Infraestructura inteligente de ventas + 5 Retratos Profesionales. Web-App con Agenda integrada y filtro de IA (Gemini).",
+            promise: "Recupera tu tiempo. Tu negocio funcionará como una máquina bien engrasada que solo te entrega leads calificados.",
+            photoCount: 5,
             physicalProduct: "Kit de bienvenida digital + Tarjeta NFC Premium.",
-            techIntegrated: "Web-App Pro, Agenda Inteligente, Filtro Lead IA (Gemini).",
+            techIntegrated: "Web-App Pro, Agenda Inteligente, Filtro Lead IA, 5 Fotos Fine Art Pro.",
             caseStudy: {
                 title: "Escalabilidad en la Zona",
-                story: "Una empresa de servicios en Flamingo automatizó el 70% de sus citas. Ahora la agenda se llena sola mientras ellos se enfocan en la calidad del servicio."
+                story: "Una empresa de servicios en Flamingo automatizó el 70% de sus citas. Ahora la agenda se llena sola mientras ellos se enfocan en la calidad."
             }
         },
         {
             id: "omni_ultra",
             name: "Omni Ultra (Curiol OS)",
-            price: 1500000,
-            usdPrice: 3000,
-            desc: "Tu ecosistema digital absoluto y escalable.",
-            problem: "Herramientas desconectadas y falta de inteligencia de datos estratégica. Tienes presencia, pero no sabes exactamente qué quiere tu cliente o cómo predecir futuras ventas.",
-            solution: "El ecosistema absoluto (Curiol OS). Integramos todas nuestras herramientas: Cotizador Pro, Album Studio, Analytics con Insights de IA y el sistema de WhatsApp para alimentar tu propia IA.",
-            promise: "Convierte tu negocio en una empresa de tecnología. Tendrás el control total, predicción de ventas y una experiencia de cliente tan premium que será imposible ignorarte.",
-            photoCount: 20,
+            price: 1530000,
+            usdPrice: 3050,
+            desc: "Tu ecosistema digital absoluto y escalable. Incluye 5 fotos de perfil profesional.",
+            problem: "Herramientas desconectadas y falta de inteligencia de datos estratégica.",
+            solution: "El ecosistema absoluto (Curiol OS) + 5 Retratos Profesionales. Integramos Cotizador Pro, Album Studio, AI Analytics y WhatsApp Gateway.",
+            promise: "Convierte tu negocio en una empresa de tecnología con una imagen de impacto absoluto.",
+            photoCount: 5,
             physicalProduct: "Soporte VIP + Ecosistema Total Curiol (Hardware/Software).",
-            techIntegrated: "Cotizador Pro, Album Studio, AI Analytics, WhatsApp Insumos IA (Curiol OS).",
+            techIntegrated: "Cotizador Pro, Album Studio, AI Analytics, WhatsApp Insumos IA, 5 Fotos Fine Art Pro.",
             caseStudy: {
                 title: "Control Total del Futuro",
-                story: "Al integrar todo el ecosistema, esta firma ya no adivina qué vender; su IA analiza los datos y les dice exactamente cuál será su próximo producto estrella."
+                story: "Al integrar todo el ecosistema, esta firma ya no adivina qué vender; su IA analiza los datos y les dice exactamente cuál será su próximo éxito."
             }
         }
     ]
@@ -366,7 +351,7 @@ export default function CotizadorPage() {
                                     }}
                                 >
                                     <Code className="w-12 h-12 text-tech-500 mb-6" />
-                                    <h3 className="text-2xl font-serif text-white mb-2 italic">Legado y Crecimiento Comercial</h3>
+                                    <h3 className="text-2xl font-serif text-white mb-2 italic">Crecimiento Comercial & IA</h3>
                                     <p className="text-tech-400 text-sm font-light leading-relaxed">Atraemos miradas, cerramos ventas. Tu negocio visible y creciendo 24/7 con infraestructura inteligente.</p>
                                 </GlassCard>
                             </motion.div>

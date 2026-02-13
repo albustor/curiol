@@ -75,7 +75,7 @@ export function PerspectiveCard({
             >
                 {children}
 
-                {/* Dynamic Shine Overlay */}
+                {/* Dynamic Shine Overlay (Refined Glare) */}
                 <motion.div
                     style={{
                         background: useTransform(
@@ -83,11 +83,15 @@ export function PerspectiveCard({
                             ([latestX, latestY]: any) => {
                                 const xVal = typeof latestX === 'number' ? latestX : 0;
                                 const yVal = typeof latestY === 'number' ? latestY : 0;
-                                return `radial-gradient(circle at ${(xVal + 0.5) * 100}% ${(yVal + 0.5) * 100}%, rgba(255,255,255,0.15) 0%, transparent 60%)`;
+                                // Core glare
+                                const glare = `radial-gradient(circle at ${(xVal + 0.5) * 100}% ${(yVal + 0.5) * 100}%, rgba(255,255,255,0.2) 0%, transparent 50%)`;
+                                // Edge highlight for extra depth
+                                const edge = `radial-gradient(circle at ${(xVal + 0.5) * 100}% ${(yVal + 0.5) * 100}%, rgba(255,255,255,0.1) 0%, transparent 80%)`;
+                                return `${glare}, ${edge}`;
                             }
                         )
                     }}
-                    className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                 />
             </div>
         </motion.div>

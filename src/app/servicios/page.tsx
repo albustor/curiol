@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AiAssistant } from "@/components/AiAssistant";
@@ -10,109 +11,121 @@ import {
     UserCheck, ShoppingBag, UtensilsCrossed, Home,
     Briefcase, Camera, Smartphone, Binary, ArrowRight, Sparkles, Code, MessageCircle, Users
 } from "lucide-react";
+import { getDirectImageUrl, cn } from "@/lib/utils";
 import { PerspectiveCard } from "@/components/ui/PerspectiveCard";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 
-const modalities = [
+const familyPackages = [
     {
         id: "aventura",
         title: "Aventura Mágica",
         icon: Sparkles,
         items: [
+            "Patrimonio visual para la posteridad",
             "15 Fotos High-End + IA",
             "Realidad Aumentada interactiva",
-            "Canción IA personalizada",
+            "Línea de Tiempo Evolutiva (Legacy Sync)",
+            "Álbum Digital de Descarga (LTD)",
             "Retablo 5x7\" con NFC",
             "Inversión: ₡80.900 / $165",
             "(Pago seccionado: ₡16.180 x 5 meses)"
-        ]
+        ],
+        highlight: false
     },
     {
         id: "recuerdos",
         title: "Recuerdos Eternos",
         icon: Camera,
         items: [
+            "Conexión intergeneracional Fine Art",
             "15 Fotos Fine Art",
             "Cuadros Vivos AR",
+            "Timeline Evolutivo Premium",
+            "Álbum Digital de Descarga (LTD)",
             "Impresión de alta gama",
             "Retablo 8x12\" con NFC",
             "Inversión: ₡115.000 / $225",
             "(Pago seccionado: ₡23.000 x 5 meses)"
-        ]
-    },
-    {
-        id: "marca",
-        title: "Marca Personal",
-        icon: UserCheck,
-        items: [
-            "15 Fotos de impacto técnico/artístico",
-            "Tarjeta física con chip NFT",
-            "Enlace directo a LinkedIn",
-            "Video o contenido personalizado",
-            "Inversión: ₡89.000 / $179"
-        ]
+        ],
+        highlight: false
     },
     {
         id: "legado",
-        title: "Membresía Legado",
+        title: "Membresía Anual de Legado",
         icon: Users,
         items: [
             "Tu patrimonio emocional protegido",
+            "Acompañamiento anual de evolución",
             "3 Sesiones programadas anuales",
-            "Custodia digital hereditaria",
-            "Acompañamiento y seguimiento",
+            "Gestión de Timeline Core (Archivo Vivo)",
+            "Álbum Digital de Descarga (LTD)",
+            "Custodia digital hereditaria profesional",
             "Suscripción: ₡25.000 / $59 mes"
-        ]
+        ],
+        highlight: false
     },
     {
-        id: "minirelatos",
-        title: "Mini-relatos",
+        id: "relatos",
+        title: "Relatos",
         icon: Sparkles,
         items: [
-            "Encuentro ágil (30 min)",
-            "5 Fotos Fine-Art",
+            "La esencia en formato ágil Fine-Art",
+            "5 Fotos Fine-Art de alta intensidad",
             "Propósito claro y experto",
+            "Álbum Digital de Descarga (LTD)",
             "Retablo 5x7\" incluido",
             "Inversión: ₡49.000 / $99"
-        ]
-    },
+        ],
+        highlight: false
+    }
+];
+
+const businessPackages = [
     {
         id: "express",
-        title: "Web-Apps (PWA)",
+        title: "Web-Apps (Omni Local)",
         icon: Smartphone,
         items: [
-            "Experiencia nativa instalable",
-            "Funcionamiento sin conexión",
-            "Alta retención de clientes",
-            "Instalación instantánea",
-            "Desde: ₡250.000 / $500"
+            "Digitalización comercial esencial",
+            "5 Fotos de perfil profesional incluidas",
+            "Experiencia nativa instalable (PWA)",
+            "Automatización de catálogo básico",
+            "Timeline de Evolución de Marca",
+            "Álbum Digital Assets (LTD)",
+            "Inversión: ₡280.000 / $550"
         ],
         highlight: true
     },
     {
         id: "negocio",
-        title: "No-Code / IA Eficiente",
+        title: "No-Code (Omni Pro)",
         icon: Code,
         items: [
-            "Desarrollo ágil de soluciones",
-            "Optimización de costos/tiempos",
-            "Ingeniería asistida por IA",
-            "Escalabilidad inmediata",
-            "Desde: ₡750.000 / $1500"
+            "Aceleración digital premium",
+            "5 Fotos de perfil profesional incluidas",
+            "Infraestructura inteligente de ventas",
+            "Filtro de IA Gemini para leads",
+            "Timeline de Crecimiento Integrado",
+            "Álbum Digital Assets (LTD)",
+            "Inversión: ₡780.000 / $1550"
         ],
         highlight: true
     },
     {
         id: "ultra",
-        title: "Módulos IA Local",
+        title: "Omni Ultra (Curiol OS)",
         icon: Binary,
         items: [
-            "Cerebro digital de negocio",
-            "Automatización de ventas/atención",
-            "Adaptado a contexto local",
-            "Integración total con PWA",
-            "Inversión: ₡1.5M / $3000"
-        ]
+            "Ecosistema digital absoluto",
+            "5 Fotos de perfil profesional incluidas",
+            "Cerebro digital de negocio IA",
+            "Timeline de Activos Estratégicos",
+            "Álbum Digital Assets (LTD)",
+            "Soporte VIP y Hardware/Software",
+            "Inversión: ₡1.53M / $3050"
+        ],
+        highlight: true
     },
     {
         id: "mantenimiento",
@@ -124,102 +137,153 @@ const modalities = [
             "Mejoras trimestrales",
             "Crecimiento perpetuo",
             "Suscripción: ₡15.000 / $39 mes"
-        ]
+        ],
+        highlight: false
     }
 ];
 
 const generateServicesSummary = () => {
-    const summary = `*Curiol Studio 2026 - Legado vivo & Legado y Crecimiento Comercial*\n\n` +
+    const summary = `*Curiol Studio 2026 - Legado vivo & Crecimiento Comercial & IA*\n\n` +
         `*LEGADO FAMILIAR (B2C)*\n` +
         `• *Aventura Mágica*: ₡80.9k / $165 (o 5 cuotas de ₡16,180)\n` +
         `• *Recuerdos Eternos*: ₡115k / $225 (o 5 cuotas de ₡23,000)\n` +
-        `• *Marca Personal*: ₡89k / $179\n` +
         `• *Membresía Legado*: ₡25k / $59 mes\n\n` +
-        `*LEGADO Y CRECIMIENTO COMERCIAL (B2B)*\n` +
-        `• *Omni Local*: ₡250k / $500\n` +
-        `• *Omni Pro*: ₡750k / $1500\n` +
-        `• *Omni Ultra*: ₡1.5M / $3000\n\n` +
+        `*CRECIMIENTO COMERCIAL & IA (B2B)*\n` +
+        `• *Omni Local*: ₡280k / $550\n` +
+        `• *Omni Pro*: ₡780k / $1550\n` +
+        `• *Omni Ultra*: ₡1.53M / $3050\n\n` +
         `_Ingeniería digital con sensibilidad artística._`;
     return `https://wa.me/50660602617?text=${encodeURIComponent(summary)}`;
 };
 
 export default function ServiciosPage() {
+    const [activeTab, setActiveTab] = useState<"family" | "business">("family");
+
     return (
-        <div className="min-h-screen flex flex-col pt-32 pb-24">
+        <div className="min-h-screen flex flex-col pt-32 pb-24 bg-tech-950">
             <Navbar />
 
             <main className="flex-grow">
                 <header className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 mb-16 md:mb-24 mt-10 md:mt-20">
-                    <div className="max-w-3xl">
+                    <div className="max-w-4xl">
                         <div className="flex items-center gap-3 mb-6">
                             <span className="h-[1px] w-12 bg-curiol-500"></span>
-                            <span className="text-curiol-500 text-[10px] font-bold tracking-[0.3em] uppercase">Legado Familiar</span>
+                            <span className="text-curiol-500 text-[10px] font-bold tracking-[0.3em] uppercase">Ecosistema 2026</span>
                         </div>
                         <h1 className="text-5xl md:text-7xl font-serif text-white mb-8 leading-[0.9] italic">
-                            Portafolio de <br /> <span className="text-curiol-gradient">Experiencias 2026.</span>
+                            Catálogo de <br /> <span className="text-curiol-gradient">Soluciones Phygital.</span>
                         </h1>
-                        <p className="text-tech-400 text-base md:text-xl font-light leading-relaxed">
-                            Diseñamos activos digitales que trascienden el tiempo. Desde las memorias vivas familiares hasta la aceleración tecnológica para el comercio local.
+                        <p className="text-tech-400 text-base md:text-xl font-light leading-relaxed mb-12 max-w-2xl">
+                            Estructuramos tu legado y potenciamos tu negocio mediante la fusión de visión artística e ingeniería de datos.
                         </p>
+
+                        {/* Tabs Selector */}
+                        <div className="flex p-1.5 bg-tech-900/50 backdrop-blur-xl border border-white/5 rounded-full relative overflow-hidden w-fit">
+                            <button
+                                onClick={() => setActiveTab("family")}
+                                className={cn(
+                                    "relative px-10 py-4 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all z-10",
+                                    activeTab === "family" ? "text-white" : "text-tech-500 hover:text-tech-300"
+                                )}
+                            >
+                                Legado Familiar
+                            </button>
+                            <button
+                                onClick={() => setActiveTab("business")}
+                                className={cn(
+                                    "relative px-10 py-4 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all z-10",
+                                    activeTab === "business" ? "text-white" : "text-tech-500 hover:text-tech-300"
+                                )}
+                            >
+                                Crecimiento Comercial
+                            </button>
+                            <motion.div
+                                className="absolute inset-y-1.5 bg-curiol-gradient rounded-full"
+                                initial={false}
+                                animate={{
+                                    left: activeTab === "family" ? "6px" : "51%",
+                                    width: activeTab === "family" ? "48%" : "48%"
+                                }}
+                                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                            />
+                        </div>
                     </div>
                 </header>
 
-                <section className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 mb-40">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {modalities.map((item) => (
-                            <PerspectiveCard key={item.id} className={cn("flex flex-col items-center text-center p-6 md:p-10 cursor-pointer", item.highlight && "border-tech-500 shadow-2xl shadow-tech-500/10")}>
-                                <div className={cn("mb-8 p-4 rounded-full ring-1", item.highlight ? "text-tech-500 bg-tech-500/5 ring-tech-500/20" : "text-curiol-500 bg-curiol-500/5 ring-curiol-500/20")}>
-                                    <item.icon className="w-8 h-8" />
-                                </div>
-                                <h3 className="font-serif text-2xl text-white mb-6 italic leading-tight">{item.title}</h3>
-                                <div className="space-y-3 w-full">
-                                    {item.items.map((bullet, idx) => (
-                                        <div key={idx} className="flex items-start gap-3 text-left">
-                                            <div className={cn("w-1 h-1 rounded-full mt-2 shrink-0", item.highlight ? "bg-tech-500" : "bg-curiol-500")} />
-                                            <p className="text-tech-400 text-[11px] font-light leading-snug">{bullet}</p>
+                <section className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 mb-40 min-h-[600px]">
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={activeTab}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.4 }}
+                        >
+                            <div className="mb-16">
+                                <h2 className="text-3xl md:text-5xl font-serif text-white italic mb-4">
+                                    {activeTab === "family" ? "Preservación de Memorias Vivas" : "Infraestructura de Crecimiento Comercial"}
+                                </h2>
+                                <p className="text-tech-500 text-sm md:text-lg font-light italic">
+                                    {activeTab === "family"
+                                        ? "Retratamos la esencia hoy para que sea eterna mañana, fusionando sensibilidad artesanal con custodia digital."
+                                        : "Ingeniería digital diseñada para escalar tu marca con inteligencia artificial y experiencias inmersivas."}
+                                </p>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+                                {(activeTab === "family" ? familyPackages : businessPackages).map((item) => (
+                                    <PerspectiveCard key={item.id} className={cn("flex flex-col items-center text-center p-6 md:p-10 cursor-pointer", item.highlight && "border-tech-500 shadow-2xl shadow-tech-500/10")}>
+                                        <div className={cn("mb-8 p-4 rounded-full ring-1", (item.highlight || activeTab === "business") ? "text-tech-500 bg-tech-500/5 ring-tech-500/20" : "text-curiol-500 bg-curiol-500/5 ring-curiol-500/20")}>
+                                            <item.icon className="w-8 h-8" />
                                         </div>
-                                    ))}
-                                </div>
-                            </PerspectiveCard>
-                        ))}
-                    </div>
+                                        <h3 className="font-serif text-2xl text-white mb-6 italic leading-tight">{item.title}</h3>
+                                        <div className="space-y-3 w-full mt-auto">
+                                            {item.items.map((bullet, idx) => (
+                                                <div key={idx} className="flex items-start gap-3 text-left">
+                                                    <div className={cn("w-1 h-1 rounded-full mt-2 shrink-0", (item.highlight || activeTab === "business") ? "bg-tech-500" : "bg-curiol-500")} />
+                                                    <p className="text-tech-400 text-[11px] font-light leading-snug">{bullet}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </PerspectiveCard>
+                                ))}
+                            </div>
+                        </motion.div>
+                    </AnimatePresence>
                 </section>
 
-                {/* Phygital Simulation */}
                 <PhygitalSimulation />
 
-                {/* WhatsApp Share Section */}
                 <section className="max-w-4xl mx-auto px-4 md:px-8 lg:px-16 mb-40">
                     <PerspectiveCard className="p-8 md:p-12 text-center border-curiol-500/20 cursor-pointer">
                         <MessageCircle className="w-10 h-10 text-green-500 mx-auto mb-6" />
                         <h2 className="text-3xl font-serif text-white italic mb-4">Consulta Express por WhatsApp.</h2>
-                        <p className="text-tech-400 font-light mb-10 max-w-lg mx-auto leading-relaxed">
+                        <p className="text-tech-400 font-light mb-10 max-w-lg mx-auto leading-relaxed text-sm md:text-base">
                             Genera un resumen detallado del catálogo 2026 y envíalo directamente a nuestro canal oficial para una asesoría personalizada.
                         </p>
                         <a
                             href={generateServicesSummary()}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-4 px-10 py-5 bg-green-600/10 border border-green-500/30 text-green-500 text-[10px] font-bold uppercase tracking-widest hover:bg-green-600 hover:text-white transition-all rounded-full group"
+                            className="inline-flex items-center gap-4 px-12 py-5 bg-green-600/10 border border-green-500/30 text-green-500 text-[10px] font-bold uppercase tracking-widest hover:bg-green-600 hover:text-white transition-all rounded-full group mx-auto"
                         >
                             Solicitar Asesoría por WhatsApp <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </a>
                     </PerspectiveCard>
                 </section>
 
-                {/* CTA Hero */}
                 <section className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 mb-20">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                         <AgendaWidget />
                         <div className="bg-gradient-to-r from-tech-950 to-tech-900 border border-tech-800 p-12 rounded-[3rem] text-center relative overflow-hidden group">
                             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-curiol-700/10 via-transparent to-transparent opacity-50" />
                             <div className="relative z-10">
-                                <h2 className="text-3xl font-serif text-white mb-8 italic">¿Listo para empezar?</h2>
-                                <Link href="https://wa.me/50662856669" className="px-10 py-4 bg-curiol-600 text-white text-[10px] font-bold uppercase tracking-[0.2em] rounded-full hover:bg-curiol-500 transition-all shadow-xl shadow-curiol-500/10">
+                                <h3 className="text-2xl font-serif text-white mb-2 italic">¿Listo para iniciar?</h3>
+                                <Link href="/cotizar" className="inline-flex items-center gap-4 px-10 py-5 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest rounded-full hover:scale-105 transition-all shadow-xl shadow-curiol-500/20 mb-6">
                                     Personalizar mi Legado <ArrowRight className="w-4 h-4" />
                                 </Link>
-                                <p className="text-[9px] text-tech-500 font-bold uppercase tracking-[0.2em] mt-6 italic opacity-60">
-                                    Comunicación inicial únicamente vía WhatsApp
+                                <p className="text-[9px] text-tech-500 font-bold uppercase tracking-[0.2em] italic opacity-60">
+                                    Reserva tu espacio en la agenda 2026
                                 </p>
                             </div>
                         </div>
@@ -231,8 +295,4 @@ export default function ServiciosPage() {
             <AiAssistant />
         </div>
     );
-}
-
-function cn(...inputs: any[]) {
-    return inputs.filter(Boolean).join(" ");
 }

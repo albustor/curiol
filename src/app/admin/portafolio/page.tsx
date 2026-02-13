@@ -21,6 +21,7 @@ import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage
 import { useRole } from "@/hooks/useRole";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { CommandK } from "@/components/admin/CommandK";
 
 interface Album {
     id: string;
@@ -186,19 +187,22 @@ export default function PortfolioAdminPage() {
                         <h1 className="text-5xl font-serif text-white italic">Publicación de Álbumnes</h1>
                         <p className="text-tech-500 mt-4">Crea y organiza galerías fotográficas para el portafolio 2026.</p>
                     </div>
-                    <button
-                        onClick={() => setIsEditing({
-                            title: "",
-                            description: "",
-                            category: "Legado Familiar",
-                            photos: [],
-                            eventDate: new Date().toISOString().split('T')[0],
-                            settings: { allowLikes: true, allowDownloads: true, allowSharing: true }
-                        })}
-                        className="px-8 py-4 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest rounded-xl hover:scale-105 transition-all flex items-center gap-3"
-                    >
-                        <Plus className="w-4 h-4" /> Nuevo Álbum
-                    </button>
+                    <div className="flex items-center gap-4">
+                        <CommandK isMaster={role === "MASTER" || localStorage.getItem("master_admin") === "true"} />
+                        <button
+                            onClick={() => setIsEditing({
+                                title: "",
+                                description: "",
+                                category: "Legado Familiar",
+                                photos: [],
+                                eventDate: new Date().toISOString().split('T')[0],
+                                settings: { allowLikes: true, allowDownloads: true, allowSharing: true }
+                            })}
+                            className="px-8 py-4 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest rounded-xl hover:scale-105 transition-all flex items-center gap-3"
+                        >
+                            <Plus className="w-4 h-4" /> Nuevo Álbum
+                        </button>
+                    </div>
                 </header>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -284,7 +288,7 @@ export default function PortfolioAdminPage() {
                                                             <label className="text-[10px] text-tech-500 font-bold uppercase tracking-widest block mb-2">Categoría del Proyecto</label>
                                                             <select value={isEditing.category || "Legado Familiar"} onChange={(e) => setIsEditing({ ...isEditing, category: e.target.value })} className="w-full bg-tech-950 border border-tech-800 rounded-xl p-4 text-white text-sm outline-none focus:border-curiol-500 transition-all">
                                                                 <option value="Legado Familiar">Legado Familiar</option>
-                                                                <option value="Legado y Crecimiento Comercial">Legado y Crecimiento Comercial</option>
+                                                                <option value="Crecimiento Comercial & IA">Crecimiento Comercial & IA</option>
                                                                 <option value="Arte Fine Art">Arte Fine Art</option>
                                                                 <option value="Estudio">Estudio</option>
                                                                 <option value="Embarazo">Embarazo</option>

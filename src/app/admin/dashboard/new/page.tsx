@@ -192,13 +192,14 @@ export default function NewDeliveryPage() {
                                                 onChange={(e) => setFormData({ ...formData, service: e.target.value })}
                                                 className="w-full bg-tech-950 border border-tech-800 focus:border-curiol-500 outline-none p-4 rounded-xl text-white transition-all text-sm appearance-none"
                                             >
-                                                <option>Esencia Familiar + AR</option>
+                                                <option>Recuerdos Eternos (Fine Art)</option>
                                                 <option>Aventura Mágica (IA)</option>
-                                                <option>Marca Personal Inteligente</option>
+                                                <option>Relatos (Fine Art)</option>
+                                                <option>Membresía Anual de Legado</option>
+                                                <option>Omni Local/Pro (+Imagen)</option>
                                                 <option>Gran Evento (Boda/15)</option>
                                                 <option>Evento Institucional / Graduación</option>
                                                 <option>Acción Deportiva (Surf/Golf)</option>
-                                                <option>Membresía Legado</option>
                                             </select>
                                         </div>
                                     </div>

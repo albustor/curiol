@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare, X, Sparkles, Send, Binary } from "lucide-react";
 import { getAiAssistantResponse } from "@/actions/gemini";
@@ -12,6 +12,14 @@ export function AiAssistant() {
         { role: "ai", text: "¡Hola! Soy el asistente de Curiol Studio. ¿Cómo puedo ayudarte hoy con tu legado o tu negocio?" }
     ]);
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const handleOpen = () => setIsOpen(true);
+            window.addEventListener('open-ai-assistant', handleOpen);
+            return () => window.removeEventListener('open-ai-assistant', handleOpen);
+        }
+    }, []);
 
     const handleSend = async () => {
         if (!message.trim() || loading) return;

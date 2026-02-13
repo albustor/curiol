@@ -13,6 +13,7 @@ import { useState, useEffect } from "react";
 import { processAndSaveInsumo, getRecentInsumos, InsumoData, InsumoType } from "@/actions/ai-insumos";
 import { useRouter } from "next/navigation";
 import { useRole } from "@/hooks/useRole";
+import { CommandK } from "@/components/admin/CommandK";
 
 export default function AIInsumosPage() {
     const { role, user } = useRole();
@@ -77,16 +78,21 @@ export default function AIInsumosPage() {
             <Navbar />
 
             <main className="max-w-7xl mx-auto px-4">
-                <header className="mb-12">
-                    <div className="flex items-center gap-3 mb-2">
-                        <Brain className="text-curiol-500 w-5 h-5" />
-                        <span className="text-curiol-500 text-[10px] font-bold uppercase tracking-widest">Inteligencia Intencional</span>
+                <header className="mb-12 flex justify-between items-end">
+                    <div>
+                        <div className="flex items-center gap-3 mb-2">
+                            <Brain className="text-curiol-500 w-5 h-5" />
+                            <span className="text-curiol-500 text-[10px] font-bold uppercase tracking-widest">Inteligencia Intencional</span>
+                        </div>
+                        <h1 className="text-6xl font-serif text-white italic tracking-tight">Insumos para IA</h1>
+                        <p className="text-tech-500 mt-4 max-w-2xl font-light">
+                            Alimenta el cerebro de Curiol Studio con ideas, emociones y tendencias.
+                            Gemini analizará cada pieza para personalizar tus servicios.
+                        </p>
                     </div>
-                    <h1 className="text-6xl font-serif text-white italic tracking-tight">Insumos para IA</h1>
-                    <p className="text-tech-500 mt-4 max-w-2xl font-light">
-                        Alimenta el cerebro de Curiol Studio con ideas, emociones y tendencias.
-                        Gemini analizará cada pieza para personalizar tus servicios.
-                    </p>
+                    <div className="pb-2">
+                        <CommandK isMaster={role === "MASTER" || localStorage.getItem("master_admin") === "true"} />
+                    </div>
                 </header>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

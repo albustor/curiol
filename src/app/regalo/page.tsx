@@ -28,10 +28,10 @@ const THEMES = [
 ];
 
 const PACKAGES = [
-    { id: "mini", name: "Mini Sesión Inclusión", price: 25000, desc: "Sesión 40 min. 8 Fotos Digitales." },
-    { id: "aventura", name: "Aventura Mágica", price: 95000, desc: "15 Fotos Fine Art + Canción IA + RA." },
-    { id: "esencia", name: "Esencia Familiar", price: 110000, desc: "20 Fotos High-End + App Privada + Cuadro AR." },
-    { id: "legado", name: "Membresía Legado", price: 25000, desc: "3 Sesiones al año (Pago mensual)." },
+    { id: "relatos", name: "Relatos Fine Art", price: 49000, desc: "5 Fotos Fine-Art. La esencia en formato ágil." },
+    { id: "aventura", name: "Aventura Mágica", price: 80900, desc: "15 Fotos Fine Art + Canción IA + RA." },
+    { id: "recuerdos", name: "Recuerdos Eternos", price: 115000, desc: "15 Fotos Fine-Art + RA + Cuadro." },
+    { id: "legado", name: "Membresía Anual de Legado", price: 25000, desc: "3 Sesiones al año (Pago mensual)." },
 ];
 
 export default function GiftCardPage() {

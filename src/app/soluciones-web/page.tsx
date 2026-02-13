@@ -87,10 +87,10 @@ export default function SolucionesWebPage() {
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.8 }}
                     >
-                        <span className="text-curiol-500 text-xs font-bold tracking-[0.4em] uppercase mb-4 block animate-fade-in">Legado y Crecimiento Comercial & IA</span>
+                        <span className="text-curiol-500 text-xs font-bold tracking-[0.4em] uppercase mb-4 block animate-fade-in">Crecimiento Comercial & IA</span>
                         <h1 className="text-5xl md:text-8xl font-serif text-white italic mb-10 leading-tight">La Infraestructura <br /> <span className="text-curiol-gradient">Digital que Convierte.</span></h1>
                         <p className="text-tech-400 text-lg md:text-xl font-light max-w-3xl mx-auto leading-relaxed">
-                            Implementamos estrategias de **Legado y Crecimiento Comercial** basadas en el **IDMV** (Infraestructura Digital Mínima Viable). Ahora con una fase obligatoria de **Pre-producción Elite** vía videollamada para asegurar el éxito de cada proyecto.
+                            Implementamos estrategias de **Crecimiento Comercial & IA** basadas en el **IDMV** (Infraestructura Digital Mínima Viable). Ahora con una fase obligatoria de **Pre-producción Elite** vía videollamada para asegurar el éxito de cada proyecto.
                         </p>
                     </motion.div>
                 </section>

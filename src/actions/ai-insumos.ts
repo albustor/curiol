@@ -107,7 +107,14 @@ export async function getRecentInsumos(count = 10) {
     try {
         const q = query(collection(db, "ai_inputs"), orderBy("createdAt", "desc"), limit(count));
         const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as InsumoData[];
+        return snapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                ...data,
+                id: doc.id,
+                createdAt: data.createdAt?.toDate?.() ? data.createdAt.toDate().toISOString() : new Date().toISOString()
+            };
+        }) as InsumoData[];
     } catch (error) {
         console.error("Error fetching insumos:", error);
         return [];

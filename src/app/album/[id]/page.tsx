@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { getAlbum, AlbumMetadata, toggleFavorite } from "@/actions/albums";
 import { generateSocialCaption } from "@/actions/image-ai";
 import { motion, AnimatePresence } from "framer-motion";
@@ -13,6 +13,7 @@ import { PerspectiveCard } from "@/components/ui/PerspectiveCard";
 
 export default function ClientAlbumPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = useParams();
+    const router = useRouter();
     const [album, setAlbum] = useState<AlbumMetadata | null>(null);
     const [loading, setLoading] = useState(true);
     const [activeFilter, setActiveFilter] = useState("all");
@@ -121,20 +122,56 @@ export default function ClientAlbumPage({ params }: { params: Promise<{ id: stri
     return (
         <div className={cn("min-h-screen transition-colors duration-1000", themeClass)}>
             {/* Hero Header */}
-            <header className="h-[70vh] relative flex items-center justify-center overflow-hidden">
+            <header className="h-[80vh] relative flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-current opacity-20" />
+
+                {/* Back to Portfolio Button */}
                 <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-center z-10 space-y-4 px-4"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="absolute top-12 left-12 z-50"
                 >
-                    <p className="text-[10px] uppercase tracking-[0.4em] font-bold opacity-60">MEMORIAS VIVAS • ENTREGA PREMIUM</p>
-                    <h1 className="text-6xl md:text-8xl font-serif italic tracking-tight">{album.name}</h1>
-                    <div className="flex items-center justify-center gap-6 pt-4 border-t border-current/10 max-w-xs mx-auto">
+                    <button
+                        onClick={() => router.push('/portafolio')}
+                        className="group flex items-center gap-4 text-[10px] font-bold uppercase tracking-[0.4em] opacity-40 hover:opacity-100 transition-all"
+                    >
+                        <span className="w-8 h-px bg-current group-hover:w-12 transition-all" />
+                        Regresar
+                    </button>
+                </motion.div>
+
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+                    className="text-center z-10 space-y-6 px-4"
+                >
+                    <motion.p
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 }}
+                        className="text-[10px] uppercase tracking-[0.5em] font-bold opacity-60"
+                    >
+                        MEMORIAS VIVAS • ENTREGA PREMIUM
+                    </motion.p>
+                    <motion.h1
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.7 }}
+                        className="text-7xl md:text-9xl font-serif italic tracking-tighter capitalize"
+                    >
+                        {album.name}
+                    </motion.h1>
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 1 }}
+                        className="flex items-center justify-center gap-6 pt-8 border-t border-current/10 max-w-xs mx-auto"
+                    >
                         <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest opacity-60">
-                            <Clock className="w-3 h-3" /> 58 días restantes
+                            <Clock className="w-3 h-3" /> Disponibilidad Limitada
                         </div>
-                    </div>
+                    </motion.div>
                 </motion.div>
             </header>
 
@@ -193,7 +230,7 @@ export default function ClientAlbumPage({ params }: { params: Promise<{ id: stri
                             className="rounded-lg shadow-2xl"
                         >
                             <img
-                                src={getDirectImageUrl(img.original)}
+                                src={getDirectImageUrl(img.original, true)}
                                 alt={`Memory ${i}`}
                                 className={cn(
                                     "w-full h-auto transition-all duration-700",
@@ -312,7 +349,7 @@ export default function ClientAlbumPage({ params }: { params: Promise<{ id: stri
                             <div className="lg:col-span-2 relative">
                                 <motion.img
                                     layoutId={`img-${selectedImage}`}
-                                    src={getDirectImageUrl(filteredImages[selectedImage].original)}
+                                    src={getDirectImageUrl(filteredImages[selectedImage].original, true)}
                                     className="w-full h-auto max-h-[80vh] object-contain rounded-xl shadow-2xl"
                                 />
                             </div>
@@ -469,7 +506,7 @@ export default function ClientAlbumPage({ params }: { params: Promise<{ id: stri
                 <div className="bg-tech-950/80 backdrop-blur-xl border border-white/5 py-3 px-6 rounded-full flex items-center gap-3 shadow-2xl">
                     <Info className="w-4 h-4 text-curiol-500" />
                     <p className="text-[10px] text-tech-400 uppercase tracking-widest font-bold">
-                        Disponibilidad limitada hasta {album.expiresAt ? new Date(album.expiresAt.seconds * 1000).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }) : 'Mayo 2026'}
+                        Disponibilidad limitada hasta {album.expiresAt ? new Date(album.expiresAt).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }) : 'Mayo 2026'}
                     </p>
                 </div>
             </div>

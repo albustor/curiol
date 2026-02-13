@@ -101,7 +101,14 @@ export async function getPhotographyDashboardData(count = 1) {
             limit(count)
         );
         const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as PhotographyInsight[];
+        return snapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                ...data,
+                id: doc.id,
+                createdAt: data.createdAt?.toDate?.() ? data.createdAt.toDate().toISOString() : new Date().toISOString()
+            };
+        }) as PhotographyInsight[];
     } catch (error) {
         console.error("Error fetching photography insights:", error);
         return [];

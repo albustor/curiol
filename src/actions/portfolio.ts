@@ -74,7 +74,7 @@ export async function getAlbums(): Promise<PortfolioAlbum[]> {
                 category: data.category || "General",
                 coverUrl: data.coverUrl || "",
                 photos: data.photos || [],
-                createdAt: data.createdAt,
+                createdAt: data.createdAt?.toDate?.() ? data.createdAt.toDate().toISOString() : new Date().toISOString(),
                 eventDate: data.eventDate || "",
                 slug: data.slug || doc.id,
                 password: data.password || "",
@@ -107,7 +107,7 @@ export async function getAlbumBySlug(slug: string): Promise<PortfolioAlbum | nul
             category: data.category || "General",
             coverUrl: data.coverUrl || "",
             photos: data.photos || [],
-            createdAt: data.createdAt,
+            createdAt: data.createdAt?.toDate?.() ? data.createdAt.toDate().toISOString() : new Date().toISOString(),
             eventDate: data.eventDate || "",
             slug: data.slug || doc.id,
             password: data.password || "",
@@ -255,7 +255,7 @@ export async function getPortfolioAiInsight(albumTitle: string, category: string
         return result.response.text();
     } catch (error) {
         console.error("AI Insight Error:", error);
-        return "Este álbum representa un hito en nuestra visión de legado y crecimiento, capturando la esencia pura del éxito humano.";
+        return "Este álbum representa un hito en nuestra visión de Crecimiento Comercial & IA, capturando la esencia pura del éxito humano.";
     }
 }
 /**

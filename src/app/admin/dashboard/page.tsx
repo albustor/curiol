@@ -19,6 +19,7 @@ import { getPhotographyDashboardData, PhotographyInsight, analyzeAlbumCompositio
 import { collection, query, orderBy, limit, onSnapshot, where, getDocs, Timestamp } from "firebase/firestore";
 import { useRole } from "@/hooks/useRole";
 import { cn } from "@/lib/utils";
+import { CommandK } from "@/components/admin/CommandK";
 
 export default function AdminDashboard() {
     const { role, user, isMaster, isTeam } = useRole();
@@ -139,6 +140,7 @@ export default function AdminDashboard() {
                         </p>
                     </div>
                     <div className="flex items-center gap-4">
+                        <CommandK isMaster={isMaster} />
                         {isMaster && (
                             <Link
                                 href="/admin/equilibrio"
@@ -334,6 +336,19 @@ export default function AdminDashboard() {
                                     <div className="flex items-center gap-3">
                                         <Brain className="w-5 h-5 text-curiol-500" />
                                         <span className="text-xs font-bold text-white">Insumos IA</span>
+                                    </div>
+                                    <ArrowRight className="w-3 h-3 text-tech-800 group-hover:text-white transition-all" />
+                                </button>
+                                <button
+                                    onClick={() => router.push("/admin/timeline")}
+                                    className="w-full text-left p-4 bg-tech-900 border border-white/5 rounded-xl hover:border-curiol-500/30 transition-all flex items-center justify-between group"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <Sparkles className="w-5 h-5 text-curiol-500" />
+                                        <div className="flex flex-col">
+                                            <span className="text-xs font-bold text-white">Línea de Tiempo</span>
+                                            <span className="text-[10px] text-tech-600 font-bold uppercase">Legacy Phygital</span>
+                                        </div>
                                     </div>
                                     <ArrowRight className="w-3 h-3 text-tech-800 group-hover:text-white transition-all" />
                                 </button>

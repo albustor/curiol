@@ -103,6 +103,7 @@ body {
 .img-premium {
   filter: saturate(1.1) contrast(1.05) brightness(1.05);
   transition: filter 0.5s ease;
+  image-rendering: -webkit-optimize-contrast;
 }
 
 .img-premium:hover {

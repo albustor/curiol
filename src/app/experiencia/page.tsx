@@ -52,7 +52,7 @@ const INFOGRAPHIC = [
         cta: "Preservar mi Legado"
     },
     {
-        title: "Legado y Crecimiento",
+        title: "Crecimiento Comercial & IA",
         target: "Para Negocios & Marcas",
         color: "text-tech-500",
         items: [
@@ -146,17 +146,26 @@ export default function ExperienciaPage() {
 
                 {/* 3-PHASE PROCESS */}
                 <section className="bg-tech-900/30 py-40">
-                    <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 text-center mb-20">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 text-center mb-20"
+                    >
                         <h2 className="text-4xl md:text-6xl font-serif text-white italic mb-6">El Proceso Maestro.</h2>
                         <p className="text-tech-500 max-w-2xl mx-auto uppercase text-[10px] font-bold tracking-[0.4em]">Calidad, Atención y Atención al Detalle</p>
-                    </div>
+                    </motion.div>
 
                     <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 grid grid-cols-1 md:grid-cols-3 gap-8">
                         {PROCESS_STEPS.map((step, idx) => (
-                            <PerspectiveCard key={idx} className="p-10 hover:border-curiol-500/40 transition-all group cursor-pointer">
+                            <PerspectiveCard
+                                key={idx}
+                                index={idx}
+                                className="p-10 hover:border-curiol-500/40 transition-all group cursor-pointer h-full"
+                            >
                                 <div className="flex items-center justify-between mb-8">
                                     <div className="w-14 h-14 bg-curiol-500/10 rounded-2xl flex items-center justify-center border border-curiol-500/20 group-hover:bg-curiol-500 group-hover:text-white transition-all text-curiol-500">
-                                        <step.icon className="w-6 h-6" />
+                                        <step.icon className="w-6 h-6 transition-transform group-hover:scale-110" />
                                     </div>
                                     <span className="text-tech-700 text-[4rem] font-serif italic leading-none opacity-20 group-hover:opacity-40 transition-all">{step.phase}</span>
                                 </div>
@@ -177,29 +186,41 @@ export default function ExperienciaPage() {
                 {/* PRODUCT INFOGRAPHIC */}
                 <section className="py-40">
                     <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-px bg-tech-800/50 rounded-[3rem] overflow-hidden border border-tech-800">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.98 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            className="grid grid-cols-1 lg:grid-cols-2 gap-px bg-tech-800/50 rounded-[3rem] overflow-hidden border border-tech-800"
+                        >
                             {INFOGRAPHIC.map((info, idx) => (
-                                <div key={idx} className="bg-tech-950 p-16 md:p-24 flex flex-col justify-between hover:bg-tech-900/40 transition-colors">
+                                <motion.div
+                                    key={idx}
+                                    initial={{ opacity: 0, x: idx === 0 ? -20 : 20 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: 0.2 }}
+                                    className="bg-tech-950 p-16 md:p-24 flex flex-col justify-between hover:bg-tech-900/40 transition-colors"
+                                >
                                     <div>
                                         <span className={cn("text-[10px] font-bold uppercase tracking-[0.4em] mb-4 block", info.color)}>{info.target}</span>
                                         <h3 className="text-4xl md:text-5xl font-serif text-white italic mb-12">{info.title}</h3>
                                         <div className="space-y-10 mb-16">
                                             {info.items.map((item, i) => (
-                                                <div key={i} className="flex items-center gap-6">
-                                                    <div className="w-12 h-12 rounded-full bg-tech-900 flex items-center justify-center border border-white/5">
-                                                        <item.icon className="w-5 h-5 text-tech-400" />
+                                                <div key={i} className="flex items-center gap-6 group/item">
+                                                    <div className="w-12 h-12 rounded-full bg-tech-900 flex items-center justify-center border border-white/5 group-hover/item:border-curiol-500/50 transition-colors">
+                                                        <item.icon className="w-5 h-5 text-tech-400 group-hover/item:text-curiol-500 transition-colors" />
                                                     </div>
-                                                    <span className="text-lg font-serif text-tech-300 italic">{item.label}</span>
+                                                    <span className="text-lg font-serif text-tech-300 italic group-hover/item:text-white transition-colors">{item.label}</span>
                                                 </div>
                                             ))}
                                         </div>
                                     </div>
-                                    <Link href="/cotizar" className="inline-flex items-center gap-4 text-white text-xs font-bold uppercase tracking-[0.3em] group">
-                                        {info.cta} <ArrowRight className="w-5 h-5 text-curiol-500 group-hover:translate-x-2 transition-transform" />
+                                    <Link href="/cotizar" className="inline-flex items-center gap-4 text-white text-xs font-bold uppercase tracking-[0.3em] group/link">
+                                        {info.cta} <ArrowRight className="w-5 h-5 text-curiol-500 group-hover/link:translate-x-2 transition-transform" />
                                     </Link>
-                                </div>
+                                </motion.div>
                             ))}
-                        </div>
+                        </motion.div>
                     </div>
                 </section>
 
