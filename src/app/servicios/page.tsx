@@ -24,13 +24,12 @@ const familyPackages = [
         items: [
             "Exclusivo para niños: Imaginación hecha realidad",
             "15 Fotos High-End (Gama Alta) + IA",
-            "Phygital: Realidad Aumentada Interactiva",
-            "Viva Memory: Slideshow IA con música y letra",
+            "Viva Memory: Slideshow IA con música y letra (INCLUIDO)",
             "Línea de Tiempo Evolutiva (Legacy Sync)",
             "Álbum Digital de Descarga (LTD)",
             "Retablo 5x7\" con NFC incluido",
             "Inversión: ₡98.000 / $195",
-            "10% OFF en Phygital adicional (₡22.500)"
+            "(Opcional) Phygital AR: 15% OFF aplicado"
         ],
         highlight: true
     },
@@ -355,10 +354,10 @@ function ServiceCard({ item, activeTab }: { item: any, activeTab: string }) {
 
             <motion.div
                 initial={false}
-                animate={{ height: isExpanded ? "auto" : "200px" }}
+                animate={{ height: isExpanded ? "auto" : "180px" }}
                 className="overflow-hidden relative w-full"
             >
-                <div className="space-y-3 w-full">
+                <div className="space-y-3 w-full pb-4">
                     {item.items.map((bullet: string, idx: number) => (
                         <div key={idx} className="flex items-start gap-3 text-left">
                             <div className={cn("w-1 h-1 rounded-full mt-2 shrink-0", (item.highlight || activeTab === "business") ? "bg-tech-500" : "bg-curiol-500")} />
@@ -367,9 +366,9 @@ function ServiceCard({ item, activeTab }: { item: any, activeTab: string }) {
                     ))}
                 </div>
 
-                {!isExpanded && item.items.length > 5 && (
-                    <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-tech-900 to-transparent flex items-end justify-center pb-2">
-                        <span className="text-[8px] font-bold text-curiol-500 uppercase tracking-widest animate-bounce">Conoce más</span>
+                {!isExpanded && item.items.length > 4 && (
+                    <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-tech-950/40 to-transparent flex items-end justify-center pb-1">
+                        <span className="text-[7px] font-bold text-curiol-500 uppercase tracking-widest opacity-60">Click para ver más</span>
                     </div>
                 )}
             </motion.div>
@@ -378,17 +377,29 @@ function ServiceCard({ item, activeTab }: { item: any, activeTab: string }) {
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="mt-8 pt-6 border-t border-white/5 w-full"
+                    className="mt-8 pt-6 border-t border-white/5 w-full flex flex-col gap-4"
                 >
-                    <p className="text-[10px] text-tech-500 font-light italic mb-4">
+                    <p className="text-[10px] text-tech-500 font-light italic">
                         *Este paquete incluye acceso exclusivo al ecosistema digital de Curiol Studio para la gestión de su legado en resolución maestra.
                     </p>
-                    <Link
-                        href="/cotizar"
-                        className="inline-flex items-center gap-2 text-curiol-500 text-[10px] font-bold uppercase tracking-widest hover:text-white transition-all"
-                    >
-                        Seleccionar este Plan <ArrowRight className="w-3 h-3" />
-                    </Link>
+
+                    <div className="flex flex-col gap-3">
+                        <Link
+                            href="/cotizar"
+                            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-curiol-gradient text-white text-[9px] font-bold uppercase tracking-widest rounded-full hover:scale-105 transition-all w-full"
+                        >
+                            Reservar ahora <ArrowRight className="w-3 h-3" />
+                        </Link>
+
+                        {(activeTab === "family" || item.id === "express") && (
+                            <Link
+                                href="/pago-cuotas"
+                                className="text-tech-500 hover:text-white text-[8px] font-bold uppercase tracking-[0.2em] transition-colors border-b border-white/5 pb-1 w-fit mx-auto"
+                            >
+                                Ver Opciones de Financiamiento / Tasa 0
+                            </Link>
+                        )}
+                    </div>
                 </motion.div>
             )}
         </PerspectiveCard>

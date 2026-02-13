@@ -282,11 +282,11 @@ export async function getPortfolioAiInsight(albumTitle: string, category: string
 /**
  * Fetches every photo across all portfolio albums for the hero rotation pool
  */
-export async function getPortfolioAllPhotos(): Promise<{ url: string; title: string; category: string }[]> {
+export async function getPortfolioAllPhotos(): Promise<{ url: string; title: string; category: string; description?: string }[]> {
     try {
         const q = query(collection(db, "portfolio_albums"));
         const snapshot = await getDocs(q);
-        const allPhotos: { url: string; title: string; category: string }[] = [];
+        const allPhotos: { url: string; title: string; category: string; description?: string }[] = [];
 
         snapshot.docs.forEach(doc => {
             const data = doc.data();
@@ -295,7 +295,8 @@ export async function getPortfolioAllPhotos(): Promise<{ url: string; title: str
                     allPhotos.push({
                         url: photo.url,
                         title: data.title || "Sin título",
-                        category: data.category || "General"
+                        category: data.category || "General",
+                        description: photo.caption || data.description || ""
                     });
                 });
             }

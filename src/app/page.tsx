@@ -206,9 +206,9 @@ export default function Home() {
                       <img
                         src={getDirectImageUrl(item.url || (item.photos && item.photos.length > 0 ? item.photos[0].url : ""))}
                         alt={item.title || item.titulo}
-                        className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
+                        className="w-full h-full object-cover object-[center_15%] opacity-70 group-hover:opacity-90 transition-opacity"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-tech-950/80 via-tech-950/20 to-transparent p-6 flex flex-col justify-end items-end text-right">
+                      <div className="absolute inset-0 bg-gradient-to-t from-tech-950/90 via-tech-950/20 to-transparent p-6 flex flex-col justify-end items-end text-right">
                         <div className="flex items-center gap-2 mb-2">
                           <span className="text-[7px] font-bold uppercase tracking-[0.2em] text-curiol-500 bg-curiol-500/10 px-2 py-0.5 rounded-full border border-curiol-500/10">
                             PRODUCCIÓN
@@ -217,8 +217,8 @@ export default function Home() {
                         <h3 className="text-sm md:text-base font-serif text-white italic group-hover:text-curiol-200 transition-colors capitalize">
                           {(item.title || item.titulo || "").replace(/_/g, " ")}
                         </h3>
-                        <p className="text-[8px] text-tech-500 font-light mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          {item.description?.slice(0, 30) || "Capturando Legados"}...
+                        <p className="text-[9px] text-curiol-500 font-serif italic mt-1.5 opacity-100">
+                          {item.description || "Legado Vivo"}
                         </p>
                       </div>
                     </PerspectiveCard>
