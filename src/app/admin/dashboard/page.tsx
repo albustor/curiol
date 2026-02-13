@@ -12,7 +12,7 @@ import {
     LayoutDashboard, Users, Image as ImageIcon, MessageSquare, Mail,
     Plus, ExternalLink, Settings, BarChart3, LogOut, ArrowRight, Loader2, Sparkles,
     Calendar as CalendarIcon, Video, FileText, Brain, Aperture, CheckCircle2, AlertCircle, PieChart, ClipboardCheck,
-    HardDrive, ArrowUpRight
+    HardDrive, ArrowUpRight, ShieldCheck, BookOpen
 } from "lucide-react";
 import { getPhotographyDashboardData, PhotographyInsight, analyzeAlbumComposition } from "@/actions/photography-ai";
 
@@ -434,6 +434,30 @@ export default function AdminDashboard() {
                                 </button>
                             </div>
                         </div>
+
+                        {/* Estrategia & Procesos - MASTER ONLY */}
+                        {isMaster && (
+                            <div className="space-y-4">
+                                <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] text-tech-500 px-2 flex items-center gap-2">
+                                    <ShieldCheck className="w-3 h-3" /> Estrategia & Procesos
+                                </h4>
+                                <div className="grid grid-cols-1 gap-3">
+                                    <button
+                                        onClick={() => router.push("/admin/documentacion")}
+                                        className="w-full text-left p-4 bg-curiol-500/10 border border-curiol-500/30 rounded-xl hover:bg-curiol-500/20 transition-all flex items-center justify-between group"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <BookOpen className="w-5 h-5 text-curiol-500" />
+                                            <div className="flex flex-col">
+                                                <span className="text-xs font-bold text-white">Documentación Maestra</span>
+                                                <span className="text-[10px] text-tech-500 font-bold">Protocolos & Estrategia</span>
+                                            </div>
+                                        </div>
+                                        <ArrowRight className="w-3 h-3 text-curiol-500 group-hover:text-white transition-all" />
+                                    </button>
+                                </div>
+                            </div>
+                        )}
 
                         {/* Operaciones & Calidad */}
                         <div className="space-y-4">
