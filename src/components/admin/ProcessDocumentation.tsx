@@ -1,8 +1,7 @@
 "use client";
 
 import React from "react";
-import { Printer, Download, ArrowLeft, ShieldCheck, Briefcase, Users, Globe } from "lucide-react";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Printer, ArrowLeft, ShieldCheck, Briefcase, Users } from "lucide-react";
 
 interface ProcessDocumentationProps {
     onBack?: () => void;
