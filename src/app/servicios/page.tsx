@@ -72,13 +72,11 @@ const familyPackages = [
         title: "Relatos",
         icon: Sparkles,
         items: [
-            "La esencia en formato ágil Fine-Art",
+            "Esencia ágil: Phygital QR o Realidad Aumentada (AR)",
             "5 Fotos Fine-Art de alta intensidad",
-            "Propósito claro y experto",
+            "Portal de Entrega: Acceso Privado (User/Pass)",
             "Álbum Digital de Descarga (LTD)",
-            "Portal de Entrega: Acceso Privado",
-            "Inversión Estándar: ₡56.350 / $115",
-            "Beneficio Pago de Contado: -15% (₡47.900)"
+            "Inversión Única (Contado): ₡56.000 / $112"
         ],
         highlight: false
     }
@@ -150,7 +148,7 @@ const generateServicesSummary = () => {
         `*LEGADO FAMILIAR (B2C) - Tarifas 2026*\n` +
         `• *Aventura Mágica*: ₡112.7k / $225\n` +
         `• *Recuerdos Eternos*: ₡132.2k / $265\n` +
-        `• *Relatos*: ₡56.3k / $115\n` +
+        `• *Relatos*: ₡56k / $112 (Pago Único)\n` +
         `• *Membresía*: Desde ₡29.4k/mes (Plan Anual)\n\n` +
         `*BENEFICIO PAGO DE CONTADO: -15% EN TODOS LOS PLANES*\n\n` +
         `*PORTAL DE ENTREGA: Acceso privado incluido*\n\n` +
