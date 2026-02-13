@@ -130,6 +130,14 @@ export default function PagoCuotasPage() {
                             </h4>
                             <ul className="space-y-4 text-[10px] text-tech-400 font-light leading-relaxed">
                                 <li className="flex items-start gap-3">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-curiol-500 mt-1 flex-shrink-0"></span>
+                                    <span>**Prioridad de Agenda**: Los planes de membresía gozan de prioridad para asegurar fechas anuales. Estas deben ser agendadas al momento de firmar el contrato.</span>
+                                </li>
+                                <li className="flex items-start gap-3">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-tech-500 mt-1 flex-shrink-0"></span>
+                                    <span>**Política de Cambios**: Se permite **un solo cambio de fecha** por sesión, notificando con al menos **15 días de anticipación** para ser aplicable.</span>
+                                </li>
+                                <li className="flex items-start gap-3">
                                     <span className="w-1.5 h-1.5 rounded-full bg-tech-500 mt-1 flex-shrink-0"></span>
                                     <span>La **reservación no es reembolsable**, ya que asegura la exclusividad del tiempo del artista y el inicio de la logística digital.</span>
                                 </li>

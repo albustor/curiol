@@ -54,37 +54,30 @@ const PACKAGES = {
         {
             id: "aventura",
             name: "Aventura Mágica",
-            price: 80900,
-            usd: 165,
+            price: 112700,
+            usd: 225,
             desc: "Patrimonio visual para la posteridad. Transformamos la imaginación infantil en realidades phygital eternas."
         },
         {
             id: "recuerdos",
             name: "Recuerdos Eternos",
-            price: 115000,
-            usd: 225,
+            price: 132250,
+            usd: 265,
             desc: "Conexión intergeneracional Fine Art. Un tributo que fusiona la calidez artesanal con la magia de la RA."
         },
         {
-            id: "marca",
-            name: "Marca Personal",
-            price: 89000,
-            usd: 179,
-            desc: "Presencia que abre puertas. Diseñamos una identidad visual estratégica para profesionales que buscan posicionamiento, coherencia y nuevas oportunidades en su mercado."
-        },
-        {
             id: "legado",
-            name: "Membresía Anual de Legado",
-            price: 25000,
-            usd: 59,
-            desc: "Tu patrimonio emocional protegido. Un acompañamiento anual diseñado para documentar tu evolución."
+            name: "Membresía Semestral",
+            price: 59490,
+            usd: 119,
+            desc: "Tu patrimonio emocional protegido. Pago mensual para documentar tu evolución anual con 3 sesiones programadas."
         },
         {
             id: "relatos",
             name: "Relatos",
-            price: 49000,
-            usd: 99,
-            desc: "Encuentros fotográficos de alta intensidad artística. Formato ágil con la profundidad del Fine-Art."
+            price: 56000,
+            usd: 112,
+            desc: "6 Fotos Fine-Art + Retablo 5x7\" (13x18 cm). Encuentros de alta intensidad artística en formato ágil."
         }
     ],
     infra: [
@@ -604,9 +597,22 @@ export default function AdminCotizadorPage() {
                             </table>
                         </div>
 
+                        {selectedPackages.some(p => p.id === 'legado') && (
+                            <div className="bg-curiol-50 p-10 rounded-2xl border-l-4 border-curiol-500 space-y-4">
+                                <h2 className="text-xs font-sans font-bold uppercase tracking-widest text-curiol-900 flex items-center gap-2">
+                                    <Clock className="w-4 h-4 text-curiol-600" /> III. Cláusulas de Membresía & Agenda
+                                </h2>
+                                <ul className="space-y-3 text-[10px] text-slate-700 leading-relaxed font-sans">
+                                    <li>• **Prioridad de Agenda**: El suscriptor goza de prioridad para asegurar sus 3 fechas anuales.</li>
+                                    <li>• **Formalización**: Las fechas definitivas deben quedar agendadas por el cliente al momento de la firma de este contrato.</li>
+                                    <li>• **Política de Reprogramación**: Se permite **un solo cambio de fecha** por sesión, el cual debe ser solicitado con un mínimo de **15 días de anticipación** para ser válido y aplicable según disponibilidad de Curiol Studio.</li>
+                                </ul>
+                            </div>
+                        )}
+
                         <div className="bg-slate-50 p-10 rounded-2xl space-y-6">
                             <h2 className="text-xs font-sans font-bold uppercase tracking-widest text-slate-900 mb-2 flex items-center gap-2">
-                                <ShieldCheck className="w-4 h-4 text-slate-900" /> II. Términos de Producción & Pago
+                                <ShieldCheck className="w-4 h-4 text-slate-900" /> {selectedPackages.some(p => p.id === 'legado') ? 'IV' : 'II'}. Términos de Producción & Pago
                             </h2>
                             <div className="grid grid-cols-2 gap-10 font-sans">
                                 <div className="space-y-4">
@@ -747,6 +753,15 @@ export default function AdminCotizadorPage() {
                                                 </tbody>
                                             </table>
                                         </div>
+                                        {selectedPackages.some(p => p.id === 'legado') && (
+                                            <div className="mt-8 p-6 bg-curiol-50 rounded-xl border-l-4 border-curiol-500">
+                                                <p className="text-[10px] font-sans font-bold uppercase tracking-widest text-curiol-700 mb-2">Cláusula de Agenda (Membresía)</p>
+                                                <p className="text-[10px] text-slate-700 leading-tight">
+                                                    Prioridad en agenda. Fechas anuales estipuladas al firmar. 1 solo cambio permitido con 15 días de preaviso.
+                                                </p>
+                                            </div>
+                                        )}
+
                                         <div className="bg-slate-50 p-10 rounded-2xl border border-slate-100">
                                             <h2 className="text-xs font-sans font-bold uppercase tracking-widest text-slate-900 mb-4">Inversión Total</h2>
                                             <div className="flex justify-between items-center mb-4">
