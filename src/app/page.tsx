@@ -20,7 +20,7 @@ import ComingSoon from "./coming-soon/page";
 // MAINTENANCE MODE TOGGLE
 // Set to true to hide the site from the public
 // ==========================================
-const MAINTENANCE_MODE = true;
+const MAINTENANCE_MODE = process.env.NEXT_PUBLIC_MAINTENANCE_MODE === 'true'; // Linked to ENV or false by default
 
 const POETIC_PHRASES = [
   "Legado familiar",
