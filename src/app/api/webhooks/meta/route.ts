@@ -138,28 +138,33 @@ export async function POST(req: Request) {
             } else {
                 // 4. Fallback to Gemini AI
                 console.log("No flow match. Falling back to Gemini...");
-                const aiResponse = await generateAiAssistantResponse(text || "", channel);
-                console.log("Gemini AI Response:", aiResponse);
+                try {
+                    const aiResponse = await generateAiAssistantResponse(text || "", channel);
+                    console.log("Gemini AI Response Success:", !!aiResponse);
 
-                if (channel === "whatsapp") {
-                    console.log("Attempting to send WhatsApp message to:", from);
-                    const waResult = await sendWhatsAppMessage(from, aiResponse);
-                    console.log("WhatsApp API Result:", waResult);
-                } else {
-                    const platform = body.object === "instagram" ? "instagram" : "messenger";
-                    console.log("Attempting to send Social message to:", from, "Platform:", platform);
-                    const socialResult = await sendSocialMessage(from, aiResponse, platform);
-                    console.log("Social API Result:", socialResult);
+                    if (channel === "whatsapp") {
+                        console.log("Attempting to send WhatsApp message to:", from);
+                        const waResult = await sendWhatsAppMessage(from, aiResponse);
+                        console.log("WhatsApp API Result Status:", waResult?.error ? "FAILED" : "SUCCESS");
+                    } else {
+                        const platform = body.object === "instagram" ? "instagram" : "messenger";
+                        console.log("Attempting to send Social message to:", from, "Platform:", platform);
+                        const socialResult = await sendSocialMessage(from, aiResponse, platform);
+                        console.log("Social API Result Status:", socialResult?.error ? "FAILED" : "SUCCESS");
+                    }
+
+                    await addDoc(collection(db, "omni_conversations"), {
+                        contactId: from,
+                        message: aiResponse,
+                        channel: channel,
+                        direction: "outbound",
+                        type: "ai_assistant",
+                        timestamp: Timestamp.now()
+                    });
+                } catch (aiError) {
+                    console.error("ALET: Gemini Flow Error in Webhook:", aiError);
+                    // Optional: fallback to manual notification if AI fails
                 }
-
-                await addDoc(collection(db, "omni_conversations"), {
-                    contactId: from,
-                    message: aiResponse,
-                    channel: channel,
-                    direction: "outbound",
-                    type: "ai_assistant", // Improved label
-                    timestamp: Timestamp.now()
-                });
             }
         } else {
             console.log("Webhook event received but no user messages found (likely a Status or Read Receipt update).");

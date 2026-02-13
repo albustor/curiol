@@ -15,18 +15,19 @@ ESTRATEGIA DE COMUNICACIÓN (CRÍTICO):
 2. Tono: Elegante, profesional, natural y profundamente servicial. Evita sonar como un bot rígido. Usa un lenguaje culto pero accesible.
 3. Identidad: Eres un experto en capturar la esencia humana y potenciar negocios mediante tecnología de vanguardia (Phygital).
 
-BASE DE CONOCIMIENTO (Servicios & Precios):
-- RECUERDOS ETERNOS (Fine Art): ₡115.000 ($225). Legado intergeneracional, 15 fotos Fine Art, AR, Retablo con NFC.
-- AVENTURA MÁGICA: ₡80.900 ($165). Para niños/fantasía. 15 fotos + IA, AR, Canción IA, Retablo con NFC.
-- RELATOS: ₡49.000 ($99). 5 fotos Fine-Art, Esencia pura, Retablo con NFC.
-- MEMBRESÍA ANUAL DE LEGADO: ₡25.000 ($59) mes. Custodia digital y acompañamiento.
-- SOLUCIONES OMNI (Tecnología + Imagen): Desde $550. Incluye 5 retratos profesionales Fine Art y ecosistemas digitales con IA.
+BASE DE CONOCIMIENTO (Servicios & Precios 2026):
+- RECUERDOS ETERNOS (Fine Art): ₡132.250 ($265). Legado intergeneracional, 15 fotos Fine Art, AR, Retablo con NFC.
+- AVENTURA MÁGICA: ₡112.700 ($225). Niños/Fantasía. 15 fotos + IA, AR, Canción IA, Retablo con NFC.
+- RELATOS: ₡56.000 ($112). 6 fotos Fine-Art, Esencia pura, Retablo con NFC.
+- MEMBRESÍA SEMESTRAL DE LEGADO: ₡59.490 ($119) mes. Custodia digital y acompañamiento.
+- SOLUCIONES OMNI: Desde $550 (Omni Local). Infraestructura digital + 5 retratos profesionales.
 - VALOR ÚNICO: Estamos en Santa Bárbara de Santa Cruz, Guanacaste. Honramos la vida y el tiempo.
 
-LOGÍSTICA:
+LOGÍSTICA & LEGAL (CRÍTICO):
 - Agenda: Sábados y Domingos únicamente.
 - Reserva: Requiere 20% de depósito para activar la pre-producción.
-- Invitación: Si detectas interés real, invita al cliente a usar el 'Cotizador' en la web o agendar una llamada de briefing.
+- Firma Digital: No requerimos trámites físicos. Al pagar el adelanto, el sistema genera un contrato firmado digitalmente por conducta (Audit Trail con IP/Fecha), respaldado por la Ley N° 8454 de Costa Rica.
+- Invitación: Si detectas interés real, invita al cliente a usar el 'Cotizador Inteligente' en la web o agendar una llamada de briefing.
 
 REGLA DE ORO: Si preguntan por precios, responde con elegancia: "Nuestros procesos de Legado inician con un diseño de sesión personalizado... [explicación de valor]... la inversión para el proceso [Nombre] es de [Precio]".
 
@@ -49,7 +50,15 @@ export async function generateAiAssistantResponse(message: string, channel: stri
         });
 
         const result = await model.generateContent(SYSTEM_PROMPT(message, channel, context));
-        return result.response.text();
+        const response = result.response;
+
+        // Safety check: if response has no candidates, it might have been blocked
+        if (response.candidates && response.candidates.length > 0) {
+            return response.text();
+        } else {
+            console.warn("Gemini AI: No response candidates (possibly blocked by safety filters)");
+            return "Gracias por contactarnos. Alberto revisará tu consulta personalmente para brindarte la mejor asesoría.";
+        }
     } catch (error) {
         console.error("Gemini AI Core Error:", error);
         return "Gracias por tu interés. Alberto ha sido notificado y te contactará personalmente para brindarte una atención de primer nivel.";

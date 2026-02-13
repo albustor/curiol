@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageSquare, X, Sparkles, Send, Binary } from "lucide-react";
+import { MessageSquare, X, Sparkles, Send } from "lucide-react";
 import { getAiAssistantResponse } from "@/actions/gemini";
+import { cn } from "@/lib/utils";
 
 export function AiAssistant() {
     const [isOpen, setIsOpen] = useState(false);
@@ -26,13 +27,15 @@ export function AiAssistant() {
 
         const userMsg = { role: "user", text: message };
         setChat(prev => [...prev, userMsg]);
+        const currentMessage = message;
         setMessage("");
         setLoading(true);
 
         try {
-            const response = await getAiAssistantResponse(message, {});
+            const response = await getAiAssistantResponse(currentMessage, {});
             setChat(prev => [...prev, { role: "ai", text: response }]);
         } catch (error) {
+            console.error("AI Assistant UI Error:", error);
             setChat(prev => [...prev, { role: "ai", text: "Ups, tuve un pequeño error técnico. ¿Podemos intentarlo de nuevo?" }]);
         } finally {
             setLoading(false);
@@ -47,7 +50,7 @@ export function AiAssistant() {
                         initial={{ opacity: 0, scale: 0.9, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="mb-4 md:mb-6 w-[calc(100vw-3rem)] md:w-[400px] bg-tech-950/90 backdrop-blur-xl border border-white/10 rounded-[2.5rem] shadow-2xl overflow-hidden glass-reflection"
+                        className="mb-4 md:mb-6 w-[calc(100vw-2rem)] md:w-[400px] bg-tech-950/90 backdrop-blur-xl border border-white/10 rounded-[2.5rem] shadow-2xl overflow-hidden glass-reflection"
                     >
                         <div className="bg-tech-900/50 p-6 border-b border-white/5 flex justify-between items-center">
                             <div className="flex items-center gap-3">
@@ -100,7 +103,7 @@ export function AiAssistant() {
                                 type="text"
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
-                                onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                                onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                                 placeholder="¿Cómo podemos potenciar tu legado?"
                                 className="flex-grow bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-sm text-white placeholder:text-tech-600 focus:outline-none focus:border-curiol-500/50 transition-all font-sans"
                             />
@@ -137,8 +140,4 @@ export function AiAssistant() {
             </motion.button>
         </div>
     );
-}
-
-function cn(...inputs: any[]) {
-    return inputs.filter(Boolean).join(" ");
 }
