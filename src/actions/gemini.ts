@@ -1,6 +1,6 @@
 "use server";
 
-import { generateAiAssistantResponse, generateDeliveryCopy as coreGenerateDeliveryCopy } from "@/lib/gemini";
+import { generateAiAssistantResponse, generateDeliveryCopy as coreGenerateDeliveryCopy, generateAcademyBatch as coreGenerateAcademyBatch } from "@/lib/gemini";
 
 /**
  * Client-facing Server Action for the Web Assistant
@@ -24,4 +24,11 @@ export async function generateB2BCopy(businessInfo: string) {
  */
 export async function generateDeliveryCopy(clientName: string, service: string, type: "song_title" | "story") {
     return await coreGenerateDeliveryCopy(clientName, service, type);
+}
+
+/**
+ * Server Action for Academy Batch Generation
+ */
+export async function generateAcademyBatch(track: "legacy" | "tech") {
+    return await coreGenerateAcademyBatch(track);
 }

@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, query, orderBy, limit, getDocs, where, Timestamp } from "firebase/firestore";
-import { generateAiChatResponse } from "@/lib/gemini"; // We'll use this for strategic insights
+import { generateAiAssistantResponse } from "@/lib/gemini"; // We'll use this for strategic insights
 import { useRole } from "@/hooks/useRole";
 import { useRouter } from "next/navigation";
 
@@ -97,7 +97,7 @@ export default function AnalyticsDashboard() {
             Genera un informe estratégico CORTO (3 puntos clave) con recomendaciones para Alberto sobre qué contenido crear o qué paquetes promocionar. 
             Usa un tono profesional pero inspirador. Formato Markdown.`;
 
-            const insight = await generateAiChatResponse(prompt, "Curiol Studio Strategy Assistant");
+            const insight = await generateAiAssistantResponse(prompt, "Curiol Studio Strategy Assistant");
             setAiInsights(insight);
         } catch (error) {
             console.error("AI Insight Error:", error);

@@ -87,3 +87,30 @@ export async function generateDeliveryCopy(clientName: string, service: string, 
         return "";
     }
 }
+/**
+ * Helper for Academy content batch generation
+ */
+export async function generateAcademyBatch(track: "legacy" | "tech") {
+    if (!API_KEY) return { error: "API Key missing" };
+    try {
+        const model = genAI.getGenerativeModel({
+            model: "gemini-1.5-flash",
+            generationConfig: { responseMimeType: "application/json" }
+        });
+
+        const prompt = track === "legacy"
+            ? `Genera un batch de 4 lecciones para la "Academia de Legado" de Curiol Studio. 
+               Enfócate en: Preservación de memorias, genealogía digital, el valor de la fotografía física y la curaduría de historias familiares.
+               Responde ÚNICAMENTE con un array JSON de 4 objetos con: title, description, body, type (video o lesson), category (siempre "Legado").`
+            : `Genera un batch de 4 lecciones para la "Academia Tech" de Curiol Studio. 
+               Enfócate en: Inteligencia Artificial para negocios, digitalización de flujos, omnicanalidad y el futuro del trabajo Phygital.
+               Responde ÚNICAMENTE con un array JSON de 4 objetos con: title, description, body, type (video o lesson), category (siempre "Tecnología").`;
+
+        const result = await model.generateContent(prompt);
+        const text = result.response.text();
+        return JSON.parse(text);
+    } catch (error) {
+        console.error("AI Academy Batch Error:", error);
+        return { error: "Failed to generate batch" };
+    }
+}
