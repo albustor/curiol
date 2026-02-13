@@ -113,6 +113,25 @@ export function ProcessDocumentation({ onBack }: ProcessDocumentationProps) {
                         Informa al cliente sobre las 1,000 conversaciones gratuitas al mes iniciadas por el usuario. Las conversaciones iniciadas por el negocio tienen costo y requieren pasar por un proceso de verificación de identidad (Business Verification) para aumentar el límite de mensajes diarios.
                     </p>
 
+                    <h2 className="text-2xl font-serif italic mb-6 text-tech-900 border-l-4 border-tech-900 pl-4">4. Bitácora de Estabilización (Feb 2026)</h2>
+                    <div className="bg-curiol-50 p-8 rounded-2xl mb-12 border border-curiol-100">
+                        <p className="text-xs font-bold uppercase tracking-widest text-curiol-700 mb-4">Actualizaciones del Núcleo Vital</p>
+                        <div className="space-y-6">
+                            <div className="flex gap-4">
+                                <div className="text-curiol-700 font-bold text-xs shrink-0">AI Sync</div>
+                                <p className="text-xs text-tech-800">Recuperación de WhatsApp AI con Token Permanente y prompt unificado para una experiencia de marca coherente.</p>
+                            </div>
+                            <div className="flex gap-4">
+                                <div className="text-curiol-700 font-bold text-xs shrink-0">Geo Sync</div>
+                                <p className="text-xs text-tech-800">Sincronización global de ubicación física a **Santa Bárbara de Santa Cruz, Guanacaste** en todos los puntos de contacto.</p>
+                            </div>
+                            <div className="flex gap-4">
+                                <div className="text-curiol-700 font-bold text-xs shrink-0">Build Fix</div>
+                                <p className="text-xs text-tech-800">Estandarización de dependencias en Next.js 15.1 y React 19, optimizando el pipeline de Vercel y eliminando errores de compilación.</p>
+                            </div>
+                        </div>
+                    </div>
+
                     {/* PDF Footer (Always Visible) */}
                     <div className="mt-24 pt-12 border-t border-tech-100 flex justify-between items-center text-[10px] text-tech-400 font-bold uppercase tracking-widest">
                         <div className="flex flex-col gap-1">
