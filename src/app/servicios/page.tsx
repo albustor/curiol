@@ -22,16 +22,17 @@ const familyPackages = [
         title: "Aventura Mágica",
         icon: Sparkles,
         items: [
-            "Patrimonio visual para la posteridad",
-            "15 Fotos High-End + IA",
-            "Realidad Aumentada interactiva",
+            "Exclusivo para niños: Imaginación hecha realidad",
+            "15 Fotos High-End (Gama Alta) + IA",
+            "Phygital: Realidad Aumentada Interactiva",
+            "Viva Memory: Slideshow IA con música y letra",
             "Línea de Tiempo Evolutiva (Legacy Sync)",
             "Álbum Digital de Descarga (LTD)",
-            "Retablo 5x7\" con NFC",
-            "Inversión: ₡80.900 / $165",
-            "(Pago seccionado: ₡16.180 x 5 meses)"
+            "Retablo 5x7\" con NFC incluido",
+            "Inversión: ₡98.000 / $195",
+            "10% OFF en Phygital adicional (₡22.500)"
         ],
-        highlight: false
+        highlight: true
     },
     {
         id: "recuerdos",
@@ -39,14 +40,14 @@ const familyPackages = [
         icon: Camera,
         items: [
             "Conexión intergeneracional Fine Art",
-            "15 Fotos Fine Art",
-            "Cuadros Vivos AR",
+            "15 Fotos Fine Art de alta gama",
+            "Cuadros Vivos AR + Viva Memory",
             "Timeline Evolutivo Premium",
             "Álbum Digital de Descarga (LTD)",
-            "Impresión de alta gama",
+            "Impresión de lujo en papel algodón",
             "Retablo 8x12\" con NFC",
-            "Inversión: ₡115.000 / $225",
-            "(Pago seccionado: ₡23.000 x 5 meses)"
+            "Inversión: ₡132.250 / $265",
+            "(Aumento del 15% aplicado)"
         ],
         highlight: false
     },
@@ -61,7 +62,8 @@ const familyPackages = [
             "Gestión de Timeline Core (Archivo Vivo)",
             "Álbum Digital de Descarga (LTD)",
             "Custodia digital hereditaria profesional",
-            "Suscripción: ₡25.000 / $59 mes"
+            "Suscripción: ₡28.750 / $69 mes",
+            "(Aumento del 15% aplicado)"
         ],
         highlight: false
     },
@@ -75,7 +77,8 @@ const familyPackages = [
             "Propósito claro y experto",
             "Álbum Digital de Descarga (LTD)",
             "Retablo 5x7\" incluido",
-            "Inversión: ₡49.000 / $99"
+            "Inversión: ₡56.350 / $115",
+            "(Aumento del 15% aplicado)"
         ],
         highlight: false
     }
@@ -144,10 +147,11 @@ const businessPackages = [
 
 const generateServicesSummary = () => {
     const summary = `*Curiol Studio 2026 - Legado vivo & Crecimiento Comercial & IA*\n\n` +
-        `*LEGADO FAMILIAR (B2C)*\n` +
-        `• *Aventura Mágica*: ₡80.9k / $165 (o 5 cuotas de ₡16,180)\n` +
-        `• *Recuerdos Eternos*: ₡115k / $225 (o 5 cuotas de ₡23,000)\n` +
-        `• *Membresía Legado*: ₡25k / $59 mes\n\n` +
+        `*LEGADO FAMILIAR (B2C) - Tarifas 2026*\n` +
+        `• *Aventura Mágica*: ₡98k / $195 (Imaginería High-end + AR + Viva Memory)\n` +
+        `• *Recuerdos Eternos*: ₡132.2k / $265 (Fine Art + Evolución)\n` +
+        `• *Relatos*: ₡56.3k / $115 (Esencia Fine Art)\n` +
+        `• *Membresía Legado*: ₡28.7k / $69 mes\n\n` +
         `*CRECIMIENTO COMERCIAL & IA (B2B)*\n` +
         `• *Omni Local*: ₡280k / $550\n` +
         `• *Omni Pro*: ₡780k / $1550\n` +
@@ -178,7 +182,7 @@ export default function ServiciosPage() {
                         </p>
 
                         {/* Tabs Selector */}
-                        <div className="flex p-1.5 bg-tech-900/50 backdrop-blur-xl border border-white/5 rounded-full relative overflow-hidden w-fit">
+                        <div className="flex p-1.5 bg-tech-900/80 backdrop-blur-2xl border border-white/10 rounded-full relative overflow-hidden w-fit shadow-2xl shadow-black/50">
                             <button
                                 onClick={() => setActiveTab("family")}
                                 className={cn(
@@ -198,13 +202,13 @@ export default function ServiciosPage() {
                                 Crecimiento Comercial
                             </button>
                             <motion.div
-                                className="absolute inset-y-1.5 bg-curiol-gradient rounded-full"
+                                className="absolute inset-y-1.5 bg-curiol-gradient rounded-full shadow-lg"
                                 initial={false}
                                 animate={{
-                                    left: activeTab === "family" ? "6px" : "51%",
-                                    width: activeTab === "family" ? "48%" : "48%"
+                                    left: activeTab === "family" ? "6px" : "calc(50% + 2px)",
+                                    width: "calc(50% - 8px)"
                                 }}
-                                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
                             />
                         </div>
                     </div>

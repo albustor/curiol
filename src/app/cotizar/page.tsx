@@ -53,62 +53,62 @@ const PACKAGES: Record<string, Array<{
         {
             id: "aventura",
             name: "Aventura Mágica",
-            price: 80900,
-            usdPrice: 165,
-            desc: "Patrimonio visual para la posteridad. Transformamos la imaginación infantil en realidades phygital eternas mediante captura artística y tecnología de punta.",
-            problem: "¿Cómo capturar la imaginación sin límites de un niño antes de que crezca? Resolvemos la pérdida de la magia infantil creando mundos donde ellos son los protagonistas.",
+            price: 98000,
+            usdPrice: 195,
+            desc: "Exclusivo para niños: Imaginación hecha realidad. Transformamos la fantasía infantil en realidades phygital de gama alta.",
+            problem: "¿Cómo capturar la imaginación sin límites de un niño? Resolvemos la pérdida de la magia infantil con tecnología High-end.",
             photoCount: 15,
-            physicalProduct: "Retablo 5x7\" con integración NFC/QR para lanzamiento instantáneo.",
-            techIntegrated: "IA Generativa (Fondos personalizados), Legado vivo (Slideshow + Canción IA original), NFC Digital Bridge.",
+            physicalProduct: "Retablo 5x7\" con integración NFC/QR.",
+            techIntegrated: "Realidad Aumentada Interactiva, Viva Memory (Letra/Música IA), Digital Bridge.",
             caseStudy: {
-                title: "El Bloom de la Confianza",
-                story: "Santi se sentía pequeño e invisible. Al verse como el 'Guardián del Espacio' en su obra física, algo cambió. Sus padres usan el NFC para recordarle cada mañana su valor."
+                title: "El Guardián del Sueño",
+                story: "Santi se vio como un héroe galáctico. Sus padres usan el AR para escuchar su canción de cuna personalizada cada noche."
             }
         },
         {
             id: "recuerdos",
             name: "Recuerdos Eternos",
-            price: 115000,
-            usdPrice: 225,
-            desc: "Conexión intergeneracional Fine Art. Un tributo que fusiona la calidez artesanal con la magia de la realidad aumentada para trascender el tiempo.",
-            problem: "La fragilidad de los recuerdos digitales que se pierden. Resolvemos la necesidad de un legado tangible y eterno.",
+            price: 132250,
+            usdPrice: 265,
+            desc: "Conexión intergeneracional Fine Art. Un legado tangible que fusiona la calidez artesanal con la narrativa digital.",
+            problem: "La fragilidad de los recuerdos digitales. Resolvemos la necesidad de un legado eterno y físico.",
             photoCount: 15,
-            physicalProduct: "Retablo 8x12\" (Borde 15mm) + Impresión Fine Art.",
-            techIntegrated: "Revelado Fine Art, Narrativa IA, Soporte Digital AR.",
+            physicalProduct: "Retablo 8x12\" Fine Art (Borde 15mm).",
+            techIntegrated: "Revelado de Autor, Narrativa IA, Timeline Premium.",
             caseStudy: {
-                title: "El Ancla de la Mañana",
-                story: "Elena sentía que solo tenía fotos borrosas en su nube. Este retablo en su mesa de noche es lo primero que ve al despertar, recordándole su base."
+                title: "El Ancla Familiar",
+                story: "Elena restauró su conexión con sus raíces. El retablo es el centro de memoria de su hogar."
             }
         },
         {
             id: "legado",
             name: "Membresía Anual de Legado",
-            price: 25000,
-            usdPrice: 59,
-            desc: "Tu patrimonio emocional protegido. Un acompañamiento anual diseñado para documentar tu evolución mientras custodiamos tu herencia digital.",
-            problem: "La historia familiar se dispersa. Resolvemos la desconexión con 3 sesiones programadas al año + Custodia Digital.",
+            price: 28750,
+            usdPrice: 69,
+            desc: "Tu patrimonio emocional protegido. Acompañamiento anual para documentar la evolución de tu historia.",
+            problem: "La historia familiar se dispersa. Resolvemos el olvido con 3 sesiones anuales + Custodia Digital.",
             photoCount: 45,
-            physicalProduct: "Ahorro garantizado frente a sesiones individuales.",
+            physicalProduct: "Ahorro garantizado (Suscripción recurrente).",
             techIntegrated: "Custodia de Herencia Digital, 3 Sesiones anuales, App de Legado.",
             isMonthly: true,
             caseStudy: {
-                title: "La Herencia Continua",
-                story: "Sofía captura cada cambio de su familia asegurando que su voz nunca se apague, con la tranquilidad de una inversión planificada."
+                title: "La Bitácora de Vida",
+                story: "Sofía asegura que cada cumpleaños y logro sea documentado y protegido para sus nietos."
             }
         },
         {
             id: "relatos",
             name: "Relatos",
-            price: 49000,
-            usdPrice: 99,
-            desc: "La esencia en formato ágil. Encuentros fotográficos de alta intensidad artística diseñados para capturar facetas específicas con la profundidad del Fine-Art.",
-            problem: "La falta de tiempo para sesiones largas. Resolvemos la necesidad de capturar momentos clave con la profundidad del Fine-Art en un formato dinámico.",
+            price: 56350,
+            usdPrice: 115,
+            desc: "La esencia en formato ágil. Encuentros fotográficos de alta intensidad para capturar momentos específicos.",
+            problem: "Falta de tiempo para sesiones largas. Resolvemos la urgencia con profundidad artística.",
             photoCount: 5,
             physicalProduct: "Retablo 5x7\" Fine Art.",
             techIntegrated: "Revelado de Autor, Puente Digital NFC.",
             caseStudy: {
-                title: "El Instante Preciso",
-                story: "Una sesión de solo 30 minutos capturó la conexión eterna entre un abuelo y su nieto, creando una pieza de museo que hoy preside su hogar."
+                title: "La Chispa del Momento",
+                story: "30 minutos bastaron para capturar la mirada única de un recién nacido, creando una joya física eterna."
             }
         }
     ],
@@ -206,8 +206,9 @@ const UPSELLS = {
 };
 
 const COMPLEMENTS = [
-    { id: "memoria_viva", name: "Memoria Viva (Slideshow + Música)", price: 20000, usdPrice: 40, desc: "Tu historia en un slideshow con música original. Emociones humanas, asistencia tecnológica." },
-    { id: "cancion_ia", name: "Canción Personalizada (IA)", price: 18000, usdPrice: 35, desc: "Creada con tus ideas y el mensaje que desees. Las ideas y emociones son humanas, la música es asistida por IA." },
+    { id: "phygital_extra", name: "Duo Phygital (AR + Viva Memory)", price: 22500, usdPrice: 45, desc: "Suma la magia de la Realidad Aumentada y el Slideshow con música IA. Precio especial por paquete." },
+    { id: "memoria_viva", name: "Memoria Viva (Slideshow + Música)", price: 15000, usdPrice: 30, desc: "Tu historia en un slideshow con música original." },
+    { id: "cancion_ia", name: "Canción Personalizada (IA)", price: 15000, usdPrice: 30, desc: "Las ideas y emociones son humanas, la música es asistida por IA." },
     { id: "detras_camaras", name: "Detrás de Cámaras (YouTube NFC)", price: 8000, usdPrice: 15, desc: "Acceso instantáneo al video del proceso creativo." },
     { id: "extra_photos", name: "Paquete +5 Fotos Extra", price: 18000, usdPrice: 35, desc: "Más momentos capturados con el mismo nivel de detalle." }
 ];
@@ -253,6 +254,15 @@ export default function CotizadorPage() {
     const [useInstallments, setUseInstallments] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState<"sinpe" | "transfer" | "card" | null>(null);
     const [quoteId, setQuoteId] = useState("");
+    const [clientData, setClientData] = useState({
+        name: "",
+        email: "",
+        phone: "",
+        cedula: "",
+        domicilio: "",
+        company: "",
+        interest: ""
+    });
 
     useEffect(() => {
         setQuoteId(`CP-${Math.floor(Math.random() * 90000) + 10000}`);
@@ -279,8 +289,13 @@ export default function CotizadorPage() {
         ? (currency === "CRC" ? 15000 : 30)
         : 0;
 
-    const total = packageTotal + coastalFee + complementTotal +
+    const baseTotal = packageTotal + coastalFee + complementTotal +
         extras.reduce((acc, curr) => acc + (currency === "CRC" ? curr.price : curr.usdPrice), 0);
+
+    // Recargo del 15% por cuotas en paquetes Familiares
+    const total = (useInstallments && category === 'family')
+        ? baseTotal * 1.15
+        : baseTotal;
 
     return (
         <div className="min-h-screen flex flex-col pt-32 pb-24">
@@ -714,12 +729,48 @@ export default function CotizadorPage() {
                                         Alberto Bustos
                                     </div>
 
-                                    <div className="flex justify-between items-start mb-12">
+                                    <div className="flex justify-between items-start mb-8">
                                         <div>
-                                            <h3 className="text-3xl font-serif text-white italic mb-2">Propuesta 2026</h3>
-                                            <p className="text-tech-500 text-[10px] font-bold uppercase tracking-[0.3em]">Curiol Studio • Digitalización Humana</p>
+                                            <h3 className="text-3xl font-serif text-white italic mb-2">Resumen de Propuesta</h3>
+                                            <p className="text-tech-500 text-[10px] font-bold uppercase tracking-[0.3em]">Curiol Studio • Datos para Contrato</p>
                                         </div>
                                         <ShoppingCart className="w-8 h-8 text-curiol-500" />
+                                    </div>
+
+                                    {/* Contract Data Fields */}
+                                    <div className="space-y-4 mb-10 bg-white/5 p-6 rounded-2xl border border-white/5">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="text-[7px] font-black uppercase tracking-[0.4em] text-tech-600 ml-1 mb-2 block">Nombre Completo</label>
+                                                <input
+                                                    type="text"
+                                                    value={clientData.name}
+                                                    onChange={(e) => setClientData({ ...clientData, name: e.target.value })}
+                                                    className="w-full bg-tech-950/50 border border-tech-800 rounded-xl px-4 py-2.5 text-white text-[11px] focus:border-curiol-500 transition-all outline-none"
+                                                    placeholder="Nombre legal"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="text-[7px] font-black uppercase tracking-[0.4em] text-tech-600 ml-1 mb-2 block">Cédula / ID</label>
+                                                <input
+                                                    type="text"
+                                                    value={clientData.cedula}
+                                                    onChange={(e) => setClientData({ ...clientData, cedula: e.target.value })}
+                                                    className="w-full bg-tech-950/50 border border-tech-800 rounded-xl px-4 py-2.5 text-white text-[11px] focus:border-curiol-500 transition-all outline-none"
+                                                    placeholder="Identificación"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="text-[7px] font-black uppercase tracking-[0.4em] text-tech-600 ml-1 mb-2 block">Domicilio para Entrega</label>
+                                            <input
+                                                type="text"
+                                                value={clientData.domicilio}
+                                                onChange={(e) => setClientData({ ...clientData, domicilio: e.target.value })}
+                                                className="w-full bg-tech-950/50 border border-tech-800 rounded-xl px-4 py-2.5 text-white text-[11px] focus:border-curiol-500 transition-all outline-none"
+                                                placeholder="Dirección completa para productos físicos"
+                                            />
+                                        </div>
                                     </div>
 
                                     <div className="space-y-6 mb-12">
@@ -993,37 +1044,29 @@ export default function CotizadorPage() {
                                                 await addDoc(collection(db, "quotes"), {
                                                     quoteId,
                                                     package: selectedPackage?.name,
-                                                    categoryId: category,
                                                     total,
                                                     currency,
                                                     paymentMethod,
                                                     status: paymentMethod === 'card' ? 'pending_link' : 'pending_confirmation',
                                                     createdAt: Timestamp.now(),
-                                                    items: [
-                                                        {
-                                                            name: `${selectedPackage?.name}${upgradeSize ? ` (Upgrade ${upgradeSize.label})` : ''}`,
-                                                            price: upgradeSize
-                                                                ? (currency === "USD" ? upgradeSize.usdPrice : upgradeSize.price)
-                                                                : (currency === "USD" ? selectedPackage?.usdPrice : selectedPackage?.price)
-                                                        },
-                                                        ...COMPLEMENTS.filter(c => selectedComplementIds.includes(c.id)).map(c => ({
-                                                            name: c.name,
-                                                            price: currency === "USD" ? c.usdPrice : c.price
-                                                        })),
-                                                        ...extras.map(e => ({
-                                                            name: e.name,
-                                                            price: currency === "USD" ? e.usdPrice : e.price
-                                                        }))
-                                                    ]
+                                                    client: {
+                                                        ...clientData,
+                                                        cedula: clientData.cedula || "",
+                                                        domicilio: clientData.domicilio || ""
+                                                    },
+                                                    metadata: {
+                                                        category: category,
+                                                        upsells: selectedComplementIds,
+                                                        installments: useInstallments
+                                                    }
                                                 });
                                             } catch (e) {
                                                 console.error("Error saving quote:", e);
                                             }
 
                                             const installmentText = useInstallments
-                                                ? `\nPlan de Pagos: 5 cuotas de ₡${selectedPackage?.id === "recuerdos" ? "23.000" : "16.180"} (Seccionado)`
+                                                ? `\nPlan de Pagos: 5 cuotas de ₡${(total / 5).toLocaleString()} (Recargo 15% incl.)`
                                                 : '';
-
                                             const message = encodeURIComponent(`Hola Alberto, he generado una propuesta en Curiol Studio.
 Ref: ${quoteId}
 

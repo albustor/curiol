@@ -2,14 +2,22 @@
 
 import { motion } from "framer-motion";
 import { TimelineEvent, EvolutiveTimeline, TimelineTheme } from "@/types/timeline";
-import { Calendar, MapPin, Camera, Play, Sparkles } from "lucide-react";
+import { Calendar, MapPin, Camera, Play, Sparkles, Trash2, Youtube } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+const getYouTubeID = (url: string) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+};
 
 interface TimelineViewProps {
     timeline: EvolutiveTimeline;
+    editable?: boolean;
+    onRemoveEvent?: (eventId: string) => void;
 }
 
-export function TimelineView({ timeline }: TimelineViewProps) {
+export function TimelineView({ timeline, editable, onRemoveEvent }: TimelineViewProps) {
     const { events, theme } = timeline;
 
     const themeStyles = {
@@ -39,7 +47,14 @@ export function TimelineView({ timeline }: TimelineViewProps) {
 
                 <div className="space-y-24 relative z-10">
                     {events.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map((event, idx) => (
-                        <TimelineItem key={event.id} event={event} index={idx} theme={theme} />
+                        <TimelineItem
+                            key={event.id}
+                            event={event}
+                            index={idx}
+                            theme={theme}
+                            editable={editable}
+                            onRemove={() => onRemoveEvent?.(event.id)}
+                        />
                     ))}
                 </div>
 
@@ -55,7 +70,19 @@ export function TimelineView({ timeline }: TimelineViewProps) {
     );
 }
 
-function TimelineItem({ event, index, theme }: { event: TimelineEvent; index: number; theme: TimelineTheme }) {
+function TimelineItem({
+    event,
+    index,
+    theme,
+    editable,
+    onRemove
+}: {
+    event: TimelineEvent;
+    index: number;
+    theme: TimelineTheme;
+    editable?: boolean;
+    onRemove?: () => void;
+}) {
     const isEven = index % 2 === 0;
 
     return (
@@ -92,12 +119,23 @@ function TimelineItem({ event, index, theme }: { event: TimelineEvent; index: nu
                             {event.description}
                         </p>
 
-                        {event.location && (
-                            <div className="flex items-center gap-2 text-tech-500 text-[10px] font-bold uppercase tracking-widest">
-                                <MapPin className="w-3 h-3" />
-                                {event.location}
-                            </div>
-                        )}
+                        <div className="flex justify-between items-center">
+                            {event.location && (
+                                <div className="flex items-center gap-2 text-tech-500 text-[10px] font-bold uppercase tracking-widest">
+                                    <MapPin className="w-3 h-3" />
+                                    {event.location}
+                                </div>
+                            )}
+                            {editable && (
+                                <button
+                                    onClick={(e) => { e.stopPropagation(); onRemove?.(); }}
+                                    className="p-2 text-tech-700 hover:text-red-500 transition-colors"
+                                    title="Quitar de mi Línea de Tiempo"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -110,22 +148,34 @@ function TimelineItem({ event, index, theme }: { event: TimelineEvent; index: nu
             {/* Media Display */}
             <div className="w-full md:w-1/2">
                 <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    className="relative aspect-square md:aspect-video rounded-[2.5rem] overflow-hidden group shadow-2xl"
+                    whileHover={{ scale: 1.02 }}
+                    className="relative aspect-square md:aspect-video rounded-[2.5rem] overflow-hidden group shadow-2xl bg-tech-950"
                 >
-                    <img
-                        src={event.mediaUrl}
-                        alt={event.title}
-                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-tech-950 via-transparent to-transparent opacity-60 group-hover:opacity-20 transition-opacity" />
+                    {getYouTubeID(event.mediaUrl) ? (
+                        <iframe
+                            src={`https://www.youtube.com/embed/${getYouTubeID(event.mediaUrl)}?modestbranding=1&rel=0`}
+                            className="w-full h-full border-0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            title={event.title}
+                        />
+                    ) : (
+                        <>
+                            <img
+                                src={event.mediaUrl}
+                                alt={event.title}
+                                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-tech-950 via-transparent to-transparent opacity-60 group-hover:opacity-20 transition-opacity" />
 
-                    {event.mediaType === 'video' && (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 group-hover:bg-curiol-500 group-hover:border-curiol-500 transition-all">
-                                <Play className="w-6 h-6 text-white fill-current" />
-                            </div>
-                        </div>
+                            {event.mediaType === 'video' && (
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 group-hover:bg-curiol-500 group-hover:border-curiol-500 transition-all">
+                                        <Play className="w-6 h-6 text-white fill-current" />
+                                    </div>
+                                </div>
+                            )}
+                        </>
                     )}
                 </motion.div>
             </div>

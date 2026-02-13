@@ -232,6 +232,27 @@ export async function migrateCsvToFirestore(): Promise<{ success: boolean; count
 }
 
 /**
+ * Generates a super-brief (2-3 words) evocative description for a photo using AI
+ */
+export async function generateBriefPhotoDescription(imageUrl: string) {
+    "use server";
+    try {
+        const { GoogleGenerativeAI } = await import("@google/generative-ai");
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+        const prompt = `Analiza esta fotografía (${imageUrl}) y genera una descripción extremadamente breve (solo 2 o 3 palabras) que sea alusiva, poética y premium. 
+        Ejemplo: "Mirada Ancestral", "Esencia Pura", "Legado Vivo".
+        Devuelve SOLO las palabras, sin puntuación extra.`;
+
+        const result = await model.generateContent(prompt);
+        return result.response.text().trim().replace(/[".]/g, "");
+    } catch (error) {
+        console.error("Brief Description Error:", error);
+        return "Legado Curiol";
+    }
+}
+/**
  * Generates an AI curator's insight for a specific album
  */
 export async function getPortfolioAiInsight(albumTitle: string, category: string, totalPhotos: number) {

@@ -12,7 +12,7 @@ import {
     LayoutDashboard, Users, Image as ImageIcon, MessageSquare, Mail,
     Plus, ExternalLink, Settings, BarChart3, LogOut, ArrowRight, Loader2, Sparkles,
     Calendar as CalendarIcon, Video, FileText, Brain, Aperture, CheckCircle2, AlertCircle, PieChart, ClipboardCheck,
-    HardDrive, ArrowUpRight, ShieldCheck, BookOpen
+    HardDrive, ArrowUpRight, ShieldCheck, BookOpen, Youtube
 } from "lucide-react";
 import { getPhotographyDashboardData, PhotographyInsight, analyzeAlbumComposition } from "@/actions/photography-ai";
 
@@ -31,6 +31,7 @@ export default function AdminDashboard() {
     const [interactionCount, setInteractionCount] = useState<number | string>("...");
     const [photographyInsight, setPhotographyInsight] = useState<PhotographyInsight | null>(null);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
+    const [youtubeAuthUrl, setYoutubeAuthUrl] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
@@ -141,6 +142,17 @@ export default function AdminDashboard() {
                     </div>
                     <div className="flex items-center gap-4">
                         <CommandK isMaster={isMaster} />
+                        {isMaster && (
+                            <button
+                                onClick={async () => {
+                                    const { getGoogleAuthUrl } = await import('@/lib/google-auth');
+                                    window.location.href = getGoogleAuthUrl();
+                                }}
+                                className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white rounded-xl transition-all text-[10px] font-bold uppercase tracking-widest"
+                            >
+                                <Youtube className="w-4 h-4" /> Conectar YouTube
+                            </button>
+                        )}
                         {isMaster && (
                             <Link
                                 href="/admin/equilibrio"

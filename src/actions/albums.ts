@@ -80,8 +80,11 @@ export async function getAlbum(id: string) {
         return null;
     }
 }
+import { getClientTimeline, addTimelineEvent, removeTimelineEventByMediaUrl } from "@/actions/timeline";
+
 /**
  * Toggles a favorite image for an album
+ * HEART = Automatically Add to Evolutive Timeline
  */
 export async function toggleFavorite(albumId: string, imageUrl: string) {
     try {
@@ -91,12 +94,34 @@ export async function toggleFavorite(albumId: string, imageUrl: string) {
 
         const data = snap.data() as AlbumMetadata;
         const favorites = data.favorites || [];
+        const clientId = data.clientId;
 
         let newFavorites;
-        if (favorites.includes(imageUrl)) {
-            newFavorites = favorites.filter(url => url !== imageUrl);
-        } else {
+        const isFavoriting = !favorites.includes(imageUrl);
+
+        if (isFavoriting) {
             newFavorites = [...favorites, imageUrl];
+
+            // AUTOMATION: Add to Timeline
+            const timeline = await getClientTimeline(clientId);
+            if (timeline) {
+                await addTimelineEvent(timeline.id, {
+                    date: new Date().toISOString().split('T')[0],
+                    title: `Selección de ${data.name}`,
+                    description: "Momento destacado guardado automáticamente desde el álbum digital.",
+                    mediaUrl: imageUrl,
+                    mediaType: 'image',
+                    packageId: 'Recuerdos'
+                });
+            }
+        } else {
+            newFavorites = favorites.filter(url => url !== imageUrl);
+
+            // AUTOMATION: Remove from Timeline
+            const timeline = await getClientTimeline(clientId);
+            if (timeline) {
+                await removeTimelineEventByMediaUrl(timeline.id, imageUrl);
+            }
         }
 
         await updateDoc(docRef, { favorites: newFavorites });

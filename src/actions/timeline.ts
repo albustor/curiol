@@ -12,7 +12,8 @@ import {
     updateDoc,
     serverTimestamp,
     arrayUnion,
-    orderBy
+    orderBy,
+    getDocFromCache // Added to optimize if needed, though getDoc is fine
 } from "firebase/firestore";
 import { EvolutiveTimeline, TimelineEvent, TimelineTheme } from "@/types/timeline";
 
@@ -107,9 +108,37 @@ export async function updateTimelineTheme(timelineId: string, theme: TimelineThe
     }
 }
 
+export async function removeTimelineEventByMediaUrl(timelineId: string, mediaUrl: string): Promise<boolean> {
+    try {
+        const docRef = doc(db, COLLECTION_NAME, timelineId);
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists()) return false;
+
+        const data = docSnap.data();
+        const events = data.events || [];
+        const newEvents = events.filter((e: any) => e.mediaUrl !== mediaUrl);
+
+        if (events.length === newEvents.length) return true; // Nothing to remove
+
+        await updateDoc(docRef, {
+            events: newEvents,
+            updatedAt: serverTimestamp()
+        });
+        return true;
+    } catch (error) {
+        console.error("Error removing timeline event:", error);
+        return false;
+    }
+}
+
 export async function getClientTimeline(clientId: string): Promise<EvolutiveTimeline | null> {
     try {
-        const q = query(collection(db, COLLECTION_NAME), where("clientId", "==", clientId));
+        const q = query(
+            collection(db, COLLECTION_NAME),
+            where("clientId", "==", clientId),
+            where("status", "==", "active"),
+            orderBy("createdAt", "asc") // Get the first one created as primary
+        );
         const snapshot = await getDocs(q);
         if (snapshot.empty) return null;
 

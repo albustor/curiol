@@ -88,12 +88,12 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen uppercase-titles">
       <Navbar />
 
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative min-h-screen pt-32 md:pt-40 flex items-center justify-center overflow-hidden">
+        <section className="relative min-h-screen flex items-end justify-end overflow-hidden">
           <div className="absolute inset-0 bg-tech-950">
             <AnimatePresence mode="popLayout">
               <motion.div
@@ -117,67 +117,57 @@ export default function Home() {
                 className="absolute inset-0 bg-cover img-premium"
               />
             </AnimatePresence>
-            <div className="absolute inset-0 bg-gradient-to-t from-tech-950 via-tech-950/40 to-tech-950" />
-            <div className="absolute inset-0 bg-tech-950/20 backdrop-blur-[2px]" />
+            <div className="absolute inset-0 bg-gradient-to-t from-tech-950/90 via-transparent to-tech-950/40" />
+            <div className="absolute inset-0 bg-tech-950/10 backdrop-blur-[1px]" />
           </div>
 
-          <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 lg:px-16 text-center">
-            <div className="flex justify-center items-center gap-3 mb-8 animate-fade-in">
-              <span className="h-[1px] w-12 bg-curiol-500"></span>
-              <span className="text-curiol-500 text-[10px] font-bold tracking-[0.4em] uppercase">Fotografía • Tecnología • Legado</span>
-              <span className="h-[1px] w-12 bg-curiol-500"></span>
+          {/* Hero Content - Bottom Right */}
+          <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 lg:px-16 w-full pb-20 md:pb-32">
+            <div className="flex flex-col items-end text-right">
+              <div className="flex items-center gap-3 mb-6 animate-fade-in justify-end">
+                <span className="h-[1px] w-8 bg-curiol-500/50"></span>
+                <span className="text-curiol-500 text-[9px] font-bold tracking-[0.4em] uppercase">Evolución Visual 2026</span>
+              </div>
+
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-serif text-white mb-8 leading-tight italic max-w-2xl bg-gradient-to-r from-white via-white to-tech-400 bg-clip-text text-transparent">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentPhrase}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                  >
+                    {currentPhrase}
+                  </motion.div>
+                </AnimatePresence>
+              </h1>
+
+              <div className="flex flex-wrap justify-end gap-4 mb-10">
+                <Link href="/cotizar" className="px-8 py-4 bg-curiol-700/80 backdrop-blur-md text-white text-[9px] font-bold uppercase tracking-widest hover:bg-curiol-500 transition-all transform hover:-translate-y-1 shadow-2xl border border-white/5 rounded-sm">
+                  Personalizar Legado
+                </Link>
+                <Link href="/servicios" className="px-8 py-4 border border-white/10 bg-white/5 backdrop-blur-md text-white text-[9px] font-bold uppercase tracking-widest hover:bg-tech-800 transition-all rounded-sm">
+                  Explorar Ecosistema
+                </Link>
+              </div>
+
+              <div className="flex flex-col items-end gap-2 opacity-60">
+                <p className="text-white text-[9px] font-bold uppercase tracking-[0.3em] italic">
+                  Santa Bárbara de Santa Cruz, Guanacaste
+                </p>
+                <div className="h-[1px] w-12 bg-curiol-500/50"></div>
+              </div>
             </div>
-
-            <h1 className="text-4xl md:text-5xl lg:text-7xl font-serif text-white mb-8 leading-tight italic min-h-[3em] flex flex-col justify-center px-4">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentPhrase}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -30 }}
-                  transition={{ duration: 1, ease: "easeOut" }}
-                  className="max-w-5xl mx-auto"
-                >
-                  {currentPhrase.split(" ").length <= 2 ? (
-                    <>
-                      {currentPhrase.split(" ")[0]} <br />
-                      <span className="text-curiol-gradient">{currentPhrase.split(" ").slice(1).join(" ")}</span>
-                    </>
-                  ) : (
-                    <span className="bg-gradient-to-r from-white via-white to-tech-400 bg-clip-text text-transparent">
-                      {currentPhrase}
-                    </span>
-                  )}
-                </motion.div>
-              </AnimatePresence>
-            </h1>
-
-            <p className="text-white/90 text-sm md:text-base font-light max-w-3xl mx-auto mb-6 leading-relaxed">
-              El curiol es el pigmento que da color, esencia y vida a la cerámica chorotega; adoptamos este nombre como un reconocimiento a la comunidad de Guaitil, un pueblo que sigue cultivando en sus manos un legado ancestral.
-            </p>
-            <p className="text-tech-500 text-[10px] font-bold uppercase tracking-[0.3em] mb-12 italic">
-              Santa Bárbara de Santa Cruz, Guanacaste, CR
-            </p>
-
-
-            <div className="flex flex-wrap justify-center gap-6 mb-12">
-              <Link href="/cotizar" className="px-10 py-5 bg-curiol-700 text-white text-xs font-bold uppercase tracking-widest hover:bg-curiol-500 transition-all transform hover:-translate-y-1 shadow-2xl">
-                Personalizar mi Legado
-              </Link>
-              <Link href="/soluciones-web" className="px-10 py-5 border border-tech-700 text-white text-xs font-bold uppercase tracking-widest hover:bg-tech-800 transition-all">
-                Crecimiento Comercial & IA
-              </Link>
-
-            </div>
-
-            <p className="text-white/80 text-sm italic font-light leading-relaxed max-w-3xl mx-auto animate-fade-in delay-500 mt-8 border-t border-white/10 pt-8">
-              "No vendemos fotografías y código; aseguramos legado y presencia." <br />
-            </p>
-
           </div>
 
-          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
-            <div className="w-[1px] h-16 bg-gradient-to-b from-curiol-500 to-transparent" />
+          {/* Floating indicator */}
+          <div className="absolute bottom-10 left-10 md:left-16 animate-pulse opacity-20">
+            <div className="w-[1px] h-12 bg-gradient-to-b from-curiol-500 to-transparent" />
+          </div>
+
+          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-30">
+            <div className="w-[1px] h-12 bg-gradient-to-b from-white to-transparent" />
           </div>
         </section>
 
@@ -255,7 +245,7 @@ export default function Home() {
               <h2 className="text-4xl md:text-6xl font-serif text-white mb-12 italic text-center">Uniendo dos mundos: <br /><span className="text-curiol-gradient">Arte & Tecnología</span></h2>
 
               {/* TABS SELECTOR */}
-              <div className="flex p-1.5 bg-tech-900/50 backdrop-blur-xl border border-white/5 rounded-full mb-16 relative overflow-hidden">
+              <div className="flex p-1.5 bg-tech-900/80 backdrop-blur-2xl border border-white/10 rounded-full mb-16 relative overflow-hidden shadow-2xl shadow-black/50">
                 <button
                   onClick={() => setActiveCategory("family")}
                   className={cn(
@@ -276,13 +266,13 @@ export default function Home() {
                 </button>
                 {/* Selector Slide Background */}
                 <motion.div
-                  className="absolute inset-y-1.5 bg-curiol-gradient rounded-full"
+                  className="absolute inset-y-1.5 bg-curiol-gradient rounded-full shadow-lg"
                   initial={false}
                   animate={{
-                    left: activeCategory === "family" ? "6px" : "51%",
-                    width: "48%"
+                    left: activeCategory === "family" ? "6px" : "calc(50% + 2px)",
+                    width: "calc(50% - 8px)"
                   }}
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
                 />
               </div>
             </div>
@@ -405,29 +395,33 @@ export default function Home() {
           </div>
         </section>
 
-        {/* AI Assistant Hook */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          <div className="lg:col-span-12 text-center mb-16">
-            <div className="inline-flex p-3 bg-curiol-500/10 rounded-full text-curiol-500 mb-8">
-              <Binary className="w-6 h-6" />
-            </div>
-            <h2 className="text-4xl md:text-5xl font-serif text-white mb-10 italic text-curiol-gradient">¿Cuál es tu próximo legado?</h2>
-            <p className="text-tech-400 text-xl font-light mb-12 leading-relaxed max-w-2xl mx-auto">
-              Nuestro asistente inteligente te guía para elegir la mejor ruta: ya sea inmortalizar tu historia familiar o construir la base tecnológica de tu negocio.
-            </p>
-            <button
-              onClick={() => window.dispatchEvent(new CustomEvent('open-ai-assistant'))}
-              className="px-12 py-6 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest hover:scale-105 transition-all rounded-full flex items-center gap-4 mx-auto shadow-2xl shadow-curiol-500/20"
-            >
-              Conversar con Curiol IA <Sparkles className="w-4 h-4" />
-            </button>
-          </div>
+        {/* AI Assistant Hook & Agenda */}
+        <section className="py-32 px-4 md:px-8 lg:px-16 bg-tech-950">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+              <div className="lg:col-span-12 text-center mb-16">
+                <div className="inline-flex p-3 bg-curiol-500/10 rounded-full text-curiol-500 mb-8">
+                  <Binary className="w-6 h-6" />
+                </div>
+                <h2 className="text-4xl md:text-5xl font-serif text-white mb-10 italic text-curiol-gradient">¿Cuál es tu próximo legado?</h2>
+                <p className="text-tech-400 text-xl font-light mb-12 leading-relaxed max-w-2xl mx-auto">
+                  Nuestro asistente inteligente te guía para elegir la mejor ruta: ya sea inmortalizar tu historia familiar o construir la base tecnológica de tu negocio.
+                </p>
+                <button
+                  onClick={() => window.dispatchEvent(new CustomEvent('open-ai-assistant'))}
+                  className="px-12 py-6 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest hover:scale-105 transition-all rounded-full flex items-center gap-4 mx-auto shadow-2xl shadow-curiol-500/20"
+                >
+                  Conversar con Curiol IA <Sparkles className="w-4 h-4" />
+                </button>
+              </div>
 
-          {/* Agenda Integration */}
-          <div className="lg:col-start-4 lg:col-span-6 mt-12 pb-32">
-            <AgendaWidget />
+              {/* Agenda Integration */}
+              <div className="lg:col-start-4 lg:col-span-6 mt-12">
+                <AgendaWidget />
+              </div>
+            </div>
           </div>
-        </div>
+        </section>
       </main>
 
       <Footer />
