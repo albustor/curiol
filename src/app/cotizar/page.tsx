@@ -328,23 +328,37 @@ export default function CotizadorPage() {
             doc.text(line, 20, 140 + (i * 7));
         });
 
+        // Legal Foundation
+        doc.setFontSize(10);
+        doc.text("V. FUNDAMENTO JURÍDICO (Ley N° 8454)", 20, 180);
+        doc.setFontSize(7);
+        const legalText = [
+            "Este contrato digital se rige por la Ley de Certificados, Firmas Digitales y Documentos Electrónicos de Costa Rica (Ley N° 8454).",
+            "Bajo el Principio de Equivalencia Funcional (Art. 3), los documentos y firmas electrónicas tienen la misma validez y eficacia",
+            "que los físicos. El rastro técnico (Audit Trail) aquí contenido, junto con el pago del anticipo/depósito, constituye una",
+            "manifestación expresa de voluntad y perfecciona el acuerdo legal entre las partes bajo el marco jurídico costarricense."
+        ];
+        legalText.forEach((line, i) => {
+            doc.text(line, 20, 187 + (i * 4));
+        });
+
         // Signature
         doc.setFontSize(12);
-        doc.text("IV. ACEPTACIÓN Y FIRMA", 20, 185);
+        doc.text("VI. ACEPTACIÓN Y FIRMA", 20, 210);
         doc.setFontSize(8);
-        doc.text("Este documento ha sido generado automáticamente y aceptado digitalmente por el cliente.", 20, 195);
-        doc.text(`Audit Trail ID: ${now.getTime()}-${quoteId} | IP: ${clientIp || 'N/A'}`, 20, 200);
-        doc.text("CONFORMIDAD: Al realizar el pago, el cliente acepta irrevocablemente los términos aquí descritos.", 20, 205);
+        doc.text("Este documento ha sido generado automáticamente y aceptado digitalmente por el cliente.", 20, 218);
+        doc.text(`Audit Trail ID: ${now.getTime()}-${quoteId} | IP: ${clientIp || 'N/A'}`, 20, 223);
+        doc.text("CONFORMIDAD: Al realizar el pago, el cliente acepta irrevocablemente los términos aquí descritos.", 20, 228);
 
         doc.setLineWidth(0.5);
-        doc.line(20, 215, 80, 215);
-        doc.text("FIRMA DEL CLIENTE (Aceptado Digital)", 20, 220);
-        doc.text(`Nombre: ${clientData.name}`, 20, 225);
-        doc.text(`Audit Trail: ${now.getTime()}-${quoteId}`, 20, 230);
+        doc.line(20, 238, 80, 238);
+        doc.text("FIRMA DEL CLIENTE (Aceptado Digital)", 20, 243);
+        doc.text(`Nombre: ${clientData.name}`, 20, 248);
+        doc.text(`Audit Trail: ${now.getTime()}-${quoteId}`, 20, 253);
 
-        doc.line(120, 215, 180, 215);
-        doc.text("CURIOL STUDIO", 120, 220);
-        doc.text("Alberto Bustos Ortega", 120, 225);
+        doc.line(120, 238, 180, 238);
+        doc.text("CURIOL STUDIO", 120, 243);
+        doc.text("Alberto Bustos Ortega", 120, 248);
 
         doc.save(`Contrato_Curiol_${clientData.name.replace(/\s+/g, '_')}.pdf`);
     };

@@ -782,12 +782,19 @@ export default function AdminCotizadorPage() {
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <div className="mt-12 p-8 bg-slate-50 rounded-2xl border border-slate-100">
-                                            <p className="text-[10px] font-sans font-bold uppercase tracking-[0.2em] text-slate-400 mb-4">IV. Cláusula de Ejecución Administrativa</p>
-                                            <p className="text-[11px] text-slate-700 leading-relaxed font-sans italic">
+                                        <div className="mt-6 p-8 bg-slate-50 rounded-2xl border border-slate-100">
+                                            <p className="text-[10px] font-sans font-bold uppercase tracking-[0.2em] text-slate-400 mb-3">IV. Cláusula de Ejecución Administrativa</p>
+                                            <p className="text-[10px] text-slate-700 leading-relaxed font-sans italic">
                                                 "El perfeccionamiento de este acuerdo ocurre con el pago del anticipo estipulado (20%). Dicho acto constituye la firma formal de este contrato y la aceptación irrevocable de todos los términos y condiciones aquí descritos."
                                             </p>
-                                            <p className="mt-6 text-[9px] text-slate-400 font-sans">
+                                        </div>
+
+                                        <div className="mt-4 p-8 bg-slate-50 rounded-2xl border border-slate-100">
+                                            <p className="text-[10px] font-sans font-bold uppercase tracking-[0.2em] text-slate-400 mb-3">V. Fundamento Jurídico (Ley N° 8454)</p>
+                                            <p className="text-[9px] text-slate-600 leading-relaxed font-sans italic">
+                                                Esta propuesta y su aceptación digital se rigen por la Ley de Certificados, Firmas Digitales y Documentos Electrónicos de Costa Rica (Ley N° 8454). Bajo el Principio de Equivalencia Funcional (Art. 3), los documentos y firmas electrónicas tienen la misma validez y eficacia que los físicos. El rastro de auditoría y el pago del anticipo constituyen la manifestación expresa de voluntad.
+                                            </p>
+                                            <p className="mt-4 text-[9px] text-slate-400 font-sans">
                                                 ID de Propuesta: {quoteId} | Documento generado desde la consola de administración de Curiol Studio.
                                             </p>
                                         </div>
