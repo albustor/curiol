@@ -129,6 +129,7 @@ export default function AdminCotizadorPage() {
     const [isGenerating, setIsGenerating] = useState(false);
     const [showPreview, setShowPreview] = useState(false);
     const [quoteId, setQuoteId] = useState("");
+    const [useCashDiscount, setUseCashDiscount] = useState(false);
     const pdfRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -167,7 +168,11 @@ export default function AdminCotizadorPage() {
 
     const packagesTotal = selectedPackages.reduce((acc, pkg) => acc + (currency === "CRC" ? pkg.price : pkg.usd), 0);
     const extrasTotal = selectedExtras.reduce((acc, pkg) => acc + (currency === "CRC" ? pkg.price : pkg.usd), 0);
-    const total = packagesTotal + extrasTotal;
+    const baseTotal = packagesTotal + extrasTotal;
+
+    // Estrategia 2026: El precio base incluye financiamiento.
+    // Si es pago de contado, se aplica el -15%.
+    const total = useCashDiscount ? Math.round(baseTotal * 0.85) : baseTotal;
     const advancePayment = total * 0.20;
 
     const exportPDF = async () => {
@@ -297,6 +302,30 @@ export default function AdminCotizadorPage() {
                                         className="flex-grow w-full min-h-[120px] bg-tech-950/20 border border-tech-900 rounded-xl p-4 text-tech-400 text-xs outline-none focus:border-red-900/30 transition-all resize-none font-sans font-light italic"
                                     />
                                 </div>
+                            </div>
+
+                            {/* Descuento Contado Toggle */}
+                            <div className="pt-2">
+                                <button
+                                    onClick={() => setUseCashDiscount(!useCashDiscount)}
+                                    className={cn(
+                                        "w-full py-3 px-4 rounded-xl border-2 transition-all flex items-center justify-between group",
+                                        useCashDiscount
+                                            ? "bg-curiol-500/10 border-curiol-500 shadow-lg shadow-curiol-500/5 text-white"
+                                            : "bg-tech-950/50 border-tech-800 text-tech-500 hover:border-tech-700"
+                                    )}
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <Sparkles className={cn("w-4 h-4", useCashDiscount ? "text-curiol-500" : "text-tech-800")} />
+                                        <span className="text-[10px] font-bold uppercase tracking-widest">Pago de Contado (-15%)</span>
+                                    </div>
+                                    <div className={cn(
+                                        "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all",
+                                        useCashDiscount ? "border-curiol-500 bg-curiol-500" : "border-tech-800"
+                                    )}>
+                                        {useCashDiscount && <CheckCircle2 className="w-3 h-3 text-white" />}
+                                    </div>
+                                </button>
                             </div>
                         </GlassCard>
                     </div>
@@ -753,14 +782,15 @@ export default function AdminCotizadorPage() {
                                                 </tbody>
                                             </table>
                                         </div>
-                                        {selectedPackages.some(p => p.id === 'legado') && (
-                                            <div className="mt-8 p-6 bg-curiol-50 rounded-xl border-l-4 border-curiol-500">
-                                                <p className="text-[10px] font-sans font-bold uppercase tracking-widest text-curiol-700 mb-2">Cláusula de Agenda (Membresía)</p>
-                                                <p className="text-[10px] text-slate-700 leading-tight">
-                                                    Prioridad en agenda. Fechas anuales estipuladas al firmar. 1 solo cambio permitido con 15 días de preaviso.
-                                                </p>
-                                            </div>
-                                        )}
+                                        <div className="mt-12 p-8 bg-slate-50 rounded-2xl border border-slate-100">
+                                            <p className="text-[10px] font-sans font-bold uppercase tracking-[0.2em] text-slate-400 mb-4">IV. Cláusula de Ejecución Administrativa</p>
+                                            <p className="text-[11px] text-slate-700 leading-relaxed font-sans italic">
+                                                "El perfeccionamiento de este acuerdo ocurre con el pago del anticipo estipulado (20%). Dicho acto constituye la firma formal de este contrato y la aceptación irrevocable de todos los términos y condiciones aquí descritos."
+                                            </p>
+                                            <p className="mt-6 text-[9px] text-slate-400 font-sans">
+                                                ID de Propuesta: {quoteId} | Documento generado desde la consola de administración de Curiol Studio.
+                                            </p>
+                                        </div>
 
                                         <div className="bg-slate-50 p-10 rounded-2xl border border-slate-100">
                                             <h2 className="text-xs font-sans font-bold uppercase tracking-widest text-slate-900 mb-4">Inversión Total</h2>
@@ -772,6 +802,9 @@ export default function AdminCotizadorPage() {
                                                 <span>Pago Anticipado (20%):</span>
                                                 <span>{currency === "CRC" ? `₡${advancePayment.toLocaleString()}` : `$${advancePayment.toFixed(2)}`}</span>
                                             </div>
+                                            <p className="mt-4 text-[9px] text-slate-400 text-center italic">
+                                                * El pago de este anticipo perfecciona legalmente el contrato y acepta las cláusulas de agenda.
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
