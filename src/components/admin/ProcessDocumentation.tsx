@@ -127,7 +127,10 @@ export function ProcessDocumentation({ onBack }: ProcessDocumentationProps) {
                             </div>
                             <div className="flex gap-4">
                                 <div className="text-curiol-700 font-bold text-xs shrink-0">Build Fix</div>
-                                <p className="text-xs text-tech-800">Estandarización de dependencias en Next.js 15.1 y React 19, optimizando el pipeline de Vercel y eliminando errores de compilación.</p>
+                                <div className="space-y-1">
+                                    <p className="text-xs text-tech-800 font-bold">Estandarización Next.js 15.1 + React 19</p>
+                                    <p className="text-[10px] text-tech-600 leading-relaxed">Se resolvieron conflictos de `eslint-config-next` y typos críticos en dashboards de Analítica y Academia. Limpieza total de `package-lock.json` para despliegue ininterrumpido en Vercel.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
