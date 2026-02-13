@@ -44,26 +44,26 @@ const familyPackages = [
             "Cuadros Vivos AR + Viva Memory",
             "Timeline Evolutivo Premium",
             "Álbum Digital de Descarga (LTD)",
-            "Impresión de lujo en papel algodón",
+            "Portal de Entrega: Acceso Privado (User/Pass)",
             "Retablo 8x12\" con NFC",
-            "Inversión: ₡132.250 / $265",
-            "(Aumento del 15% aplicado)"
+            "Inversión Estándar: ₡132.250 / $265",
+            "Beneficio Pago de Contado: -15% (₡112.400)"
         ],
         highlight: false
     },
     {
         id: "legado",
-        title: "Membresía Anual de Legado",
+        title: "Membresía de Legado",
         icon: Users,
         items: [
             "Tu patrimonio emocional protegido",
             "Acompañamiento anual de evolución",
-            "3 Sesiones programadas anuales",
+            "3 Sesiones programadas (Recuerdos Eternos)",
+            "Portal de Entrega Privado (User/Pass)",
             "Gestión de Timeline Core (Archivo Vivo)",
-            "Álbum Digital de Descarga (LTD)",
             "Custodia digital hereditaria profesional",
-            "Suscripción: ₡28.750 / $69 mes",
-            "(Aumento del 15% aplicado)"
+            "Plan Semestral: ₡59.490 mes (-10% desc)",
+            "Plan Anual: ₡29.414 mes (-11% desc)"
         ],
         highlight: false
     },
@@ -76,9 +76,9 @@ const familyPackages = [
             "5 Fotos Fine-Art de alta intensidad",
             "Propósito claro y experto",
             "Álbum Digital de Descarga (LTD)",
-            "Retablo 5x7\" incluido",
-            "Inversión: ₡56.350 / $115",
-            "(Aumento del 15% aplicado)"
+            "Portal de Entrega: Acceso Privado",
+            "Inversión Estándar: ₡56.350 / $115",
+            "Beneficio Pago de Contado: -15% (₡47.900)"
         ],
         highlight: false
     }
@@ -148,10 +148,12 @@ const businessPackages = [
 const generateServicesSummary = () => {
     const summary = `*Curiol Studio 2026 - Legado vivo & Crecimiento Comercial & IA*\n\n` +
         `*LEGADO FAMILIAR (B2C) - Tarifas 2026*\n` +
-        `• *Aventura Mágica*: ₡112.7k / $225 (Financiamiento Incluido)\n` +
-        `• *Recuerdos Eternos*: ₡132.2k / $265 (Financiamiento Incluido)\n` +
-        `• *Relatos*: ₡56.3k / $115 (Financiamiento Incluido)\n\n` +
+        `• *Aventura Mágica*: ₡112.7k / $225\n` +
+        `• *Recuerdos Eternos*: ₡132.2k / $265\n` +
+        `• *Relatos*: ₡56.3k / $115\n` +
+        `• *Membresía*: Desde ₡29.4k/mes (Plan Anual)\n\n` +
         `*BENEFICIO PAGO DE CONTADO: -15% EN TODOS LOS PLANES*\n\n` +
+        `*PORTAL DE ENTREGA: Acceso privado incluido*\n\n` +
         `*CRECIMIENTO COMERCIAL & IA (B2B)*\n` +
         `• *Omni Local*: ₡280k / $550\n` +
         `• *Omni Pro*: ₡780k / $1550\n` +
@@ -397,7 +399,7 @@ function ServiceCard({ item, activeTab }: { item: any, activeTab: string }) {
                                 href="/pago-cuotas"
                                 className="text-tech-500 hover:text-white text-[8px] font-bold uppercase tracking-[0.2em] transition-colors border-b border-white/5 pb-1 w-fit mx-auto"
                             >
-                                Ver Opciones de Financiamiento / Tasa 0
+                                Financiamiento
                             </Link>
                         )}
                     </div>
