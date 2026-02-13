@@ -17,59 +17,45 @@ import { PerspectiveCard } from "@/components/ui/PerspectiveCard";
 export default function SolucionesWebPage() {
     const plans = [
         {
-            name: "Plan A: Presencia Express",
-            subtitle: "IDMV - El Primer Paso",
-            price: 85000,
-            usdPrice: 199,
+            name: "Omni Local (IDMV)",
+            subtitle: "Presencia Digital Agéntica",
+            price: 280000,
+            usdPrice: 550,
             features: [
-                "1 Landing Page de alto impacto",
-                "Optimización de Enlace Bio (Links)",
-                "Generador de Textos con IA",
-                "Integración WhatsApp Business",
-                "Acceso Academia (Básico)"
+                "Sitio Web de Alto Impacto (IDMV)",
+                "Optimización de Enlace Bio Integrado",
+                "Asistente IA para generación de contenido",
+                "Integración Meta Business Essentials",
+                "Acceso a la Academia Curiol"
             ],
             color: "tech"
         },
         {
-            name: "Plan B: Negocio Pro",
-            subtitle: "Escalabilidad & Automatización",
-            price: 185000,
-            usdPrice: 399,
+            name: "Omni Pro (Ecosistema)",
+            subtitle: "Automatización & Escalabilidad",
+            price: 780000,
+            usdPrice: 1550,
             features: [
-                "Sitio Web Premium (6 Secciones)",
-                "Galerías Pixellu-Style",
+                "Infraestructura Inteligente de Ventas",
                 "OmniFlow: manyChat-style Automation",
-                "IA Composition Editor",
-                "Acceso Academia (Premium + Código)"
+                "IA Gemini Integrada para Leads",
+                "Galerías Interactivas Fine-Art Style",
+                "Soporte Estratégico Mensual"
             ],
+            primary: true,
             color: "curiol"
         },
         {
-            name: "Plan C: Ecosistema Corporativo",
-            subtitle: "Potencia & Trascendencia",
-            price: 450000,
-            usdPrice: 899,
+            name: "Omni Ultra (Curiol OS)",
+            subtitle: "Ecosistema Digital Absoluto",
+            price: 1530000,
+            usdPrice: 3050,
             features: [
-                "Sitio Web Avanzado (Secciones Ilimitadas)",
-                "CRM Live Chat Integrado",
-                "Sistema de Reservas & Agenda Pro",
-                "Asistente IA de Negocio Personalizado",
-                "Acceso Academia (Premium de por vida)"
-            ],
-            primary: true,
-            color: "gold"
-        },
-        {
-            name: "Omnitech Total Ecosystem",
-            subtitle: "La Solución Definitiva",
-            price: 1150000,
-            usdPrice: 2000,
-            features: [
-                "Todo lo anterior incluido",
-                "Gestión de Redes con IA (1 mes)",
+                "Cerebro Digital de Negocio (IA Custom)",
                 "App Web Progresiva (PWA)",
-                "Soporte Estratégico Mensual",
-                "Ecosistema Completo de Ventas"
+                "Optimización Agéntica de Costos",
+                "Soporte VIP Hardware & Software",
+                "Gestión de Activos Estratégicos"
             ],
             color: "white"
         }

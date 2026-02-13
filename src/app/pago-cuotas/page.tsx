@@ -70,26 +70,26 @@ export default function PagoCuotasPage() {
                             </button>
                         </GlassCard>
 
-                        {/* Option 3: 3 Cuotas Curiol */}
+                        {/* Option 3: 5 Cuotas Curiol */}
                         <GlassCard className="p-8 border-white/10 hover:border-white/20 transition-all flex flex-col items-center text-center group">
                             <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-white mb-6 group-hover:bg-white group-hover:text-tech-950 transition-all">
                                 <ShieldCheck className="w-8 h-8" />
                             </div>
-                            <h3 className="text-xl font-serif text-white italic mb-4">3 Cuotas Curiol</h3>
+                            <h3 className="text-xl font-serif text-white italic mb-4">5 Cuotas Curiol</h3>
                             <p className="text-tech-400 text-[11px] font-light mb-6 leading-relaxed">
-                                Financiamiento interno diseñado para tu comodidad, dividido en tres momentos clave del proceso.
+                                Financia tu patrimonio emocional en **5 cuotas mensuales fijas**, permitiendo que tu presupuesto fluya con tu historia.
                             </p>
                             <ul className="text-left w-full space-y-2 mb-8 text-[9px] uppercase tracking-widest font-bold text-tech-500">
-                                <li className="flex items-center gap-2"><ArrowRight className="w-3 h-3 text-curiol-500" /> 1. Reservación (Inicio)</li>
-                                <li className="flex items-center gap-2"><ArrowRight className="w-3 h-3 text-curiol-500" /> 2. Día de Producción</li>
-                                <li className="flex items-center gap-2"><ArrowRight className="w-3 h-3 text-curiol-500" /> 3. Fecha de Entrega*</li>
+                                <li className="flex items-center gap-2"><ArrowRight className="w-3 h-3 text-curiol-500" /> Sin trámites bancarios</li>
+                                <li className="flex items-center gap-2"><ArrowRight className="w-3 h-3 text-curiol-500" /> Cuotas desde ₡16.180*</li>
+                                <li className="flex items-center gap-2"><ArrowRight className="w-3 h-3 text-curiol-500" /> Control total en tu Portal</li>
                             </ul>
-                            <p className="text-[8px] text-tech-600 italic mb-6">*No mayor a 2 meses después de la sesión.</p>
+                            <p className="text-[8px] text-tech-600 italic mb-6">*Ejemplo basado en Plan Aventura Mágica.</p>
                             <button
-                                onClick={() => window.open('https://wa.me/50662856669?text=Hola Alberto, me interesa el plan de 3 cuotas (Reserva/Producción/Entrega).', '_blank')}
+                                onClick={() => window.open('https://wa.me/50662856669?text=Hola Alberto, me interesa el plan de 5 cuotas para mi sesión familiar.', '_blank')}
                                 className="w-full py-3 bg-white/5 border border-white/10 text-white text-[9px] font-bold uppercase tracking-widest hover:bg-tech-100 hover:text-tech-950 transition-all rounded-full mt-auto"
                             >
-                                Solicitar Plan 3 Cuotas
+                                Solicitar Plan 5 Cuotas
                             </button>
                         </GlassCard>
                     </div>
@@ -110,8 +110,8 @@ export default function PagoCuotasPage() {
                                 <div className="flex gap-4">
                                     <div className="w-8 h-8 rounded-full bg-curiol-500/10 flex items-center justify-center text-curiol-500 text-[10px] font-bold flex-shrink-0">02</div>
                                     <div>
-                                        <p className="text-white text-xs font-bold uppercase tracking-widest mb-1">Formalización</p>
-                                        <p className="text-tech-500 text-[10px] font-light">Una vez verificado el depósito, Curiol Studio genera el Contrato de Servicios Legales para firma mutua.</p>
+                                        <p className="text-white text-xs font-bold uppercase tracking-widest mb-1">Formalización Automática</p>
+                                        <p className="text-tech-500 text-[10px] font-light">Al realizar tu reserva, el sistema genera inmediatamente tu **Contrato Digital con Audit Trail**, validado por tu IP y el primer depósito.</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
