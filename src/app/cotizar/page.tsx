@@ -5,17 +5,20 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AiAssistant } from "@/components/AiAssistant";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { Camera, Code, ArrowRight, CheckCircle2, ShoppingCart, Sparkles, CreditCard, Send } from "lucide-react";
+import { Camera, Code, ArrowRight, CheckCircle2, ShoppingCart, Sparkles, CreditCard, Send, Clock, ShieldAlert, FileText, CheckCircle, FileSignature, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
+import jsPDF from "jspdf";
+import confetti from "canvas-confetti";
 
 const SECTIONS = [
     { id: "category", label: "Categoría" },
     { id: "package", label: "Paquete" },
     { id: "upsell", label: "Complementos" },
     { id: "summary", label: "Resumen" },
+    { id: "clauses", label: "Agenda" },
     { id: "payment", label: "Pago" }
 ];
 
@@ -53,13 +56,13 @@ const PACKAGES: Record<string, Array<{
         {
             id: "aventura",
             name: "Aventura Mágica",
-            price: 98000,
-            usdPrice: 195,
+            price: 112700,
+            usdPrice: 225,
             desc: "Exclusivo para niños: Imaginación hecha realidad. Transformamos la fantasía infantil en realidades phygital de gama alta.",
             problem: "¿Cómo capturar la imaginación sin límites de un niño? Resolvemos la pérdida de la magia infantil con tecnología High-end.",
             photoCount: 15,
             physicalProduct: "Retablo 5x7\" con integración NFC/QR.",
-            techIntegrated: "Realidad Aumentada Interactiva, Viva Memory (Letra/Música IA), Digital Bridge.",
+            techIntegrated: "Realidad Aumentada Interactiva, Viva Memory, Digital Bridge.",
             caseStudy: {
                 title: "El Guardián del Sueño",
                 story: "Santi se vio como un héroe galáctico. Sus padres usan el AR para escuchar su canción de cuna personalizada cada noche."
@@ -82,14 +85,14 @@ const PACKAGES: Record<string, Array<{
         },
         {
             id: "legado",
-            name: "Membresía Anual de Legado",
-            price: 28750,
-            usdPrice: 69,
-            desc: "Tu patrimonio emocional protegido. Acompañamiento anual para documentar la evolución de tu historia.",
+            name: "Membresía Semestral",
+            price: 59490,
+            usdPrice: 119,
+            desc: "Tu patrimonio emocional protegido. Acompañamiento mensual para documentar la evolución de tu historia.",
             problem: "La historia familiar se dispersa. Resolvemos el olvido con 3 sesiones anuales + Custodia Digital.",
             photoCount: 45,
-            physicalProduct: "Ahorro garantizado (Suscripción recurrente).",
-            techIntegrated: "Custodia de Herencia Digital, 3 Sesiones anuales, App de Legado.",
+            physicalProduct: "Membresía Premium (3 sesiones/año).",
+            techIntegrated: "Custodia de Herencia Digital, 3 Sesiones anuales, Portal de Entrega.",
             isMonthly: true,
             caseStudy: {
                 title: "La Bitácora de Vida",
@@ -99,12 +102,12 @@ const PACKAGES: Record<string, Array<{
         {
             id: "relatos",
             name: "Relatos",
-            price: 56350,
-            usdPrice: 115,
+            price: 56000,
+            usdPrice: 112,
             desc: "La esencia en formato ágil. Encuentros fotográficos de alta intensidad para capturar momentos específicos.",
             problem: "Falta de tiempo para sesiones largas. Resolvemos la urgencia con profundidad artística.",
-            photoCount: 5,
-            physicalProduct: "Retablo 5x7\" Fine Art.",
+            photoCount: 6,
+            physicalProduct: "Retablo 5x7\" (13x18 cm) Fine Art.",
             techIntegrated: "Revelado de Autor, Puente Digital NFC.",
             caseStudy: {
                 title: "La Chispa del Momento",
@@ -264,9 +267,79 @@ export default function CotizadorPage() {
         interest: ""
     });
 
+    const [clausesAccepted, setClausesAccepted] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [isGenerating, setIsGenerating] = useState(false);
+
     useEffect(() => {
         setQuoteId(`CP-${Math.floor(Math.random() * 90000) + 10000}`);
     }, []);
+
+    const generateContractPDF = () => {
+        const doc = new jsPDF();
+        const now = new Date();
+        const dateStr = now.toLocaleDateString();
+
+        // Branding
+        doc.setFontSize(22);
+        doc.setTextColor(191, 155, 48); // Curiol Gold
+        doc.text("CURIOL STUDIO", 105, 30, { align: "center" });
+
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+        doc.text("Contrato de Prestación de Servicios Fotográficos", 105, 40, { align: "center" });
+        doc.text(`Ref: ${quoteId} | Fecha: ${dateStr}`, 105, 45, { align: "center" });
+
+        // Client Info
+        doc.setFontSize(12);
+        doc.setTextColor(0);
+        doc.text("I. DATOS DEL CLIENTE", 20, 60);
+        doc.setFontSize(10);
+        doc.text(`Nombre: ${clientData.name}`, 20, 70);
+        doc.text(`Identificación: ${clientData.cedula}`, 20, 75);
+        doc.text(`Domicilio: ${clientData.domicilio}`, 20, 80);
+
+        // Service Info
+        doc.setFontSize(12);
+        doc.text("II. DETALLE DEL SERVICIO", 20, 95);
+        doc.setFontSize(10);
+        doc.text(`Paquete: ${selectedPackage?.name}`, 20, 105);
+        doc.text(`Inversión Total: ${currency === "USD" ? "$" : "₡"}${total.toLocaleString()}`, 20, 110);
+        doc.text(`Método de Pago: ${paymentMethod || "Pendiente"}`, 20, 115);
+
+        // Clauses
+        doc.setFontSize(12);
+        doc.text("III. CLÁUSULAS DE AGENDA Y COMPROMISO", 20, 130);
+        doc.setFontSize(9);
+        const clauses = [
+            "1. PRIORIDAD: El cliente goza de prioridad en la agenda de Curiol Studio para asegurar su sesion.",
+            "2. FORMALIZACIÓN: Las fechas anuales deben quedar agendadas al momento de la firma (hoy).",
+            "3. POLÍTICA DE CAMBIOS: Se permite UN solo cambio de fecha por sesión, solicitado con 15 días de preaviso.",
+            "4. EL INCUMPLIMIENTO de los plazos de preaviso anula el derecho a reprogramación automática.",
+            "5. RESERVA: Este contrato se activa tras el pago del adelanto correspondiente."
+        ];
+        clauses.forEach((line, i) => {
+            doc.text(line, 20, 140 + (i * 7));
+        });
+
+        // Signature
+        doc.setFontSize(12);
+        doc.text("IV. ACEPTACIÓN Y FIRMA", 20, 185);
+        doc.setFontSize(8);
+        doc.text("Este documento ha sido generado automáticamente y aceptado digitalmente por el cliente.", 20, 195);
+
+        doc.setLineWidth(0.5);
+        doc.line(20, 215, 80, 215);
+        doc.text("FIRMA DEL CLIENTE (Aceptado Digital)", 20, 220);
+        doc.text(`Nombre: ${clientData.name}`, 20, 225);
+        doc.text(`Audit Trail: ${now.getTime()}-${quoteId}`, 20, 230);
+
+        doc.line(120, 215, 180, 215);
+        doc.text("CURIOL STUDIO", 120, 220);
+        doc.text("Alberto Bustos Ortega", 120, 225);
+
+        doc.save(`Contrato_Curiol_${clientData.name.replace(/\s+/g, '_')}.pdf`);
+    };
 
     const handleNext = () => setStep(s => Math.min(s + 1, SECTIONS.length - 1));
     const handleBack = () => setStep(s => Math.max(s - 1, 0));
@@ -911,7 +984,7 @@ export default function CotizadorPage() {
                                             onClick={handleNext}
                                             className="py-5 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest hover:brightness-110 transition-all rounded-xl shadow-xl shadow-curiol-500/20"
                                         >
-                                            Proceder al Pago
+                                            Continuar a Agenda
                                         </button>
                                     </div>
                                     <button onClick={handleBack} className="w-full text-center mt-8 text-tech-500 hover:text-white transition-all text-[10px] uppercase font-bold tracking-widest">Modificar Selección</button>
@@ -923,17 +996,88 @@ export default function CotizadorPage() {
                             <motion.div
                                 key="step4"
                                 initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
+                                className="max-w-xl mx-auto"
+                            >
+                                <div className="text-center mb-10">
+                                    <h3 className="text-3xl font-serif text-white mb-4 italic">Agenda & Compromiso</h3>
+                                    <p className="text-tech-400">Para asegurar la calidad y exclusividad de tu legado, solicitamos tu conformidad con nuestras políticas.</p>
+                                </div>
+
+                                <div className="space-y-6">
+                                    <GlassCard className="border-curiol-500/20 p-8">
+                                        <div className="flex gap-4 mb-8">
+                                            <ShieldAlert className="w-10 h-10 text-curiol-500 shrink-0" />
+                                            <div>
+                                                <h4 className="text-white font-bold text-sm uppercase tracking-widest">Protocolo de Curiol Studio</h4>
+                                                <p className="text-tech-500 text-[10px] mt-1 italic">Válido para todas las sesiones 2026</p>
+                                            </div>
+                                        </div>
+
+                                        <ul className="space-y-5 text-sm text-tech-200">
+                                            <li className="flex gap-4">
+                                                <div className="w-5 h-5 rounded-full bg-curiol-500/10 flex items-center justify-center text-curiol-500 font-bold text-[10px] shrink-0">1</div>
+                                                <p className="text-xs leading-relaxed"><span className="text-white font-bold">Prioridad de Agenda:</span> Gozarás de preferencia para asegurar tus espacios anuales.</p>
+                                            </li>
+                                            <li className="flex gap-4">
+                                                <div className="w-5 h-5 rounded-full bg-curiol-500/10 flex items-center justify-center text-curiol-500 font-bold text-[10px] shrink-0">2</div>
+                                                <p className="text-xs leading-relaxed"><span className="text-white font-bold">Formalización de Fechas:</span> Al firmar este contrato, definiremos tus fechas definitivas contra agenda.</p>
+                                            </li>
+                                            <li className="flex gap-4">
+                                                <div className="w-5 h-5 rounded-full bg-curiol-500/10 flex items-center justify-center text-curiol-500 font-bold text-[10px] shrink-0">3</div>
+                                                <p className="text-xs leading-relaxed"><span className="text-white font-bold">Un solo cambio:</span> Se permite una única reprogramación con <span className="text-curiol-500 font-bold">15 días de preaviso</span>.</p>
+                                            </li>
+                                        </ul>
+
+                                        <div className="mt-10 pt-8 border-t border-white/5">
+                                            <label className="flex items-center gap-4 cursor-pointer group">
+                                                <div
+                                                    onClick={() => setClausesAccepted(!clausesAccepted)}
+                                                    className={cn(
+                                                        "w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all",
+                                                        clausesAccepted ? "bg-curiol-500 border-curiol-500" : "border-tech-700 bg-tech-950 group-hover:border-curiol-500/50"
+                                                    )}
+                                                >
+                                                    {clausesAccepted && <CheckCircle className="w-4 h-4 text-white" />}
+                                                </div>
+                                                <span className="text-[11px] font-bold uppercase tracking-widest text-tech-400 group-hover:text-white transition-colors">
+                                                    Acepto las cláusulas de agenda y compromiso
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </GlassCard>
+
+                                    <div className="flex flex-col items-center gap-6 pt-6">
+                                        <button
+                                            disabled={!clausesAccepted}
+                                            onClick={handleNext}
+                                            className={cn(
+                                                "px-16 py-6 text-white text-[10px] font-bold uppercase tracking-[0.3em] transition-all rounded-full shadow-2xl",
+                                                clausesAccepted ? "bg-curiol-gradient hover:brightness-110 shadow-curiol-500/20" : "bg-tech-800 text-tech-500 cursor-not-allowed opacity-50"
+                                            )}
+                                        >
+                                            Proceder al Pago
+                                        </button>
+                                        <button onClick={handleBack} className="text-tech-500 hover:text-white transition-all text-[10px] uppercase font-bold tracking-widest">Modificar Propuesta</button>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {step === 5 && !isSuccess && (
+                            <motion.div
+                                key="step5"
+                                initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
                                 className="max-w-2xl mx-auto"
                             >
                                 <div className="text-center mb-10">
                                     <h3 className="text-3xl font-serif text-white mb-4 italic">Método de Pago</h3>
-                                    <p className="text-tech-400">Selecciona tu forma de pago preferida para asegurar tu espacio de forma rápida.</p>
+                                    <p className="text-tech-400">Asegura tu reserva mediante el depósito del adelanto (20%).</p>
                                 </div>
 
                                 <div className="grid grid-cols-1 gap-4">
                                     {/* SINPE Option */}
                                     <GlassCard
-                                        className={cn("cursor-pointer border-2 transition-all p-8 flex items-center justify-between", paymentMethod === 'sinpe' ? "border-curiol-500" : "border-transparent")}
+                                        className={cn("cursor-pointer border-2 transition-all p-8 flex items-center justify-between", paymentMethod === 'sinpe' ? "border-curiol-500 shadow-xl shadow-curiol-500/10" : "border-transparent")}
                                         onClick={() => setPaymentMethod('sinpe')}
                                     >
                                         <div className="flex items-center gap-6">
@@ -943,12 +1087,12 @@ export default function CotizadorPage() {
                                                 <p className="text-tech-500 text-[10px] uppercase font-bold tracking-widest">Pago inmediato al 6060-2617</p>
                                             </div>
                                         </div>
-                                        <div className={cn("w-6 h-6 rounded-full border-2", paymentMethod === 'sinpe' ? "border-curiol-500 bg-curiol-500 ring-4 ring-curiol-500/20" : "border-tech-800")} />
+                                        <div className={cn("w-6 h-6 rounded-full border-2 transition-all", paymentMethod === 'sinpe' ? "border-curiol-500 bg-curiol-500 ring-4 ring-curiol-500/20" : "border-tech-800")} />
                                     </GlassCard>
 
                                     {/* Bank Transfer Option */}
                                     <GlassCard
-                                        className={cn("cursor-pointer border-2 transition-all p-8 flex items-center justify-between", paymentMethod === 'transfer' ? "border-curiol-500" : "border-transparent")}
+                                        className={cn("cursor-pointer border-2 transition-all p-8 flex items-center justify-between", paymentMethod === 'transfer' ? "border-curiol-500 shadow-xl shadow-curiol-500/10" : "border-transparent")}
                                         onClick={() => setPaymentMethod('transfer')}
                                     >
                                         <div className="flex items-center gap-6">
@@ -958,12 +1102,12 @@ export default function CotizadorPage() {
                                                 <p className="text-tech-500 text-[10px] uppercase font-bold tracking-widest">Cuentas en Colones y Dólares</p>
                                             </div>
                                         </div>
-                                        <div className={cn("w-6 h-6 rounded-full border-2", paymentMethod === 'transfer' ? "border-curiol-500 bg-curiol-500 ring-4 ring-curiol-500/20" : "border-tech-800")} />
+                                        <div className={cn("w-6 h-6 rounded-full border-2 transition-all", paymentMethod === 'transfer' ? "border-curiol-500 bg-curiol-500 ring-4 ring-curiol-500/20" : "border-tech-800")} />
                                     </GlassCard>
 
                                     {/* Credit Card Option (Request Link) */}
                                     <GlassCard
-                                        className={cn("cursor-pointer border-2 transition-all p-8 flex items-center justify-between", paymentMethod === 'card' ? "border-curiol-500" : "border-transparent")}
+                                        className={cn("cursor-pointer border-2 transition-all p-8 flex items-center justify-between", paymentMethod === 'card' ? "border-curiol-500 shadow-xl shadow-curiol-500/10" : "border-transparent")}
                                         onClick={() => setPaymentMethod('card')}
                                     >
                                         <div className="flex items-center gap-6">
@@ -971,120 +1115,140 @@ export default function CotizadorPage() {
                                                 <CreditCard className="w-6 h-6" />
                                             </div>
                                             <div>
-                                                <p className="text-white font-serif text-xl italic leading-none mb-1">Solicitar Link de Pago (Tarjeta)</p>
-                                                <p className="text-tech-500 text-[10px] uppercase font-bold tracking-widest">Visa / MasterCard / American Express</p>
+                                                <p className="text-white font-serif text-xl italic leading-none mb-1">Solicitar Link (Tarjeta)</p>
+                                                <p className="text-tech-500 text-[10px] uppercase font-bold tracking-widest">Visa / MasterCard / AMEX</p>
                                             </div>
                                         </div>
-                                        <div className={cn("w-6 h-6 rounded-full border-2", paymentMethod === 'card' ? "border-curiol-500 bg-curiol-500 ring-4 ring-curiol-500/20" : "border-tech-800")} />
+                                        <div className={cn("w-6 h-6 rounded-full border-2 transition-all", paymentMethod === 'card' ? "border-curiol-500 bg-curiol-500 ring-4 ring-curiol-500/20" : "border-tech-800")} />
                                     </GlassCard>
                                 </div>
 
                                 <AnimatePresence>
-                                    {paymentMethod === 'sinpe' && (
-                                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-8 p-8 bg-curiol-500/5 border border-curiol-500/20 rounded-3xl text-center">
-                                            <p className="text-tech-400 text-[8px] uppercase tracking-widest font-bold mb-4">Detalles de SINPE Móvil</p>
-                                            <p className="text-4xl font-serif text-white italic mb-2 tracking-tighter">6060-2617</p>
-                                            <p className="text-curiol-500 font-bold text-xs uppercase tracking-[0.2em] mb-6">Alberto Bustos Ortega</p>
-                                            <div className="bg-tech-950 p-4 rounded-xl inline-flex items-center gap-3 text-tech-400 text-[10px]">
-                                                <Send className="w-3 h-3" /> Favor enviar comprobante por WhatsApp
-                                            </div>
-                                        </motion.div>
-                                    )}
-
-                                    {paymentMethod === 'transfer' && (
-                                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-8 p-8 bg-tech-800/50 border border-tech-700 rounded-3xl">
-                                            <p className="text-tech-500 text-[8px] uppercase tracking-widest font-bold mb-6 text-center">Cuentas BCR - Alberto Bustos Ortega</p>
-                                            <div className="space-y-6">
-                                                <div className="flex flex-col gap-1">
-                                                    <span className="text-tech-600 text-[7px] font-bold uppercase tracking-[0.3em]">Dólares (IBAN)</span>
-                                                    <span className="text-white font-mono text-sm select-all tracking-wider">CR57015202001299024529</span>
-                                                </div>
-                                                <div className="flex flex-col gap-1 border-t border-white/5 pt-4">
-                                                    <span className="text-tech-600 text-[7px] font-bold uppercase tracking-[0.3em]">Colones (IBAN)</span>
-                                                    <span className="text-white font-mono text-sm select-all tracking-wider">CR84015202322000422006</span>
-                                                </div>
-                                            </div>
-                                        </motion.div>
-                                    )}
-
-                                    {paymentMethod === 'card' && (
-                                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-8 p-10 bg-curiol-gradient/5 border border-curiol-500/20 rounded-3xl text-center">
-                                            <div className="max-w-sm mx-auto">
-                                                <Sparkles className="w-10 h-10 text-curiol-500 mx-auto mb-6" />
-                                                <p className="text-white font-serif text-2xl italic mb-4 leading-tight">Link de Pago Seguro</p>
-                                                <p className="text-tech-400 text-xs font-light leading-relaxed mb-8">
-                                                    Para tu seguridad, generamos un enlace de pago único a través de la plataforma certificada de nuestro banco. Lo recibirás de inmediato por WhatsApp para completar tu transacción de forma 100% segura.
+                                    {paymentMethod && (
+                                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-8 space-y-4">
+                                            <div className="p-8 bg-tech-950/50 border border-tech-800 rounded-3xl text-center">
+                                                <p className="text-curiol-500 font-bold text-[10px] uppercase tracking-[0.3em] mb-4">Monto a Depositar (Adelanto 20%)</p>
+                                                <p className="text-5xl font-serif text-white italic mb-2 tracking-tighter">
+                                                    {currency === "USD" ? "$" : "₡"}{(total * 0.2).toLocaleString()}
                                                 </p>
-                                                <div className="flex justify-center gap-4 grayscale opacity-50">
-                                                    <div className="w-10 h-10 bg-white/10 rounded flex items-center justify-center font-bold text-[8px]">VISA</div>
-                                                    <div className="w-10 h-10 bg-white/10 rounded flex items-center justify-center font-bold text-[8px]">MC</div>
-                                                    <div className="w-10 h-10 bg-white/10 rounded flex items-center justify-center font-bold text-[8px]">AMEX</div>
-                                                </div>
+                                                <p className="text-tech-600 text-[10px] italic">*El 80% restante se cancela el día de la sesión o según financiamiento.</p>
                                             </div>
+
+                                            {paymentMethod === 'sinpe' && (
+                                                <div className="p-6 bg-curiol-500/5 rounded-2xl border border-curiol-500/10 text-center">
+                                                    <p className="text-white font-mono text-xl tracking-widest">6060-2617</p>
+                                                    <p className="text-tech-500 text-[9px] uppercase font-black tracking-widest mt-1">SM - Alberto Bustos Ortega</p>
+                                                </div>
+                                            )}
+
+                                            {paymentMethod === 'transfer' && (
+                                                <div className="p-6 bg-tech-900/50 rounded-2xl border border-tech-800 text-[10px] space-y-3 font-mono">
+                                                    <div className="flex justify-between">
+                                                        <span className="text-tech-600 uppercase">Colones:</span>
+                                                        <span className="text-white">CR84015202322000422006</span>
+                                                    </div>
+                                                    <div className="flex justify-between border-t border-white/5 pt-3">
+                                                        <span className="text-tech-600 uppercase">Dólares:</span>
+                                                        <span className="text-white">CR57015202001299024529</span>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </motion.div>
                                     )}
                                 </AnimatePresence>
 
                                 <div className="mt-12 flex flex-col items-center gap-6">
-                                    <div className="text-center mb-4">
-                                        <p className="text-tech-700 text-[8px] uppercase font-bold tracking-[0.4em] mb-1">Referencia Proforma</p>
-                                        <p className="text-white/40 font-mono text-xs tracking-widest">{quoteId}</p>
-                                    </div>
                                     <button
-                                        className="px-16 py-6 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-[0.3em] hover:brightness-110 transition-all rounded-full shadow-2xl shadow-curiol-500/20 flex items-center gap-4"
+                                        disabled={!paymentMethod || isGenerating}
+                                        className={cn(
+                                            "px-16 py-6 text-white text-[10px] font-bold uppercase tracking-[0.3em] transition-all rounded-full shadow-2xl flex items-center gap-4",
+                                            paymentMethod && !isGenerating ? "bg-curiol-gradient hover:brightness-110 shadow-curiol-500/20" : "bg-tech-800 text-tech-500 cursor-not-allowed"
+                                        )}
                                         onClick={async () => {
-                                            const methodText = paymentMethod === 'sinpe' ? 'SINPE Móvil' :
-                                                paymentMethod === 'transfer' ? 'Transferencia Bancaria' :
-                                                    'Link de Pago Seguro (Tarjeta)';
-
-                                            const cardNote = paymentMethod === 'card' ? '\n\n*Nota:* Favor enviarme el link de pago seguro para proceder con la tarjeta.' : '';
-
-                                            // Save to Firestore
+                                            setIsGenerating(true);
                                             try {
+                                                const methodText = paymentMethod === 'sinpe' ? 'SINPE Móvil' :
+                                                    paymentMethod === 'transfer' ? 'Transferencia Bancaria' :
+                                                        'Link de Pago Seguro (Tarjeta)';
+
+                                                const cardNote = paymentMethod === 'card' ? '\n\n*Nota:* Favor enviarme el link de pago seguro.' : '';
+
+                                                // Save to Firestore
                                                 await addDoc(collection(db, "quotes"), {
                                                     quoteId,
                                                     package: selectedPackage?.name,
                                                     total,
+                                                    advance: total * 0.2,
                                                     currency,
                                                     paymentMethod,
-                                                    status: paymentMethod === 'card' ? 'pending_link' : 'pending_confirmation',
+                                                    status: 'awaiting_advance',
+                                                    clausesAccepted: true,
                                                     createdAt: Timestamp.now(),
-                                                    client: {
-                                                        ...clientData,
-                                                        cedula: clientData.cedula || "",
-                                                        domicilio: clientData.domicilio || ""
-                                                    },
-                                                    metadata: {
-                                                        category: category,
-                                                        upsells: selectedComplementIds,
-                                                        installments: useInstallments
-                                                    }
+                                                    client: clientData,
+                                                    metadata: { category, installments: useInstallments }
                                                 });
+
+                                                // Success Logic
+                                                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#bf9b30', '#ffffff', '#222222'] });
+
+                                                generateContractPDF();
+                                                setIsSuccess(true);
+
+                                                // Prepare WhatsApp
+                                                const message = encodeURIComponent(`Hola Alberto, he formalizado mi reserva en Curiol Studio.\nRef: ${quoteId}\nPaquete: ${selectedPackage?.name}\n\nHe aceptado las cláusulas y descargado mi contrato.\nMétodo de pago: ${methodText}${cardNote}\n\nQuedo a la espera de coordinar fechas contra agenda.`);
+
+                                                setTimeout(() => {
+                                                    window.open(`https://wa.me/50662856669?text=${message}`, '_blank');
+                                                }, 3000);
+
                                             } catch (e) {
-                                                console.error("Error saving quote:", e);
+                                                console.error("Error:", e);
+                                            } finally {
+                                                setIsGenerating(false);
                                             }
-
-                                            const installmentText = useInstallments
-                                                ? `\nPlan de Pagos: 5 cuotas de ₡${(total / 5).toLocaleString()} (Recargo 15% incl.)`
-                                                : '';
-                                            const message = encodeURIComponent(`Hola Alberto, he generado una propuesta en Curiol Studio.
-Ref: ${quoteId}
-
-Paquete: ${selectedPackage?.name} ${upgradeSize ? `(Upgrade a ${upgradeSize.label})` : ''}
-${selectedComplementIds.length > 0 ? `Complementos: ${COMPLEMENTS.filter(c => selectedComplementIds.includes(c.id)).map(c => c.name).join(', ')}\n` : ''}
-Inversión total: ${currency === "USD" ? "$" : "₡"}${total.toLocaleString()}${installmentText}
-Método de pago preferido: ${methodText}${cardNote}
-
-Quedo a la espera de los siguientes pasos para confirmar mi sesión.`);
-                                            window.open(`https://wa.me/50662856669?text=${message}`, '_blank');
                                         }}
                                     >
-                                        Finalizar & Enviar WhatsApp
+                                        {isGenerating ? "Generando Contrato..." : "Formalizar Reserva & Generar Contrato"}
+                                        {!isGenerating && <FileSignature className="w-4 h-4" />}
                                     </button>
-                                    <p className="text-[10px] text-tech-600 font-bold uppercase tracking-[0.2em] mt-6 italic text-center">
-                                        Comunicación inicial únicamente vía WhatsApp
-                                    </p>
-                                    <button onClick={handleBack} className="text-tech-500 hover:text-white transition-all text-[10px] uppercase tracking-[0.2em] font-bold">Volver al Resumen</button>
+
+                                    <button onClick={handleBack} className="text-tech-500 hover:text-white transition-all text-[10px] uppercase font-bold tracking-widest">Volver a Agenda</button>
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {isSuccess && (
+                            <motion.div
+                                key="success"
+                                initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                                className="max-w-xl mx-auto text-center py-12"
+                            >
+                                <div className="w-24 h-24 bg-curiol-500/10 rounded-full flex items-center justify-center mx-auto mb-8 border-2 border-curiol-500/50">
+                                    <CheckCircle className="w-12 h-12 text-curiol-500" />
+                                </div>
+                                <h3 className="text-4xl font-serif text-white mb-4 italic">¡Reserva Formalizada!</h3>
+                                <p className="text-tech-400 mb-10 leading-relaxed font-light">
+                                    Tu contrato ha sido generado y descargado automáticante. <br />
+                                    <span className="text-white font-medium">Estamos abriendo WhatsApp para concluir los detalles finales.</span>
+                                </p>
+
+                                <div className="space-y-4">
+                                    <GlassCard className="border-tech-800 p-8 flex flex-col items-center">
+                                        <FileText className="w-12 h-12 text-tech-400 mb-4" />
+                                        <p className="text-white font-bold text-xs uppercase tracking-widest mb-1">Tu Contrato Digital</p>
+                                        <p className="text-tech-600 text-[10px] mb-6">Referencia: {quoteId}</p>
+
+                                        <button
+                                            onClick={generateContractPDF}
+                                            className="inline-flex items-center gap-2 px-6 py-3 bg-tech-800 text-white text-[10px] font-bold uppercase tracking-widest rounded-full hover:bg-tech-700 transition-all"
+                                        >
+                                            <Download className="w-3 h-3" /> Re-descargar Contrato
+                                        </button>
+                                    </GlassCard>
+
+                                    <div className="pt-8">
+                                        <p className="text-[9px] text-tech-700 font-black uppercase tracking-[0.4em]">Curiol Studio • Memorias Vivas 2026</p>
+                                    </div>
                                 </div>
                             </motion.div>
                         )}
