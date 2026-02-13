@@ -27,48 +27,69 @@ export default function PagoCuotasPage() {
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {/* Option 1: Tasa 0 */}
-                        <GlassCard className="p-10 border-curiol-500/20 hover:border-curiol-500/40 transition-all flex flex-col items-center text-center group">
-                            <div className="w-20 h-20 rounded-2xl bg-curiol-500/10 flex items-center justify-center text-curiol-500 mb-8 group-hover:bg-curiol-500 group-hover:text-white transition-all shadow-xl shadow-curiol-500/5">
-                                <CreditCard className="w-10 h-10" />
+                        <GlassCard className="p-8 border-curiol-500/10 hover:border-curiol-500/30 transition-all flex flex-col items-center text-center group">
+                            <div className="w-16 h-16 rounded-2xl bg-curiol-500/10 flex items-center justify-center text-curiol-500 mb-6 group-hover:bg-curiol-500 group-hover:text-white transition-all">
+                                <CreditCard className="w-8 h-8" />
                             </div>
-                            <h3 className="text-2xl font-serif text-white italic mb-4">Tasa 0 (3 o 6 Meses)</h3>
-                            <p className="text-tech-400 text-sm font-light mb-8 leading-relaxed">
-                                Convenio exclusivo para tarjetas de crédito del **Banco de Costa Rica (BCR)**. 0% intereses, pagando el precio estándar del catálogo.
+                            <h3 className="text-xl font-serif text-white italic mb-4">Tasa 0 BCR</h3>
+                            <p className="text-tech-400 text-[11px] font-light mb-6 leading-relaxed">
+                                Convenio exclusivo para tarjetas del **Banco de Costa Rica**. 0% interés al precio de catálogo.
                             </p>
-                            <ul className="text-left w-full space-y-3 mb-10 text-[10px] uppercase tracking-widest font-bold text-tech-500">
-                                <li className="flex items-center gap-3"><ShieldCheck className="w-4 h-4 text-curiol-500" /> Exclusivo Banco de Costa Rica (BCR)</li>
-                                <li className="flex items-center gap-3"><ShieldCheck className="w-4 h-4 text-curiol-500" /> Disponible para compras mayores a ₡50k</li>
-                                <li className="flex items-center gap-3"><ShieldCheck className="w-4 h-4 text-curiol-500" /> Gestión ágil por enlace seguro</li>
+                            <ul className="text-left w-full space-y-2 mb-8 text-[9px] uppercase tracking-widest font-bold text-tech-500">
+                                <li className="flex items-center gap-2"><ShieldCheck className="w-3 h-3 text-curiol-500" /> Plazos de 3 o 6 meses</li>
+                                <li className="flex items-center gap-2"><ShieldCheck className="w-3 h-3 text-curiol-500" /> Sujeto a aprobación BCR</li>
                             </ul>
                             <button
-                                onClick={() => window.open('https://wa.me/50662856669?text=Hola Alberto, me gustaría pagar mi sesión con Tasa 0 del BCR.', '_blank')}
-                                className="w-full py-4 bg-white/5 border border-white/10 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-curiol-700 hover:border-curiol-500 transition-all rounded-full"
+                                onClick={() => window.open('https://wa.me/50662856669?text=Hola Alberto, me gustaría pagar con Tasa 0 del BCR.', '_blank')}
+                                className="w-full py-3 bg-white/5 border border-white/10 text-white text-[9px] font-bold uppercase tracking-widest hover:bg-curiol-700 transition-all rounded-full mt-auto"
                             >
-                                Solicitar Link BCR Tasa 0
+                                Info BCR Tasa 0
                             </button>
                         </GlassCard>
 
-                        {/* Option 2: Cuotas Curiol */}
-                        <GlassCard className="p-10 border-tech-500/20 hover:border-tech-500/40 transition-all flex flex-col items-center text-center group">
-                            <div className="w-20 h-20 rounded-2xl bg-tech-500/10 flex items-center justify-center text-tech-500 mb-8 group-hover:bg-tech-500 group-hover:text-white transition-all shadow-xl shadow-tech-500/5">
-                                <Sparkles className="w-10 h-10" />
+                        {/* Option 2: Contado */}
+                        <GlassCard className="p-8 border-tech-500/10 hover:border-tech-500/30 transition-all flex flex-col items-center text-center group bg-tech-900/40">
+                            <div className="w-16 h-16 rounded-2xl bg-tech-500/10 flex items-center justify-center text-tech-500 mb-6 group-hover:bg-tech-500 group-hover:text-white transition-all">
+                                <Sparkles className="w-8 h-8" />
                             </div>
-                            <h3 className="text-2xl font-serif text-white italic mb-4">Pago de Contado (-15%)</h3>
-                            <p className="text-tech-400 text-sm font-light mb-8 leading-relaxed">
-                                El precio de catálogo incluye facilidades de pago. Si decides realizar un pago único (Contado), te obsequiamos un **15% de descuento directo**.
+                            <h3 className="text-xl font-serif text-white italic mb-4">Pago Contado</h3>
+                            <p className="text-tech-400 text-[11px] font-light mb-6 leading-relaxed">
+                                Recibe un **15% de descuento directo** sobre el precio de catálogo al realizar un pago único.
                             </p>
-                            <ul className="text-left w-full space-y-3 mb-10 text-[10px] uppercase tracking-widest font-bold text-tech-500">
-                                <li className="flex items-center gap-3"><ShieldCheck className="w-4 h-4 text-tech-500" /> Beneficio inmediato (-15%)</li>
-                                <li className="flex items-center gap-3"><ShieldCheck className="w-4 h-4 text-tech-500" /> Válido vía SINPE o Transferencia</li>
-                                <li className="flex items-center gap-3"><ShieldCheck className="w-4 h-4 text-tech-500" /> Sin trámites bancarios</li>
+                            <ul className="text-left w-full space-y-2 mb-8 text-[9px] uppercase tracking-widest font-bold text-tech-500">
+                                <li className="flex items-center gap-2"><ShieldCheck className="w-3 h-3 text-tech-500" /> Beneficio inmediato</li>
+                                <li className="flex items-center gap-2"><ShieldCheck className="w-3 h-3 text-tech-500" /> SINPE o Transferencia</li>
                             </ul>
                             <button
-                                onClick={() => window.open('https://wa.me/50662856669?text=Hola Alberto, me gustaría aprovechar el -15% de descuento por pago de contado.', '_blank')}
-                                className="w-full py-4 bg-tech-800 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-tech-700 transition-all rounded-full flex items-center justify-center gap-3 shadow-2xl shadow-black/50"
+                                onClick={() => window.open('https://wa.me/50662856669?text=Hola Alberto, me gustaría aplicar el descuento por pago de contado.', '_blank')}
+                                className="w-full py-3 bg-tech-800 text-white text-[9px] font-bold uppercase tracking-widest hover:bg-tech-700 transition-all rounded-full mt-auto"
                             >
-                                Aplicar Descuento Contado <ArrowRight className="w-4 h-4" />
+                                Aplicar -15% Contado
+                            </button>
+                        </GlassCard>
+
+                        {/* Option 3: 3 Cuotas Curiol */}
+                        <GlassCard className="p-8 border-white/10 hover:border-white/20 transition-all flex flex-col items-center text-center group">
+                            <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-white mb-6 group-hover:bg-white group-hover:text-tech-950 transition-all">
+                                <ShieldCheck className="w-8 h-8" />
+                            </div>
+                            <h3 className="text-xl font-serif text-white italic mb-4">3 Cuotas Curiol</h3>
+                            <p className="text-tech-400 text-[11px] font-light mb-6 leading-relaxed">
+                                Financiamiento interno diseñado para tu comodidad, dividido en tres momentos clave del proceso.
+                            </p>
+                            <ul className="text-left w-full space-y-2 mb-8 text-[9px] uppercase tracking-widest font-bold text-tech-500">
+                                <li className="flex items-center gap-2"><ArrowRight className="w-3 h-3 text-curiol-500" /> 1. Reservación (Inicio)</li>
+                                <li className="flex items-center gap-2"><ArrowRight className="w-3 h-3 text-curiol-500" /> 2. Día de Producción</li>
+                                <li className="flex items-center gap-2"><ArrowRight className="w-3 h-3 text-curiol-500" /> 3. Fecha de Entrega*</li>
+                            </ul>
+                            <p className="text-[8px] text-tech-600 italic mb-6">*No mayor a 2 meses después de la sesión.</p>
+                            <button
+                                onClick={() => window.open('https://wa.me/50662856669?text=Hola Alberto, me interesa el plan de 3 cuotas (Reserva/Producción/Entrega).', '_blank')}
+                                className="w-full py-3 bg-white/5 border border-white/10 text-white text-[9px] font-bold uppercase tracking-widest hover:bg-tech-100 hover:text-tech-950 transition-all rounded-full mt-auto"
+                            >
+                                Solicitar Plan 3 Cuotas
                             </button>
                         </GlassCard>
                     </div>
