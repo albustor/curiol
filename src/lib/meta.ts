@@ -1,17 +1,14 @@
 const WHATSAPP_TOKEN = process.env.WHATSAPP_ACCESS_TOKEN;
 const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_ID || "1064880893378872";
-const WABA_ID = process.env.WHATSAPP_WABA_ID || "1236065411252784";
+const WABA_ID = process.env.WHATSAPP_WABA_ID || process.env.WHATSAPP_BUSINESS_ID || "1236065411252784";
 
 /**
  * Sends a message via WhatsApp Cloud API
  */
 export async function sendWhatsAppMessage(to: string, text: string) {
-    if (!WHATSAPP_TOKEN || !process.env.WHATSAPP_PHONE_ID) {
+    if (!WHATSAPP_TOKEN || (!process.env.WHATSAPP_PHONE_ID && !PHONE_NUMBER_ID)) {
         console.error("CRITICAL: WhatsApp credentials missing in environment variables!");
         console.error("Check WHATSAPP_ACCESS_TOKEN and WHATSAPP_PHONE_ID in your hosting dashboard.");
-        if (!process.env.WHATSAPP_PHONE_ID) {
-            console.warn("Using fallback PHONE_NUMBER_ID. This is NOT recommended for production.");
-        }
     }
 
     try {
