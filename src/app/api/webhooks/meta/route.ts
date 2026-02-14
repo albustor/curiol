@@ -56,8 +56,14 @@ export async function POST(req: Request) {
             const from = message.from;
             const text = message.text?.body;
 
-            // Log raw message details for debugging
             console.log(`MESSAGE RECEIVED | From: ${from} | Text: ${text || "[No Text]"}`);
+
+            // DEBUG: Direct Ping Test to bypass AI/Flows
+            if (text?.toUpperCase() === "PING") {
+                console.log("DEBUG: PING received. Sending PONG...");
+                await sendWhatsAppMessage(from, "PONG 🏓 - Curiol Studio está conectado y recibiendo tus mensajes.");
+                return NextResponse.json({ status: "ok" });
+            }
 
             const textUpper = text?.toUpperCase();
             const channel = body.object === "whatsapp_business_account" ? "whatsapp" : "social";
