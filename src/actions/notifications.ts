@@ -49,23 +49,36 @@ export async function sendNotification({ to, message, type, subject }: Notificat
     return { success: true };
 }
 
-const TEAM_CONTACTS = [
-    { name: "Alberto", phone: "62856669", email: "info@curiol.studio" },
-    { name: "Kevin", phone: process.env.WHATSAPP_KEVIN || "", email: "kevin@curiol.studio" },
-    { name: "Cristina", phone: process.env.WHATSAPP_CRISTINA || "", email: "cristina@curiol.studio" }
-];
+const TEAM_CONTACTS = {
+    alberto: { name: "Alberto", phone: "62856669", email: "info@curiol.studio" },
+    kevin: { name: "Kevin", phone: process.env.WHATSAPP_KEVIN || "", email: "kevin@curiol.studio" },
+    cristina: { name: "Cristina", phone: process.env.WHATSAPP_CRISTINA || "", email: "cristina@curiol.studio" },
+    cristian: { name: "Cristian", phone: process.env.WHATSAPP_CRISTIAN || "", email: "cristian@curiol.studio" }
+};
 
 export async function notifyNewBooking(booking: any) {
     const adminMessage = `Nueva reserva agendada por ${booking.name}. Fecha: ${booking.date instanceof Date ? booking.date.toLocaleDateString() : (booking.date.toDate ? booking.date.toDate().toLocaleDateString() : booking.date)}. Hora: ${booking.time}. Comprobante adjunto en el dashboard.\n\nAtentamente,\nCuriol Studio • Legado`;
     const clientMessage = `Hola ${booking.name}, gracias por agendar con Curiol Studio. Hemos recibido tu comprobante del 20%. Tu sesión para el ${booking.date instanceof Date ? booking.date.toLocaleDateString() : (booking.date.toDate ? booking.date.toDate().toLocaleDateString() : booking.date)} a las ${booking.time} está en proceso de aprobación final.\n\nAtentamente,\nCuriol Studio • Legado`;
 
+    // Determine which team members to notify based on service
+    let targetTeam = [TEAM_CONTACTS.alberto];
+
+    if (booking.service === 'legado') {
+        targetTeam = [TEAM_CONTACTS.alberto, TEAM_CONTACTS.cristian];
+    } else if (booking.service === 'infra') {
+        targetTeam = [TEAM_CONTACTS.cristina, TEAM_CONTACTS.kevin, TEAM_CONTACTS.alberto];
+    } else {
+        // Default for 'meet' or others: notify all for awareness
+        targetTeam = Object.values(TEAM_CONTACTS);
+    }
+
     // Notify Team
-    for (const contact of TEAM_CONTACTS) {
+    for (const contact of targetTeam) {
         if (contact.phone) {
             await sendNotification({ to: contact.phone, message: adminMessage, type: "whatsapp" });
         }
         if (contact.email) {
-            await sendNotification({ to: contact.email, message: adminMessage, type: "email", subject: "Nueva Reserva - Curiol Studio" });
+            await sendNotification({ to: contact.email, message: adminMessage, type: "email", subject: `Nueva Reserva [${booking.service.toUpperCase()}] - Curiol Studio` });
         }
     }
 
@@ -124,12 +137,18 @@ async function sendBookingReminder(booking: any, timeFrame: string) {
     await sendNotification({ to: booking.email, message: clientMessage, type: "email", subject: "Recordatorio de Sesión - Curiol Studio" });
 
     // Notify Team (Optional but helpful based on user request "that also arrives to my colleagues")
-    for (const contact of TEAM_CONTACTS) {
+    // Determine target team for reminders
+    let targetTeam = [TEAM_CONTACTS.alberto];
+    if (booking.service === 'legado') targetTeam = [TEAM_CONTACTS.alberto, TEAM_CONTACTS.cristian];
+    else if (booking.service === 'infra') targetTeam = [TEAM_CONTACTS.cristina, TEAM_CONTACTS.kevin, TEAM_CONTACTS.alberto];
+    else targetTeam = Object.values(TEAM_CONTACTS);
+
+    for (const contact of targetTeam) {
         if (contact.phone) {
             await sendNotification({ to: contact.phone, message: adminMessage, type: "whatsapp" });
         }
         if (contact.email) {
-            await sendNotification({ to: contact.email, message: adminMessage, type: "email", subject: `Recordatorio Sesión: ${booking.name}` });
+            await sendNotification({ to: contact.email, message: adminMessage, type: "email", subject: `Recordatorio [${booking.service.toUpperCase()}]: ${booking.name}` });
         }
     }
 }

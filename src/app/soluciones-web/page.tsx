@@ -112,7 +112,7 @@ export default function SolucionesWebPage() {
                                         <div className="w-10 h-10 rounded-full bg-curiol-500 flex items-center justify-center text-xs font-bold text-white shrink-0 shadow-lg shadow-curiol-500/20">0</div>
                                         <div>
                                             <p className="text-white text-sm font-bold uppercase tracking-widest mb-1 italic">Pre-producción Elite</p>
-                                            <p className="text-tech-500 text-xs font-light">Videollamada estratégica (8:00 PM+) para definir el ADN del proyecto.</p>
+                                            <p className="text-tech-500 text-xs font-light">Videollamada estratégica (7:00 PM+) para definir el ADN del proyecto.</p>
                                         </div>
                                     </div>
                                     <div className="flex gap-6 items-start">

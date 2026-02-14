@@ -27,12 +27,13 @@ const STEPS = [
 ];
 
 const SERVICES = [
-    { id: "legado", name: "Legado Familiar", desc: "Sesión Fine Art / Personal", icon: Camera, color: "curiol-500" },
+    { id: "legado", name: "Legado Vivo", desc: "Sesión Fine Art / Personal", icon: Camera, color: "curiol-500" },
     { id: "infra", name: "Crecimiento Comercial & IA", desc: "Negocio / Marca Personal", icon: Code, color: "tech-500" },
     { id: "meet", name: "Pre-producción Elite", desc: "Videollamada • 60-80 min", icon: Video, color: "curiol-500" }
 ];
 
-const WEEKDAY_MEET_SLOTS = ["20:00", "21:15"]; // ~75 min chunks
+const WEEKDAY_MEET_SLOTS = ["08:00 PM", "09:15 PM"]; // ~75 min chunks
+const WEEKDAY_INFRA_SLOTS = ["07:00 PM", "08:15 PM"];
 
 export default function AgendaPage() {
     const [step, setStep] = useState(0);
@@ -56,9 +57,10 @@ export default function AgendaPage() {
     const [occupiedSlots, setOccupiedSlots] = useState<string[]>([]);
     const [monthBookings, setMonthBookings] = useState<any[]>([]);
     const [scheduleConfig, setScheduleConfig] = useState<{ [key: string]: string[] }>({
-        "6": ["14:00", "17:00"],
-        "0": ["17:00"]
+        "6": ["02:00 PM", "05:00 PM"],
+        "0": ["05:00 PM"]
     });
+    const [blockedDates, setBlockedDates] = useState<string[]>([]);
 
     // Fetch Schedule Config on Mount
     useEffect(() => {
@@ -70,6 +72,16 @@ export default function AgendaPage() {
             }
         };
         fetchConfig();
+    }, []);
+
+    // Fetch Blocked Dates
+    useEffect(() => {
+        const fetchBlocked = async () => {
+            const q = query(collection(db, "blocked_dates"));
+            const snapshot = await getDocs(q);
+            setBlockedDates(snapshot.docs.map(doc => doc.id));
+        };
+        fetchBlocked();
     }, []);
 
     // Fetch all bookings for the current month view
@@ -100,6 +112,8 @@ export default function AgendaPage() {
         let baseSlots = [];
         if (selectedService === "meet" && (dayOfWeek !== "0" && dayOfWeek !== "6")) {
             baseSlots = WEEKDAY_MEET_SLOTS;
+        } else if (selectedService === "infra" && (dayOfWeek !== "0" && dayOfWeek !== "6")) {
+            baseSlots = WEEKDAY_INFRA_SLOTS;
         } else {
             baseSlots = scheduleConfig[dayOfWeek] || [];
         }
@@ -266,6 +280,14 @@ export default function AgendaPage() {
                                                         baseSlots = WEEKDAY_MEET_SLOTS;
                                                         isServiceDay = true;
                                                     }
+                                                } else if (selectedService === "infra") {
+                                                    if (isWeekend) {
+                                                        baseSlots = scheduleConfig[dayOfWeek] || [];
+                                                        isServiceDay = true;
+                                                    } else {
+                                                        baseSlots = WEEKDAY_INFRA_SLOTS;
+                                                        isServiceDay = true;
+                                                    }
                                                 } else {
                                                     if (isWeekend) {
                                                         baseSlots = scheduleConfig[dayOfWeek] || [];
@@ -278,8 +300,10 @@ export default function AgendaPage() {
                                                     const bDate = b.date instanceof Timestamp ? b.date.toDate() : new Date(b.date);
                                                     return bDate.toDateString() === date.toDateString();
                                                 });
+
+                                                const isBlocked = blockedDates.includes(date.toDateString());
                                                 const isFull = baseSlots.length > 0 && dayBookings.length >= baseSlots.length;
-                                                const isDisabled = isPast || !isServiceDay || isFull;
+                                                const isDisabled = isPast || !isServiceDay || isFull || isBlocked;
 
                                                 return (
                                                     <button
@@ -293,8 +317,11 @@ export default function AgendaPage() {
                                                         )}
                                                     >
                                                         <span>{day}</span>
-                                                        {isFull && !isPast && isWeekend && (
+                                                        {isFull && !isPast && isWeekend && !isBlocked && (
                                                             <span className="text-[6px] absolute bottom-1 uppercase font-black text-red-500/80">Lleno</span>
+                                                        )}
+                                                        {isBlocked && !isPast && (
+                                                            <span className="text-[6px] absolute bottom-1 uppercase font-black text-red-500/80">Indisp.</span>
                                                         )}
                                                     </button>
                                                 );
@@ -442,7 +469,10 @@ export default function AgendaPage() {
                         <button
                             onClick={handleBack}
                             disabled={step === 0}
-                            className={cn("px-8 py-3 text-[10px] font-bold uppercase tracking-widest transition-all rounded-xl", step === 0 ? "text-tech-800" : "text-tech-500 hover:text-white")}
+                            className={cn(
+                                "px-8 py-3 text-[10px] font-bold uppercase tracking-widest transition-all rounded-xl",
+                                step === 0 ? "text-tech-800 bg-white/5" : "text-white bg-tech-800 hover:bg-tech-700"
+                            )}
                         >
                             Anterior
                         </button>
@@ -456,13 +486,13 @@ export default function AgendaPage() {
                         {selectedService && (step === 0 || (step === 1 && selectedDate && selectedTime) || (step === 2 && clientData.name && clientData.email)) ? (
                             <button
                                 onClick={handleNext}
-                                className="px-10 py-4 bg-tech-100 text-tech-950 text-[10px] font-bold uppercase tracking-widest hover:bg-white transition-all rounded-xl flex items-center gap-2 group"
+                                className="px-10 py-4 bg-white text-tech-950 text-[10px] font-bold uppercase tracking-widest hover:bg-curiol-50 transition-all rounded-xl flex items-center gap-2 group shadow-xl shadow-curiol-500/10"
                             >
-                                Continuar <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                Siguiente <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </button>
                         ) : (
-                            <div className="px-10 py-4 opacity-10 bg-tech-800 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl">
-                                Selecciona una opción
+                            <div className="px-10 py-4 bg-tech-900/80 border border-white/5 text-tech-500 text-[10px] font-bold uppercase tracking-widest rounded-xl flex items-center gap-2">
+                                <AlertCircle className="w-3 h-3 opacity-50" /> Selecciona una opción
                             </div>
                         )}
                     </div>
