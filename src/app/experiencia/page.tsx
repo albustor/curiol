@@ -13,7 +13,9 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { PerspectiveCard } from "@/components/ui/PerspectiveCard";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { HeroSlideshow } from "@/components/HeroSlideshow";
+import { getPortfolioAllPhotos } from "@/actions/portfolio";
 
 const PROCESS_STEPS = [
     {
@@ -85,6 +87,17 @@ const FAQS = [
 
 export default function ExperienciaPage() {
     const [openFaq, setOpenFaq] = useState<number | null>(null);
+    const [heroImages, setHeroImages] = useState<any[]>([]);
+
+    useEffect(() => {
+        async function loadPhotos() {
+            const photos = await getPortfolioAllPhotos();
+            // Filtrar para asegurar que tenemos las mejores (ej: las que duran más o tienen mejores tags si hubiera, 
+            // por ahora tomamos las primeras del pool aleatorio del portfolio)
+            setHeroImages(photos.slice(0, 10));
+        }
+        loadPhotos();
+    }, []);
 
     return (
         <div className="min-h-screen flex flex-col pt-32 bg-tech-950 bg-grain">
@@ -126,11 +139,7 @@ export default function ExperienciaPage() {
                             <PerspectiveCard className="relative aspect-square cursor-pointer">
                                 <div className="absolute inset-0 bg-curiol-500/10 blur-[120px] rounded-full animate-pulse" />
                                 <div className="relative z-10 w-full h-full rounded-[3rem] overflow-hidden border border-white/10">
-                                    <img
-                                        src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80"
-                                        alt="Experiencia Artística"
-                                        className="w-full h-full object-cover opacity-60"
-                                    />
+                                    <HeroSlideshow images={heroImages} />
                                     <div className="absolute inset-0 bg-gradient-to-t from-tech-950 via-transparent to-transparent" />
                                     <div className="absolute bottom-10 left-10">
                                         <div className="flex items-center gap-4 text-white">
