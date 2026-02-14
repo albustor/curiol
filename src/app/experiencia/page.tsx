@@ -49,7 +49,8 @@ const INFOGRAPHIC = [
         items: [
             { icon: Heart, label: "Fotografía Fine Art" },
             { icon: Sparkles, label: "Realidad Aumentada" },
-            { icon: Smartphone, label: "Álbumes Digitales Pro" }
+            { icon: Smartphone, label: "Elementos Phygital (NFC & Arte)" },
+            { icon: ShieldCheck, label: "Custodia de Legado Eterno" }
         ],
         cta: "Preservar mi Legado"
     },
@@ -60,7 +61,8 @@ const INFOGRAPHIC = [
         items: [
             { icon: Zap, label: "Landing Pages de Conversión" },
             { icon: Search, label: "Optimización SEO con IA" },
-            { icon: Smartphone, label: "Ecosistemas NFC" }
+            { icon: CheckCircle2, label: "Integraciones de Tecnología Pro" },
+            { icon: Smartphone, label: "Ecosistemas NFC de Venta" }
         ],
         cta: "Potenciar mi Crecimiento"
     }
