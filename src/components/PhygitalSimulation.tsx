@@ -4,6 +4,61 @@ import { motion } from "framer-motion";
 import { Smartphone, Radio, Sparkles } from "lucide-react";
 import { GlassCard } from "./ui/GlassCard";
 
+export function SimulationVisual() {
+    return (
+        <div className="relative aspect-square md:aspect-auto md:h-full w-full max-w-[400px] mx-auto">
+            <div className="absolute inset-0 bg-tech-800/30 rounded-[2rem] md:rounded-[3rem] border border-white/5 flex items-center justify-center overflow-hidden">
+                {/* The "Phone" container */}
+                <div className="w-full h-full p-6 md:p-8 flex flex-col items-center justify-center relative">
+
+                    {/* Scanning Circle */}
+                    <div className="relative w-48 h-48 md:w-64 md:h-64 border-2 border-white/10 rounded-full flex items-center justify-center">
+                        <motion.div
+                            animate={{
+                                scale: [1, 1.2, 1],
+                                opacity: [0.3, 0.6, 0.3],
+                            }}
+                            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                            className="absolute inset-0 border-2 border-curiol-500 rounded-full blur-sm"
+                        />
+                        <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                            className="absolute inset-2 border border-dashed border-white/20 rounded-full"
+                        />
+
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <motion.span
+                                animate={{ opacity: [0.4, 1, 0.4] }}
+                                transition={{ duration: 2, repeat: Infinity }}
+                                className="text-white text-[9px] md:text-[10px] font-bold tracking-[0.5em] uppercase"
+                            >
+                                Scanning...
+                            </motion.span>
+                        </div>
+                    </div>
+
+                    {/* Scanning beam effect */}
+                    <motion.div
+                        animate={{ y: [-150, 150, -150] }}
+                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                        className="absolute w-full h-[2px] bg-gradient-to-r from-transparent via-curiol-500 to-transparent shadow-[0_0_20px_rgba(166,75,42,0.8)] z-20"
+                    />
+
+                    {/* Abstract background for "AR" feel */}
+                    <div className="absolute inset-0 opacity-20 pointer-events-none">
+                        <div className="grid grid-cols-6 h-full w-full">
+                            {[...Array(36)].map((_, i) => (
+                                <div key={i} className="border-[0.5px] border-white/5" />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export function PhygitalSimulation() {
     return (
         <section className="py-24 px-4 overflow-hidden bg-tech-950">
@@ -52,56 +107,7 @@ export function PhygitalSimulation() {
                         </div>
 
                         {/* Right Simulation Visual */}
-                        <div className="relative aspect-square md:aspect-auto md:h-[500px] w-full max-w-[400px] mx-auto">
-                            <div className="absolute inset-0 bg-tech-800/30 rounded-[2rem] md:rounded-[3rem] border border-white/5 flex items-center justify-center overflow-hidden">
-                                {/* The "Phone" container */}
-                                <div className="w-full h-full p-6 md:p-8 flex flex-col items-center justify-center relative">
-
-                                    {/* Scanning Circle */}
-                                    <div className="relative w-48 h-48 md:w-64 md:h-64 border-2 border-white/10 rounded-full flex items-center justify-center">
-                                        <motion.div
-                                            animate={{
-                                                scale: [1, 1.2, 1],
-                                                opacity: [0.3, 0.6, 0.3],
-                                            }}
-                                            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                                            className="absolute inset-0 border-2 border-curiol-500 rounded-full blur-sm"
-                                        />
-                                        <motion.div
-                                            animate={{ rotate: 360 }}
-                                            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                                            className="absolute inset-2 border border-dashed border-white/20 rounded-full"
-                                        />
-
-                                        <div className="absolute inset-0 flex items-center justify-center">
-                                            <motion.span
-                                                animate={{ opacity: [0.4, 1, 0.4] }}
-                                                transition={{ duration: 2, repeat: Infinity }}
-                                                className="text-white text-[9px] md:text-[10px] font-bold tracking-[0.5em] uppercase"
-                                            >
-                                                Scanning...
-                                            </motion.span>
-                                        </div>
-                                    </div>
-
-                                    {/* Scanning beam effect */}
-                                    <motion.div
-                                        animate={{ y: [-150, 150, -150] }}
-                                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                                        className="absolute w-full h-[2px] bg-gradient-to-r from-transparent via-curiol-500 to-transparent shadow-[0_0_20px_rgba(166,75,42,0.8)] z-20"
-                                    />
-
-                                    {/* Abstract background for "AR" feel */}
-                                    <div className="absolute inset-0 opacity-20 pointer-events-none">
-                                        <div className="grid grid-cols-6 h-full w-full">
-                                            {[...Array(36)].map((_, i) => (
-                                                <div key={i} className="border-[0.5px] border-white/5" />
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <SimulationVisual />
                     </div>
                 </GlassCard>
             </div>

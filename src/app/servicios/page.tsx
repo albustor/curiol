@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { PhygitalSimulation } from "@/components/PhygitalSimulation";
+import { PhygitalSimulation, SimulationVisual } from "@/components/PhygitalSimulation";
 import { AgendaWidget } from "@/components/AgendaWidget";
 import {
     UserCheck, ShoppingBag, UtensilsCrossed, Home,
@@ -279,8 +279,8 @@ export default function ServiciosPage() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="relative aspect-square bg-tech-800 rounded-3xl border border-tech-700 overflow-hidden flex items-center justify-center cursor-pointer group">
-                                <PhygitalSimulation />
+                            <div className="relative aspect-square bg-tech-800/10 rounded-3xl border border-tech-700 overflow-hidden flex items-center justify-center cursor-pointer group">
+                                <SimulationVisual />
                                 <div className="absolute inset-0 bg-tech-950/40 group-hover:bg-tech-950/20 transition-all flex items-center justify-center">
                                     <div className="flex flex-col items-center">
                                         <div className="w-24 h-24 border-2 border-curiol-500/50 rounded-full animate-[ping_3s_infinite] mb-4" />
@@ -292,23 +292,6 @@ export default function ServiciosPage() {
                     </div>
                 </section>
 
-                <section className="max-w-4xl mx-auto px-4 md:px-8 lg:px-16 mb-40">
-                    <PerspectiveCard className="p-8 md:p-12 text-center border-curiol-500/20 cursor-pointer">
-                        <MessageCircle className="w-10 h-10 text-green-500 mx-auto mb-6" />
-                        <h2 className="text-3xl font-serif text-white italic mb-4">Consulta Express por WhatsApp.</h2>
-                        <p className="text-tech-400 font-light mb-10 max-w-lg mx-auto leading-relaxed text-sm md:text-base">
-                            Genera un resumen detallado del catálogo 2026 y envíalo directamente a nuestro canal oficial para una asesoría personalizada.
-                        </p>
-                        <a
-                            href={generateServicesSummary()}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-4 px-12 py-5 bg-green-600/10 border border-green-500/30 text-green-500 text-[10px] font-bold uppercase tracking-widest hover:bg-green-600 hover:text-white transition-all rounded-full group mx-auto"
-                        >
-                            Solicitar Asesoría por WhatsApp <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </a>
-                    </PerspectiveCard>
-                </section>
 
                 <section className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 mb-20">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -316,12 +299,15 @@ export default function ServiciosPage() {
                         <div className="bg-gradient-to-r from-tech-950 to-tech-900 border border-tech-800 p-12 rounded-[3rem] text-center relative overflow-hidden group">
                             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-curiol-700/10 via-transparent to-transparent opacity-50" />
                             <div className="relative z-10">
-                                <h3 className="text-2xl font-serif text-white mb-2 italic">¿Listo para iniciar?</h3>
+                                <h3 className="text-2xl font-serif text-white mb-6 italic">Sistema de Agenda Automatizada</h3>
+                                <p className="text-tech-400 text-sm font-light leading-relaxed mb-8 italic">
+                                    Contamos con un ecosistema de reserva inteligente y recordatorios integrados para asegurar que cada sesión reciba la atención y pre-producción que merece.
+                                </p>
                                 <Link href="/cotizar" className="inline-flex items-center gap-4 px-10 py-5 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest rounded-full hover:scale-105 transition-all shadow-xl shadow-curiol-500/20 mb-6">
-                                    Personalizar mi Legado <ArrowRight className="w-4 h-4" />
+                                    Explorar Disponibilidad <ArrowRight className="w-4 h-4" />
                                 </Link>
                                 <p className="text-[9px] text-tech-500 font-bold uppercase tracking-[0.2em] italic opacity-60">
-                                    Reserva tu espacio en la agenda 2026
+                                    Sincronización en tiempo real con el Ecosistema Curiol
                                 </p>
                             </div>
                         </div>
