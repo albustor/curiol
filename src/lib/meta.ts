@@ -6,8 +6,9 @@ const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_ID;
  */
 export async function sendWhatsAppMessage(to: string, text: string) {
     if (!WHATSAPP_TOKEN || !PHONE_NUMBER_ID) {
-        console.warn("WhatsApp credentials missing. Skipping send.");
-        return;
+        console.error("CRITICAL: WhatsApp credentials missing in environment variables!");
+        console.error("Check WHATSAPP_ACCESS_TOKEN and WHATSAPP_PHONE_ID in your hosting dashboard.");
+        return { error: true, message: "Missing credentials" };
     }
 
     try {
