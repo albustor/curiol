@@ -11,7 +11,7 @@ import {
     ArrowRight, ChevronLeft, ChevronRight,
     Camera, Code, Upload, Sparkles, FileText,
     ShieldCheck, Smartphone, Video,
-    Eye, EyeOff, Lock, Unlock, Loader2
+    Lock, Unlock, Loader2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
