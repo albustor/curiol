@@ -10,7 +10,7 @@ export function AiAssistant() {
     const [isOpen, setIsOpen] = useState(false);
     const [message, setMessage] = useState("");
     const [chat, setChat] = useState<{ role: string; text: string }[]>([
-        { role: "ai", text: "¡Hola! Soy el asistente de Curiol Studio. ¿Cómo puedo ayudarte hoy con tu legado o tu negocio?" }
+        { role: "ai", text: "¡Hola! Bienvenido/a al nuevo Curiol OS 2026. Estamos en proceso de construcción, pero como tu Asistente Maestro, estoy aquí para resolver tus dudas sobre nuestro Legado Familiar y Crecimiento Comercial. ¿En qué puedo asesorarte hoy?" }
     ]);
     const [loading, setLoading] = useState(false);
 

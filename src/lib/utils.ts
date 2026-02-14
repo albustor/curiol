@@ -26,3 +26,13 @@ export function getDirectImageUrl(url: string | undefined | null, optimize: bool
 
     return directUrl;
 }
+
+/**
+ * Extracts the YouTube video ID from a URL
+ */
+export function getYouTubeID(url: string | undefined | null) {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+}

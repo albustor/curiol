@@ -5,7 +5,7 @@ const PHONE_ID = "991124360747337";
 async function requestRegistration() {
     console.log(`Intentando registrar el número con ID: ${PHONE_ID}...`);
     try {
-        const response = await fetch(`https://graph.facebook.com/v24.0/${PHONE_ID}/register`, {
+        const response = await fetch(`https://graph.facebook.com/v21.0/${PHONE_ID}/register`, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${WHATSAPP_TOKEN}`,

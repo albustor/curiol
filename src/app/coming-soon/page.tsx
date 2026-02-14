@@ -50,10 +50,17 @@ export default function ComingSoon() {
                         "Estamos redefiniendo la custodia del patrimonio emocional y la aceleración comercial. Pronto el nuevo Ecosistema Curiol OS estará a su disposición."
                     </p>
 
-                    <div className="flex justify-center gap-6">
+                    <div className="flex flex-col items-center gap-6">
+                        <button
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-ai-assistant'))}
+                            className="px-10 py-5 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest hover:scale-105 transition-all rounded-full flex items-center gap-3 shadow-2xl shadow-curiol-500/20"
+                        >
+                            Consultar con el Maestro IA <Sparkles className="w-4 h-4" />
+                        </button>
+
                         <div className="flex flex-col items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-curiol-500 animate-pulse" />
-                            <span className="text-[10px] text-tech-400 font-bold uppercase tracking-widest">Sincronizando Legado</span>
+                            <div className="w-1.5 h-1.5 rounded-full bg-curiol-500 animate-pulse" />
+                            <span className="text-[9px] text-tech-400 font-bold uppercase tracking-[0.3em]">Sincronizando Legado Vivo</span>
                         </div>
                     </div>
                 </motion.div>

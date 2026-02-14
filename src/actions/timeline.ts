@@ -108,7 +108,7 @@ export async function updateTimelineTheme(timelineId: string, theme: TimelineThe
     }
 }
 
-export async function removeTimelineEventByMediaUrl(timelineId: string, mediaUrl: string): Promise<boolean> {
+export async function removeTimelineEventById(timelineId: string, eventId: string): Promise<boolean> {
     try {
         const docRef = doc(db, COLLECTION_NAME, timelineId);
         const docSnap = await getDoc(docRef);
@@ -116,7 +116,7 @@ export async function removeTimelineEventByMediaUrl(timelineId: string, mediaUrl
 
         const data = docSnap.data();
         const events = data.events || [];
-        const newEvents = events.filter((e: any) => e.mediaUrl !== mediaUrl);
+        const newEvents = events.filter((e: any) => e.id !== eventId);
 
         if (events.length === newEvents.length) return true; // Nothing to remove
 

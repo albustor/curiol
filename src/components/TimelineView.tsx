@@ -3,13 +3,8 @@
 import { motion } from "framer-motion";
 import { TimelineEvent, EvolutiveTimeline, TimelineTheme } from "@/types/timeline";
 import { Calendar, MapPin, Camera, Play, Sparkles, Trash2, Youtube } from "lucide-react";
-import { cn } from "@/lib/utils";
-
-const getYouTubeID = (url: string) => {
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-    const match = url.match(regExp);
-    return (match && match[2].length === 11) ? match[2] : null;
-};
+import { cn, getYouTubeID } from "@/lib/utils";
+import { useMemo } from "react";
 
 interface TimelineViewProps {
     timeline: EvolutiveTimeline;
@@ -26,6 +21,10 @@ export function TimelineView({ timeline, editable, onRemoveEvent }: TimelineView
         artistic: "bg-gradient-to-br from-curiol-900 via-tech-950 to-tech-900 text-white",
         cinematic: "bg-black text-white"
     };
+
+    const sortedEvents = useMemo(() => {
+        return [...events].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    }, [events]);
 
     return (
         <div className={cn("min-h-screen py-20 px-4 md:px-8 lg:px-16 overflow-hidden", themeStyles[theme])}>
@@ -46,7 +45,7 @@ export function TimelineView({ timeline, editable, onRemoveEvent }: TimelineView
                 </div>
 
                 <div className="space-y-24 relative z-10">
-                    {events.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map((event, idx) => (
+                    {sortedEvents.map((event, idx) => (
                         <TimelineItem
                             key={event.id}
                             event={event}

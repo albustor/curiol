@@ -2,7 +2,7 @@
 
 import { sendNotification } from "./notifications";
 import { db } from "@/lib/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, query, orderBy, getDocs } from "firebase/firestore";
 
 export type EmailTask = "comercial" | "produccion" | "calidad" | "otros";
 
@@ -50,7 +50,16 @@ export async function sendProfessionalEmail(
 }
 
 export async function getCorporateEmails() {
-    // This will be used by the frontend to fetch the shared inbox/history
-    // Logic will be implemented directly in the component for real-time snapshots,
-    // but we can export constants or types here if needed.
+    try {
+        const q = query(collection(db, "corporate_emails"), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+        return snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+            createdAt: doc.data().createdAt?.toDate()?.toISOString() || new Date().toISOString()
+        }));
+    } catch (e) {
+        console.error("Error fetching corporate emails:", e);
+        return [];
+    }
 }

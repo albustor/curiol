@@ -1,13 +1,12 @@
-
-const WHATSAPP_TOKEN = "EAARzw1GAUzEBQgHfCR4a0fKnLizhgQJFVYbWtr7S1IjhuytMJYBYBGtTrZADqYJ5jAl5Qa5JjcA3zHJibAZC4L4got2DebajRYAWAfZBloL6W0YtZAJr1F15J2eV7tFnlE72dWOkvT3FNJK2vOEd9HVpxZABFBlZCxuh5MgRMAHRFZAPpxSBb5q7BZB7RdCccwZDZD";
-const WABA_ID = "1577825263469656";
+const WHATSAPP_ACCESS_TOKEN = "EAARzw1GAUzEBQhInOJ94WvrOWxlgJ78dNHaQG9UMyIrbuTZCM2fA2m7B96FYCzjQUbFa5PPcKWpxPxkQhdSUvcI4RLgJXfJYbbm6hLusktfmraWN28peHUCy2CdIAmER6hP3DZBr9Umyh2gBlsWnAT3tIZCo4R5nnPuMxuZCrxPKWmCBZCZCXj2BNetIREarmtC01wxb7pCPgPIP1fdEZATaZB9EOl1Dk6EggK6EKrCSQTEbTY181veA553W5fpZAeP9b3AdvEPqqOBUsiRzYnM9c";
+const WABA_ID = "1236065411252784";
 
 async function getPhoneID() {
     console.log(`Consultando números para la cuenta WABA: ${WABA_ID}...`);
     try {
-        const response = await fetch(`https://graph.facebook.com/v24.0/${WABA_ID}/phone_numbers`, {
+        const response = await fetch(`https://graph.facebook.com/v21.0/${WABA_ID}/phone_numbers`, {
             headers: {
-                "Authorization": `Bearer ${WHATSAPP_TOKEN}`
+                "Authorization": `Bearer ${WHATSAPP_ACCESS_TOKEN}`
             }
         });
 
