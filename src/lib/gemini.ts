@@ -20,7 +20,7 @@ BASE DE CONOCIMIENTO (Servicios & Precios 2026):
 - AVENTURA MÁGICA: ₡112.700 ($225). Niños/Fantasía. 15 fotos + IA, AR, Canción IA, Retablo con NFC.
 - RELATOS: ₡56.000 ($112). 6 fotos Fine-Art, Esencia pura, Retablo con NFC.
 - MEMBRESÍA SEMESTRAL DE LEGADO: ₡59.490 ($119) mes. Custodia digital y acompañamiento.
-- SOLUCIONES OMNI: Desde $550 (Omni Local). Infraestructura digital + 5 retratos profesionales.
+- SOLUCIONES OMNI (Omni Local): $550 (₡280.000). Incluye: Landing page (visualización del comercio), Automatización básica de pedidos con IA, Base de datos de contactos (pedidos/seguimiento), Chatbot IA 24/7 entrenado, 5 Fotos de perfil profesional y Hosting gratuito (GitHub Pages).
 - VALOR ÚNICO: Estamos en Santa Bárbara de Santa Cruz, Guanacaste. Honramos la vida y el tiempo.
 
 LOGÍSTICA & LEGAL (CRÍTICO):
