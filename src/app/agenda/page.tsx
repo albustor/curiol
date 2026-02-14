@@ -10,13 +10,16 @@ import {
     CreditCard, CheckCircle2, AlertCircle,
     ArrowRight, ChevronLeft, ChevronRight,
     Camera, Code, Upload, Sparkles, FileText,
-    ShieldCheck, Smartphone, Video
+    ShieldCheck, Smartphone, Video,
+    Eye, EyeOff, Lock, Unlock, Loader2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { db } from "@/lib/firebase";
-import { collection, addDoc, query, where, getDocs, Timestamp, doc, getDoc } from "firebase/firestore";
+import { db, auth } from "@/lib/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useRole } from "@/hooks/useRole";
+import { collection, addDoc, query, where, getDocs, Timestamp, doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
 import { notifyNewBooking } from "@/actions/notifications";
 
 const STEPS = [
@@ -44,6 +47,15 @@ export default function AgendaPage() {
     const [paymentVoucher, setPaymentVoucher] = useState<File | null>(null);
     const [isVerifying, setIsVerifying] = useState(false);
     const [isConfirmed, setIsConfirmed] = useState(false);
+
+    // Admin Features
+    const { role, user, isMaster, isTeam } = useRole();
+    const [isAdminMode, setIsAdminMode] = useState(false);
+    const [showLoginModal, setShowLoginModal] = useState(false);
+    const [loginEmail, setLoginEmail] = useState("");
+    const [loginPassword, setLoginPassword] = useState("");
+    const [isLoggingIn, setIsLoggingIn] = useState(false);
+    const [isBlocking, setIsBlocking] = useState(false);
 
     const handleNext = () => setStep(s => Math.min(s + 1, STEPS.length - 1));
     const handleBack = () => setStep(s => Math.max(s - 1, 0));
@@ -169,6 +181,39 @@ export default function AgendaPage() {
             alert("Error en la conexión con el servidor de IA");
         }
         setIsVerifying(false);
+    };
+
+    const handleAdminLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoggingIn(true);
+        try {
+            await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
+            setShowLoginModal(false);
+        } catch (error: any) {
+            console.error("Login Error:", error);
+            alert("Credenciales inválidas para acceso administrativo");
+        }
+        setIsLoggingIn(false);
+    };
+
+    const toggleBlockDate = async (date: Date) => {
+        const dateStr = date.toDateString();
+        setIsBlocking(true);
+        try {
+            if (blockedDates.includes(dateStr)) {
+                await deleteDoc(doc(db, "blocked_dates", dateStr));
+                setBlockedDates(prev => prev.filter(d => d !== dateStr));
+            } else {
+                await setDoc(doc(db, "blocked_dates", dateStr), {
+                    blockedAt: Timestamp.now(),
+                    blockedBy: user?.email || "Admin"
+                });
+                setBlockedDates(prev => [...prev, dateStr]);
+            }
+        } catch (error) {
+            console.error("Error toggling block:", error);
+        }
+        setIsBlocking(false);
     };
 
     if (isConfirmed) {
@@ -309,11 +354,22 @@ export default function AgendaPage() {
                                                     <button
                                                         key={day}
                                                         disabled={isDisabled}
-                                                        onClick={() => setSelectedDate(date)}
+                                                        onClick={() => {
+                                                            if (isAdminMode) {
+                                                                if (role === "UNAUTHORIZED") {
+                                                                    setShowLoginModal(true);
+                                                                } else {
+                                                                    toggleBlockDate(date);
+                                                                }
+                                                                return;
+                                                            }
+                                                            setSelectedDate(date);
+                                                        }}
                                                         className={cn(
                                                             "aspect-square rounded-xl flex flex-col items-center justify-center text-xs font-bold transition-all relative overflow-hidden",
                                                             isSelected ? "bg-curiol-500 text-white shadow-xl shadow-curiol-500/30" :
-                                                                isDisabled ? "opacity-20 cursor-not-allowed bg-tech-950/50" : "text-tech-400 hover:bg-tech-800 hover:text-white"
+                                                                isAdminMode ? (isBlocked ? "bg-red-500/20 text-red-500 ring-2 ring-red-500/50" : "bg-green-500/10 text-green-500 ring-1 ring-green-500/30 hover:bg-green-500/20") :
+                                                                    isDisabled ? "opacity-20 cursor-not-allowed bg-tech-950/50" : "text-tech-400 hover:bg-tech-800 hover:text-white"
                                                         )}
                                                     >
                                                         <span>{day}</span>
@@ -322,6 +378,9 @@ export default function AgendaPage() {
                                                         )}
                                                         {isBlocked && !isPast && (
                                                             <span className="text-[6px] absolute bottom-1 uppercase font-black text-red-500/80">Indisp.</span>
+                                                        )}
+                                                        {isAdminMode && isBlocking && isSelected && (
+                                                            <Loader2 className="w-3 h-3 animate-spin absolute top-1 right-1 text-curiol-500" />
                                                         )}
                                                     </button>
                                                 );
@@ -501,6 +560,84 @@ export default function AgendaPage() {
 
             <Footer />
             <AiAssistant />
+
+            {/* Admin Toggle Button */}
+            <div className="fixed bottom-32 right-8 z-40">
+                <button
+                    onClick={() => setIsAdminMode(!isAdminMode)}
+                    className={cn(
+                        "w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-2xl",
+                        isAdminMode ? "bg-curiol-500 text-white" : "bg-tech-900/80 text-tech-600 border border-white/5 backdrop-blur-md opacity-20 hover:opacity-100"
+                    )}
+                    title={isAdminMode ? "Desactivar Modo Admin" : "Activar Modo Admin"}
+                >
+                    <ShieldCheck className="w-5 h-5" />
+                </button>
+            </div>
+
+            {/* Admin Login Modal */}
+            <AnimatePresence>
+                {showLoginModal && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="absolute inset-0 bg-tech-950/80 backdrop-blur-xl"
+                            onClick={() => setShowLoginModal(false)}
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="relative z-10 w-full max-w-md"
+                        >
+                            <GlassCard className="p-10 border-curiol-500/30">
+                                <div className="text-center mb-8">
+                                    <div className="w-16 h-16 bg-curiol-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-curiol-500/20">
+                                        <Lock className="w-6 h-6 text-curiol-500" />
+                                    </div>
+                                    <h3 className="text-2xl font-serif text-white italic">Acceso Administrativo</h3>
+                                    <p className="text-tech-500 text-[10px] font-bold uppercase tracking-widest mt-2">Valida tu identidad para gestionar fechas</p>
+                                </div>
+
+                                <form onSubmit={handleAdminLogin} className="space-y-4">
+                                    <input
+                                        type="email"
+                                        placeholder="Email Administrativo"
+                                        value={loginEmail}
+                                        onChange={(e) => setLoginEmail(e.target.value)}
+                                        className="w-full bg-tech-950/50 border border-tech-800 rounded-xl py-4 px-6 text-white text-sm outline-none focus:border-curiol-500 transition-all"
+                                        required
+                                    />
+                                    <input
+                                        type="password"
+                                        placeholder="Contraseña"
+                                        value={loginPassword}
+                                        onChange={(e) => setLoginPassword(e.target.value)}
+                                        className="w-full bg-tech-950/50 border border-tech-800 rounded-xl py-4 px-6 text-white text-sm outline-none focus:border-curiol-500 transition-all"
+                                        required
+                                    />
+                                    <button
+                                        type="submit"
+                                        disabled={isLoggingIn}
+                                        className="w-full py-5 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest rounded-xl shadow-xl shadow-curiol-500/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-3"
+                                    >
+                                        {isLoggingIn ? <Loader2 className="w-4 h-4 animate-spin" /> : <Unlock className="w-4 h-4" />}
+                                        {isLoggingIn ? "Verificando..." : "Acceder"}
+                                    </button>
+                                </form>
+                                <button
+                                    onClick={() => setShowLoginModal(false)}
+                                    className="w-full mt-4 text-[9px] text-tech-600 uppercase font-bold hover:text-white transition-colors"
+                                >
+                                    Cancelar
+                                </button>
+                            </GlassCard>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }
