@@ -782,6 +782,19 @@ export default function AdminCotizadorPage() {
                                                 </tbody>
                                             </table>
                                         </div>
+
+                                        <div className="mt-12">
+                                            <h2 className="text-sm font-sans font-bold uppercase tracking-widest text-slate-400 mb-6 pb-2 border-b border-slate-50">III. Cláusulas de Agenda y Compromiso</h2>
+                                            <ul className="space-y-3">
+                                                <li className="text-[10px] text-slate-600 font-sans leading-relaxed"><span className="font-bold text-slate-800">1. PRIORIDAD:</span> El cliente goza de prioridad en la agenda de Curiol Studio para asegurar su sesion.</li>
+                                                <li className="text-[10px] text-slate-600 font-sans leading-relaxed"><span className="font-bold text-slate-800">2. FORMALIZACIÓN:</span> Las fechas anuales deben quedar agendadas al momento de la firma (hoy).</li>
+                                                <li className="text-[10px] text-slate-600 font-sans leading-relaxed"><span className="font-bold text-slate-800">3. POLÍTICA DE CAMBIOS:</span> Se permite UN solo cambio de fecha por sesión, solicitado con 15 días de preaviso.</li>
+                                                <li className="text-[10px] text-slate-600 font-sans leading-relaxed"><span className="font-bold text-slate-800">4. ENTREGA DE PRODUCTO FÍSICO:</span> La entrega del retablo/tarjeta con tecnología NFC se realizará 15 días hábiles posteriores a la entrega de la galería digital, una vez que el cliente haya seleccionado la fotografía final.</li>
+                                                <li className="text-[10px] text-slate-600 font-sans leading-relaxed"><span className="font-bold text-slate-800">5. INCUMPLIMIENTO:</span> El incumplimiento de los plazos de preaviso anula el derecho a reprogramación automática.</li>
+                                                <li className="text-[10px] text-slate-600 font-sans leading-relaxed"><span className="font-bold text-slate-800">6. RESERVA & EJECUCIÓN:</span> El pago del adelanto (20%) perfecciona este contrato y equivale a su firma legal.</li>
+                                            </ul>
+                                        </div>
+
                                         <div className="mt-6 p-8 bg-slate-50 rounded-2xl border border-slate-100">
                                             <p className="text-[10px] font-sans font-bold uppercase tracking-[0.2em] text-slate-400 mb-3">IV. Cláusula de Ejecución Administrativa</p>
                                             <p className="text-[10px] text-slate-700 leading-relaxed font-sans italic">

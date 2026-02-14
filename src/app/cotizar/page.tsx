@@ -320,8 +320,9 @@ export default function CotizadorPage() {
             "1. PRIORIDAD: El cliente goza de prioridad en la agenda de Curiol Studio para asegurar su sesion.",
             "2. FORMALIZACIÓN: Las fechas anuales deben quedar agendadas al momento de la firma (hoy).",
             "3. POLÍTICA DE CAMBIOS: Se permite UN solo cambio de fecha por sesión, solicitado con 15 días de preaviso.",
-            "4. EL INCUMPLIMIENTO de los plazos de preaviso anula el derecho a reprogramación automática.",
-            "5. RESERVA & EJECUCIÓN: El pago del adelanto (20%) perfecciona este contrato y equivale a su firma legal."
+            "4. ENTREGA DE PRODUCTO FÍSICO: La entrega del retablo/tarjeta con tecnología NFC se realizará 15 días hábiles posteriores a la entrega de la galería digital, una vez que el cliente haya seleccionado la fotografía final.",
+            "5. EL INCUMPLIMIENTO de los plazos de preaviso anula el derecho a reprogramación automática.",
+            "6. RESERVA & EJECUCIÓN: El pago del adelanto (20%) perfecciona este contrato y equivale a su firma legal."
         ];
         clauses.forEach((line, i) => {
             doc.text(line, 20, 140 + (i * 7));

@@ -100,7 +100,7 @@ export const FINANCE_CONFIG = {
     PACKAGE_ANALYSIS: {
         "aventura": {
             name: "Aventura Mágica (Phygital)",
-            totalPrice: 80900,
+            totalPrice: 112700,
             breakdown: [
                 { item: "Retablo (5x7 con pie) + 40%", cost: 16898, note: "₡12,070 base + margen" },
                 { item: "Staff Técnico (Cristina)", cost: 8000, note: "Tarifa por sesión" },
@@ -109,11 +109,11 @@ export const FINANCE_CONFIG = {
                 { item: "Infraestructura Digital", cost: 5000, note: "Hosting, AI, Firebase" },
                 { item: "Sticker NFC", cost: 800, note: "1 unidad" }
             ],
-            margin: 0.03 // ~3%
+            margin: 0.28 // Updated margin
         },
         "recuerdos": {
             name: "Recuerdos Eternos (Estándar 8x12)",
-            totalPrice: 115000,
+            totalPrice: 132250,
             breakdown: [
                 { item: "Retablo (8x12) + 40%", cost: 25989, note: "₡18,564 base + margen" },
                 { item: "Staff Técnico (Cristina)", cost: 8000, note: "Tarifa por sesión" },
@@ -122,20 +122,7 @@ export const FINANCE_CONFIG = {
                 { item: "Infraestructura Digital", cost: 5000, note: "Hosting, AI, Firebase" },
                 { item: "Sticker NFC", cost: 800, note: "1 unidad" }
             ],
-            margin: 0.11 // ~11% profit margin
-        },
-        "recuerdos_pro": {
-            name: "Recuerdos Eternos (Pro 12x16)",
-            totalPrice: 115000, // Coincide con el nuevo precio base pro
-            breakdown: [
-                { item: "Retablo (12x16) + 40%", cost: 44800, note: "₡32,000 base + margen" },
-                { item: "Staff Técnico (Cristina)", cost: 8000, note: "Tarifa por sesión" },
-                { item: "Logística / Equipo / Agua", cost: 2500, note: "Valor prerrateado" },
-                { item: "Valor Fotografía (15 x ₡3,000)", cost: 45000, note: "Mano de obra artística" },
-                { item: "Infraestructura Digital", cost: 5000, note: "Hosting, AI, Firebase" },
-                { item: "Sticker NFC", cost: 800, note: "1 unidad" }
-            ],
-            margin: 0.08 // ~8%
+            margin: 0.25 // Updated margin
         },
         "marca": {
             name: "Marca Personal (Digital Card)",
@@ -149,29 +136,29 @@ export const FINANCE_CONFIG = {
             ],
             margin: 0.24 // 24%
         },
-        "legado_anual": {
-            name: "Membresía Anual de Legado",
-            totalPrice: 300000,
+        "legado_semestral": {
+            name: "Membresía Semestral",
+            totalPrice: 59490,
             breakdown: [
-                { item: "Productos Físicos (3x + 40%)", cost: 50000, note: "Prerrateado anual" },
-                { item: "Personal (Cristina x3)", cost: 24000, note: "3 Sesiones anuales" },
-                { item: "Logística / Insumos Anuales", cost: 7500, note: "₡2,500 x 3" },
-                { item: "Valor Fotografía (45 x ₡3,000)", cost: 135000, note: "Historial evolutivo" },
-                { item: "Custodia Digital / AI Cloud", cost: 15000, note: "Mantenimiento de archivo" }
+                { item: "Productos Físicos (Cuota)", cost: 10000, note: "Prerrateado" },
+                { item: "Personal (Cristina)", cost: 8000, note: "Sesión" },
+                { item: "Logística", cost: 2500, note: "" },
+                { item: "Valor Fotografía", cost: 30000, note: "" },
+                { item: "Custodia Digital", cost: 5000, note: "" }
             ],
-            margin: 0.23 // 23%
+            margin: 0.15
         },
         "relatos": {
             name: "Relatos (Fine Art Session)",
-            totalPrice: 49000,
+            totalPrice: 56000,
             breakdown: [
                 { item: "Retablo (5x7) + 40%", cost: 13360, note: "₡9,543 base + margen" },
                 { item: "Staff Técnico (Prerrateado)", cost: 4000, note: "Media sesión" },
                 { item: "Logística / Equipo / Agua", cost: 1500, note: "Valor reducido" },
-                { item: "Valor Fotografía (5 x ₡3,000)", cost: 15000, note: "Selección curada" },
+                { item: "Valor Fotografía (6 x ₡3,000)", cost: 18000, note: "Selección curada" },
                 { item: "Infraestructura Digital / NFC", cost: 3300, note: "Hosting + Sticker" }
             ],
-            margin: 0.24 // 24%
+            margin: 0.28 // Updated margin
         },
         "omni_local": {
             name: "Omni Local (+5 Retratos)",
@@ -181,6 +168,24 @@ export const FINANCE_CONFIG = {
                 { item: "5 Retratos Fine Art", cost: 30000, note: "Incluye sesión y edición" }
             ],
             margin: 0.45
+        },
+        "omni_pro": {
+            name: "Omni Pro (Ecosistema)",
+            totalPrice: 780000,
+            breakdown: [
+                { item: "Infraestructura Avanzada", cost: 600000, note: "Web + Agenda + CRM" },
+                { item: "Portafolio Foto", cost: 100000, note: "" }
+            ],
+            margin: 0.50
+        },
+        "omni_ultra": {
+            name: "Omni Ultra (Curiol OS)",
+            totalPrice: 1530000,
+            breakdown: [
+                { item: "Ecosistema Total", cost: 1200000, note: "Hardware support + Full Soft" },
+                { item: "Branding", cost: 200000, note: "" }
+            ],
+            margin: 0.55
         }
     }
 };
