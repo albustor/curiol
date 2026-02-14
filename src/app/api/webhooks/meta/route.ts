@@ -19,6 +19,13 @@ export async function GET(req: Request) {
 
     console.log("META WEBHOOK VERIFICATION ATTEMPT:", { mode, token });
 
+    // REMOTE DEBUG: Log GET attempts
+    await addDoc(collection(db, "meta_debug_logs"), {
+        timestamp: Timestamp.now(),
+        type: "GET_VERIFY",
+        params: { mode, token, challenge }
+    });
+
     if (mode === "subscribe" && token === VERIFY_TOKEN) {
         console.log("Verification successful, returning challenge:", challenge);
         return new Response(challenge || "", {
@@ -34,6 +41,13 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
     try {
         const body = await req.json();
+
+        // REMOTE DEBUG: Log everything to Firestore
+        await addDoc(collection(db, "meta_debug_logs"), {
+            timestamp: Timestamp.now(),
+            body: body
+        });
+
         console.log("-----------------------------------------");
         console.log("META WEBHOOK RECEIVED");
         console.log("Body Object:", body.object);
@@ -56,19 +70,19 @@ export async function POST(req: Request) {
             const from = message.from;
             const text = message.text?.body;
 
-            console.log(`MESSAGE RECEIVED | From: ${from} | Text: ${text || "[No Text]"}`);
+            console.log(`[META WEBHOOK] | Contact: ${from} | Message: ${text || "[No Text]"}`);
 
-            // DEBUG: Direct Ping Test to bypass AI/Flows
+            // 1. Direct Ping Test (Always active for troubleshooting)
             if (text?.toUpperCase() === "PING") {
-                console.log("DEBUG: PING received. Sending PONG...");
-                await sendWhatsAppMessage(from, "PONG 🏓 - Curiol Studio está conectado y recibiendo tus mensajes.");
-                return NextResponse.json({ status: "ok" });
+                console.log("[DIAGNOSTIC] PING detected. Sending PONG response...");
+                const result = await sendWhatsAppMessage(from, "PONG 🏓 - Conectividad verificada por Curiol Studio.");
+                return NextResponse.json({ status: "ok", diagnostic: "pong_sent", success: !result?.error });
             }
 
             const textUpper = text?.toUpperCase();
             const channel = body.object === "whatsapp_business_account" ? "whatsapp" : "social";
 
-            // 1. Log the conversation to Firestore
+            // 2. Persist in Omni Conversations
             await addDoc(collection(db, "omni_conversations"), {
                 contactId: from,
                 message: text || "",
@@ -77,60 +91,59 @@ export async function POST(req: Request) {
                 timestamp: Timestamp.now()
             });
 
-            // 2. Check for Active Session
+            // 3. Flow Engine Check
             const sessionRef = doc(db, "omni_sessions", from);
             const sessionSnap = await getDoc(sessionRef);
             let sessionData = sessionSnap.exists() ? sessionSnap.data() : null;
 
             if (sessionData && sessionData.status === "active") {
-                console.log("Active session found for:", from, "Flow ID:", sessionData.flowId);
+                console.log("[FLOW ENGINE] Resuming session for:", from);
                 const flowRef = doc(db, "omni_flows", sessionData.flowId);
                 const flowSnap = await getDoc(flowRef);
 
                 if (flowSnap.exists()) {
                     const flow = flowSnap.data();
                     const currentStepIdx = sessionData.currentStepIdx;
-                    const lastStep = flow.steps[currentStepIdx];
 
-                    if (lastStep.type === "capture") {
-                        const fieldName = lastStep.config?.field || "dato_extra";
-                        const newData = { ...sessionData.data, [fieldName]: text };
-                        await updateDoc(sessionRef, { data: newData });
-                        sessionData.data = newData;
-                    }
+                    if (currentStepIdx < flow.steps.length) {
+                        const lastStep = flow.steps[currentStepIdx];
+                        if (lastStep.type === "capture") {
+                            const fieldName = lastStep.config?.field || "dato_extra";
+                            const newData = { ...sessionData.data, [fieldName]: text };
+                            await updateDoc(sessionRef, { data: newData });
+                        }
 
-                    const nextStepIdx = currentStepIdx + 1;
-                    if (nextStepIdx < flow.steps.length) {
-                        const nextStep = flow.steps[nextStepIdx];
-                        console.log("Advancing to step:", nextStepIdx);
-                        await sendStepMessage(from, nextStep, channel, body.object);
-                        await updateDoc(sessionRef, { currentStepIdx: nextStepIdx });
-                    } else {
-                        console.log("Flow completed for:", from);
-                        await updateDoc(sessionRef, { status: "completed" });
-                        if (Object.keys(sessionData.data || {}).length > 0) {
-                            await addDoc(collection(db, "leads"), {
-                                ...sessionData.data,
-                                source: "OmniFlow",
-                                flowName: flow.name,
-                                createdAt: Timestamp.now()
-                            });
+                        const nextStepIdx = currentStepIdx + 1;
+                        if (nextStepIdx < flow.steps.length) {
+                            console.log("[FLOW ENGINE] Sending step:", nextStepIdx);
+                            await sendStepMessage(from, flow.steps[nextStepIdx], channel, body.object);
+                            await updateDoc(sessionRef, { currentStepIdx: nextStepIdx });
+                        } else {
+                            console.log("[FLOW ENGINE] Flow finished.");
+                            await updateDoc(sessionRef, { status: "completed" });
+                            if (Object.keys(sessionData.data || {}).length > 0) {
+                                await addDoc(collection(db, "leads"), {
+                                    ...sessionData.data,
+                                    source: "OmniFlow",
+                                    flowName: flow.name,
+                                    createdAt: Timestamp.now()
+                                });
+                            }
                         }
                     }
-                    return NextResponse.json({ status: "ok" });
+                    return NextResponse.json({ status: "ok", engine: "flow" });
                 }
             }
 
-            // 3. Find matching flow (Trigger)
+            // 4. Trigger Match
             const flowsRef = collection(db, "omni_flows");
             const q = query(flowsRef, where("triggerKeyword", "==", textUpper || ""), where("isActive", "==", true));
-            const flowSnap = await getDocs(q);
+            const flowResults = await getDocs(q);
 
-            if (!flowSnap.empty) {
-                const flowId = flowSnap.docs[0].id;
-                const flowData = flowSnap.docs[0].data();
-                console.log("Trigger match found! Flow ID:", flowId);
-                const firstStep = flowData.steps[0];
+            if (!flowResults.empty) {
+                const flowId = flowResults.docs[0].id;
+                const flowData = flowResults.docs[0].data();
+                console.log("[TRIGGER] Match found:", flowData.name);
 
                 await setDoc(sessionRef, {
                     flowId,
@@ -140,47 +153,38 @@ export async function POST(req: Request) {
                     lastUpdated: Timestamp.now()
                 });
 
-                console.log("Sending first step...");
-                await sendStepMessage(from, firstStep, channel, body.object);
-
-                if (flowData.steps.length > 1) {
-                    const secondStep = flowData.steps[1];
-                    console.log("Sending second step...");
-                    await sendStepMessage(from, secondStep, channel, body.object);
-                    await updateDoc(sessionRef, { currentStepIdx: 1 });
-                }
-            } else {
-                // 4. Fallback to Gemini AI
-                console.log("No flow match. Falling back to Gemini...");
-                try {
-                    const aiResponse = await generateAiAssistantResponse(text || "", channel);
-                    console.log("Gemini AI Response Success:", !!aiResponse);
-
-                    if (channel === "whatsapp") {
-                        console.log("Attempting to send WhatsApp message to:", from);
-                        const waResult = await sendWhatsAppMessage(from, aiResponse);
-                        console.log("WhatsApp API Result Status:", waResult?.error ? "FAILED" : "SUCCESS");
-                    } else {
-                        const platform = body.object === "instagram" ? "instagram" : "messenger";
-                        console.log("Attempting to send Social message to:", from, "Platform:", platform);
-                        const socialResult = await sendSocialMessage(from, aiResponse, platform);
-                        console.log("Social API Result Status:", socialResult?.error ? "FAILED" : "SUCCESS");
-                    }
-
-                    await addDoc(collection(db, "omni_conversations"), {
-                        contactId: from,
-                        message: aiResponse,
-                        channel: channel,
-                        direction: "outbound",
-                        type: "ai_assistant",
-                        timestamp: Timestamp.now()
-                    });
-                } catch (aiError) {
-                    console.error("ALET: Gemini Flow Error in Webhook:", aiError);
-                    // Optional: fallback to manual notification if AI fails
-                }
+                await sendStepMessage(from, flowData.steps[0], channel, body.object);
+                return NextResponse.json({ status: "ok", engine: "flow_triggered" });
             }
-        } else {
+
+            // 5. AI Assistant Fallback
+            console.log("[AI ENGINE] Processing with Gemini...");
+            try {
+                const aiResponse = await generateAiAssistantResponse(text || "", channel);
+
+                if (channel === "whatsapp") {
+                    const result = await sendWhatsAppMessage(from, aiResponse);
+                    console.log("[AI ENGINE] WhatsApp Send Result:", result?.error ? "ERROR" : "SUCCESS");
+                } else {
+                    const platform = body.object === "instagram" ? "instagram" : "messenger";
+                    await sendSocialMessage(from, aiResponse, platform);
+                }
+
+                await addDoc(collection(db, "omni_conversations"), {
+                    contactId: from,
+                    message: aiResponse,
+                    channel: channel,
+                    direction: "outbound",
+                    type: "ai_assistant",
+                    timestamp: Timestamp.now()
+                });
+
+                return NextResponse.json({ status: "ok", engine: "ai" });
+            } catch (aiError) {
+                console.error("[AI ENGINE] CRITICAL ERROR:", aiError);
+            }
+        }
+        else {
             console.log("Webhook event received but no user messages found (likely a Status or Read Receipt update).");
         }
 

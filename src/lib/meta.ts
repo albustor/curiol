@@ -1,14 +1,17 @@
 const WHATSAPP_TOKEN = process.env.WHATSAPP_ACCESS_TOKEN;
-const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_ID;
+const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_ID || "1064880893378872";
+const WABA_ID = process.env.WHATSAPP_WABA_ID || "1236065411252784";
 
 /**
  * Sends a message via WhatsApp Cloud API
  */
 export async function sendWhatsAppMessage(to: string, text: string) {
-    if (!WHATSAPP_TOKEN || !PHONE_NUMBER_ID) {
+    if (!WHATSAPP_TOKEN || !process.env.WHATSAPP_PHONE_ID) {
         console.error("CRITICAL: WhatsApp credentials missing in environment variables!");
         console.error("Check WHATSAPP_ACCESS_TOKEN and WHATSAPP_PHONE_ID in your hosting dashboard.");
-        return { error: true, message: "Missing credentials" };
+        if (!process.env.WHATSAPP_PHONE_ID) {
+            console.warn("Using fallback PHONE_NUMBER_ID. This is NOT recommended for production.");
+        }
     }
 
     try {
@@ -45,7 +48,10 @@ export async function sendWhatsAppMessage(to: string, text: string) {
  */
 export async function sendSocialMessage(to: string, text: string, platform: "messenger" | "instagram") {
     const token = platform === "messenger" ? process.env.FACEBOOK_PAGE_TOKEN : process.env.INSTAGRAM_PAGE_TOKEN;
-    if (!token) return;
+    if (!token) {
+        console.warn(`[SOCIAL ENGINE] Missing token for ${platform}. Check FACEBOOK_PAGE_TOKEN or INSTAGRAM_PAGE_TOKEN.`);
+        return { error: true, message: `Missing token for ${platform}` };
+    }
 
     try {
         const response = await fetch(`https://graph.facebook.com/v17.0/me/messages?access_token=${token}`, {
