@@ -73,7 +73,11 @@ export async function getAlbums(): Promise<PortfolioAlbum[]> {
                 description: data.description || "",
                 category: data.category || "General",
                 coverUrl: data.coverUrl || "",
-                photos: data.photos || [],
+                photos: Array.isArray(data.photos) ? data.photos.map((p: any) => ({
+                    url: p.url,
+                    id: p.id,
+                    caption: p.caption || ""
+                })) : [],
                 createdAt: data.createdAt?.toDate?.() ? data.createdAt.toDate().toISOString() : new Date().toISOString(),
                 eventDate: data.eventDate || "",
                 slug: data.slug || doc.id,
@@ -106,7 +110,11 @@ export async function getAlbumBySlug(slug: string): Promise<PortfolioAlbum | nul
             description: data.description || "",
             category: data.category || "General",
             coverUrl: data.coverUrl || "",
-            photos: data.photos || [],
+            photos: Array.isArray(data.photos) ? data.photos.map((p: any) => ({
+                url: p.url,
+                id: p.id,
+                caption: p.caption || ""
+            })) : [],
             createdAt: data.createdAt?.toDate?.() ? data.createdAt.toDate().toISOString() : new Date().toISOString(),
             eventDate: data.eventDate || "",
             slug: data.slug || doc.id,

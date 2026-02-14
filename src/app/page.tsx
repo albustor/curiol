@@ -46,9 +46,22 @@ export default function Home() {
         ]);
 
         if (pPhotos && pPhotos.length > 0) {
-          setHeroImages(pPhotos);
+          // Inject Logo every 2 photos to ensure high frequency
+          const mixedPhotos: { url: string; title: string; category: string }[] = [];
+          pPhotos.forEach((photo, index) => {
+            mixedPhotos.push(photo);
+            if ((index + 1) % 2 === 0) {
+              mixedPhotos.push({
+                url: "/Logo_Fondo_Blanco_Transparente.png", // Local asset
+                title: "Curiol Studio",
+                category: "Branding"
+              });
+            }
+          });
+
+          setHeroImages(mixedPhotos);
           // Initial phrase setup
-          const photo = pPhotos[0];
+          const photo = mixedPhotos[0];
           const isProfessional = photo.title.toLowerCase().includes("perfil") || photo.category.toLowerCase().includes("perfil");
           setCurrentPhrase(isProfessional ? "Su presencia de marca comercial" : POETIC_PHRASES[0]);
         }
@@ -112,9 +125,14 @@ export default function Home() {
                 exit={{ opacity: 0, transition: { duration: 2 } }}
                 style={{
                   backgroundImage: `url(${getDirectImageUrl(heroImages[currentImage]?.url || "", true)})`,
-                  backgroundPosition: "center 20%"
+                  backgroundPosition: heroImages[currentImage]?.category === "Branding" ? "center center" : "center 15%",
+                  backgroundSize: heroImages[currentImage]?.category === "Branding" ? "30%" : "cover",
+                  backgroundRepeat: "no-repeat"
                 }}
-                className="absolute inset-0 bg-cover img-premium"
+                className={cn(
+                  "absolute inset-0 img-premium",
+                  heroImages[currentImage]?.category === "Branding" ? "bg-tech-950" : "bg-cover"
+                )}
               />
             </AnimatePresence>
             <div className="absolute inset-0 bg-gradient-to-t from-tech-950/90 via-transparent to-tech-950/40" />

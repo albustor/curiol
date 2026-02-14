@@ -82,7 +82,11 @@ export default function AgendaPage() {
         "6": ["02:00 PM", "05:00 PM"],
         "0": ["05:00 PM"]
     });
-    const [blockedDates, setBlockedDates] = useState<string[]>([]);
+    const [firestoreBlockedDates, setFirestoreBlockedDates] = useState<string[]>([]);
+    const [googleBlockedDates, setGoogleBlockedDates] = useState<string[]>([]);
+
+    // Computed combined blocked dates
+    const blockedDates = [...firestoreBlockedDates, ...googleBlockedDates];
 
     // Fetch Schedule Config on Mount
     useEffect(() => {
@@ -97,29 +101,25 @@ export default function AgendaPage() {
     }, []);
 
     // Fetch Blocked Dates (Firestore + Google)
-    useEffect(() => {
-        const fetchBlocked = async () => {
-            // Firestore blocks
-            const q = query(collection(db, "blocked_dates"));
-            const snapshot = await getDocs(q);
-            const firestoreBlocks = snapshot.docs.map(doc => doc.id);
+    const fetchBlocked = async () => {
+        // Firestore blocks
+        const q = query(collection(db, "blocked_dates"));
+        const snapshot = await getDocs(q);
+        const firestoreBlocks = snapshot.docs.map(doc => doc.id);
+        setFirestoreBlockedDates(firestoreBlocks);
 
-            // Google Calendar blocks
-            try {
-                const start = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
-                const end = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
-                const googleBlocks = await fetchGoogleBlockedDates(start, end);
-
-                // Merge and remove duplicates
-                const allBlocks = Array.from(new Set([...firestoreBlocks, ...googleBlocks]));
-                setBlockedDates(allBlocks);
-            } catch (error) {
-                console.warn("[AGENDA] Could not fetch Google blocks:", error);
-                setBlockedDates(firestoreBlocks);
-            }
-        };
-        fetchBlocked();
-    }, [currentMonth]);
+        // Google Calendar blocks
+        try {
+            const start = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+            const end = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
+            const googleBlocks = await fetchGoogleBlockedDates(start, end);
+            setGoogleBlockedDates(googleBlocks);
+        } catch (error) {
+            console.warn("[AGENDA] Could not fetch Google blocks:", error);
+            setGoogleBlockedDates([]);
+        }
+    };
+    fetchBlocked();
 
     // Fetch all bookings for the current month view
     useEffect(() => {
@@ -261,7 +261,7 @@ export default function AgendaPage() {
                 });
             }
 
-            setBlockedDates(prev => [...prev, dateStr]);
+            setFirestoreBlockedDates(prev => [...prev, dateStr]);
             setShowBlockingModal(false);
         } catch (error) {
             console.error("Error blocking date:", error);
@@ -275,7 +275,7 @@ export default function AgendaPage() {
         setIsBlocking(true);
         try {
             await deleteDoc(doc(db, "blocked_dates", dateStr));
-            setBlockedDates(prev => prev.filter(d => d !== dateStr));
+            setFirestoreBlockedDates(prev => prev.filter(d => d !== dateStr));
         } catch (error) {
             console.error("Error unblocking date:", error);
         }
@@ -296,6 +296,80 @@ export default function AgendaPage() {
                             <p className="text-tech-400 mb-10 leading-relaxed font-light">
                                 Hola <span className="text-white font-bold">{clientData.name}</span>, hemos recibido tu comprobante. La IA está validando los detalles y Alberto aprobará tu fecha pronto.
                             </p>
+
+                            <div className="flex flex-col gap-4 mb-8">
+                                <p className="text-[10px] uppercase font-bold text-tech-500 tracking-widest">Agéndalo en tu calendario</p>
+                                <div className="flex gap-4 justify-center">
+                                    <button
+                                        onClick={() => {
+                                            if (!selectedDate || !selectedTime) return;
+
+                                            // Parse time logic
+                                            const [timeStr, period] = selectedTime.split(' ');
+                                            const [hours, minutes] = timeStr.split(':').map(Number);
+                                            let hour = hours;
+                                            if (period === 'PM' && hour !== 12) hour += 12;
+                                            if (period === 'AM' && hour === 12) hour = 0;
+
+                                            const start = new Date(selectedDate);
+                                            start.setHours(hour, minutes);
+                                            const end = new Date(start.getTime() + (selectedService === 'meet' ? 60 : 120) * 60000); // 60 or 120 min duration
+
+                                            const googleUrl = new URL("https://calendar.google.com/calendar/render");
+                                            googleUrl.searchParams.append("action", "TEMPLATE");
+                                            googleUrl.searchParams.append("text", `Sesión Curiol: ${SERVICES.find(s => s.id === selectedService)?.name}`);
+                                            googleUrl.searchParams.append("dates", start.toISOString().replace(/-|:|\.\d\d\d/g, "") + "/" + end.toISOString().replace(/-|:|\.\d\d\d/g, ""));
+                                            googleUrl.searchParams.append("details", "Sesión confirmada con Curiol Studio.");
+                                            googleUrl.searchParams.append("location", "Curiol Studio / Online");
+
+                                            window.open(googleUrl.toString(), "_blank");
+                                        }}
+                                        className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2"
+                                    >
+                                        <CalendarIcon className="w-4 h-4" /> Google
+                                    </button>
+
+                                    <button
+                                        onClick={() => {
+                                            if (!selectedDate || !selectedTime) return;
+                                            // Parse time logic
+                                            const [timeStr, period] = selectedTime.split(' ');
+                                            const [hours, minutes] = timeStr.split(':').map(Number);
+                                            let hour = hours;
+                                            if (period === 'PM' && hour !== 12) hour += 12;
+                                            if (period === 'AM' && hour === 12) hour = 0;
+
+                                            const start = new Date(selectedDate);
+                                            start.setHours(hour, minutes);
+                                            const end = new Date(start.getTime() + (selectedService === 'meet' ? 60 : 120) * 60000);
+
+                                            const icsContent = [
+                                                "BEGIN:VCALENDAR",
+                                                "VERSION:2.0",
+                                                "BEGIN:VEVENT",
+                                                `DTSTART:${start.toISOString().replace(/-|:|\.\d\d\d/g, "")}`,
+                                                `DTEND:${end.toISOString().replace(/-|:|\.\d\d\d/g, "")}`,
+                                                `SUMMARY:Sesión Curiol: ${SERVICES.find(s => s.id === selectedService)?.name}`,
+                                                "DESCRIPTION:Sesión confirmada con Curiol Studio.",
+                                                "LOCATION:Curiol Studio / Online",
+                                                "END:VEVENT",
+                                                "END:VCALENDAR"
+                                            ].join("\n");
+
+                                            const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
+                                            const link = document.createElement("a");
+                                            link.href = URL.createObjectURL(blob);
+                                            link.download = "cita_curiol.ics";
+                                            document.body.appendChild(link);
+                                            link.click();
+                                            document.body.removeChild(link);
+                                        }}
+                                        className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2"
+                                    >
+                                        <CalendarIcon className="w-4 h-4" /> Apple / Outlook
+                                    </button>
+                                </div>
+                            </div>
 
                             <Link href="/experiencia" className="text-curiol-500 text-xs font-bold uppercase tracking-widest hover:underline transition-all">
                                 Volver a la Experiencia
@@ -412,7 +486,10 @@ export default function AgendaPage() {
                                                     return bDate.toDateString() === date.toDateString();
                                                 });
 
-                                                const isBlocked = blockedDates.includes(date.toDateString());
+                                                const isFirestoreBlocked = firestoreBlockedDates.includes(date.toDateString());
+                                                const isGoogleBlocked = googleBlockedDates.includes(date.toDateString());
+                                                const isBlocked = isFirestoreBlocked || isGoogleBlocked;
+
                                                 const isFull = baseSlots.length > 0 && dayBookings.length >= baseSlots.length;
                                                 const isDisabled = isPast || !isServiceDay || isFull || isBlocked;
 
@@ -424,7 +501,8 @@ export default function AgendaPage() {
                                                             if (isAdminMode) {
                                                                 if (role === "UNAUTHORIZED") {
                                                                     setShowLoginModal(true);
-                                                                } else {
+                                                                } else if (!isGoogleBlocked) {
+                                                                    // Allow blocking only if not already blocked by Google
                                                                     handleBlockDate(date);
                                                                 }
                                                                 return;
@@ -432,7 +510,7 @@ export default function AgendaPage() {
                                                             setSelectedDate(date);
                                                         }}
                                                         onDoubleClick={(e) => {
-                                                            if (isAdminMode && role !== "UNAUTHORIZED") {
+                                                            if (isAdminMode && role !== "UNAUTHORIZED" && isFirestoreBlocked) {
                                                                 e.preventDefault();
                                                                 handleUnblockDate(date);
                                                             }
@@ -440,7 +518,11 @@ export default function AgendaPage() {
                                                         className={cn(
                                                             "aspect-square rounded-xl flex flex-col items-center justify-center text-xs font-bold transition-all relative overflow-hidden",
                                                             isSelected ? "bg-curiol-500 text-white shadow-xl shadow-curiol-500/30" :
-                                                                isAdminMode ? (isBlocked ? "bg-red-500/20 text-red-500 ring-2 ring-red-500/50" : "bg-green-500/10 text-green-500 ring-1 ring-green-500/30 hover:bg-green-500/20") :
+                                                                isAdminMode ? (
+                                                                    isFirestoreBlocked ? "bg-red-500/20 text-red-500 ring-2 ring-red-500/50 cursor-pointer" :
+                                                                        isGoogleBlocked ? "bg-gray-500/20 text-gray-500/50 cursor-not-allowed" :
+                                                                            "bg-green-500/10 text-green-500 ring-1 ring-green-500/30 hover:bg-green-500/20"
+                                                                ) :
                                                                     isDisabled ? "opacity-20 cursor-not-allowed bg-tech-950/50" : "text-tech-400 hover:bg-tech-800 hover:text-white"
                                                         )}
                                                     >
@@ -448,8 +530,11 @@ export default function AgendaPage() {
                                                         {isFull && !isPast && isWeekend && !isBlocked && (
                                                             <span className="text-[6px] absolute bottom-1 uppercase font-black text-red-500/80">Lleno</span>
                                                         )}
-                                                        {isBlocked && !isPast && (
-                                                            <span className="text-[6px] absolute bottom-1 uppercase font-black text-red-500/80">Indisp.</span>
+                                                        {isFirestoreBlocked && !isPast && (
+                                                            <span className="text-[6px] absolute bottom-1 uppercase font-black text-red-500/80">Manual</span>
+                                                        )}
+                                                        {isGoogleBlocked && !isPast && (
+                                                            <span className="text-[6px] absolute bottom-1 uppercase font-black text-gray-500">Google</span>
                                                         )}
                                                         {isAdminMode && isBlocking && isSelected && (
                                                             <Loader2 className="w-3 h-3 animate-spin absolute top-1 right-1 text-curiol-500" />

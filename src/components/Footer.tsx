@@ -61,9 +61,9 @@ export function Footer() {
                 <div className="pt-12 border-t border-tech-800 flex flex-col md:flex-row justify-between items-center gap-12">
                     <div className="flex flex-col items-center md:items-start gap-2">
                         <img
-                            src="/Firma_Blanco_Transparente.png"
-                            alt="Firma Alberto Bustos"
-                            className="h-12 w-auto object-contain brightness-0 invert opacity-80 hover:opacity-100 transition-all"
+                            src="/Logo_Fondo_Blanco_Transparente.png"
+                            alt="Curiol Studio"
+                            className="h-16 w-auto object-contain opacity-90 hover:opacity-100 transition-all"
                         />
                         <p className="text-[9px] text-tech-600 font-bold uppercase tracking-[0.3em]">
                             &copy; 2026 Curiol Studio. Todos los derechos reservados.

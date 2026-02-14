@@ -11,9 +11,10 @@ interface NotificationParams {
     message: string;
     type: "whatsapp" | "email";
     subject?: string;
+    attachments?: { filename: string; content: string | Buffer }[];
 }
 
-export async function sendNotification({ to, message, type, subject }: NotificationParams) {
+export async function sendNotification({ to, message, type, subject, attachments }: NotificationParams) {
     console.log(`[NOTIFICATION SERVICE] Sending ${type} to ${to}: ${message}`);
 
     if (type === "whatsapp") {
@@ -35,12 +36,18 @@ export async function sendNotification({ to, message, type, subject }: Notificat
                 return { success: true, logged: true };
             }
 
-            await resend.emails.send({
+            const emailPayload: any = {
                 from: 'Curiol Studio <info@curiol.studio>',
                 to: [to],
                 subject: subject || "Notificación de Curiol Studio",
                 text: message
-            });
+            };
+
+            if (attachments) {
+                emailPayload.attachments = attachments;
+            }
+
+            await resend.emails.send(emailPayload);
         } catch (error) {
             console.error("[NOTIFICATION SERVICE] Error sending email via Resend:", error);
             return { success: false, error };
@@ -96,9 +103,54 @@ export async function notifyBookingConfirmation(booking: any) {
     // Sync to Google Calendar
     await createCalendarEvent(booking);
 
+    // Generate ICS Content
+    const sessionDate = booking.date.toDate ? booking.date.toDate() : new Date(booking.date);
+    const [timeStr, period] = booking.time.split(' ');
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    let hour = hours;
+    if (period === 'PM' && hour !== 12) hour += 12;
+    if (period === 'AM' && hour === 12) hour = 0;
+
+    const start = new Date(sessionDate);
+    start.setHours(hour, minutes, 0, 0);
+    // Assuming 2 hours for Lagado, 1 for others as per Google Calendar logic
+    const durationHours = booking.service === 'legado' ? 2 : 1;
+    const end = new Date(start.getTime() + durationHours * 60 * 60 * 1000);
+
+    const icsContent = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "BEGIN:VEVENT",
+        `DTSTART:${start.toISOString().replace(/-|:|\.\d\d\d/g, "")}`,
+        `DTEND:${end.toISOString().replace(/-|:|\.\d\d\d/g, "")}`,
+        `SUMMARY:Curiol Studio: Sesión ${booking.service.toUpperCase()}`,
+        "DESCRIPTION:Sesión confirmada con Curiol Studio.",
+        "LOCATION:Curiol Studio",
+        "END:VEVENT",
+        "END:VCALENDAR"
+    ].join("\r\n"); // ICS requires CRLF
+
+    const attachments = [{
+        filename: 'invitacion-curiol.ics',
+        content: Buffer.from(icsContent).toString('base64'), // Resend often expects buffer or base64, usually buffer works but let's send buffer directly if supported, or base64 string
+    }];
+    // Actually Resend accepts Buffer directly in content.
+    // Let's pass the buffer.
+    const attachmentObj = [{
+        filename: 'invitacion-curiol.ics',
+        content: Buffer.from(icsContent)
+    }];
+
+
     // Notify Client
     await sendNotification({ to: booking.whatsapp, message, type: "whatsapp" });
-    await sendNotification({ to: booking.email, message, type: "email", subject: "Sesión Confirmada - Curiol Studio" });
+    await sendNotification({
+        to: booking.email,
+        message,
+        type: "email",
+        subject: "Sesión Confirmada - Curiol Studio",
+        attachments: attachmentObj
+    });
 }
 
 export async function processReminders() {
