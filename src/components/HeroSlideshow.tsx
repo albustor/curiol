@@ -11,14 +11,14 @@ interface HeroSlideshowProps {
 export function HeroSlideshow({ images }: HeroSlideshowProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    // Fallback images (highest quality hand-picked from Unsplash for Curiol brand match)
-    const fallbackImages = [
-        { url: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80", title: "Legado Familiar", category: "Fine Art" },
-        { url: "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&q=80", title: "Esencia Pura", category: "Arte" },
-        { url: "https://images.unsplash.com/photo-1554048612-b6a482bc67e5?auto=format&fit=crop&q=80", title: "Visión Innovadora", category: "Tecnología" }
+    // Masterpiece images generated for Curiol Studio
+    const bespokeImages = [
+        { url: "/assets/slideshow/legacy.png", title: "Legado Familiar", category: "Fine Art" },
+        { url: "/assets/slideshow/innovation.png", title: "Innovación Phygital", category: "Digital" },
+        { url: "/assets/slideshow/art.png", title: "Esencia Maestro", category: "Arte" }
     ];
 
-    const displayImages = images.length > 0 ? images : fallbackImages;
+    const displayImages = images.length > 0 ? [...bespokeImages, ...images] : bespokeImages;
 
     useEffect(() => {
         const timer = setInterval(() => {

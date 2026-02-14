@@ -35,7 +35,7 @@ const PROCESS_STEPS = [
     {
         phase: "Después",
         title: "Legado & Activación",
-        desc: "Transformamos la captura en un ecosistema vivo. Entrega digital, Realidad Aumentada y respaldo eterno.",
+        desc: "Transformamos la captura en un ecosistema de legado familiar. Entrega digital, Realidad Aumentada y respaldo eterno.",
         icon: Sparkles,
         points: ["Revelado Digital IA", "Activación Phygital", "Soporte Continua"]
     }
@@ -43,7 +43,7 @@ const PROCESS_STEPS = [
 
 const INFOGRAPHIC = [
     {
-        title: "Legado vivo",
+        title: "Legado Familiar",
         target: "Para Familias & Individuos",
         color: "text-curiol-500",
         items: [
