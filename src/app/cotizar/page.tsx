@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { AiAssistant } from "@/components/AiAssistant";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Camera, Code, ArrowRight, CheckCircle2, ShoppingCart, Sparkles, CreditCard, Send, Clock, ShieldAlert, FileText, CheckCircle, FileSignature, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -1300,7 +1299,6 @@ export default function CotizadorPage() {
             </main >
 
             <Footer />
-            <AiAssistant />
         </div >
     );
 }

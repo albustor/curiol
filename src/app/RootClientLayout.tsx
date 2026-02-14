@@ -34,6 +34,8 @@ const greatVibes = Great_Vibes({
     variable: "--font-great-vibes",
 });
 
+import { AiAssistant } from "@/components/AiAssistant";
+
 export function RootClientLayout({ children }: { children: React.ReactNode }) {
     return (
         <body
@@ -41,6 +43,7 @@ export function RootClientLayout({ children }: { children: React.ReactNode }) {
         >
             {children}
             <FloatingGiftCard />
+            <AiAssistant />
         </body>
     );
 }

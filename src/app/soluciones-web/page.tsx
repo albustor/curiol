@@ -2,7 +2,6 @@
 
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { AiAssistant } from "@/components/AiAssistant";
 import { GlassCard } from "@/components/ui/GlassCard";
 import {
     Target, TrendingUp, Zap, MessageSquare, ArrowRight,
@@ -439,7 +438,6 @@ export default function SolucionesWebPage() {
             </main>
 
             <Footer />
-            <AiAssistant />
         </div>
     );
 }

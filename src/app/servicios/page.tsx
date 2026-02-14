@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { AiAssistant } from "@/components/AiAssistant";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { PhygitalSimulation } from "@/components/PhygitalSimulation";
 import { AgendaWidget } from "@/components/AgendaWidget";
@@ -331,7 +330,6 @@ export default function ServiciosPage() {
             </main>
 
             <Footer />
-            <AiAssistant />
         </div>
     );
 }
