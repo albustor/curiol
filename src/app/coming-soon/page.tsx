@@ -60,7 +60,7 @@ export default function ComingSoon() {
 
                         <div className="flex flex-col items-center gap-2">
                             <div className="w-1.5 h-1.5 rounded-full bg-curiol-500 animate-pulse" />
-                            <span className="text-[9px] text-tech-400 font-bold uppercase tracking-[0.3em]">Sincronizando Legado Vivo</span>
+                            <span className="text-[9px] text-tech-400 font-bold uppercase tracking-[0.3em]">Sincronizando Legado Familiar</span>
                         </div>
                     </div>
                 </motion.div>

@@ -52,7 +52,7 @@ const familyPackages = [
     },
     {
         id: "legado",
-        title: "Membresía de Legado",
+        title: "Membresía de Legado Familiar",
         icon: Users,
         items: [
             "Tu patrimonio emocional protegido",

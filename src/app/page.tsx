@@ -23,7 +23,7 @@ import ComingSoon from "./coming-soon/page";
 const MAINTENANCE_MODE = process.env.NEXT_PUBLIC_MAINTENANCE_MODE === 'true'; // Linked to ENV or false by default
 
 const POETIC_PHRASES = [
-  "Legado familiar",
+  "Legado Familiar",
   "La imaginación de tu hijo tangible",
   "Los años pasan las fotografías quedan",
   "En 60 años su fotografía va a ser un obsequio para su familia"

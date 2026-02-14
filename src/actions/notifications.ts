@@ -49,16 +49,25 @@ export async function sendNotification({ to, message, type, subject }: Notificat
     return { success: true };
 }
 
-export async function notifyNewBooking(booking: any) {
-    const adminNumber = "62856669";
-    const adminEmail = process.env.ADMIN_EMAIL || "info@curiol.studio";
+const TEAM_CONTACTS = [
+    { name: "Alberto", phone: "62856669", email: "info@curiol.studio" },
+    { name: "Kevin", phone: process.env.WHATSAPP_KEVIN || "", email: "kevin@curiol.studio" },
+    { name: "Cristina", phone: process.env.WHATSAPP_CRISTINA || "", email: "cristina@curiol.studio" }
+];
 
+export async function notifyNewBooking(booking: any) {
     const adminMessage = `Nueva reserva agendada por ${booking.name}. Fecha: ${booking.date instanceof Date ? booking.date.toLocaleDateString() : (booking.date.toDate ? booking.date.toDate().toLocaleDateString() : booking.date)}. Hora: ${booking.time}. Comprobante adjunto en el dashboard.\n\nAtentamente,\nCuriol Studio • Legado`;
     const clientMessage = `Hola ${booking.name}, gracias por agendar con Curiol Studio. Hemos recibido tu comprobante del 20%. Tu sesión para el ${booking.date instanceof Date ? booking.date.toLocaleDateString() : (booking.date.toDate ? booking.date.toDate().toLocaleDateString() : booking.date)} a las ${booking.time} está en proceso de aprobación final.\n\nAtentamente,\nCuriol Studio • Legado`;
 
-    // Notify Alberto (Admin)
-    await sendNotification({ to: adminNumber, message: adminMessage, type: "whatsapp" });
-    await sendNotification({ to: adminEmail, message: adminMessage, type: "email", subject: "Nueva Reserva - Curiol Studio" });
+    // Notify Team
+    for (const contact of TEAM_CONTACTS) {
+        if (contact.phone) {
+            await sendNotification({ to: contact.phone, message: adminMessage, type: "whatsapp" });
+        }
+        if (contact.email) {
+            await sendNotification({ to: contact.email, message: adminMessage, type: "email", subject: "Nueva Reserva - Curiol Studio" });
+        }
+    }
 
     // Notify Client
     await sendNotification({ to: booking.whatsapp, message: clientMessage, type: "whatsapp" });
@@ -83,24 +92,24 @@ export async function processReminders() {
         const reminders = booking.remindersSent || {};
 
         // 4 Days Reminder
-        if (timeDiffDays <= 4 && timeDiffDays > 3 && !reminders.fourDays) {
+        if (timeDiffDays <= 4 && timeDiffDays > 3.5 && !reminders.fourDays) {
             await sendBookingReminder(booking, "4 días");
             reminders.fourDays = true;
         }
 
         // 2 Days Reminder
-        if (timeDiffDays <= 2 && timeDiffDays > 1 && !reminders.twoDays) {
+        if (timeDiffDays <= 2 && timeDiffDays > 1.5 && !reminders.twoDays) {
             await sendBookingReminder(booking, "2 días");
             reminders.twoDays = true;
         }
 
-        // 8 Hours Reminder
-        if (timeDiffHours <= 8 && timeDiffHours > 7 && !reminders.eightHours) {
-            await sendBookingReminder(booking, "8 horas");
-            reminders.eightHours = true;
+        // 5 Hours Reminder (Changed from 8)
+        if (timeDiffHours <= 5 && timeDiffHours > 4 && !reminders.fiveHours) {
+            await sendBookingReminder(booking, "5 horas");
+            reminders.fiveHours = true;
         }
 
-        if (Object.keys(reminders).length > 0) {
+        if (Object.keys(reminders).length > (booking.remindersSent ? Object.keys(booking.remindersSent).length : 0)) {
             await updateDoc(doc(db, "bookings", bookingId), { remindersSent: reminders });
         }
     }
@@ -108,17 +117,19 @@ export async function processReminders() {
 
 async function sendBookingReminder(booking: any, timeFrame: string) {
     const clientMessage = `Hola ${booking.name}, Curiol Studio te recuerda tu sesión agendada para el ${booking.date.toDate ? booking.date.toDate().toLocaleDateString() : booking.date} a las ${booking.time}. Falta(n) ${timeFrame}. ¡Te esperamos!`;
+    const adminMessage = `Recordatorio enviado a ${booking.name}: Su sesión es en ${timeFrame} (${booking.time}).`;
 
-    await sendNotification({
-        to: booking.whatsapp,
-        message: clientMessage,
-        type: "whatsapp"
-    });
+    // Notify Client
+    await sendNotification({ to: booking.whatsapp, message: clientMessage, type: "whatsapp" });
+    await sendNotification({ to: booking.email, message: clientMessage, type: "email", subject: "Recordatorio de Sesión - Curiol Studio" });
 
-    await sendNotification({
-        to: booking.email,
-        message: clientMessage,
-        type: "email",
-        subject: "Recordatorio de Sesión - Curiol Studio"
-    });
+    // Notify Team (Optional but helpful based on user request "that also arrives to my colleagues")
+    for (const contact of TEAM_CONTACTS) {
+        if (contact.phone) {
+            await sendNotification({ to: contact.phone, message: adminMessage, type: "whatsapp" });
+        }
+        if (contact.email) {
+            await sendNotification({ to: contact.email, message: adminMessage, type: "email", subject: `Recordatorio Sesión: ${booking.name}` });
+        }
+    }
 }
