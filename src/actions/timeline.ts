@@ -131,6 +131,29 @@ export async function removeTimelineEventById(timelineId: string, eventId: strin
     }
 }
 
+export async function removeTimelineEventByMediaUrl(timelineId: string, mediaUrl: string): Promise<boolean> {
+    try {
+        const docRef = doc(db, COLLECTION_NAME, timelineId);
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists()) return false;
+
+        const data = docSnap.data();
+        const events = data.events || [];
+        const newEvents = events.filter((e: any) => e.mediaUrl !== mediaUrl);
+
+        if (events.length === newEvents.length) return true;
+
+        await updateDoc(docRef, {
+            events: newEvents,
+            updatedAt: serverTimestamp()
+        });
+        return true;
+    } catch (error) {
+        console.error("Error removing timeline event by URL:", error);
+        return false;
+    }
+}
+
 export async function getClientTimeline(clientId: string): Promise<EvolutiveTimeline | null> {
     try {
         const q = query(
