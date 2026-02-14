@@ -4,6 +4,7 @@ import { db } from "@/lib/firebase";
 import { collection, query, where, getDocs, doc, updateDoc, Timestamp } from "firebase/firestore";
 
 import { sendWhatsAppMessage } from "@/lib/meta";
+import { createCalendarEvent, getBlockedDatesFromGoogle } from "@/lib/google-calendar";
 
 interface NotificationParams {
     to: string;
@@ -64,8 +65,10 @@ export async function notifyNewBooking(booking: any) {
     let targetTeam = [TEAM_CONTACTS.alberto];
 
     if (booking.service === 'legado') {
-        targetTeam = [TEAM_CONTACTS.alberto, TEAM_CONTACTS.cristian];
+        // Photography is with Cristina ONLY as per latest audio
+        targetTeam = [TEAM_CONTACTS.cristina];
     } else if (booking.service === 'infra') {
+        // Commercial Growth / Tech is with Cristina, Kevin, and Alberto
         targetTeam = [TEAM_CONTACTS.cristina, TEAM_CONTACTS.kevin, TEAM_CONTACTS.alberto];
     } else {
         // Default for 'meet' or others: notify all for awareness
@@ -85,6 +88,17 @@ export async function notifyNewBooking(booking: any) {
     // Notify Client
     await sendNotification({ to: booking.whatsapp, message: clientMessage, type: "whatsapp" });
     await sendNotification({ to: booking.email, message: clientMessage, type: "email", subject: "Detalles de tu Reserva - Curiol Studio" });
+}
+
+export async function notifyBookingConfirmation(booking: any) {
+    const message = `¡Confirmado! Tu sesión con Curiol Studio para el ${booking.date.toDate ? booking.date.toDate().toLocaleDateString() : booking.date} a las ${booking.time} ha sido aprobada. Ya puedes verla en tu calendario.\n\nAtentamente,\nCuriol Studio • Legado`;
+
+    // Sync to Google Calendar
+    await createCalendarEvent(booking);
+
+    // Notify Client
+    await sendNotification({ to: booking.whatsapp, message, type: "whatsapp" });
+    await sendNotification({ to: booking.email, message, type: "email", subject: "Sesión Confirmada - Curiol Studio" });
 }
 
 export async function processReminders() {
@@ -136,12 +150,15 @@ async function sendBookingReminder(booking: any, timeFrame: string) {
     await sendNotification({ to: booking.whatsapp, message: clientMessage, type: "whatsapp" });
     await sendNotification({ to: booking.email, message: clientMessage, type: "email", subject: "Recordatorio de Sesión - Curiol Studio" });
 
-    // Notify Team (Optional but helpful based on user request "that also arrives to my colleagues")
-    // Determine target team for reminders
+    // Determine target team for reminders following the same logic
     let targetTeam = [TEAM_CONTACTS.alberto];
-    if (booking.service === 'legado') targetTeam = [TEAM_CONTACTS.alberto, TEAM_CONTACTS.cristian];
-    else if (booking.service === 'infra') targetTeam = [TEAM_CONTACTS.cristina, TEAM_CONTACTS.kevin, TEAM_CONTACTS.alberto];
-    else targetTeam = Object.values(TEAM_CONTACTS);
+    if (booking.service === 'legado') {
+        targetTeam = [TEAM_CONTACTS.cristina];
+    } else if (booking.service === 'infra') {
+        targetTeam = [TEAM_CONTACTS.cristina, TEAM_CONTACTS.kevin, TEAM_CONTACTS.alberto];
+    } else {
+        targetTeam = Object.values(TEAM_CONTACTS);
+    }
 
     for (const contact of targetTeam) {
         if (contact.phone) {
@@ -151,4 +168,8 @@ async function sendBookingReminder(booking: any, timeFrame: string) {
             await sendNotification({ to: contact.email, message: adminMessage, type: "email", subject: `Recordatorio [${booking.service.toUpperCase()}]: ${booking.name}` });
         }
     }
+}
+
+export async function fetchGoogleBlockedDates(start: Date, end: Date) {
+    return await getBlockedDatesFromGoogle(start, end);
 }

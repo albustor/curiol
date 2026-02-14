@@ -27,8 +27,8 @@ const familyPackages = [
             "Línea de Tiempo Evolutiva (Legacy Sync)",
             "Álbum Digital de Descarga (LTD)",
             "Retablo 5x7\" con NFC incluido",
-            "Inversión Estándar: ₡112.700 / $225",
-            "Beneficio Pago de Contado: -15% (₡95.800)",
+            "Inversión Estándar: ₡129.600 / $259",
+            "Beneficio Pago de Contado: -5% (₡123.100)",
             "(Opcional) Phygital AR: Beneficio especial aplicado"
         ],
         highlight: true
@@ -45,8 +45,8 @@ const familyPackages = [
             "Álbum Digital de Descarga (LTD)",
             "Portal de Entrega: Acceso Privado (User/Pass)",
             "Retablo 8x12\" con NFC",
-            "Inversión Estándar: ₡132.250 / $265",
-            "Beneficio Pago de Contado: -15% (₡112.400)"
+            "Inversión Estándar: ₡152.100 / $305",
+            "Beneficio Pago de Contado: -5% (₡144.500)"
         ],
         highlight: false
     },
@@ -61,7 +61,7 @@ const familyPackages = [
             "Portal de Entrega Privado (User/Pass)",
             "Gestión de Timeline Core (Archivo Vivo)",
             "Custodia digital hereditaria profesional",
-            "Plan Semestral: ₡59.490 mes (-10% desc)"
+            "Plan Semestral: ₡68.400 mes (-10% desc)"
         ],
         highlight: false
     },
@@ -75,7 +75,7 @@ const familyPackages = [
             "Portal de Entrega: Acceso Privado (User/Pass)",
             "Álbum Digital de Descarga (LTD)",
             "Retablo 5x7\" (13x18 cm) incluido",
-            "Inversión Única (Contado): ₡56.000 / $112"
+            "Inversión Única (Contado): ₡64.400 / $129 (Inc. -5% Desc.)"
         ],
         highlight: false
     }
@@ -93,7 +93,8 @@ const businessPackages = [
             "Automatización de catálogo básico",
             "Timeline de Evolución de Marca",
             "Álbum Digital Assets (LTD)",
-            "Inversión: ₡280.000 / $550"
+            "Inversión: ₡322.000 / $633",
+            "Pago de Contado: -5% (₡305.900)"
         ],
         highlight: true
     },
@@ -108,7 +109,8 @@ const businessPackages = [
             "Filtro de IA Gemini para leads",
             "Timeline de Crecimiento Integrado",
             "Álbum Digital Assets (LTD)",
-            "Inversión: ₡780.000 / $1550"
+            "Inversión: ₡897.000 / $1783",
+            "Pago de Contado: -5% (₡852.150)"
         ],
         highlight: true
     },
@@ -123,7 +125,8 @@ const businessPackages = [
             "Timeline de Activos Estratégicos",
             "Álbum Digital Assets (LTD)",
             "Soporte VIP y Hardware/Software",
-            "Inversión: ₡1.53M / $3050"
+            "Inversión: ₡1.759.500 / $3508",
+            "Pago de Contado: -5% (₡1.671.500)"
         ],
         highlight: true
     },
@@ -136,7 +139,7 @@ const businessPackages = [
             "Seguridad y optimización",
             "Mejoras trimestrales",
             "Crecimiento perpetuo",
-            "Suscripción: ₡15.000 / $39 mes"
+            "Suscripción: ₡17.250 / $35 mes"
         ],
         highlight: false
     }
@@ -145,16 +148,16 @@ const businessPackages = [
 const generateServicesSummary = () => {
     const summary = `*Curiol Studio 2026 - Legado vivo & Crecimiento Comercial & IA*\n\n` +
         `*LEGADO FAMILIAR (B2C) - Tarifas 2026*\n` +
-        `• *Aventura Mágica*: ₡112.7k / $225\n` +
-        `• *Recuerdos Eternos*: ₡132.2k / $265\n` +
-        `• *Relatos*: ₡56k / $112 (6 Fotos, Pago Único)\n` +
-        `• *Membresía*: ₡59.5k/mes (Plan Semestral)\n\n` +
-        `*BENEFICIO PAGO DE CONTADO: -15% EN TODOS LOS PLANES*\n\n` +
+        `• *Aventura Mágica*: ₡129.6k / $259\n` +
+        `• *Recuerdos Eternos*: ₡152.1k / $305\n` +
+        `• *Relatos*: ₡64.4k / $129 (6 Fotos, Pago Único)\n` +
+        `• *Membresía*: ₡68.4k/mes (Plan Semestral)\n\n` +
+        `*BENEFICIO PAGO DE CONTADO: -5% EN TODOS LOS PLANES*\n\n` +
         `*PORTAL DE ENTREGA: Acceso privado incluido*\n\n` +
         `*CRECIMIENTO COMERCIAL & IA (B2B)*\n` +
-        `• *Omni Local*: ₡280k / $550\n` +
-        `• *Omni Pro*: ₡780k / $1550\n` +
-        `• *Omni Ultra*: ₡1.53M / $3050\n\n` +
+        `• *Omni Local*: ₡322k / $633\n` +
+        `• *Omni Pro*: ₡897k / $1783\n` +
+        `• *Omni Ultra*: ₡1.76M / $3508\n\n` +
         `_Ingeniería digital con sensibilidad artística._`;
     return `https://wa.me/50660602617?text=${encodeURIComponent(summary)}`;
 };

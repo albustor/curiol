@@ -91,10 +91,18 @@ export default function ComunidadPage() {
                             <p className="text-tech-400 text-lg font-light max-w-2xl">
                                 Contenido estratégico generado periódicamente. Explora las últimas tendencias en IA, Realidad Aumentada y Marketing Digital.
                             </p>
+                            <div className="mt-8 p-4 bg-curiol-500/5 border border-curiol-500/20 rounded-2xl max-w-2xl">
+                                <p className="text-[10px] text-tech-500 font-bold uppercase tracking-widest flex items-center gap-2 mb-2">
+                                    <Lock className="w-3 h-3 text-curiol-500" /> Control de Acceso & Visibilidad
+                                </p>
+                                <p className="text-tech-400 text-[11px] font-light leading-relaxed italic">
+                                    El contenido de nuestra Academia se libera de forma escalonada. Algunos módulos son públicos, mientras que otros están reservados exclusivamente para nuestra comunidad con "Llaves Maestras" de acceso temporal o permanente.
+                                </p>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {academyContent.map((item) => (
                             <AcademyCard key={item.id} item={item} />
                         ))}

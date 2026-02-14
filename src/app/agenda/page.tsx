@@ -20,7 +20,7 @@ import { db, auth } from "@/lib/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRole } from "@/hooks/useRole";
 import { collection, addDoc, query, where, getDocs, Timestamp, doc, getDoc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
-import { notifyNewBooking } from "@/actions/notifications";
+import { notifyNewBooking, fetchGoogleBlockedDates } from "@/actions/notifications";
 import { recordTaxTransaction } from "@/actions/accounting";
 
 const STEPS = [
@@ -96,15 +96,30 @@ export default function AgendaPage() {
         fetchConfig();
     }, []);
 
-    // Fetch Blocked Dates
+    // Fetch Blocked Dates (Firestore + Google)
     useEffect(() => {
         const fetchBlocked = async () => {
+            // Firestore blocks
             const q = query(collection(db, "blocked_dates"));
             const snapshot = await getDocs(q);
-            setBlockedDates(snapshot.docs.map(doc => doc.id));
+            const firestoreBlocks = snapshot.docs.map(doc => doc.id);
+
+            // Google Calendar blocks
+            try {
+                const start = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+                const end = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
+                const googleBlocks = await fetchGoogleBlockedDates(start, end);
+
+                // Merge and remove duplicates
+                const allBlocks = Array.from(new Set([...firestoreBlocks, ...googleBlocks]));
+                setBlockedDates(allBlocks);
+            } catch (error) {
+                console.warn("[AGENDA] Could not fetch Google blocks:", error);
+                setBlockedDates(firestoreBlocks);
+            }
         };
         fetchBlocked();
-    }, []);
+    }, [currentMonth]);
 
     // Fetch all bookings for the current month view
     useEffect(() => {

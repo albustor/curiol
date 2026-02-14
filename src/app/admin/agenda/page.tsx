@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 import { db } from "@/lib/firebase";
 import { collection, query, orderBy, onSnapshot, doc, updateDoc, Timestamp, where, getDoc, addDoc } from "firebase/firestore";
 import jsPDF from "jspdf";
-import { notifyNewBooking } from "@/actions/notifications";
+import { notifyNewBooking, notifyBookingConfirmation } from "@/actions/notifications";
 import { recordTaxTransaction } from "@/actions/accounting";
 import { useRole } from "@/hooks/useRole";
 import { useRouter } from "next/navigation";
@@ -233,8 +233,12 @@ export default function AdminAgendaPage() {
                 generateContractPDF(manualForm);
             }
 
-            // Optional: Notify team/client
-            // await notifyNewBooking(bookingData);
+            if (manualForm.markAsPaid) {
+                await notifyBookingConfirmation(bookingData);
+            } else {
+                // Optional: Notify team/client about pending
+                // await notifyNewBooking(bookingData);
+            }
 
             setShowManualModal(false);
             setManualStep(1);
@@ -277,6 +281,9 @@ export default function AdminAgendaPage() {
                         description: `Sesión Confirmada: ${bookingData.service} para ${bookingData.name}`,
                         relatedId: id
                     });
+
+                    // Send confirmation and sync to calendar
+                    await notifyBookingConfirmation(bookingData);
                 }
             }
             setSelectedBooking(null);

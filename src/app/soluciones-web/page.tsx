@@ -155,24 +155,24 @@ export default function SolucionesWebPage() {
                                     <Bot className="text-curiol-500 w-5 h-5" />
                                     <span className="text-curiol-500 text-[10px] font-bold uppercase tracking-[0.3em]">OmniFlow Engine</span>
                                 </div>
-                                <h2 className="text-4xl md:text-6xl font-serif text-white italic mb-10 leading-tight">Automatización <span className="text-curiol-gradient">Estilo ManyChat.</span></h2>
-                                <p className="text-tech-400 text-lg font-light leading-relaxed mb-12">
-                                    Convierte cada interacción en Instagram, Facebook y WhatsApp en una oportunidad de negocio real. Diseñamos flujos conversacionales que califican a tus leads 24/7, sin errores y con la calidez de la IA avanzada.
+                                <h2 className="text-5xl md:text-7xl font-serif text-white italic mb-10 leading-tight">Automatización de <span className="text-[#E7633E]">Agendas, Cotizaciones y Contratos.</span></h2>
+                                <p className="text-tech-400 text-lg font-light leading-relaxed mb-12 max-w-xl">
+                                    Creamos sistemas inteligentes que gestionan el ciclo completo de tu cliente. Desde la cotización instantánea hasta la firma del contrato, todo sucede en línea y sin intervención humana.
                                 </p>
 
                                 <div className="space-y-6">
                                     {[
-                                        { title: "Captura & Calificación", desc: "Obtén datos clave (presupuesto, fecha, interés) antes de hablar con el humano.", icon: Database },
-                                        { title: "Respuestas con IA", desc: "La IA de Curiol Studio responde dudas complejas basándose en tu ADN de marca.", icon: Sparkles },
-                                        { title: "Sincronización Meta", desc: "Integración directa con el ecosistema de Mark Zuckerberg (IG/FB/WA).", icon: MessageSquare }
+                                        { title: "Generación de Cotización", desc: "El cliente recibe una propuesta personalizada basada en sus necesidades exactas.", icon: Database },
+                                        { title: "Agenda Inteligente", desc: "Sincronización en tiempo real con tu disponibilidad para evitar traslapes.", icon: Bot },
+                                        { title: "Pagos & Contratos", desc: "Gestión automática de adelantos y generación de contratos legales al instante.", icon: MessageSquare }
                                     ].map((item, i) => (
-                                        <div key={i} className="flex gap-6 p-6 bg-tech-900/40 rounded-3xl border border-white/5 hover:border-curiol-500/20 transition-all">
-                                            <div className="w-12 h-12 rounded-2xl bg-tech-950 flex items-center justify-center text-curiol-500 shrink-0">
-                                                <item.icon className="w-5 h-5" />
+                                        <div key={i} className="flex gap-6 p-8 bg-[#0B1221]/60 rounded-3xl border border-white/5 hover:border-[#E7633E]/20 transition-all">
+                                            <div className="w-14 h-14 rounded-2xl bg-[#0B1221] border border-white/10 flex items-center justify-center text-[#E7633E] shrink-0">
+                                                <item.icon className="w-6 h-6" opacity={0.8} />
                                             </div>
                                             <div>
-                                                <h4 className="text-white font-serif text-xl italic mb-1">{item.title}</h4>
-                                                <p className="text-tech-500 text-sm font-light">{item.desc}</p>
+                                                <h4 className="text-white font-serif text-2xl italic mb-1">{item.title}</h4>
+                                                <p className="text-tech-500 text-sm font-light leading-snug">{item.desc}</p>
                                             </div>
                                         </div>
                                     ))}
@@ -180,48 +180,46 @@ export default function SolucionesWebPage() {
                             </motion.div>
 
                             <div className="relative">
-                                <GlassCard className="p-8 border-curiol-500/30 bg-tech-900/50 relative z-10 overflow-hidden">
-                                    <div className="absolute top-0 right-0 p-4">
-                                        <Zap className="w-6 h-6 text-curiol-500 animate-pulse" />
+                                <GlassCard className="p-12 border-white/5 bg-[#0B1221]/80 relative z-10 overflow-hidden rounded-[3rem]">
+                                    <div className="absolute top-0 right-0 p-6">
+                                        <Zap className="w-6 h-6 text-[#E7633E] animate-pulse" />
                                     </div>
 
-                                    <div className="space-y-4 relative">
-                                        {/* Visual Flow Representation */}
+                                    <div className="space-y-6 relative text-center">
+                                        {/* Visual Flow Representation - Updated to show the 4-step process */}
                                         <div className="flex flex-col items-center">
-                                            <div className="w-full bg-tech-950 p-4 rounded-2xl border border-white/5 text-center">
-                                                <p className="text-[9px] text-tech-600 font-bold uppercase tracking-widest mb-1">Trigger</p>
-                                                <p className="text-white text-xs italic">Cliente escribe: <span className="text-curiol-400 font-bold">"PORTAFOLIO"</span></p>
+                                            <div className="w-full bg-[#070B14] p-6 rounded-2xl border border-white/10 text-center shadow-lg">
+                                                <p className="text-[10px] text-tech-400 font-bold uppercase tracking-[0.2em] mb-2">Paso 1: Cotización</p>
+                                                <p className="text-white text-sm italic font-medium leading-tight">Presupuesto generado <span className="text-[#E7633E] font-bold">AL INSTANTE</span></p>
                                             </div>
-                                            <div className="w-[1px] h-6 bg-curiol-500/30 mx-auto" />
-                                            <div className="w-full bg-tech-950 p-4 rounded-2xl border border-curiol-500/20 text-center relative overflow-hidden">
-                                                <div className="absolute inset-0 bg-curiol-gradient opacity-5" />
-                                                <p className="text-[9px] text-curiol-500 font-bold uppercase tracking-widest mb-1">IA Smart Response</p>
-                                                <p className="text-white text-xs italic">"¡Hola! Te envío mis galerías. ¿Qué tipo de evento buscas?"</p>
+                                            <div className="w-[1px] h-8 bg-white/10 mx-auto" />
+
+                                            <div className="w-full bg-[#070B14] p-6 rounded-2xl border border-white/10 text-center shadow-lg">
+                                                <p className="text-[10px] text-tech-400 font-bold uppercase tracking-[0.2em] mb-2">Paso 2: Agenda</p>
+                                                <p className="text-white text-sm italic font-medium leading-tight text-[#E7633E] font-bold">Fecha reservada en línea</p>
                                             </div>
-                                            <div className="w-[1px] h-6 bg-curiol-500/30 mx-auto" />
-                                            <div className="grid grid-cols-2 gap-4 w-full">
-                                                <div className="bg-tech-950 p-3 rounded-xl border border-white/5 text-center">
-                                                    <p className="text-[8px] text-tech-500 font-bold uppercase mb-1">Opción A</p>
-                                                    <p className="text-white text-[10px]">Bodas</p>
-                                                </div>
-                                                <div className="bg-tech-950 p-3 rounded-xl border border-white/5 text-center">
-                                                    <p className="text-[8px] text-tech-500 font-bold uppercase mb-1">Opción B</p>
-                                                    <p className="text-white text-[10px]">Corporativo</p>
-                                                </div>
+                                            <div className="w-[1px] h-8 bg-white/10 mx-auto" />
+
+                                            <div className="w-full bg-[#070B14] p-6 rounded-2xl border border-white/10 text-center shadow-lg">
+                                                <p className="text-[10px] text-tech-400 font-bold uppercase tracking-[0.2em] mb-2">Paso 3: Adelanto</p>
+                                                <p className="text-white text-sm italic font-medium leading-tight">Pago procesado & validado</p>
                                             </div>
-                                            <div className="w-[1px] h-6 bg-curiol-500/30 mx-auto" />
-                                            <div className="w-full bg-curiol-gradient p-4 rounded-2xl text-center shadow-xl shadow-curiol-500/20">
-                                                <p className="text-[9px] text-white/70 font-bold uppercase tracking-widest mb-1">Success</p>
-                                                <p className="text-white text-xs font-bold italic">Lead calificado & enviado al CRM.</p>
+                                            <div className="w-[1px] h-8 bg-white/10 mx-auto" />
+
+                                            <div className="w-full p-6 rounded-2xl text-center shadow-2xl relative overflow-hidden border border-[#E7633E]/20 bg-gradient-to-b from-[#070B14] to-[#121926]">
+                                                <div className="absolute inset-0 bg-[#E7633E]/5" />
+                                                <p className="text-[10px] text-tech-400 font-bold uppercase tracking-[0.2em] mb-2">Paso 4: Contrato</p>
+                                                <p className="text-white text-sm font-bold italic leading-tight">Contrato legal enviado y firmado.</p>
+                                                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#E7633E]/30 blur-[2px]" />
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="mt-8 pt-6 border-t border-white/5 text-center">
-                                        <p className="text-[10px] text-tech-600 font-bold uppercase tracking-widest mb-4 italic">Intervención humana en vivo disponible.</p>
-                                        <div className="flex justify-center gap-2">
-                                            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                                            <span className="text-[9px] text-tech-500 uppercase font-bold">Sistema OmniFlow Activo</span>
+                                    <div className="mt-12 pt-8 border-t border-white/5 text-center">
+                                        <p className="text-[11px] text-white/60 font-bold uppercase tracking-[0.15em] mb-6 italic">Proceso 100% automatizado.</p>
+                                        <div className="flex justify-center items-center gap-3">
+                                            <div className="w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse" />
+                                            <span className="text-[10px] text-tech-400 uppercase font-extrabold tracking-widest">Sistema OmniFlow Activo</span>
                                         </div>
                                     </div>
                                 </GlassCard>
