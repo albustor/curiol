@@ -82,9 +82,6 @@ export function AgendaWidget() {
                 </div>
             </div>
 
-            <Link href="/agenda" className="w-full py-4 bg-tech-100 text-tech-950 text-[10px] font-bold uppercase tracking-widest rounded-xl hover:bg-white transition-all flex items-center justify-center gap-2 group/btn">
-                Separar mi Fecha <ArrowRight className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" />
-            </Link>
         </GlassCard>
     );
 }
