@@ -122,12 +122,12 @@ export default function AdminLoginPage() {
                         ) : (
                             <form onSubmit={handleAuthLogin} className="space-y-6">
                                 <div>
-                                    <label className="block text-tech-400 text-[10px] font-bold uppercase tracking-widest mb-2 px-1">Email Profesional</label>
+                                    <label className="block text-tech-400 text-[10px] font-bold uppercase tracking-widest mb-2 px-1">Email Profesional (@curiol.studio)</label>
                                     <input
                                         type="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        placeholder="admin@curiol.studio"
+                                        placeholder="tu-nombre@curiol.studio"
                                         required
                                         className="w-full bg-tech-900 border border-tech-800 focus:border-curiol-500 outline-none p-4 rounded-xl text-white transition-all"
                                     />

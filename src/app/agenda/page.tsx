@@ -19,8 +19,9 @@ import Link from "next/link";
 import { db, auth } from "@/lib/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRole } from "@/hooks/useRole";
-import { collection, addDoc, query, where, getDocs, Timestamp, doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
+import { collection, addDoc, query, where, getDocs, Timestamp, doc, getDoc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import { notifyNewBooking } from "@/actions/notifications";
+import { recordTaxTransaction } from "@/actions/accounting";
 
 const STEPS = [
     { id: "service", label: "Servicio", icon: Sparkles },
@@ -56,6 +57,15 @@ export default function AgendaPage() {
     const [loginPassword, setLoginPassword] = useState("");
     const [isLoggingIn, setIsLoggingIn] = useState(false);
     const [isBlocking, setIsBlocking] = useState(false);
+
+    // Blocking Modal
+    const [showBlockingModal, setShowBlockingModal] = useState(false);
+    const [blockingData, setBlockingData] = useState({
+        date: null as Date | null,
+        reason: "",
+        amount: "",
+        hasContract: true
+    });
 
     const handleNext = () => setStep(s => Math.min(s + 1, STEPS.length - 1));
     const handleBack = () => setStep(s => Math.max(s - 1, 0));
@@ -196,19 +206,51 @@ export default function AgendaPage() {
         setIsLoggingIn(false);
     };
 
-    const handleBlockDate = async (date: Date) => {
+    const handleBlockDate = (date: Date) => {
         const dateStr = date.toDateString();
         if (blockedDates.includes(dateStr)) return; // Already blocked, do nothing on single click
 
+        setBlockingData({
+            date,
+            reason: "",
+            amount: "",
+            hasContract: true
+        });
+        setShowBlockingModal(true);
+    };
+
+    const confirmBlocking = async () => {
+        if (!blockingData.date) return;
+        const dateStr = blockingData.date.toDateString();
         setIsBlocking(true);
+
         try {
-            await setDoc(doc(db, "blocked_dates", dateStr), {
+            const blockRef = doc(db, "blocked_dates", dateStr);
+            await setDoc(blockRef, {
                 blockedAt: Timestamp.now(),
-                blockedBy: user?.email || "Admin"
+                blockedBy: user?.email || "Admin",
+                reason: blockingData.reason,
+                amount: blockingData.amount,
+                hasContract: blockingData.hasContract
             });
+
+            // If an amount is provided, record in accounting
+            const numAmount = parseFloat(blockingData.amount);
+            if (!isNaN(numAmount) && numAmount > 0) {
+                await recordTaxTransaction({
+                    type: 'income',
+                    category: 'photography',
+                    amount: numAmount,
+                    description: `Bloqueo Manual: ${blockingData.reason} - ${dateStr}`,
+                    relatedId: dateStr
+                });
+            }
+
             setBlockedDates(prev => [...prev, dateStr]);
+            setShowBlockingModal(false);
         } catch (error) {
             console.error("Error blocking date:", error);
+            alert("Error al bloquear la fecha");
         }
         setIsBlocking(false);
     };
@@ -362,7 +404,7 @@ export default function AgendaPage() {
                                                 return (
                                                     <button
                                                         key={day}
-                                                        disabled={isDisabled}
+                                                        disabled={!isAdminMode && isDisabled}
                                                         onClick={() => {
                                                             if (isAdminMode) {
                                                                 if (role === "UNAUTHORIZED") {
@@ -648,6 +690,90 @@ export default function AgendaPage() {
                                 >
                                     Cancelar
                                 </button>
+                            </GlassCard>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
+            {/* Event Details Modal */}
+            <AnimatePresence>
+                {showBlockingModal && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="absolute inset-0 bg-tech-950/80 backdrop-blur-xl"
+                            onClick={() => setShowBlockingModal(false)}
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="relative z-10 w-full max-w-lg"
+                        >
+                            <GlassCard className="p-10 border-curiol-500/30">
+                                <div className="text-center mb-8">
+                                    <div className="w-16 h-16 bg-curiol-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-curiol-500/20">
+                                        <CalendarIcon className="w-6 h-6 text-curiol-500" />
+                                    </div>
+                                    <h3 className="text-2xl font-serif text-white italic">Detalles del Evento</h3>
+                                    <p className="text-tech-500 text-[10px] font-bold uppercase tracking-widest mt-2">Bloqueo: {blockingData.date?.toLocaleDateString()}</p>
+                                </div>
+
+                                <div className="space-y-6">
+                                    <div className="space-y-4">
+                                        <div>
+                                            <label className="text-[9px] font-bold uppercase text-tech-700 ml-1 mb-2 block">Motivo / Cliente</label>
+                                            <input
+                                                type="text"
+                                                placeholder="Ej: Boda Familia Rojas"
+                                                value={blockingData.reason}
+                                                onChange={(e) => setBlockingData({ ...blockingData, reason: e.target.value })}
+                                                className="w-full bg-tech-950/50 border border-tech-800 rounded-xl py-4 px-6 text-white text-sm outline-none focus:border-curiol-500 transition-all font-sans"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-[9px] font-bold uppercase text-tech-700 ml-1 mb-2 block">Monto Acordado (Opcional)</label>
+                                            <input
+                                                type="number"
+                                                placeholder="₡0"
+                                                value={blockingData.amount}
+                                                onChange={(e) => setBlockingData({ ...blockingData, amount: e.target.value })}
+                                                className="w-full bg-tech-950/50 border border-tech-800 rounded-xl py-4 px-6 text-white text-sm outline-none focus:border-curiol-500 transition-all font-sans"
+                                            />
+                                        </div>
+                                        <div className="flex items-center gap-4 py-2">
+                                            <label className="text-[9px] font-bold uppercase text-tech-700 ml-1">¿Requiere Contrato?</label>
+                                            <button
+                                                onClick={() => setBlockingData({ ...blockingData, hasContract: !blockingData.hasContract })}
+                                                className={cn(
+                                                    "px-4 py-2 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all border",
+                                                    blockingData.hasContract ? "bg-curiol-500/20 border-curiol-500 text-curiol-500" : "bg-tech-900 border-tech-800 text-tech-700"
+                                                )}
+                                            >
+                                                {blockingData.hasContract ? "SÍ" : "NO"}
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        onClick={confirmBlocking}
+                                        disabled={isBlocking || !blockingData.reason}
+                                        className="w-full py-5 bg-curiol-gradient text-white text-[10px] font-bold uppercase tracking-widest rounded-xl shadow-xl shadow-curiol-500/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                                    >
+                                        {isBlocking ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
+                                        {isBlocking ? "Bloqueando..." : "Confirmar Bloqueo"}
+                                    </button>
+
+                                    <button
+                                        onClick={() => setShowBlockingModal(false)}
+                                        className="w-full text-[9px] text-tech-600 uppercase font-bold hover:text-white transition-colors"
+                                    >
+                                        Descartar
+                                    </button>
+                                </div>
                             </GlassCard>
                         </motion.div>
                     </div>

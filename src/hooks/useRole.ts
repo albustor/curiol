@@ -17,7 +17,7 @@ export function useRole() {
     const [user, setUser] = useState<User | CustomUser | null>(null);
 
     useEffect(() => {
-        const MASTER_EMAILS = ["admin@curiol.studio", "info@curiol.studio"];
+        const MASTER_EMAILS = ["admin@curiol.studio", "info@curiol.studio", "alberto@curiol.studio"];
         const TEAM_EMAILS = ["kevin@curiol.studio", "cristina@curiol.studio"];
 
         // Master PIN always wins
