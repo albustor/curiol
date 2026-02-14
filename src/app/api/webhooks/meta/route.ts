@@ -3,7 +3,7 @@ import { db } from "@/lib/firebase";
 import {
     collection, query, where, getDocs,
     addDoc, Timestamp, doc, setDoc,
-    getDoc, updateDoc
+    getDoc, updateDoc, orderBy, limit
 } from "firebase/firestore";
 import { sendWhatsAppMessage, sendSocialMessage } from "@/lib/meta";
 import { generateAiAssistantResponse } from "@/lib/gemini";
@@ -160,7 +160,27 @@ export async function POST(req: Request) {
             // 5. AI Assistant Fallback
             console.log("[AI ENGINE] Processing with Gemini...");
             try {
-                const aiResponse = await generateAiAssistantResponse(text || "", channel);
+                // Fetch recent history for context (last 6 messages)
+                const historyQuery = query(
+                    collection(db, "omni_conversations"),
+                    where("contactId", "==", from),
+                    orderBy("timestamp", "desc"),
+                    limit(6)
+                );
+                const historySnap = await getDocs(historyQuery);
+                const history = historySnap.docs
+                    .map(doc => {
+                        const data = doc.data();
+                        return {
+                            role: data.direction === "inbound" ? "user" : "model" as "user" | "model",
+                            parts: [{ text: data.message }]
+                        };
+                    })
+                    .reverse(); // Gemini expects chronological order
+
+                console.log(`[AI ENGINE] Context retrieved: ${history.length} messages.`);
+
+                const aiResponse = await generateAiAssistantResponse(text || "", channel, {}, history);
 
                 if (channel === "whatsapp") {
                     const result = await sendWhatsAppMessage(from, aiResponse);
@@ -182,6 +202,10 @@ export async function POST(req: Request) {
                 return NextResponse.json({ status: "ok", engine: "ai" });
             } catch (aiError) {
                 console.error("[AI ENGINE] CRITICAL ERROR:", aiError);
+                // Fallback direct response in case of logic error
+                if (channel === "whatsapp") {
+                    await sendWhatsAppMessage(from, "Gracias por tu paciencia. Alberto Bustos revisará tu consulta a la brevedad.");
+                }
             }
         }
         else {

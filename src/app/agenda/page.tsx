@@ -196,22 +196,31 @@ export default function AgendaPage() {
         setIsLoggingIn(false);
     };
 
-    const toggleBlockDate = async (date: Date) => {
+    const handleBlockDate = async (date: Date) => {
+        const dateStr = date.toDateString();
+        if (blockedDates.includes(dateStr)) return; // Already blocked, do nothing on single click
+
+        setIsBlocking(true);
+        try {
+            await setDoc(doc(db, "blocked_dates", dateStr), {
+                blockedAt: Timestamp.now(),
+                blockedBy: user?.email || "Admin"
+            });
+            setBlockedDates(prev => [...prev, dateStr]);
+        } catch (error) {
+            console.error("Error blocking date:", error);
+        }
+        setIsBlocking(false);
+    };
+
+    const handleUnblockDate = async (date: Date) => {
         const dateStr = date.toDateString();
         setIsBlocking(true);
         try {
-            if (blockedDates.includes(dateStr)) {
-                await deleteDoc(doc(db, "blocked_dates", dateStr));
-                setBlockedDates(prev => prev.filter(d => d !== dateStr));
-            } else {
-                await setDoc(doc(db, "blocked_dates", dateStr), {
-                    blockedAt: Timestamp.now(),
-                    blockedBy: user?.email || "Admin"
-                });
-                setBlockedDates(prev => [...prev, dateStr]);
-            }
+            await deleteDoc(doc(db, "blocked_dates", dateStr));
+            setBlockedDates(prev => prev.filter(d => d !== dateStr));
         } catch (error) {
-            console.error("Error toggling block:", error);
+            console.error("Error unblocking date:", error);
         }
         setIsBlocking(false);
     };
@@ -359,11 +368,17 @@ export default function AgendaPage() {
                                                                 if (role === "UNAUTHORIZED") {
                                                                     setShowLoginModal(true);
                                                                 } else {
-                                                                    toggleBlockDate(date);
+                                                                    handleBlockDate(date);
                                                                 }
                                                                 return;
                                                             }
                                                             setSelectedDate(date);
+                                                        }}
+                                                        onDoubleClick={(e) => {
+                                                            if (isAdminMode && role !== "UNAUTHORIZED") {
+                                                                e.preventDefault();
+                                                                handleUnblockDate(date);
+                                                            }
                                                         }}
                                                         className={cn(
                                                             "aspect-square rounded-xl flex flex-col items-center justify-center text-xs font-bold transition-all relative overflow-hidden",

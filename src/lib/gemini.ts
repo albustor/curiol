@@ -40,16 +40,21 @@ Respuesta (Máximo 2 párrafos fluidos):`;
 /**
  * Core AI Assistant function used by both Web and Webhooks
  */
-export async function generateAiAssistantResponse(message: string, channel: string, context?: any) {
+export async function generateAiAssistantResponse(message: string, channel: string, context?: any, history: { role: "user" | "model"; parts: { text: string }[] }[] = []) {
     if (!API_KEY) return "Lo siento, mi configuración de IA no está completa.";
 
     try {
         const model = genAI.getGenerativeModel({
             model: "gemini-1.5-flash",
-            generationConfig: { maxOutputTokens: 500, temperature: 0.7 }
+            generationConfig: { maxOutputTokens: 500, temperature: 0.7 },
+            systemInstruction: SYSTEM_PROMPT("", channel, context) // Use SYSTEM_PROMPT as system instruction
         });
 
-        const result = await model.generateContent(SYSTEM_PROMPT(message, channel, context));
+        const chat = model.startChat({
+            history: history,
+        });
+
+        const result = await chat.sendMessage(message);
         const response = result.response;
 
         // Safety check: if response has no candidates, it might have been blocked
@@ -59,8 +64,14 @@ export async function generateAiAssistantResponse(message: string, channel: stri
             console.warn("Gemini AI: No response candidates (possibly blocked by safety filters)");
             return "Gracias por contactarnos. Alberto revisará tu consulta personalmente para brindarte la mejor asesoría.";
         }
-    } catch (error) {
+    } catch (error: any) {
         console.error("Gemini AI Core Error:", error);
+
+        // Specific handling for safety blocks if possible
+        if (error.message?.includes("SAFETY")) {
+            return "Por políticas de seguridad, no puedo responder a esa solicitud específica. Sin embargo, Alberto Bustos puede atenderte personalmente para cualquier consulta especial sobre nuestros servicios.";
+        }
+
         return "Gracias por tu interés. Alberto ha sido notificado y te contactará personalmente para brindarte una atención de primer nivel.";
     }
 }
