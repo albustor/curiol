@@ -43,6 +43,14 @@ export async function POST(req: Request) {
         const value = changes?.value;
         const messages = value?.messages;
 
+        console.log("DEBUG: Webhook Processing:", {
+            hasEntry: !!entry,
+            hasChanges: !!changes,
+            hasValue: !!value,
+            hasMessages: !!messages,
+            object: body.object
+        });
+
         if (messages && messages.length > 0) {
             const message = messages[0];
             const from = message.from;
